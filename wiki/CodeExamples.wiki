@@ -91,10 +91,10 @@ import de.novanic.gwteventservice.manual.example.event.UserLeaveEvent;
 
 public class UsageClass
 {
-  private static final Domain GAME_DOMAIN = DomainFactory.getDomain("gamedom”);
+  private static final Domain GAME_DOMAIN = DomainFactory.getDomain("gamedom");
 	
   public void init() {
-    /*do something*/
+    //do something
 		
     RemoteEventServiceFactory theEventServiceFactory = 			
 			RemoteEventServiceFactory.getInstance();
@@ -103,7 +103,7 @@ public class UsageClass
 		
     theEventService.addListener(GAME_DOMAIN, new GameUserListenerAdapter() {
       public void onUserJoin(UserJoinEvent userJoinEvent) {
-        /*do something with the new user*/
+        //do something with the new user
       }
 
       public void onUserLeave(UserLeaveEvent userLeaveEvent) {
