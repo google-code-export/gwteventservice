@@ -74,7 +74,7 @@
 
         <!--<junit fork="yes" printsummary="yes" showoutput="no" haltonerror="no" haltonfailure="no" maxmemory="1024M">-->
             <!--<jvmarg value="-Xmx128M"/>-->
-        <junit fork="no" printsummary="yes" showoutput="no" haltonerror="yes" haltonfailure="yes" maxmemory="1024M">
+        <junit fork="no" printsummary="yes" showoutput="no" haltonerror="yes" haltonfailure="yes" maxmemory="512M">
 
             <classpath refid="test.classpath"/>
             <formatter type="brief" usefile="false"/>
