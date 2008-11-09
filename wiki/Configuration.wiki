@@ -1,5 +1,3 @@
-*Configuration*
-
 To get an application running with GWTEventService, the gwteventservice-core.jar must be included in the classpath. The gwt-xml must include an entry to inherit “de.novanic.eventservice.GWTEventService”.
 
 If you want to execute the tests, you need to include the libraries junit 3.x or greater (http://www.junit.org) and easymock 2.x or greater (http://www.easymock.org).
