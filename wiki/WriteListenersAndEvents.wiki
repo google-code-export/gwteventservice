@@ -1,0 +1,25 @@
+Now the interesting part: How can I make it work? First you will need to write your events like defined in 3.1. The events must implement the Event interface (de.novanic.eventservice.client.Event) and must be available to the client- and to the server side. A simple project structure to reach that can be seen in the demo-application (chapter 7.2). At this version you have to add the events via the server side, which makes sense, because the events must be known by the server to distribute the events to the other clients. The event implementations can hold every serializable value / object to which you have access on the server side. Events can be added via an !EventExecutorService (method addEvent(Domain, Event)). An !EventExecutorService can be got from the !EventExecutorServiceFactory or if you have a servlet, you can extend from !RemoteEventServiceServlet which is an implementation of !EventExecutorService. That's it for the server side.
+The listeners must only be accessible by the client side, because the server doesn't need to know anything about listeners. The only very logical method you need to implement is the “apply” method of the !RemoteEventListener interface (de.novanic.eventservice.client.listener.!RemoteEventListener). The apply method gets an Event as a parameter and your logic must be able to decide how to handle the event. It's a good practice to define methods in a listener interface like “onUserJoin” and “onUserLeave” which can be implemented in the real implementation of the listener. An adapter class or abstract implementation of the listener can offer the apply method implementation. It is often needed to differ the events via “instanceof” checks. That will be improved with a later version of GWTEventService.
+
+Complete code examples can be found in chapter 7.1 (Appendix: Code-Examples). Here is an example of an implemented “apply” method:
+
+{{{
+public abstract class GameUserListenerAdapter implements GameUserListener
+{	
+	public void apply(Event anEvent) {
+		if(anEvent instanceof UserJoinEvent) {
+			onUserJoin((UserJoinEvent)anEvent);
+		} else if(anEvent instanceof UserLeaveEvent) {
+			onUserLeave((UserLeaveEvent)anEvent);
+		}
+	}
+	
+	public void onUserJoin(UserJoinEvent aUserJoinEvent) {}
+
+	public void onUserLeave(UserLeaveEvent aUserLeaveEvent) {}
+}
+}}}
+
+Now you have the events and the listeners. Maybe you recognized that you need a Domain (de.novanic.eventservice.client.event.domain.Domain) to add an event. This is the last step: The registering of listeners and adding of events with domains. A domain can be got from the !DomainFactory (de.novanic.eventservice.client.event.domain.!DomainFactory) with a unique String (domain name). It would be a good idea to hold the domain name or the Domain as a constant, available for client- and server side, to ensure that you access the right domains.
+!RemoteEventService (de.novanic.eventservice.client.event.!RemoteEventService) can be used to register  and deregister listeners (client side). The equivalent methods are named “addListener” and “removeListener”. All methods have an optional callback parameter, if you need to know when the change is really active.
+Something special and optional is the !EventFilter (de.novanic.eventservice.client.event.filter.!EventFilter). !EventFilters can be added from client side and are processed on server side. With an !EventFilter the server side can decide if an Event is really important for the user or not. An !EventFilter has only to implement the method “match(anEvent : Event) : boolean”. This functionality is planned to extend in a future release. See the RoadMap for more information.
