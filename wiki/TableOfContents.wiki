@@ -1,22 +1,22 @@
 === Table of Contents ===
 
-1. Introduction
- 1.1. Advantages
-2. Configuration
-3. Get Started / Usage Guide
- 3.1. Think of your needed events
- 3.2. Define your domains
- 3.3. Write your listeners and events
- 3.4. Connection-Handling
-4. API - Overview
- 4.1. API class diagram
-  4.1.1. Server side
-  4.1.2. Client side
- 4.2. Polling compared to Comet / server-push
-  4.2.1. Polling sequence diagram
-  4.2.2. Comet / server-push sequence diagram
-5 RoadMap
-6 Conclusion / Feedback
-7 Appendix
- 7.1. Code-Examples
- 7.2. Demo-Application and "EventFilter" functionality
+ # Introduction
+  # Advantages
+ # Configuration
+ # Get Started / Usage Guide
+  # Think of your needed events
+  # Define your domains
+  # Write your listeners and events
+  # Connection-Handling
+ # API - Overview
+  # API class diagram
+   # Server side
+   # Client side
+  # Polling compared to Comet / server-push
+   # Polling sequence diagram
+   # Comet / server-push sequence diagram
+ # RoadMap
+ # Conclusion / Feedback
+ # Appendix
+  # Code-Examples
+  # Demo-Application and "EventFilter" functionality
