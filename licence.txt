@@ -6,7 +6,7 @@ GWTEventService Licence Information
 	http://www.gnu.org/licenses/lgpl.html
 
 	The source code of GWTEventService included in this distribution is available from the GWTEventService project.
-	http://code.google.com/p/gwteventservice/
+	http://gwteventservice.googlecode.com/
 
 	Do you have questions?
 	licensing@novanic.de
