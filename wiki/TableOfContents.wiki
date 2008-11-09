@@ -9,11 +9,11 @@
   # [ConnectionHandling Connection-Handling]
  # API - Overview
   # API class diagram
-   # Server side
-   # Client side
+   # [ClassDiagramServerSide Server side]
+   # [ClassDiagramClientSide Client side]
   # Polling compared to Comet / server-push
-   # Polling sequence diagram
-   # Comet / server-push sequence diagram
+   # [SequenceDiagramPolling Polling sequence diagram]
+   # [SequenceDiagramComet Comet / server-push sequence diagram]
  # RoadMap
  # Conclusion / Feedback
  # Appendix
