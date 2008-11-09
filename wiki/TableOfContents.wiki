@@ -3,10 +3,10 @@
  # [StartPage Introduction]
  # [Configuration Configuration]
  # [GetStarted Get Started / Usage Guide]
-  # Think of your needed events
-  # Define your domains
-  # Write your listeners and events
-  # Connection-Handling
+  # [ThinkOfNeededEvents Think of your needed events]
+  # [DefineDomains Define your domains]
+  # [WriteListenersAndEvents Write your listeners and events]
+  # [ConnectionHandling Connection-Handling]
  # API - Overview
   # API class diagram
    # Server side
