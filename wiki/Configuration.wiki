@@ -3,4 +3,11 @@ To get an application running with GWTEventService, the gwteventservice-core.jar
 If you want to execute the tests, you need to include the libraries junit 3.x or greater (http://www.junit.org) and easymock 2.x or greater (http://www.easymock.org).
 To configure GWTEventService you can use "eventservice.properties". The location of the properties file must be attached to the classpath of the server side application. The default values and the description of the times can be seen in the following table.
 Alternatively, a configuration loader can be defined if you want to load the configuration from another source.  The interface "!ConfigurationLoader" must be implemented and must be attached as a custom loader ("!EventServiceConfigurationFactory#addCustomConfigurationLoader(...)"). Custom loaders are executed in sequence and before the standard configuration loaders.
+
 Overview about the configurable times:
+|| *Time (in milliseconds)* || *Default value* || *Description* ||
+|| Min. waiting time || 0 || Time to wait at minimum (even when events have already occurred)||
+|| Max. waiting time || 20000 || Time to wait at maximum (canceled when an event occurred)||
+|| Timeout time || 90000 || Time till timeout (when the time is reached, the user will be removed from listening for events)||
+
+With that configuration possibilities, the server side behavior can be influenced very flexible. If desired, it is even possible to run GWTEventService in polling mode if min. waiting time is set to a value greater than zero and max. waiting time is set to zero (server side polling mode).
