@@ -1,0 +1,1 @@
+We hope GWTEventService will fit your needs to replace polling with a generic solution and supports you to cleanup the architecture of client-server communication with GWT. We are looking forward to get some feedback, suggestions or questions about the manual or the GWTEventService framework. You can contact us per mail: novanic@gmx.de
