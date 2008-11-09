@@ -1,7 +1,7 @@
 === Table of Contents ===
 
  # [StartPage Introduction]
- # Configuration
+ # [Configuration Configuration]
  # Get Started / Usage Guide
   # Think of your needed events
   # Define your domains
