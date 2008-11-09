@@ -1,5 +1,8 @@
 To get an application running with GWTEventService, the gwteventservice-core.jar must be included in the classpath. The gwt-xml must include an entry to inherit "de.novanic.eventservice.GWTEventService".
 
+*Example*
+http://29539.webhosting15.1blu.de/gwteventservice/images/config-xml.png
+
 If you want to execute the tests, you need to include the libraries junit 3.x or greater (http://www.junit.org) and easymock 2.x or greater (http://www.easymock.org).
 To configure GWTEventService you can use "eventservice.properties". The location of the properties file must be attached to the classpath of the server side application. The default values and the description of the times can be seen in the following table.
 Alternatively, a configuration loader can be defined if you want to load the configuration from another source.  The interface "!ConfigurationLoader" must be implemented and must be attached as a custom loader ("!EventServiceConfigurationFactory#addCustomConfigurationLoader(...)"). Custom loaders are executed in sequence and before the standard configuration loaders.
