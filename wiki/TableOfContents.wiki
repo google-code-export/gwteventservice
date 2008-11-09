@@ -18,4 +18,4 @@
  # Conclusion / Feedback
  # Appendix
   # Code-Examples
-  # Demo-Application and "EventFilter" functionality
+  # Demo-Application and "!EventFilter" functionality
