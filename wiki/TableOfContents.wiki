@@ -15,7 +15,7 @@
    # [SequenceDiagramPolling Polling sequence diagram]
    # [SequenceDiagramComet Comet / server-push sequence diagram]
  # RoadMap
- # Conclusion / Feedback
+ # [Feedback Conclusion / Feedback]
  # Appendix
-  # Code-Examples
-  # Demo-Application and "!EventFilter" functionality
+  # [CodeExamples Code-Examples]
+  # [DemoApplication Demo-Application and "!EventFilter" functionality]
