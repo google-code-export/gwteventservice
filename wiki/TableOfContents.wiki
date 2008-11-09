@@ -2,7 +2,7 @@
 
  # [StartPage Introduction]
  # [Configuration Configuration]
- # [Get Started / Usage Guide GetStarted]
+ # Get Started / Usage Guide
   # Think of your needed events
   # Define your domains
   # Write your listeners and events
