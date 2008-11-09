@@ -9,8 +9,8 @@
     <property name="buildTestDir" value="build/test"/>
     <property name="releaseDir" value="release"/>
     <property name="releaseJarFile" value="${releaseDir}/${ant.project.name}-${version}.jar"/>
-    <property name="releaseCoreFile" value="${releaseDir}/${ant.project.name}-core.zip"/>
-    <property name="releaseDeveloperFile" value="${releaseDir}/${ant.project.name}-developer.zip"/>
+    <property name="releaseCoreFile" value="${releaseDir}/${ant.project.name}-${version}-core.zip"/>
+    <property name="releaseDeveloperFile" value="${releaseDir}/${ant.project.name}-${version}-developer.zip"/>
     <property name="javaDocDir" value="${releaseDir}/doc/javadoc"/>
 
     <property name="moduleEventService" value="module/EventService"/>
