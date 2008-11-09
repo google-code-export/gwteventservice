@@ -1,7 +1,6 @@
 === Table of Contents ===
 
  # [StartPage Introduction]
-  # Advantages
  # Configuration
  # Get Started / Usage Guide
   # Think of your needed events
