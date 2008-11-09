@@ -1,0 +1,172 @@
+<project name="gwteventservice" default="dist" basedir=".">
+
+    <property name="version" value="0.9"/>
+
+    <property name="srcDir" value="src"/>
+    <property name="testSrcDir" value="test"/>
+    <property name="libDir" value="../lib"/>
+    <property name="buildDir" value="build/production"/>
+    <property name="buildTestDir" value="build/test"/>
+    <property name="releaseDir" value="release"/>
+    <property name="releaseJarFile" value="${releaseDir}/${ant.project.name}-${version}.jar"/>
+    <property name="releaseCoreFile" value="${releaseDir}/${ant.project.name}-core.zip"/>
+    <property name="releaseDeveloperFile" value="${releaseDir}/${ant.project.name}-developer.zip"/>
+    <property name="javaDocDir" value="${releaseDir}/doc/javadoc"/>
+
+    <property name="moduleEventService" value="module/EventService"/>
+    <property name="moduleEventServiceRPC" value="module/EventServiceRPC"/>
+    <property name="moduleGWTEventService" value="module/GWTEventService"/>
+
+    <path id="classpath">
+        <pathelement location="${buildDir}"/>
+        <fileset dir="${libDir}">
+            <exclude name="**/${ant.project.name}.jar"/>
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="test.classpath">
+        <path refid="classpath"/>
+        <pathelement location="${buildTestDir}"/>
+        <pathelement location="module/EventService/etc/testdata"/>
+        <pathelement location="module/EventService/etc/testdata/eventservice.properties"/>
+    </path>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${releaseDir}"/>
+        <mkdir dir="${buildDir}"/>
+        <mkdir dir="${buildTestDir}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${releaseDir}"/>
+        <delete dir="${buildDir}"/>
+        <delete dir="${buildTestDir}"/>
+    </target>
+
+    <target name="build" depends="compile, compileTest"/>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${moduleEventServiceRPC}/${srcDir}" destdir="${buildDir}">
+            <classpath refid="classpath"/>
+        </javac>
+        <javac srcdir="${moduleEventService}/${srcDir}" destdir="${buildDir}">
+            <classpath refid="classpath"/>
+        </javac>
+        <javac srcdir="${moduleGWTEventService}/${srcDir}" destdir="${buildDir}">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+    <target name="compileTest" depends="compile">
+        <javac srcdir="${moduleEventServiceRPC}/${testSrcDir}" destdir="${buildTestDir}">
+            <classpath refid="test.classpath"/>
+        </javac>
+        <javac srcdir="${moduleEventService}/${testSrcDir}" destdir="${buildTestDir}">
+            <classpath refid="test.classpath"/>
+        </javac>
+        <javac srcdir="${moduleGWTEventService}/${testSrcDir}" destdir="${buildTestDir}">
+            <classpath refid="test.classpath"/>
+        </javac>
+    </target>
+
+    <target name="test" depends="compile, compileTest">
+
+        <!--<junit fork="yes" printsummary="yes" showoutput="no" haltonerror="no" haltonfailure="no" maxmemory="1024M">-->
+            <!--<jvmarg value="-Xmx128M"/>-->
+        <junit fork="no" printsummary="yes" showoutput="no" haltonerror="yes" haltonfailure="yes" maxmemory="1024M">
+
+            <classpath refid="test.classpath"/>
+            <formatter type="brief" usefile="false"/>
+            <batchtest>
+                <fileset dir="${moduleEventServiceRPC}/${testSrcDir}">
+                    <include name="**/*TestSuite.java"/>
+                </fileset>
+                <fileset dir="${moduleEventService}/${testSrcDir}">
+                    <include name="**/*TestSuite.java"/>
+                    <exclude name="**/*EventService_ExtremeThreadingTestSuite.java"/>
+                </fileset>
+                <fileset dir="${moduleGWTEventService}/${testSrcDir}">
+                    <include name="**/*TestSuite.java"/>
+                    <!-- TODO OutOfMemoryError - When Xmx is set and fork=yes, another error occurres ... -->
+                    <exclude name="**/*GWTEventServiceGWTTestSuite.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="doc" depends="init">
+        <javadoc destdir="${javaDocDir}">
+            <classpath refid="test.classpath"/>
+            <fileset dir="${moduleEventService}/${srcDir}">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${moduleEventServiceRPC}/${srcDir}">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${moduleGWTEventService}/${srcDir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </javadoc>
+    </target>
+
+    <target name="package" depends="build, test">
+        <jar destfile="${releaseJarFile}">
+            <fileset dir="${buildDir}"/>
+            <fileset dir="${moduleEventServiceRPC}/${srcDir}"/>
+            <fileset dir="${moduleGWTEventService}/${srcDir}"/>
+        </jar>
+    </target>
+
+    <target name="package-release-core" depends="package">
+        <zip destfile="${releaseCoreFile}">
+            <fileset dir="${releaseDir}">
+                <!-- jar -->
+                <include name="${ant.project.name}-${version}.jar"/>
+            </fileset>
+            <fileset dir=".">
+                <!-- licence -->
+                <include name="licence.txt"/>
+                <include name="about.txt"/>
+                <!-- release-notes -->
+                <include name="release-notes.html"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="package-release-developer" depends="package, doc">
+        <zip destfile="${releaseDeveloperFile}">
+            <fileset dir="${releaseDir}">
+                <!-- jar -->
+                <include name="${ant.project.name}-${version}.jar"/>
+            </fileset>
+            <fileset dir=".">
+                <!-- licence -->
+                <include name="licence.txt"/>
+                <include name="about.txt"/>
+                <!-- release-notes -->
+                <include name="release-notes.html"/>
+                <!-- manual -->
+                <include name="doc/Manual.pdf"/>
+            </fileset>
+            <!-- sources -->
+            <fileset dir="${moduleEventService}">
+                <include name="${srcDir}/**/*"/>
+            </fileset>
+            <fileset dir="${moduleEventServiceRPC}">
+                <include name="${srcDir}/**/*"/>
+            </fileset>
+            <fileset dir="${moduleGWTEventService}">
+                <include name="${srcDir}/**/*"/>
+            </fileset>
+            <!-- doc -->
+            <fileset dir="${releaseDir}">
+                <include name="doc/javadoc/**/*"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="package-release-full" depends="package-release-core, package-release-developer"/>
+
+    <target name="dist" depends="package-release-full"/>
+</project>
