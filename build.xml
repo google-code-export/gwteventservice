@@ -4,6 +4,7 @@
 
     <property name="srcDir" value="src"/>
     <property name="testSrcDir" value="test"/>
+    <property name="confDir" value="conf"/>
     <property name="libDir" value="../lib"/>
     <property name="buildDir" value="build/production"/>
     <property name="buildTestDir" value="build/test"/>
@@ -130,6 +131,8 @@
                 <include name="about.txt"/>
                 <!-- release-notes -->
                 <include name="release-notes.html"/>
+                <!-- configuration files -->
+                <include name="${confDir}/**/*"/>
             </fileset>
         </zip>
     </target>
@@ -146,6 +149,10 @@
                 <include name="about.txt"/>
                 <!-- release-notes -->
                 <include name="release-notes.html"/>
+                <!-- roadmap -->
+                <include name="roadmap.html"/>
+                <!-- configuration files -->
+                <include name="${confDir}/**/*"/>
                 <!-- manual -->
                 <include name="doc/Manual.pdf"/>
             </fileset>
