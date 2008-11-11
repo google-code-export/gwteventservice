@@ -1,4 +1,4 @@
-To get an application running with GWTEventService, the gwteventservice-core.jar must be included in the classpath. The gwt-xml must include an entry to inherit "de.novanic.eventservice.GWTEventService".
+To get an application running with GWTEventService, the gwteventservice.jar must be included in the classpath. The gwt-xml must include an entry to inherit "de.novanic.eventservice.GWTEventService".
 
 *Example*
 http://29539.webhosting15.1blu.de/gwteventservice/images/config-xml.png
