@@ -44,9 +44,11 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     /**
      * Deactivates the connector for all domains (no events can be got from the domains).
      */
-    public void deactivate() {
-        LOG.log("RemoteEventConnector deactivated.");
-        isActive = false;
+    public synchronized void deactivate() {
+        if(isActive) {
+            isActive = false;
+            LOG.log("RemoteEventConnector deactivated.");
+        }
     }
 
     /**
@@ -66,7 +68,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
      * @param aCallback callback
      */
     public <T> void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<T> aCallback) {
-        LOG.log("Activate RemoteEventConnector.");
+        LOG.log("Activate RemoteEventConnector for domain \"" + aDomain + "\".");
         activateStart(aDomain, anEventFilter, new ActivationCallback(anEventNotification, aCallback));
     }
 
@@ -159,7 +161,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
         /**
          * Calls listen at the server side to receive events.
          */
-        public void callListen() {
+        public synchronized void callListen() {
             if(isActive) {
                 //after getting an event, register itself to listen for the next events
                 listen(this);

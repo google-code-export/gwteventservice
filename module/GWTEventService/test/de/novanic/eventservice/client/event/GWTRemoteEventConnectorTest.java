@@ -35,6 +35,7 @@ import java.util.ArrayList;
 public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockTest
 {
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test-domain");
+    private static final Domain TEST_DOMAIN_2 = DomainFactory.getDomain("test-domain-2");
 
     private RemoteEventConnector myRemoteEventConnector;
     private GWTRemoteEventConnectorTest.DummyClientLogger myClientLogger;
@@ -74,11 +75,90 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
 
         List<String> theLogMessages = myClientLogger.getLogMessages();
         assertEquals(2, theLogMessages.size());
-        assertEquals("Log: Activate RemoteEventConnector.", theLogMessages.get(0));
+        assertEquals("Log: Activate RemoteEventConnector for domain \"test-domain\".", theLogMessages.get(0));
         assertEquals("Log: RemoteEventConnector activated.", theLogMessages.get(1));
         myClientLogger.clearLogMessages();
 
         //deactivate
+        myRemoteEventConnector.deactivate();
+
+        //check deactivation
+        assertFalse(myRemoteEventConnector.isActive());
+        assertFalse(theEventNotification.isAborted());
+
+        theLogMessages = myClientLogger.getLogMessages();
+        assertEquals(1, theLogMessages.size());
+        assertEquals("Log: RemoteEventConnector deactivated.", theLogMessages.get(0));
+    }
+
+    public void testDeactivate_2() {
+        assertFalse(myRemoteEventConnector.isActive());
+
+        mockRegister(TEST_DOMAIN, true);
+        mockListen(true);
+
+        final TestEventNotification theEventNotification = new TestEventNotification();
+
+        //activate connector
+        myEventServiceAsyncMockControl.replay();
+
+            myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
+
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+
+        //check activation
+        assertTrue(myRemoteEventConnector.isActive());
+
+        List<String> theLogMessages = myClientLogger.getLogMessages();
+        assertEquals(2, theLogMessages.size());
+        assertEquals("Log: Activate RemoteEventConnector for domain \"test-domain\".", theLogMessages.get(0));
+        assertEquals("Log: RemoteEventConnector activated.", theLogMessages.get(1));
+        myClientLogger.clearLogMessages();
+
+        //deactivate (3 times)
+        myRemoteEventConnector.deactivate();
+        myRemoteEventConnector.deactivate();
+        myRemoteEventConnector.deactivate();
+
+        //check deactivation
+        assertFalse(myRemoteEventConnector.isActive());
+        assertFalse(theEventNotification.isAborted());
+
+        theLogMessages = myClientLogger.getLogMessages();
+        assertEquals(1, theLogMessages.size());
+        assertEquals("Log: RemoteEventConnector deactivated.", theLogMessages.get(0));
+    }
+
+    public void testDeactivate_3() {
+        assertFalse(myRemoteEventConnector.isActive());
+
+        mockRegister(TEST_DOMAIN, true);
+        mockRegister(TEST_DOMAIN_2, false);
+        mockListen(true);
+
+        final TestEventNotification theEventNotification = new TestEventNotification();
+
+        //activate connector
+        myEventServiceAsyncMockControl.replay();
+
+            myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
+            myRemoteEventConnector.activate(TEST_DOMAIN_2, null, theEventNotification, null);
+
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+
+        //check activation
+        assertTrue(myRemoteEventConnector.isActive());
+
+        List<String> theLogMessages = myClientLogger.getLogMessages();
+        assertEquals(3, theLogMessages.size());
+        assertEquals("Log: Activate RemoteEventConnector for domain \"test-domain\".", theLogMessages.get(0));
+        assertEquals("Log: RemoteEventConnector activated.", theLogMessages.get(1));
+        assertEquals("Log: Activate RemoteEventConnector for domain \"test-domain-2\".", theLogMessages.get(2));
+        myClientLogger.clearLogMessages();
+
+        //deactivate (3 times)
         myRemoteEventConnector.deactivate();
 
         //check deactivation
@@ -112,7 +192,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
 
         List<String> theLogMessages = myClientLogger.getLogMessages();
         assertEquals(3, theLogMessages.size());
-        assertEquals("Log: Activate RemoteEventConnector.", theLogMessages.get(0));
+        assertEquals("Log: Activate RemoteEventConnector for domain \"test-domain\".", theLogMessages.get(0));
         assertEquals("Log: RemoteEventConnector activated.", theLogMessages.get(1));
         assertEquals("Log: RemoteEventConnector deactivated.", theLogMessages.get(2));
     }
