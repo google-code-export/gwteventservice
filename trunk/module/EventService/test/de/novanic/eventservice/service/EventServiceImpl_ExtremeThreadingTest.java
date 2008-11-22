@@ -50,6 +50,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
 
     public void tearDown() throws Exception {
         super.tearDown();
+        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
         tearDownEventServiceConfiguration();
 
         myEventService.unlisten();
