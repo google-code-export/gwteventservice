@@ -24,6 +24,10 @@ import org.easymock.MockControl;
 
 import javax.servlet.http.HttpSession;
 
+import de.novanic.eventservice.service.exception.NoSessionAvailableException;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
+import de.novanic.eventservice.client.event.Event;
+
 /**
  * @author sstrohschein
  * Date: 05.08.2008
@@ -51,5 +55,29 @@ public class EventExecutorServiceFactoryTest extends TestCase
             assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theSessionMock));
         theSessionMockControl.verify();
         theSessionMockControl.reset();
+
+        assertFalse(theEventExecutorService.isUserRegistered());
+    }
+
+    public void testFactory_SessionLess() {
+        EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
+        assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
+
+        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(null);
+        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(null));
+
+        try {
+            theEventExecutorService.isUserRegistered();
+            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        } catch(NoSessionAvailableException e) {
+            assertEquals("There is no session / client information available!", e.getMessage());
+            assertNull(e.getCause());
+        }
+
+        try {
+            theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new Event() {});
+        } catch(NoSessionAvailableException e) {
+            fail("No Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        }
     }
 }

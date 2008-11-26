@@ -19,6 +19,11 @@
  */
 package de.novanic.eventservice.service;
 
+import de.novanic.eventservice.service.exception.NoSessionAvailableException;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
+import de.novanic.eventservice.client.event.Event;
+import de.novanic.eventservice.client.event.filter.EventFilter;
+
 /**
  * @author sstrohschein
  * Date: 05.08.2008
@@ -28,5 +33,67 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
 {
     public EventExecutorService initEventExecutorService() {
         return new DefaultEventExecutorService(TEST_USER_ID);
+    }
+
+    public void testAddEvent_SessionLess() {
+        EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
+        try {
+            theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new TestEvent());
+        } catch(NoSessionAvailableException e) {
+            fail("No Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        }
+    }
+
+    public void testIsUserRegistered_Error() {
+        EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
+        try {
+            theEventExecutorService.isUserRegistered();
+            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        } catch(NoSessionAvailableException e) {
+            assertEquals("There is no session / client information available!", e.getMessage());
+            assertNull(e.getCause());
+        }
+    }
+
+    public void testIsUserRegistered_2_Error() {
+        EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
+        try {
+            theEventExecutorService.isUserRegistered(DomainFactory.getDomain("X"));
+            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        } catch(NoSessionAvailableException e) {
+            assertEquals("There is no session / client information available!", e.getMessage());
+            assertNull(e.getCause());
+        }
+    }
+
+    public void testAddEventUserSpecific_Error() {
+        EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
+        try {
+            theEventExecutorService.addEventUserSpecific(new TestEvent());
+            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        } catch(NoSessionAvailableException e) {
+            assertEquals("There is no session / client information available!", e.getMessage());
+            assertNull(e.getCause());
+        }
+    }
+
+    public void testSetEventFilter_Error() {
+        EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
+        try {
+            theEventExecutorService.setEventFilter(DomainFactory.getDomain("X"), new TestEventFilter());
+            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        } catch(NoSessionAvailableException e) {
+            assertEquals("There is no session / client information available!", e.getMessage());
+            assertNull(e.getCause());
+        }
+    }
+
+    private class TestEvent implements Event {}
+
+    private class TestEventFilter implements EventFilter
+    {
+        public boolean match(Event anEvent) {
+            return false;
+        }
     }
 }

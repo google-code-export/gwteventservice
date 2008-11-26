@@ -60,8 +60,12 @@ public class EventExecutorServiceFactory
      * @param aHttpSession the session is needed to generate the client/user id
      * @return EventRegistry (singleton)
      */
-    public EventExecutorService getEventExecutorService(HttpSession aHttpSession) {
-        return new DefaultEventExecutorService(aHttpSession.getId());
+    public EventExecutorService getEventExecutorService(final HttpSession aHttpSession) {
+        String theClientId = null;
+        if(aHttpSession != null) {
+            theClientId = aHttpSession.getId();
+        }
+        return new DefaultEventExecutorService(theClientId);
     }
 
     public static void reset() {

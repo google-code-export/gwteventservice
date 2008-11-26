@@ -23,6 +23,7 @@ import de.novanic.eventservice.service.EventServiceImplTest;
 import de.novanic.eventservice.service.EventExecutorServiceFactoryTest;
 import de.novanic.eventservice.service.DefaultEventExecutorServiceTest;
 import de.novanic.eventservice.service.RemoteEventServiceServletTest;
+import de.novanic.eventservice.service.exception.NoSessionAvailableExceptionTest;
 import de.novanic.eventservice.service.registry.EventRegistryFactoryTest;
 import de.novanic.eventservice.service.registry.EventRegistryTest;
 import de.novanic.eventservice.logger.ServerLoggerFactoryTest;
@@ -68,6 +69,7 @@ public class EventServiceTestSuite
         // EventExecutorService
         theSuite.addTestSuite(EventExecutorServiceFactoryTest.class);
         theSuite.addTestSuite(DefaultEventExecutorServiceTest.class);
+        theSuite.addTestSuite(NoSessionAvailableExceptionTest.class);
 
         // Servlets
         theSuite.addTestSuite(RemoteEventServiceServletTest.class);

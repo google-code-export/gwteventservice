@@ -21,6 +21,7 @@ package de.novanic.eventservice.service;
 
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.service.exception.NoSessionAvailableException;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -102,6 +103,9 @@ public class DefaultEventExecutorService implements EventExecutorService
      * @return client id
      */
     private String getClientId() {
+        if(myClientId == null) {
+            throw new NoSessionAvailableException();
+        }
         return myClientId;
     }
 
