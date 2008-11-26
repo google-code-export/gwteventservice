@@ -24,6 +24,9 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author sstrohschein
  *         <br>Date: 20.09.2008
@@ -80,6 +83,12 @@ public abstract class RemoteEventServiceServlet extends RemoteServiceServlet imp
      */
     protected EventExecutorService getEventExecutorService() {
         final EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
-        return theEventExecutorServiceFactory.getEventExecutorService(getThreadLocalRequest().getSession());
+
+        HttpSession theSession = null;
+        final HttpServletRequest theRequest = getThreadLocalRequest();
+        if(theRequest != null) {
+            theSession = theRequest.getSession();
+        }
+        return theEventExecutorServiceFactory.getEventExecutorService(theSession);
     }
 }
