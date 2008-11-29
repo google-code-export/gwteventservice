@@ -48,25 +48,25 @@
     <target name="build" depends="compile, compileTest"/>
 
     <target name="compile" depends="init">
-        <javac srcdir="${moduleEventServiceRPC}/${srcDir}" destdir="${buildDir}" source="1.5" target="1.5">
+        <javac srcdir="${moduleEventServiceRPC}/${srcDir}" destdir="${buildDir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
             <classpath refid="classpath"/>
         </javac>
-        <javac srcdir="${moduleEventService}/${srcDir}" destdir="${buildDir}" source="1.5" target="1.5">
+        <javac srcdir="${moduleEventService}/${srcDir}" destdir="${buildDir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
             <classpath refid="classpath"/>
         </javac>
-        <javac srcdir="${moduleGWTEventService}/${srcDir}" destdir="${buildDir}" source="1.5" target="1.5">
+        <javac srcdir="${moduleGWTEventService}/${srcDir}" destdir="${buildDir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
             <classpath refid="classpath"/>
         </javac>
     </target>
 
     <target name="compileTest" depends="compile">
-        <javac srcdir="${moduleEventServiceRPC}/${testSrcDir}" destdir="${buildTestDir}" source="1.5" target="1.5">
+        <javac srcdir="${moduleEventServiceRPC}/${testSrcDir}" destdir="${buildTestDir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
             <classpath refid="test.classpath"/>
         </javac>
-        <javac srcdir="${moduleEventService}/${testSrcDir}" destdir="${buildTestDir}" source="1.5" target="1.5">
+        <javac srcdir="${moduleEventService}/${testSrcDir}" destdir="${buildTestDir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
             <classpath refid="test.classpath"/>
         </javac>
-        <javac srcdir="${moduleGWTEventService}/${testSrcDir}" destdir="${buildTestDir}" source="1.5" target="1.5">
+        <javac srcdir="${moduleGWTEventService}/${testSrcDir}" destdir="${buildTestDir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
             <classpath refid="test.classpath"/>
         </javac>
     </target>
