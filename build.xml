@@ -1,5 +1,9 @@
 <project name="gwteventservice" default="dist" basedir=".">
 
+    <tstamp>
+        <format property="buildDate" pattern="yyyy-MM-dd hh:mm:ss"/>
+    </tstamp>
+
     <property name="version" value="0.9"/>
 
     <property name="srcDir" value="src"/>
@@ -117,6 +121,12 @@
             <fileset dir="${buildDir}"/>
             <fileset dir="${moduleEventServiceRPC}/${srcDir}"/>
             <fileset dir="${moduleGWTEventService}/${srcDir}"/>
+            <manifest>
+                <attribute name="Project-Name" value="GWTEventService"/>
+                <attribute name="Version" value="${version}"/>
+                <attribute name="Build-Date" value="${buildDate}"/>
+                <attribute name="Project-Home" value="http://gwteventservice.googlecode.com/"/>
+            </manifest>
         </jar>
     </target>
 
