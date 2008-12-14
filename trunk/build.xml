@@ -4,12 +4,17 @@
         <format property="buildDate" pattern="yyyy-MM-dd hh:mm:ss"/>
     </tstamp>
 
-    <property name="version" value="0.9"/>
+    <property environment="osEnv"/>
 
+    <property name="libDir" value="lib"/>
+    <condition property="gwt-root-dir" value="${osEnv.GWT_HOME}" else="${libDir}">
+        <isset property="osEnv.GWT_HOME"/>
+    </condition>
+
+    <property name="version" value="0.9"/>
     <property name="srcDir" value="src"/>
     <property name="testSrcDir" value="test"/>
     <property name="confDir" value="conf"/>
-    <property name="libDir" value="../lib"/>
     <property name="buildDir" value="build/production"/>
     <property name="buildTestDir" value="build/test"/>
     <property name="releaseDir" value="release"/>
@@ -24,6 +29,9 @@
 
     <path id="classpath">
         <pathelement location="${buildDir}"/>
+        <fileset dir="${gwt-root-dir}">
+            <include name="**/*.jar"/>
+        </fileset>
         <fileset dir="${libDir}">
             <exclude name="**/${ant.project.name}.jar"/>
             <exclude name="**/${ant.project.name}-${version}.jar"/>
