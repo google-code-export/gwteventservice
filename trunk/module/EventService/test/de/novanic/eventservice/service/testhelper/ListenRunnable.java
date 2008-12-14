@@ -60,12 +60,14 @@ public class ListenRunnable implements Runnable
         Map<String, Collection<Event>> theUserEventMap = new HashMap<String, Collection<Event>>();
         Map<Domain, Collection<Event>> theDomainEventMap = new HashMap<Domain, Collection<Event>>();
 
-        for(DomainEvent theDomainEvent: theDomainEvents) {
-            if(!(theDomainEvent.getEvent() instanceof ListenCycleCancelEvent)) {
-                if(theDomainEvent.isUserSpecific()) {
-                    processUserEvent(theUserEventMap, theDomainEvent.getEvent());
-                } else {
-                    processDomainEvent(theDomainEventMap, theDomainEvent);
+        if(theDomainEvents != null) {
+            for(DomainEvent theDomainEvent: theDomainEvents) {
+                if(!(theDomainEvent.getEvent() instanceof ListenCycleCancelEvent)) {
+                    if(theDomainEvent.isUserSpecific()) {
+                        processUserEvent(theUserEventMap, theDomainEvent.getEvent());
+                    } else {
+                        processDomainEvent(theDomainEventMap, theDomainEvent);
+                    }
                 }
             }
         }
