@@ -152,7 +152,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
                 myEventNotification.onNotify(anEvents);
                 callListen();
             } else {
-                //if the remote doesn't know the client, all listeners will be removed and the connection gets inactive
+                //if the remote service doesn't know the client, all listeners will be removed and the connection becomes inactive
                 deactivate();
                 myEventNotification.onAbort();
             }
