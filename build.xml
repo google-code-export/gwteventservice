@@ -27,6 +27,13 @@
     <property name="moduleEventServiceRPC" value="module/EventServiceRPC"/>
     <property name="moduleGWTEventService" value="module/GWTEventService"/>
 
+    <!-- sample / demo modules -->
+    <property name="demo" value="demo"/>
+    <property name="moduleDemo" value="${demo}/module"/>
+    <property name="moduleDemoConversationApp" value="${moduleDemo}/DemoConversationApp"/>
+    <property name="moduleDemoConversationAppRPC" value="${moduleDemo}/DemoConversationAppRPC"/>
+    <property name="moduleDemoConversationAppUI" value="${moduleDemo}/DemoConversationAppUI"/>
+
     <path id="classpath">
         <pathelement location="${buildDir}"/>
         <fileset dir="${gwt-root-dir}">
@@ -175,6 +182,12 @@
                 <!-- manual -->
                 <include name="doc/Manual.pdf"/>
 				<include name="doc/DeveloperGuide.pdf"/>
+                <!-- sample / demo sources -->
+                <include name="${demo}/*.xml"/>
+                <include name="${moduleDemoConversationApp}/${srcDir}/**/*"/>
+                <include name="${moduleDemoConversationAppRPC}/${srcDir}/**/*"/>
+                <include name="${moduleDemoConversationAppUI}/${srcDir}/**/*"/>
+                <include name="${moduleDemoConversationAppUI}/web/**/*"/>
             </fileset>
             <!-- sources -->
             <fileset dir="${moduleEventService}">
