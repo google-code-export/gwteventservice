@@ -11,17 +11,17 @@
         <isset property="osEnv.GWT_HOME"/>
     </condition>
 
-    <property name="version" value="0.9"/>
+    <property name="version" value="1.0"/>
     <property name="conf.dir" value="conf"/>
     <property name="src.dir" value="src"/>
     <property name="src.test.dir" value="test"/>
     <property name="dest.build.dir" value="build/production"/>
     <property name="dest.build.test.dir" value="build/test"/>
-    <property name="dest.javadoc.dir" value="${release.dir}/doc/javadoc"/>
     <property name="release.dir" value="release"/>
     <property name="release.jar.file" value="${release.dir}/${ant.project.name}-${version}.jar"/>
     <property name="release.core.file" value="${release.dir}/${ant.project.name}-${version}-core.zip"/>
     <property name="release.developer.file" value="${release.dir}/${ant.project.name}-${version}-developer.zip"/>
+    <property name="dest.javadoc.dir" value="${release.dir}/doc/javadoc"/>
 
     <property name="module.eventservice" value="module/EventService"/>
     <property name="module.eventservice.rpc" value="module/EventServiceRPC"/>
