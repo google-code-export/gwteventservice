@@ -74,17 +74,20 @@ public class ConversationControl
                 theLoginPanel.addLoginButtonListener(new ClickListener() {
                     public void onClick(Widget aSender) {
                         final boolean isLoginMode = theLoginPanel.isLogin();
+                        boolean isActionSuccessful;
                         if(isLoginMode) {
                             //in case of login mode
-                            login();
+                            isActionSuccessful = login();
                         } else {
                             //in case of logout mode
-                            logout();
+                            isActionSuccessful = logout();
                         }
 
-                        theLoginPanel.toggle(!isLoginMode);
-                        myConversationMainPanel.getConversationMessagePanel().enable(isLoginMode);
-                        myConversationMainPanel.getConversationChannelPanel().enable(isLoginMode);
+                        if(isActionSuccessful) {
+                            theLoginPanel.toggle(!isLoginMode);
+                            myConversationMainPanel.getConversationMessagePanel().enable(isLoginMode);
+                            myConversationMainPanel.getConversationChannelPanel().enable(isLoginMode);
+                        }
                     }
                 });
             }
@@ -162,21 +165,25 @@ public class ConversationControl
         });
     }
 
-    private void login() {
+    private boolean login() {
         myUser = myConversationMainPanel.getConversationLoginPanel().getNicknameText();
         if(myUser == null || myUser.trim().equals("")) {
             MessageBoxCreator.createOkMessage("The username is empty. Please choose a username.");
+            return false;
         } else if(myConversationMainPanel.getConversationChannelPanel().getContacts().contains(myUser)) {
             MessageBoxCreator.createOkMessage("The username does already exist. Please choose another username.");
+            return false;
         } else {
             init();
+            return true;
         }
     }
 
-    private void logout() {
+    private boolean logout() {
         myConversationService.leave(myUser, new VoidAsyncCallback());
         myRemoteEventService.removeListeners(CONVERSATION_DOMAIN);
         myConversationMainPanel.reset();
+        return true;
     }
 
     private void joinChannel(String aChannelName, AsyncCallback<Channel> aCallback) {
