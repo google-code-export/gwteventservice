@@ -20,4 +20,4 @@
  # [FAQ FAQ]
  # Appendix
   # [CodeExamples Code-Examples]
-  # [DemoApplication Demo-Application and "EventFilter" functionality]
+  # [DemoApplication Demo application and "EventFilter" functionality]
