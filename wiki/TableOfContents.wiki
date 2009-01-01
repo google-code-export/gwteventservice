@@ -14,8 +14,10 @@
   # Polling compared to Comet / server-push
    # [SequenceDiagramPolling Polling sequence diagram]
    # [SequenceDiagramComet Comet / server-push sequence diagram]
+ # [Deployment Deployment]
  # [http://29539.webhosting15.1blu.de/gwteventservice/roadmap.html RoadMap]
  # [Feedback Conclusion / Feedback]
+ # [FAQ FAQ]
  # Appendix
   # [CodeExamples Code-Examples]
   # [DemoApplication Demo-Application and "EventFilter" functionality]
