@@ -24,5 +24,7 @@ public abstract class GameUserListenerAdapter implements GameUserListener
 }}}
 
 Now you have the events and the listeners. Maybe you recognized that you need a Domain (de.novanic.eventservice.client.event.domain.Domain) to add an event. This is the last step: The registering of listeners and adding of events with domains. A domain can be got from the !DomainFactory (de.novanic.eventservice.client.event.domain.!DomainFactory) with a unique String (domain name). It would be a good idea to hold the domain name or the Domain as a constant, available for the client- and server side, to ensure that you access the right domains.
+
 !RemoteEventService (de.novanic.eventservice.client.event.!RemoteEventService) can be used to register  and deregister listeners (client side). The equivalent methods are named "addListener" and "removeListener". All methods have an optional callback parameter, if you need to know when the change is really active.
+
 Something special and optional is the !EventFilter (de.novanic.eventservice.client.event.filter.!EventFilter). !EventFilters can be added from client side and are processed on server side. With an !EventFilter the server side can decide if an Event is really important for the user or not. An !EventFilter has only to implement the method "match(anEvent : Event) : boolean". This functionality is planned to extend in a future release. See the !RoadMap for more information.
