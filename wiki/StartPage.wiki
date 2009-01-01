@@ -8,7 +8,7 @@ http://29539.webhosting15.1blu.de/gwteventservice/images/logo.png
  * Only one open connection for event listening
  * Reduction of server calls
  * Reduction of connection peaks
- * Events are returned directly when the event is occurred (instead of polling)
+ * Events are returned directly when the event has occurred (instead of polling)
  * Events are bundled to reduce server calls
  * Based on the GWT-RPC mechanism
  * Automatic timeout recognition and handling
