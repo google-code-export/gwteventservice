@@ -1,0 +1,6 @@
+|| Q: || Events or internal data of Events are not correctly transferred ||
+|| A: || Consider that Events must be serializable and require some special rules. For example the class does require a no-argument constructor and variables declared as final are not transferred. For more information see:  http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-toolkit-doc-1-5&t=DevGuideSerializableTypes ||
+|| Q: || Event listening doesn't work correctly with more than one web browser instance on the same client ||
+|| A: || That is a general problem of web browsers / web applications, because the browser uses the same session for all web browser instances. To get it work you can run two or more different web browser applications (for example the GWT Hosted Mode Browser and your standard web browser or two other different web browsers when you have installed more than one). That problem doesn't occur with the GWT Hosted Mode Browser. You can start more instances of the GWT Hosted Mode Browser with the "-noserver" option (the configuration is described in the developer guide of GWTEventService). ||
+|| Q: || The build script of GWTEventService doesn't find GWT classes. ||
+|| A: || The environment variable “GWT_HOME” must be set correctly. See the chapter “Build with Apache Ant” in the developer guide of GWTEventService for more information. ||
