@@ -17,29 +17,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice;
+package de.novanic.eventservice.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import de.novanic.eventservice.service.registry.EventRegistry_ExtremeThreadingTest;
-import de.novanic.eventservice.service.EventServiceImpl_ExtremeThreadingTest;
-import de.novanic.eventservice.util.TestLoggingConfigurator;
+import junit.framework.TestCase;
 
 /**
  * @author sstrohschein
- * <br>Date: 23.08.2008
- * <br>Time: 10:21:30
+ *         <br>Date: 11.01.2009
+ *         <br>Time: 15:33:06
  */
-public class EventService_ExtremeThreadingTestSuite
+public class PlatformUtilTest extends TestCase
 {
-    public static Test suite() throws Exception {
-        TestSuite theSuite = new TestSuite("EventService - ExtremeThreading-Tests");
+    private static final String LINE_SEPARATOR_PROPERTY = "line.separator";
 
-        TestLoggingConfigurator.configureLogging();
-
-        theSuite.addTestSuite(EventRegistry_ExtremeThreadingTest.class);
-        theSuite.addTestSuite(EventServiceImpl_ExtremeThreadingTest.class);
-
-        return theSuite;
+    public void testGetNewLine() {
+        final String theNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
+        if(theNewLineChar != null) {
+            assertEquals(theNewLineChar, PlatformUtil.getNewLine());
+        }
     }
 }

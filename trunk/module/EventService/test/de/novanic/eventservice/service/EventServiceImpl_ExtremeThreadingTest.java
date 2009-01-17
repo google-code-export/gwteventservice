@@ -19,7 +19,6 @@
  */
 package de.novanic.eventservice.service;
 
-import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.service.testhelper.ListenStartResult;
@@ -42,7 +41,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
     private DummyEventServiceImpl myEventService;
 
     public void setUp() {
-        setUp(new RemoteEventServiceConfiguration(0, 30000, 90000));
+        setUp(createConfiguration(0, 30000, 90000));
 
         myEventService = new DummyEventServiceImpl();
         super.setUp(myEventService);

@@ -122,7 +122,7 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
         int theMinWaitingTime = getIntValue(aProperties.getProperty(MIN_WAITING_TIME_TAG));
         int theTimeoutTime = getIntValue(aProperties.getProperty(TIMEOUT_TIME_TAG));
 
-        return new RemoteEventServiceConfiguration(theMinWaitingTime, theMaxWaitingTime, theTimeoutTime);
+        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime);
     }
 
     /**
@@ -139,5 +139,17 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
             throw new ConfigurationException("Error on processing configuration \"" + myPropertyName + "\"! " +
                     "The value \"" + aString + "\" couldn't parsed to an integer!");
         }
+    }
+
+    /**
+     * Returns the description of the configuration (could for example contain the config file name).
+     * @return configuration description
+     */
+    private String getConfigDescription() {
+        StringBuffer theConfigDescriptionBuffer = new StringBuffer(15 + myPropertyName.length());
+        theConfigDescriptionBuffer.append("Properties \"");
+        theConfigDescriptionBuffer.append(myPropertyName);
+        theConfigDescriptionBuffer.append("\"");
+        return theConfigDescriptionBuffer.toString();
     }
 }

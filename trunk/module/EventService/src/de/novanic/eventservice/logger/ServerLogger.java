@@ -38,6 +38,12 @@ public interface ServerLogger
     void debug(String aMessage);
 
     /**
+     * Logs messages at the info level.
+     * @param aMessage message to log
+     */
+    void info(String aMessage);
+
+    /**
      * Logs messages at the error level.
      * @param aMessage message to log
      */

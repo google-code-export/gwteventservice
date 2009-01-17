@@ -25,7 +25,6 @@ import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.client.event.listen.UnlistenEvent;
 import de.novanic.eventservice.service.testhelper.TestEventFilter;
 import de.novanic.eventservice.service.testhelper.DummyEvent;
@@ -58,7 +57,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     private Logger myLogger;
 
     public void setUp() {
-        setUp(new RemoteEventServiceConfiguration(0, 500, 2500));
+        setUp(createConfiguration(0, 500, 2500));
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         setUp(myEventRegistry);
         setUpLoggingTest();
@@ -465,9 +464,11 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         //test with interrupt
         theStartTime = new Date();
 
+        logOff();
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         Thread.currentThread().interrupt();
         assertNull(myEventRegistry.listen(TEST_USER_ID));
+        logOn();
 
         theEndTime = new Date();
         assertFalse((theEndTime.getTime() - theStartTime.getTime()) >= 500);
@@ -511,7 +512,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     }
 
     public void testListen_Domain_Isolation() throws Exception {
-        EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration(0, 2000, 9999);
+        EventServiceConfiguration theEventServiceConfiguration = createConfiguration(0, 2000, 9999);
         tearDownEventServiceConfiguration();
         setUp(theEventServiceConfiguration);
 
@@ -787,7 +788,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     }
 
     public void testAddUserSpecificEvent_Isolation() throws Exception {
-        EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration(0, 2000, 9999);
+        EventServiceConfiguration theEventServiceConfiguration = createConfiguration(0, 2000, 9999);
         tearDownEventServiceConfiguration();
         setUp(theEventServiceConfiguration);
 
@@ -839,7 +840,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         EventServiceConfiguration theEventServiceConfiguration = theEventRegistry.getConfiguration();
 
         final int theNewMaxWaitingTime = theEventServiceConfiguration.getTimeoutTime() + 100;
-        EventServiceConfiguration theNewEventServiceConfiguration = new RemoteEventServiceConfiguration(
+        EventServiceConfiguration theNewEventServiceConfiguration = createConfiguration(
                 theEventServiceConfiguration.getMinWaitingTime(),
                 theNewMaxWaitingTime,
                 theEventServiceConfiguration.getTimeoutTime());

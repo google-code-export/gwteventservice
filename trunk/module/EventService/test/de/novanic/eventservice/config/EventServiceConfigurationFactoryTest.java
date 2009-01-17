@@ -19,16 +19,16 @@
  */
 package de.novanic.eventservice.config;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
+import de.novanic.eventservice.EventServiceTestCase;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 18:11:43
  */
-public class EventServiceConfigurationFactoryTest extends TestCase
+public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
 {
     public void testInit() {
         EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -93,7 +93,7 @@ public class EventServiceConfigurationFactoryTest extends TestCase
 
     public void testAddCustomConfigurationLoader() {
         //add custom ConfigurationLoader
-        final EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(0, 3000, 70000);
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
 
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration, true);
@@ -115,7 +115,7 @@ public class EventServiceConfigurationFactoryTest extends TestCase
 
     public void testResetCustomConfigurationLoaders() {
         //add custom ConfigurationLoader
-        final EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(0, 3000, 70000);
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
 
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration, true);
@@ -137,7 +137,7 @@ public class EventServiceConfigurationFactoryTest extends TestCase
 
     public void testResetCustomConfigurationLoaders_2() {
         //add custom ConfigurationLoader
-        final EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(0, 3000, 70000);
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
 
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration, true);

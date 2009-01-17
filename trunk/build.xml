@@ -48,8 +48,7 @@
     <path id="test.classpath">
         <path refid="classpath"/>
         <pathelement location="${dest.build.test.dir}"/>
-        <pathelement location="module/EventService/etc/testdata"/>
-        <pathelement location="module/EventService/etc/testdata/eventservice.properties"/>
+        <pathelement location="${module.eventservice}/etc/testdata"/>
     </path>
 
     <target name="init" depends="clean">

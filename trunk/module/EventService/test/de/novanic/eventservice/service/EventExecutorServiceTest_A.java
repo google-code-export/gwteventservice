@@ -21,7 +21,6 @@ package de.novanic.eventservice.service;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.filter.EventFilter;
@@ -45,8 +44,8 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
 
     private EventExecutorService myEventExecutorService;
 
-    public void setUp() {
-        setUp(new RemoteEventServiceConfiguration(0, 1, 9999));
+    public void setUp() throws Exception {
+        setUp(createConfiguration(0, 1, 9999));
 
         myEventExecutorService = initEventExecutorService();
     }

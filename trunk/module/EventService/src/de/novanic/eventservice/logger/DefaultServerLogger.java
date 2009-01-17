@@ -53,6 +53,14 @@ public class DefaultServerLogger implements ServerLogger
     }
 
     /**
+     * Logs messages at the info level.
+     * @param aMessage message to log
+     */
+    public void info(String aMessage) {
+        log(Level.INFO, aMessage);
+    }
+
+    /**
      * Logs messages at the severe level.
      * @param aMessage message to log
      */

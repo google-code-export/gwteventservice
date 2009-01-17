@@ -20,11 +20,11 @@
 package de.novanic.eventservice.service.registry;
 
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.EventServiceTestCase;
+import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.logging.Logger;
 import java.util.logging.Handler;
@@ -68,7 +68,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         assertSame(theConfiguration, theEventRegistryFactory.getEventRegistry().getConfiguration());
 
         tearDownEventServiceConfiguration();
-        EventServiceConfiguration theNewConfiguration = new RemoteEventServiceConfiguration(0, 1, 2);
+        EventServiceConfiguration theNewConfiguration = createConfiguration(0, 1, 2);
         setUp(theNewConfiguration);
 
         theEventRegistryFactory = EventRegistryFactory.getInstance();
@@ -79,7 +79,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
     }
 
     public void testInit_Log() {
-        EventServiceConfiguration theNewConfiguration = new RemoteEventServiceConfiguration(0, 1, 2);
+        EventServiceConfiguration theNewConfiguration = createConfiguration(0, 1, 2);
 
         final TestLoggingHandler theTestLoggingHandler = new TestLoggingHandler();
         
@@ -95,7 +95,8 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
 
             EventRegistryFactory.getInstance().getEventRegistry();
 
-            assertEquals("Server: Configuration changed - EventServiceConfiguration. Min.: 0ms; Max.: 1ms; Timeout: 2ms", theTestLoggingHandler.getLastMessage());
+            assertEquals("Server: Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
+                    "  Min.: 0ms; Max.: 1ms; Timeout: 2ms", theTestLoggingHandler.getLastMessage());
         } finally {
             theLogger.setLevel(theOldLevel);
             theLogger.removeHandler(theTestLoggingHandler);

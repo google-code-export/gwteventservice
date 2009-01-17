@@ -33,6 +33,9 @@ import de.novanic.eventservice.config.EventServiceConfigurationFactoryTest;
 import de.novanic.eventservice.config.loader.DefaultConfigurationLoaderTest;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoaderTest;
 import de.novanic.eventservice.config.loader.ConfigurationExceptionTest;
+import de.novanic.eventservice.util.PlatformUtilTest;
+import de.novanic.eventservice.util.TestLoggingConfigurator;
+import de.novanic.eventservice.util.TestLoggingConfiguratorTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -43,10 +46,14 @@ import junit.framework.TestSuite;
  */
 public class EventServiceTestSuite
 {
-    public static Test suite() {
-        TestSuite theSuite = new TestSuite();
+    public static Test suite() throws Exception {
+        TestSuite theSuite = new TestSuite("EventService - Tests");
 
-        theSuite.setName("EventService - Tests");
+        TestLoggingConfigurator.configureLogging();
+
+        // Util
+        theSuite.addTestSuite(TestLoggingConfiguratorTest.class);
+        theSuite.addTestSuite(PlatformUtilTest.class);
 
         // Logging
         theSuite.addTestSuite(ServerLoggerFactoryTest.class);

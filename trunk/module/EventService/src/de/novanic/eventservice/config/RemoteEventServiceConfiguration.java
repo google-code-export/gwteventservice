@@ -19,6 +19,9 @@
  */
 package de.novanic.eventservice.config;
 
+import de.novanic.eventservice.config.loader.ConfigurationException;
+import de.novanic.eventservice.util.PlatformUtil;
+
 /**
  * An EventServiceConfiguration holds the configuration for {@link de.novanic.eventservice.client.event.service.EventService}.
  * The time for a timeout and the min- and max-waiting-time can be configured.
@@ -36,17 +39,31 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
     private final int myMinWaitingTime;
     private final int myMaxWaitingTime;
     private final int myTimeoutTime;
+    private String myConfigDescription;
 
     /**
      * Creates a new RemoteEventServiceConfiguration.
+     * @param aConfigDescription description of the configuration (for example the location)
      * @param aMinWaitingTime min waiting time before listen returns (in milliseconds)
      * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
      * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
      */
-    public RemoteEventServiceConfiguration(int aMinWaitingTime, int aMaxWaitingTime, int aTimeoutTime) {
+    public RemoteEventServiceConfiguration(String aConfigDescription, int aMinWaitingTime, int aMaxWaitingTime, int aTimeoutTime) {
+        if(aConfigDescription == null) {
+            throw new ConfigurationException("The configuration description must be defined!");
+        }
+        myConfigDescription = aConfigDescription;
         myMinWaitingTime = aMinWaitingTime;
         myMaxWaitingTime = aMaxWaitingTime;
         myTimeoutTime = aTimeoutTime;
+    }
+
+    /**
+     * Returns the description of the configuration (for example the location).
+     * @return configuration description
+     */
+    public String getConfigDescription() {
+        return myConfigDescription;
     }
 
     /**
@@ -82,21 +99,30 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
         }
 
         EventServiceConfiguration theConfiguration = (EventServiceConfiguration)anObject;
+
         return (myMaxWaitingTime == theConfiguration.getMaxWaitingTime()
                 && myMinWaitingTime == theConfiguration.getMinWaitingTime()
-                && myTimeoutTime == theConfiguration.getTimeoutTime());
+                && myTimeoutTime == theConfiguration.getTimeoutTime()
+                && myConfigDescription.equals(theConfiguration.getConfigDescription()));
+
     }
 
     public int hashCode() {
         int theResult = myMinWaitingTime;
         theResult = 31 * theResult + myMaxWaitingTime;
         theResult = 31 * theResult + myTimeoutTime;
+        theResult = 31 * theResult + myConfigDescription.hashCode();
         return theResult;
     }
 
     public String toString() {
-        StringBuffer theConfigStringBuffer = new StringBuffer(50);
-        theConfigStringBuffer.append("EventServiceConfiguration. Min.: ");
+        StringBuffer theConfigStringBuffer = new StringBuffer(120);
+        theConfigStringBuffer.append("EventServiceConfiguration (");
+        theConfigStringBuffer.append(getConfigDescription());
+        theConfigStringBuffer.append(")");
+        theConfigStringBuffer.append(PlatformUtil.getNewLine());
+        theConfigStringBuffer.append("  ");
+        theConfigStringBuffer.append("Min.: ");
         theConfigStringBuffer.append(getMinWaitingTime());
         theConfigStringBuffer.append("ms; Max.: ");
         theConfigStringBuffer.append(getMaxWaitingTime());

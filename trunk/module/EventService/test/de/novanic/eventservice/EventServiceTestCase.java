@@ -22,17 +22,21 @@ package de.novanic.eventservice;
 import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
+import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.config.loader.TestCustomConfigurationLoader;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.util.TestLoggingConfigurator;
+
+import java.io.IOException;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 20:57:44
  */
-public class EventServiceTestCase extends TestCase
+public abstract class EventServiceTestCase extends TestCase
 {
     public void setUp(EventServiceConfiguration anEventServiceConfiguration) {
         ConfigurationLoader theConfigurationLoader = new TestCustomConfigurationLoader(anEventServiceConfiguration);
@@ -48,5 +52,17 @@ public class EventServiceTestCase extends TestCase
     public void tearDownEventServiceConfiguration() {
         EventServiceConfigurationFactory.getInstance().reset();
         EventRegistryFactory.reset();
+    }
+
+    public void logOn() throws IOException {
+        TestLoggingConfigurator.logOn();
+    }
+
+    public void logOff() throws IOException {
+        TestLoggingConfigurator.logOff();
+    }
+
+    protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime) {
+        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime);
     }
 }

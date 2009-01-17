@@ -19,28 +19,82 @@
  */
 package de.novanic.eventservice.logger;
 
-import junit.framework.TestCase;
+import java.util.logging.*;
 
-import java.util.logging.Level;
+import de.novanic.eventservice.EventServiceTestCase;
 
 /**
  * @author sstrohschein
  * Date: 15.08.2008
  * <br>Time: 22:12:59
  */
-public class DefaultServerLoggerTest extends TestCase
+public class DefaultServerLoggerTest extends EventServiceTestCase
 {
-    public void testLogging() {
-        ServerLogger theServerLogger = new DefaultServerLogger("testLogger");
-        theServerLogger.debug("testDebug");
-        theServerLogger.log(Level.CONFIG, "testConfigMessage");
-        theServerLogger.error("testError");
+    private static final String LOGGER_NAME = "testLogger";
+
+    private TestLoggerHandler myLoggerHandler;
+    private Logger myRealLogger;
+
+    public void setUp() throws Exception {
+        logOff();
+
+        myRealLogger = Logger.getLogger(LOGGER_NAME);
+    }
+
+    public void tearDown() throws Exception {
+        super.tearDown();
+        logOn();
+        
+        myRealLogger.removeHandler(myLoggerHandler);
+    }
+
+    public void testLogging_Debug() {
+        final String theMessage = "testDebug";
+
+        ServerLogger theServerLogger = setUpLogger(Level.FINEST, theMessage);
+        theServerLogger.debug(theMessage);
+    }
+
+    public void testLogging_Info() {
+        final String theMessage = "testInfo";
+
+        ServerLogger theServerLogger = setUpLogger(Level.INFO, theMessage);
+        theServerLogger.info(theMessage);
+    }
+
+    public void testLogging_OwnLevel() {
+        final String theMessage = "testConfigMessage";
+
+        ServerLogger theServerLogger = setUpLogger(Level.CONFIG, theMessage);
+        theServerLogger.log(Level.CONFIG, theMessage);
+    }
+
+    public void testLogging_Error() {
+        final String theMessage = "testError";
+
+        ServerLogger theServerLogger = setUpLogger(Level.SEVERE, theMessage);
+        theServerLogger.error(theMessage);
+    }
+
+    public void testLogging_ExceptionError() {
+        final String theMessage = "testError";
+
+        ServerLogger theServerLogger = setUpLogger(Level.SEVERE, theMessage);
         try {
             throwException();
             fail("Exception asserted!");
         } catch(TestException e) {
-            theServerLogger.error("testError", e);
+            theServerLogger.error(theMessage, e);
         }
+    }
+
+    private ServerLogger setUpLogger(Level aLevel, String aMessage) {
+        ServerLogger theServerLogger = new DefaultServerLogger(LOGGER_NAME);
+
+        myLoggerHandler = new TestLoggerHandler(aLevel, aMessage);
+        myRealLogger.addHandler(myLoggerHandler);
+
+        return theServerLogger;
     }
 
     private void throwException() throws TestException {
@@ -48,4 +102,26 @@ public class DefaultServerLoggerTest extends TestCase
     }
 
     private class TestException extends Exception {}
+
+    private class TestLoggerHandler extends Handler
+    {
+        private static final String SERVER_MESSAGE_PREFIX = "Server: ";
+
+        private Level myLevel;
+        private String myMessage;
+
+        public TestLoggerHandler(Level aLevel, String aMessage) {
+            myLevel = aLevel;
+            myMessage = aMessage;
+        }
+
+        public void publish(LogRecord aLogRecord) {
+            assertEquals(myLevel, aLogRecord.getLevel());
+            assertEquals(SERVER_MESSAGE_PREFIX + myMessage, aLogRecord.getMessage());
+        }
+
+        public void flush() {}
+
+        public void close() throws SecurityException {}
+    }
 }
