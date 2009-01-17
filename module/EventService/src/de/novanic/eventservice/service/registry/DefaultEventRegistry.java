@@ -64,7 +64,7 @@ public class DefaultEventRegistry implements EventRegistry
         myDomainUserInfoMap = new HashMap<Domain, Collection<UserInfo>>();
         myUserInfoMap = new HashMap<String, UserInfo>();
 
-        LOG.debug("Configuration changed - " + aConfiguration.toString());
+        LOG.info("Configuration changed - " + aConfiguration.toString());
     }
 
     /**

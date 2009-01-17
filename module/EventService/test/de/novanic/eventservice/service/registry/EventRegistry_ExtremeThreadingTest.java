@@ -20,7 +20,6 @@
 package de.novanic.eventservice.service.registry;
 
 import de.novanic.eventservice.EventServiceServerThreadingTest;
-import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.service.testhelper.DummyEvent;
 import de.novanic.eventservice.service.testhelper.ListenStartResult;
 import de.novanic.eventservice.service.testhelper.ListenCycleCancelEvent;
@@ -48,7 +47,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
     private EventRegistry myEventRegistry;
 
     public void setUp() {
-        setUp(new RemoteEventServiceConfiguration(0, 30000, 90000));
+        setUp(createConfiguration(0, 30000, 90000));
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
         super.setUp(myEventRegistry);

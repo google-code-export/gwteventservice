@@ -19,7 +19,6 @@
  */
 package de.novanic.eventservice.service;
 
-import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.service.EventService;
@@ -43,7 +42,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     private EventService myEventService;
 
     public void setUp() throws Exception {
-        setUp(new RemoteEventServiceConfiguration(0, 30000, 90000));
+        setUp(createConfiguration(0, 30000, 90000));
 
         myEventService = new DummyEventServiceImpl();
         super.setUp(myEventService);
@@ -222,7 +221,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testListen_UserSpecific() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
+        setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         Set<Domain> theDomains = new HashSet<Domain>();
@@ -285,7 +284,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testRegisterMultiDomain() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
+        setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         Set<Domain> theDomains = new HashSet<Domain>();
@@ -342,7 +341,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testRegisterMultiDomain_2() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
+        setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         Set<Domain> theDomains = new HashSet<Domain>();
@@ -412,7 +411,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testRegisterEventFilter() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
+        setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         myEventService.register(TEST_DOMAIN);
@@ -508,7 +507,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testUnlisten_2() throws InterruptedException {
         tearDownEventServiceConfiguration();
-        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
+        setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         myEventService.register(TEST_DOMAIN);
