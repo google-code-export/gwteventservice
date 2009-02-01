@@ -91,10 +91,7 @@
 
     <target name="test" depends="compile, compile-test">
 
-        <!--<junit fork="yes" printsummary="yes" showoutput="no" haltonerror="no" haltonfailure="no" maxmemory="1024M">-->
-            <!--<jvmarg value="-Xmx128M"/>-->
-        <junit fork="no" printsummary="yes" showoutput="no" haltonerror="yes" haltonfailure="yes" maxmemory="512M">
-
+        <junit fork="yes" printsummary="yes" showoutput="yes" haltonerror="yes" haltonfailure="yes" maxmemory="128M">
             <classpath refid="test.classpath"/>
             <formatter type="brief" usefile="false"/>
             <batchtest>
@@ -107,7 +104,6 @@
                 </fileset>
                 <fileset dir="${module.gwteventservice}/${src.test.dir}">
                     <include name="**/*TestSuite.java"/>
-                    <!-- TODO OutOfMemoryError - When Xmx is set and fork=yes, another error occurres ... -->
                     <exclude name="**/*GWTEventServiceGWTTestSuite.java"/>
                 </fileset>
             </batchtest>

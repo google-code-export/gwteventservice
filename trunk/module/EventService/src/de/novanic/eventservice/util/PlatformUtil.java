@@ -19,6 +19,8 @@
  */
 package de.novanic.eventservice.util;
 
+import java.util.Calendar;
+
 /**
  * Utility class to ensure the platform independency.
  *
@@ -31,11 +33,7 @@ public final class PlatformUtil
     private static final String NEW_LINE_CHAR;
 
     static {
-        String theNewLineChar = System.getProperty("line.separator");
-        if(theNewLineChar == null) {
-            theNewLineChar = "\n";
-        }
-        NEW_LINE_CHAR = theNewLineChar;
+        NEW_LINE_CHAR = createNewLineChar();
     }
 
     private PlatformUtil() {}
@@ -46,5 +44,25 @@ public final class PlatformUtil
      */
     public static String getNewLine() {
         return NEW_LINE_CHAR;
+    }
+
+    /**
+     * Returns the current time in milliseconds.
+     * @return current time in milliseconds
+     */
+    public static long getCurrentTime() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+
+    /**
+     * Returns the new line character for the corresponding platform.
+     * @return new line character
+     */
+    private static String createNewLineChar() {
+        String theNewLineChar = System.getProperty("line.separator");
+        if(theNewLineChar == null) {
+            theNewLineChar = "\n";
+        }
+        return theNewLineChar;
     }
 }

@@ -168,6 +168,37 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
         assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
+    }
+
+    public void testRemoveEventFilter() throws Exception {
+        final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
+        theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+
+        theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
+        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+
+        myEventExecutorService.setEventFilter(TEST_DOMAIN, new EmptyEventFilter());
+
+        theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
+        assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
+
+        myEventExecutorService.removeEventFilter(TEST_DOMAIN);
+
+        theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
+        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+    }
+
+    public void testRemoveEventFilter_2() throws Exception {
+        final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
+        theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+
+        theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
+        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+
+        myEventExecutorService.setEventFilter(TEST_DOMAIN, new EmptyEventFilter());
+
+        theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
+        assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
 
         myEventExecutorService.setEventFilter(TEST_DOMAIN, null);
 

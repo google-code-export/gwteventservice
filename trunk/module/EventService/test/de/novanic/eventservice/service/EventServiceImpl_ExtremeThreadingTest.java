@@ -141,7 +141,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinThreads();
+        joinEventThreads();
         final ListenStartResult theListenStartResult = startListen();
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());
@@ -180,11 +180,14 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
+        joinEventThreads();
+
         startListen();
         Thread.sleep(500);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
-        joinThreads();
+        joinListenThreads();
+
         assertEquals(2100, getEventCount());
         assertEquals(900, getEventCount(TEST_DOMAIN));
         assertEquals(600, getEventCount(TEST_DOMAIN_2));
@@ -222,11 +225,13 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinThreads();
+        joinEventThreads();
 
         startListen();
         Thread.sleep(500);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
+
+        joinListenThreads();
 
         assertEquals(2100, getEventCount());
         assertEquals(900, getEventCount(TEST_DOMAIN));
@@ -255,7 +260,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinThreads();
+        joinEventThreads();
         listen();
         assertEquals(5000, getEventCount());
         assertEquals(5000, getEventCount(TEST_DOMAIN));
@@ -285,11 +290,13 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinThreads();
+        joinEventThreads();
 
         startListen();
         Thread.sleep(500);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
+
+        joinListenThreads();
 
         assertEquals(2000, getEventCount());
         assertEquals(2000, getEventCount(TEST_DOMAIN));

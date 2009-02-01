@@ -26,6 +26,10 @@ import de.novanic.eventservice.service.RemoteEventServiceServletTest;
 import de.novanic.eventservice.service.exception.NoSessionAvailableExceptionTest;
 import de.novanic.eventservice.service.registry.EventRegistryFactoryTest;
 import de.novanic.eventservice.service.registry.EventRegistryTest;
+import de.novanic.eventservice.service.registry.user.UserInfoTest;
+import de.novanic.eventservice.service.registry.user.UserActivitySchedulerTest;
+import de.novanic.eventservice.service.registry.user.UserManagerTest;
+import de.novanic.eventservice.service.registry.user.UserManagerFactoryTest;
 import de.novanic.eventservice.logger.ServerLoggerFactoryTest;
 import de.novanic.eventservice.logger.DefaultServerLoggerTest;
 import de.novanic.eventservice.config.RemoteEventServiceConfigurationTest;
@@ -67,6 +71,10 @@ public class EventServiceTestSuite
         theSuite.addTestSuite(EventServiceConfigurationFactoryTest.class);
 
         // Registry
+        theSuite.addTestSuite(UserActivitySchedulerTest.class);
+        theSuite.addTestSuite(UserInfoTest.class);
+        theSuite.addTestSuite(UserManagerFactoryTest.class);
+        theSuite.addTestSuite(UserManagerTest.class);
         theSuite.addTestSuite(EventRegistryFactoryTest.class);
         theSuite.addTestSuite(EventRegistryTest.class);
 

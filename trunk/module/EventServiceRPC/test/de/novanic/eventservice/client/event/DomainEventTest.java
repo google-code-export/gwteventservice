@@ -69,6 +69,13 @@ public class DomainEventTest extends TestCase
         assertFalse(theDomainEvent.equals(theDomainEventNull));
     }
 
+    public void testToString() {
+        assertEquals("DomainEvent ()", new DefaultDomainEvent(null).toString());
+        assertEquals("DomainEvent (test_domain)", new DefaultDomainEvent(null, TEST_DOMAIN).toString());
+        assertEquals("DomainEvent (Event: TestEvent)", new DefaultDomainEvent(new EmptyEvent("TestEvent")).toString());
+        assertEquals("DomainEvent (test_domain - Event: TestEvent)", new DefaultDomainEvent(new EmptyEvent("TestEvent"), TEST_DOMAIN).toString());
+    }
+
     private class EmptyEvent implements Event
     {
         private String myKey;
@@ -91,6 +98,10 @@ public class DomainEventTest extends TestCase
 
         public int hashCode() {
             return myKey != null ? myKey.hashCode() : 0;
+        }
+
+        public String toString() {
+            return "Event: " + myKey;
         }
     }
 }

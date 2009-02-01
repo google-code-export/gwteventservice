@@ -47,6 +47,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
     public void testGetInstance() {
         EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
         assertSame(theEventRegistryFactory, EventRegistryFactory.getInstance());
+        assertSame(theEventRegistryFactory, EventRegistryFactory.getInstance());
 
         EventRegistry theEventRegistry = theEventRegistryFactory.getEventRegistry();
         assertSame(theEventRegistry, theEventRegistryFactory.getEventRegistry());

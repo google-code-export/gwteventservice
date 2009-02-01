@@ -69,12 +69,24 @@ public abstract class RemoteEventServiceServlet extends RemoteServiceServlet imp
     }
 
     /**
-     * Changes the {@link EventFilter} for the user-domain combination.
-     * @param aDomain domain to set the {@link EventFilter} (user-domain combination)
-     * @param anEventFilter new {@link EventFilter}
+     * Changes the {@link de.novanic.eventservice.client.event.filter.EventFilter} for the user-domain combination.
+     * The {@link de.novanic.eventservice.client.event.filter.EventFilter} can be removed with the method
+     * {@link de.novanic.eventservice.service.EventExecutorService#removeEventFilter(de.novanic.eventservice.client.event.domain.Domain)}
+     * or when that method is called with NULL as the {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * parameter value.
+     * @param aDomain domain to set the {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * @param anEventFilter new {@link de.novanic.eventservice.client.event.filter.EventFilter}
      */
     public void setEventFilter(Domain aDomain, EventFilter anEventFilter) {
         getEventExecutorService().setEventFilter(aDomain, anEventFilter);
+    }
+
+    /**
+     * Removes the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
+     * @param aDomain domain to drop the {@link de.novanic.eventservice.client.event.filter.EventFilter} from
+     */
+    public void removeEventFilter(Domain aDomain) {
+        getEventExecutorService().removeEventFilter(aDomain);
     }
 
     /**

@@ -88,6 +88,17 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         }
     }
 
+    public void testRemoveEventFilter_Error() {
+        EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
+        try {
+            theEventExecutorService.removeEventFilter(DomainFactory.getDomain("X"));
+            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        } catch(NoSessionAvailableException e) {
+            assertEquals("There is no session / client information available!", e.getMessage());
+            assertNull(e.getCause());
+        }
+    }
+
     private class TestEvent implements Event {}
 
     private class TestEventFilter implements EventFilter

@@ -106,4 +106,20 @@ public class DefaultDomainEvent implements DomainEvent
         theResult = 31 * theResult + (myDomain != null ? myDomain.hashCode() : 0);
         return theResult;
     }
+
+    public String toString() {
+        StringBuilder theStringBuilder = new StringBuilder(80);
+        theStringBuilder.append("DomainEvent (");
+        if(myDomain != null) {
+            theStringBuilder.append(myDomain.getName());
+        }
+        if(myDomain != null && myEvent != null) {
+            theStringBuilder.append(" - ");
+        }
+        if(myEvent != null) {
+            theStringBuilder.append(myEvent);
+        }
+        theStringBuilder.append(')');
+        return theStringBuilder.toString();
+    }
 }
