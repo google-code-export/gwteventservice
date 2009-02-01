@@ -39,6 +39,7 @@ public class ListenRunnable implements Runnable
     private String myUserId;
     private Map<Domain, Collection<Event>> myDomainEvents;
     private Map<String, Collection<Event>> myUserEvents;
+    private boolean isStarted;
 
     public ListenRunnable(EventService anEventService) {
         myEventService = anEventService;
@@ -50,6 +51,8 @@ public class ListenRunnable implements Runnable
     }
 
     public void run() {
+        isStarted = true;
+        
         final List<DomainEvent> theDomainEvents;
         if(myEventService != null) {
             theDomainEvents = myEventService.listen();
@@ -99,5 +102,9 @@ public class ListenRunnable implements Runnable
 
     public Map<Domain, Collection<Event>> getDomainEvents() {
         return myDomainEvents;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
     }
 }

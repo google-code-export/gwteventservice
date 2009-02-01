@@ -17,33 +17,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.util;
+package de.novanic.eventservice.service;
 
-import junit.framework.TestCase;
+import de.novanic.eventservice.service.registry.user.UserInfo;
 
 /**
+ * UserTimeoutListener can be used to recognize the timeouts of registered users.
+ * The {@link de.novanic.eventservice.service.UserTimeoutListener#onTimeout(UserInfo)}) method is called when a timeout
+ * occurres.
+ *
  * @author sstrohschein
- *         <br>Date: 11.01.2009
- *         <br>Time: 15:33:06
+ *         <br>Date: 20.01.2009
+ *         <br>Time: 00:03:58
  */
-public class PlatformUtilTest extends TestCase
+public interface UserTimeoutListener
 {
-    private static final String LINE_SEPARATOR_PROPERTY = "line.separator";
-
-    public void testGetNewLine() {
-        final String theNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
-        if(theNewLineChar != null) {
-            assertEquals(theNewLineChar, PlatformUtil.getNewLine());
-        }
-    }
-
-    public void testGetCurrentTime() throws Exception {
-        long theCurrentTime = PlatformUtil.getCurrentTime();
-        assertTrue(theCurrentTime > 0);
-
-        Thread.sleep(50);
-        long theCurrentTime_2 = PlatformUtil.getCurrentTime();
-        assertTrue(theCurrentTime_2 > 0);
-        assertTrue(theCurrentTime_2 > theCurrentTime);
-    }
+    /**
+     * The method onTimeout is called when a timeout is recognized for the user.
+     * @param aUserInfo the inactive user
+     */
+    void onTimeout(UserInfo aUserInfo);
 }

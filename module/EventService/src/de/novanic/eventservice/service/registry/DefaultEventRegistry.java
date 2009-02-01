@@ -22,12 +22,16 @@ package de.novanic.eventservice.service.registry;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.DomainEvent;
-import de.novanic.eventservice.client.event.DefaultDomainEvent;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.client.event.listen.UnlistenEvent;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
+import de.novanic.eventservice.service.registry.user.UserInfo;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserActivityScheduler;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
+import de.novanic.eventservice.service.UserTimeoutListener;
 
 import java.util.*;
 
@@ -51,18 +55,22 @@ public class DefaultEventRegistry implements EventRegistry
 
     private EventServiceConfiguration myConfiguration;
     private final Map<Domain, Collection<UserInfo>> myDomainUserInfoMap;
-    private final Map<String, UserInfo> myUserInfoMap;
+    private UserManager myUserManager;
+    private UserActivityScheduler myUserActivityScheduler;
 
     /**
-     * Creates a new EventRegistry with * Initializes the EventRegistry with {@link de.novanic.eventservice.config.EventServiceConfiguration}.
-     * The {@link EventRegistryFactory} should be used instead of calling this constructor directly.
+     * Creates a new EventRegistry with a configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration}).
+     * The {@link EventRegistryFactory} should be used instead of calling that constructor directly.
      * @param aConfiguration configuration
      * @see de.novanic.eventservice.service.registry.EventRegistryFactory#getEventRegistry()
      */
     protected DefaultEventRegistry(EventServiceConfiguration aConfiguration) {
         myConfiguration = aConfiguration;
         myDomainUserInfoMap = new HashMap<Domain, Collection<UserInfo>>();
-        myUserInfoMap = new HashMap<String, UserInfo>();
+        myUserManager = UserManagerFactory.getInstance().getUserManager(aConfiguration);
+        myUserActivityScheduler = myUserManager.getUserActivityScheduler();
+        myUserActivityScheduler.addTimeoutListener(new TimeoutListener());
+        myUserManager.activateUserActivityScheduler();
 
         LOG.info("Configuration changed - " + aConfiguration.toString());
     }
@@ -122,12 +130,8 @@ public class DefaultEventRegistry implements EventRegistry
      * @param anEventFilter EventFilter to filter the domain events (optional, can be NULL)
      */
     public synchronized void registerUser(final Domain aDomain, final String aUserId, EventFilter anEventFilter) {
-        //get or create UserInfo
-        UserInfo theUserInfo = getUserInfo(aUserId);
-        if(theUserInfo == null) {
-            theUserInfo = new UserInfo(aUserId);
-            myUserInfoMap.put(aUserId, theUserInfo);
-        }
+        //create UserInfo
+        UserInfo theUserInfo = myUserManager.addUser(aUserId);
 
         //register UserInfo for the Domain
         Collection<UserInfo> theUsers = myDomainUserInfoMap.get(aDomain);
@@ -145,7 +149,11 @@ public class DefaultEventRegistry implements EventRegistry
     }
 
     /**
-     * The EventFilter for a user domain combination can be set or changed with that method.
+     * The {@link de.novanic.eventservice.client.event.filter.EventFilter} for a user domain combination can be set or
+     * changed with that method. The {@link de.novanic.eventservice.client.event.filter.EventFilter} can be removed
+     * with the method {@link de.novanic.eventservice.service.registry.EventRegistry#removeEventFilter(de.novanic.eventservice.client.event.domain.Domain, String)}
+     * or when that method is called with NULL as the {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * parameter value.
      * @param aDomain domain
      * @param aUserId user
      * @param anEventFilter new EventFilter
@@ -156,18 +164,24 @@ public class DefaultEventRegistry implements EventRegistry
     }
 
     /**
-     * The EventFilter for a user domain combination can be set or changed with that method.
+     * The {@link de.novanic.eventservice.client.event.filter.EventFilter} for a user domain combination can be set or
+     * changed with that method. The {@link de.novanic.eventservice.client.event.filter.EventFilter} can be removed
+     * with the method {@link de.novanic.eventservice.service.registry.EventRegistry#removeEventFilter(de.novanic.eventservice.client.event.domain.Domain, String)}
+     * or when that method is called with NULL as the {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * parameter value.
      * @param aDomain domain
      * @param aUserInfo user
-     * @param anEventFilter new EventFilter
+     * @param anEventFilter new {@link de.novanic.eventservice.client.event.filter.EventFilter}
      */
     private void setEventFilter(final Domain aDomain, final UserInfo aUserInfo, EventFilter anEventFilter) {
         if(aUserInfo != null) {
             if(anEventFilter != null) {
                 LOG.debug(aUserInfo.getUserId() + ": EventFilter changed for domain \"" + aDomain + "\".");
-                aUserInfo.addEventFilter(aDomain, anEventFilter);
+                aUserInfo.setEventFilter(aDomain, anEventFilter);
             } else {
-                aUserInfo.removeEventFilter(aDomain);
+                if(aUserInfo.removeEventFilter(aDomain)) {
+                    LOG.debug(aUserInfo.getUserId() + ": EventFilter removed from domain \"" + aDomain + "\".");
+                }
             }
         }
     }
@@ -178,10 +192,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserId user
      */
     public void removeEventFilter(final Domain aDomain, final String aUserId) {
-        UserInfo theUserInfo = getUserInfo(aUserId);
-        if(theUserInfo != null) {
-            theUserInfo.removeEventFilter(aDomain);
-        }
+        setEventFilter(aDomain, aUserId, null);
     }
 
     /**
@@ -189,7 +200,7 @@ public class DefaultEventRegistry implements EventRegistry
      * specific events). If no events are available, the method waits a defined time before the events are returned.
      * The listen method is designed for the EventService functionality. The client side calls the method with a defined
      * interval to receive all events. If the client don't call the method in the interval, the user will be removed
-     * from the EventRegistry. The timeout time and the min and max waiting time can be configured by
+     * from the EventRegistry. The timeout time and the min. and max. waiting time can be configured by
      * {@link de.novanic.eventservice.config.EventServiceConfiguration}.
      * @param aUserId user
      * @return list of events
@@ -202,7 +213,7 @@ public class DefaultEventRegistry implements EventRegistry
             Thread.sleep(theConfiguration.getMinWaitingTime());
             if(theUserInfo != null) {
                 synchronized(theUserInfo) {
-                    theUserInfo.schedule(theConfiguration.getTimeoutTime());
+                    myUserActivityScheduler.reportUserActivity(theUserInfo);
                     if(theUserInfo.getEvents().isEmpty()) {
                         theUserInfo.wait(theConfiguration.getMaxWaitingTime());
                     }
@@ -224,12 +235,10 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserId user
      */
     public void unlisten(Domain aDomain, String aUserId) {
-        LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
         UserInfo theUserInfo = getUserInfo(aUserId);
         if(theUserInfo != null) {
+            LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
             synchronized(theUserInfo) {
-                theUserInfo.cancelSchedule();
-
                 addEventUserSpecific(theUserInfo, new UnlistenEvent(aDomain));
                 removeUser(aDomain, theUserInfo);
             }
@@ -241,13 +250,20 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserId user
      */
     public void unlisten(String aUserId) {
-        LOG.debug(aUserId + ": unlisten.");
         UserInfo theUserInfo = getUserInfo(aUserId);
-        if(theUserInfo != null) {
-            synchronized(theUserInfo) {
-                theUserInfo.cancelSchedule();
-                addEventUserSpecific(theUserInfo, new UnlistenEvent());
-                removeUser(theUserInfo);
+        unlisten(theUserInfo);
+    }
+
+    /**
+     * This method causes a stop of listening for all domains ({@link DefaultEventRegistry#listen(String)}).
+     * @param aUserInfo user
+     */
+    public void unlisten(UserInfo aUserInfo) {
+        if(aUserInfo != null) {
+            LOG.debug(aUserInfo.getUserId() + ": unlisten.");
+            synchronized(aUserInfo) {
+                addEventUserSpecific(aUserInfo, new UnlistenEvent());
+                removeUser(aUserInfo);
             }
         }
     }
@@ -265,7 +281,7 @@ public class DefaultEventRegistry implements EventRegistry
             }
         }
         if(!isUserRegistered(aUserInfo)) {
-            myUserInfoMap.remove(aUserInfo.getUserId());
+            myUserManager.removeUser(aUserInfo.getUserId());
         } else {
             //remove the eventfilter if the user isn't removed completely
             aUserInfo.removeEventFilter(aDomain);
@@ -280,7 +296,7 @@ public class DefaultEventRegistry implements EventRegistry
         for(Collection<UserInfo> theDomainUsers : myDomainUserInfoMap.values()) {
             theDomainUsers.remove(aUserInfo);
         }
-        if(myUserInfoMap.remove(aUserInfo.getUserId()) != null) {
+        if(myUserManager.removeUser(aUserInfo.getUserId()) != null) {
             LOG.debug("User \"" + aUserInfo + "\" removed.");
         }
     }
@@ -379,154 +395,24 @@ public class DefaultEventRegistry implements EventRegistry
      * @return UserInfo according to the user id
      */
     private UserInfo getUserInfo(final String aUserId) {
-        return myUserInfoMap.get(aUserId);
+        return myUserManager.getUser(aUserId);
     }
 
     /**
-     * UserInfo is a internal class of EventRegistry to manage all information for the current user.
-     * It holds the events and the EventFilters for the user.
+     * TimeoutListener to clean up inactive users/clients. The timeout is checked with
+     * {@link de.novanic.eventservice.service.registry.user.UserActivityScheduler}.
      */
-    private class UserInfo
+    private class TimeoutListener implements UserTimeoutListener
     {
-        private final String myUserId;
-        private List<DomainEvent> myEvents;
-        private Timer myTimer;
-        private TimerTask myInactivityTask;
-        private final Map<Domain, EventFilter> myDomainEventFilters;
-
         /**
-         * Creates a new UserInfo for the user id.
-         * @param aUserId user
+         * The method onTimeout is called when a timeout is recognized for the user.
+         * It caueses a unlisten call ({@link de.novanic.eventservice.service.registry.DefaultEventRegistry#unlisten(String)})
+         * to clean up the inactive user/client.
+         * @param aUserInfo the inactive user
          */
-        private UserInfo(String aUserId) {
-            myUserId = aUserId;
-            myTimer = new Timer();
-            myEvents = new ArrayList<DomainEvent>();
-            myDomainEventFilters = new HashMap<Domain, EventFilter>();
-        }
-
-        /**
-         * Returns the user id.
-         * @return user / user id
-         */
-        public String getUserId() {
-            return myUserId;
-        }
-
-        /**
-         * Adds an event for a domain to the user.
-         * @param aDomain domain
-         * @param anEvent event
-         */
-        public void addEvent(Domain aDomain, Event anEvent) {
-            DomainEvent theDomainEvent = new DefaultDomainEvent(anEvent, aDomain);
-            myEvents.add(theDomainEvent);
-            doNotifyAll();
-        }
-
-        /**
-         * doNotifyAll informs all waiting Threads for events.
-         */
-        private synchronized void doNotifyAll() {
-            notifyAll();
-        }
-
-        /**
-         * Removes all events from the user.
-         */
-        public void clearEvents() {
-            myEvents = new ArrayList<DomainEvent>();
-        }
-
-        /**
-         * Returns all recorded events.
-         * @return all events according to the user
-         */
-        public List<DomainEvent> getEvents() {
-            return myEvents;
-        }
-
-        /**
-         * This method is used to measure the timeout and it will remove the user automatically.
-         * @param aMillis milliseconds to the timeout
-         */
-        public void schedule(long aMillis) {
-            cancelSchedule();
-            myInactivityTask = new ScheduleTimer();
-            myTimer.schedule(myInactivityTask, aMillis);
-        }
-
-        /**
-         * Resets the timeout timer and is automatically called by schedule.
-         * @see DefaultEventRegistry.UserInfo#schedule(long)
-         */
-        public void cancelSchedule() {
-            if(myTimer != null) {
-                myTimer.cancel();
-            }
-            if(myInactivityTask != null) {
-                myInactivityTask.cancel();
-            }
-            if(myTimer != null) {
-                myTimer.purge();
-            }
-            myTimer = new Timer();
-        }
-
-        /**
-         * Returns the EventFilter for the domain.
-         * @param aDomain domain
-         * @return EventFilter for the domain
-         */
-        public EventFilter getEventFilter(Domain aDomain) {
-            return myDomainEventFilters.get(aDomain);
-        }
-
-        /**
-         * Sets the an EventFilter to a domain.
-         * @param aDomain domain where the EventFilter should be applied.
-         * @param anEventFilter EventFilter to filter the events for the domain
-         */
-        public void addEventFilter(final Domain aDomain, EventFilter anEventFilter) {
-            myDomainEventFilters.put(aDomain, anEventFilter);
-        }
-
-        /**
-         * Removes the EventFilter for a domain.
-         * @param aDomain domain where the EventFilter to remove is applied.
-         */
-        public void removeEventFilter(final Domain aDomain) {
-            if(myDomainEventFilters.remove(aDomain) != null) {
-                LOG.debug(getUserId() + ": EventFilter removed from domain \"" + aDomain + "\".");
-            }
-        }
-
-        public boolean equals(Object anObject) {
-            if(this == anObject) {
-                return true;
-            }
-            if(anObject == null || getClass() != anObject.getClass()) {
-                return false;
-            }
-            UserInfo theOtherUserInfo = (UserInfo)anObject;
-            return myUserId.equals(theOtherUserInfo.myUserId);
-        }
-
-        public int hashCode() {
-            return myUserId.hashCode();
-        }
-
-        public String toString() {
-            return getUserId();
-        }
-
-        private class ScheduleTimer extends TimerTask
-        {
-            public void run() {
-                String theUserId = myUserId;
-                LOG.debug(theUserId + ": timeout.");
-                unlisten(theUserId); //remove the user
-            }
+        public void onTimeout(UserInfo aUserInfo) {
+            LOG.debug(aUserInfo.getUserId() + ": timeout.");
+            unlisten(aUserInfo);
         }
     }
 }

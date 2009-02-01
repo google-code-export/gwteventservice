@@ -26,6 +26,7 @@ import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.config.loader.TestCustomConfigurationLoader;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
 import de.novanic.eventservice.util.TestLoggingConfigurator;
 
@@ -43,10 +44,12 @@ public abstract class EventServiceTestCase extends TestCase
         EventServiceConfigurationFactory.getInstance().addCustomConfigurationLoader(theConfigurationLoader);
         EventRegistryFactory.reset();
         EventExecutorServiceFactory.reset();
+        UserManagerFactory.reset();
     }
 
     public void tearDown() throws Exception {
         tearDownEventServiceConfiguration();
+        UserManagerFactory.reset();
     }
 
     public void tearDownEventServiceConfiguration() {

@@ -38,30 +38,31 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
 {
     private EventService myEventService;
     private EventRegistry myEventRegistry;
-    private Collection<Thread> myThreads;
+    private Collection<EventThread> myEventThreads;
     private Collection<ListenStartResult> myListenStartResults;
 
     public void setUp(EventService anEventService) {
         myEventService = anEventService;
-        myThreads = new ArrayList<Thread>();
+        myEventThreads = new ArrayList<EventThread>();
         myListenStartResults = new ArrayList<ListenStartResult>();
     }
 
     public void setUp(EventRegistry anEventRegistry) {
         myEventRegistry = anEventRegistry;
-        myThreads = new ArrayList<Thread>();
+        myEventThreads = new ArrayList<EventThread>();
         myListenStartResults = new ArrayList<ListenStartResult>();
     }
 
     public void tearDown() throws Exception {
         //Join all threads to ensure that the next test doesn't collidate with other threads.
-        joinThreads();
+        joinEventThreads();
+        joinListenThreads();
     }
 
-    public void joinThreads() throws EventServiceServerThreadingTestException {
+    public void joinEventThreads() throws EventServiceServerThreadingTestException {
         try {
-            for(Thread theThread : myThreads) {
-                theThread.join();
+            for(Thread theEventThread : myEventThreads) {
+                theEventThread.join();
             }
         } catch(InterruptedException e) {
             throw new EventServiceServerThreadingTestException("Error on joining threads!", e);
@@ -94,25 +95,30 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
 
     private ListenStartResult startListen(ListenRunnable aListenRunnable) {
         Thread theListenThread = new Thread(aListenRunnable);
-        myThreads.add(theListenThread);
-        theListenThread.start();
 
         final ListenStartResult theStartResult = new ListenStartResult(theListenThread, aListenRunnable);
         myListenStartResults.add(theStartResult);
+
+        theListenThread.start();
+        waitForListenStart(aListenRunnable);
+
         return theStartResult;
     }
 
-    public void startAddEvent(Domain aDomain, long aWaitingTime) {
-        Thread theThread = new Thread(new AddEventRunnable(aDomain, aWaitingTime));
-        myThreads.add(theThread);
-        theThread.start();
+    public Thread startAddEvent(Domain aDomain, long aWaitingTime) {
+        EventThread theEventThread = new EventThread(new AddEventRunnable(aDomain, aWaitingTime));
+        return startAddEvent(theEventThread);
     }
 
     public Thread startAddEvent(String aUser, long aWaitingTime) {
-        Thread theThread = new Thread(new AddEventRunnable(aUser, aWaitingTime));
-        myThreads.add(theThread);
-        theThread.start();
-        return theThread;
+        EventThread theEventThread = new EventThread(new AddEventRunnable(aUser, aWaitingTime));
+        return startAddEvent(theEventThread);
+    }
+
+    private Thread startAddEvent(EventThread anEventThread) {
+        myEventThreads.add(anEventThread);
+        anEventThread.start();
+        return anEventThread;
     }
 
     public int listen() throws EventServiceServerThreadingTestException {
@@ -151,12 +157,29 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         return theListenEventCount;
     }
 
+    public void joinListenThreads() throws EventServiceServerThreadingTestException {
+        for(ListenStartResult theListenStartResult: myListenStartResults) {
+            joinListen(theListenStartResult);
+        }
+    }
+
     public int joinListen(ListenStartResult aListenResult) throws EventServiceServerThreadingTestException {
         try {
             aListenResult.getThread().join();
+            return aListenResult.getListenResult().getEventCount();
         } catch(InterruptedException e) {
             throw new EventServiceServerThreadingTestException("Listen thread interrupted!", e);
         }
-        return aListenResult.getListenResult().getEventCount();
+    }
+
+    private void waitForListenStart(ListenRunnable aListenRunnable) {
+        while(!aListenRunnable.isStarted()) {}
+    }
+
+    private class EventThread<AddEventRunnable> extends Thread
+    {
+        public EventThread(AddEventRunnable aRunnable) {
+            super((Runnable)aRunnable);
+        }
     }
 }

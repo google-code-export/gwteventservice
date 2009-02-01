@@ -156,7 +156,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
-        joinThreads();
+        joinEventThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());
@@ -197,7 +197,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
         }
 
-        joinThreads();
+        joinEventThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(3000, getEventCount());
@@ -255,11 +255,13 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertNotNull(theListenStartResult.getListenResult());
         assertEquals(1, theListenStartResult.getListenResult().getEventCount(TEST_DOMAIN_3));
 
-        joinThreads();
+        joinEventThreads();
 
         startListen(TEST_USER_ID);
         Thread.sleep(500);
         myEventRegistry.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
+
+        joinListenThreads();
 
         assertEquals(1501, getEventCount());
         assertEquals(900, getEventCount(TEST_DOMAIN));
@@ -317,7 +319,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
-        joinThreads();
+        joinEventThreads();
 
         theListenStartResult_User = startListen(TEST_USER_ID);
         theListenStartResults_User.add(theListenStartResult_User);
@@ -325,6 +327,8 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         theListenStartResults_User_2.add(theListenStartResult_User_2);
         Thread.sleep(500);
         myEventRegistry.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
+
+        joinListenThreads();
 
         //check events for TEST_USER_ID
         int theEventCount = 0;
@@ -374,7 +378,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
-        joinThreads();
+        joinEventThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(3750, getEventCount());
@@ -424,7 +428,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
         }
 
-        joinThreads();
+        joinEventThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());

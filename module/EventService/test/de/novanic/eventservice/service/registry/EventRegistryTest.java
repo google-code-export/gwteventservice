@@ -392,7 +392,6 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         //the user isn't registered
         myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
-        testLog(1, "Server: test_user_id: unlisten (domain \"test_domain\").");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
@@ -823,37 +822,44 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     }
 
     public void testTimeOut() throws Exception {
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        startAddEvent(TEST_DOMAIN, 100);
-        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
-
-        Thread.sleep(700);
-
-        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID);
-        assertEquals(1, theEvents.size());
-        assertFalse(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-
-        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
-
         //set the default waiting time greater than time out time to produce a time out
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         EventServiceConfiguration theEventServiceConfiguration = theEventRegistry.getConfiguration();
 
-        final int theNewMaxWaitingTime = theEventServiceConfiguration.getTimeoutTime() + 100;
+        final int theTimeoutTime = 400;
+        final int theNewMaxWaitingTime = theTimeoutTime + 1700;
         EventServiceConfiguration theNewEventServiceConfiguration = createConfiguration(
                 theEventServiceConfiguration.getMinWaitingTime(),
                 theNewMaxWaitingTime,
-                theEventServiceConfiguration.getTimeoutTime());
+                theTimeoutTime);
 
         tearDownEventServiceConfiguration();
         setUp(theNewEventServiceConfiguration);
 
-        myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
-        setUp(myEventRegistry);
+        theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
-        theEvents = myEventRegistry.listen(TEST_USER_ID);
+        theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        theEventRegistry.addEvent(TEST_DOMAIN, new DummyEvent());
+        assertTrue(theEventRegistry.isUserRegistered(TEST_USER_ID));
+
+        List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
+        assertNotNull(theEvents);
+        assertEquals(1, theEvents.size());
+        assertFalse(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+
+        assertTrue(theEventRegistry.isUserRegistered(TEST_USER_ID));
+
+        //It is waiting for events and will cause a timeout, because the max. waiting time is configured longer than the timeout time.
+        //The result is a UnlistenEvent, because the timeout doesn't effect that method, but the next call.
+        theEvents = theEventRegistry.listen(TEST_USER_ID);
+        assertNotNull(theEvents);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.iterator().next().getEvent() instanceof UnlistenEvent);
+        assertFalse(theEventRegistry.isUserRegistered(TEST_USER_ID));
+
+        theEvents = theEventRegistry.listen(TEST_USER_ID);
         assertNull(theEvents);
-        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(theEventRegistry.isUserRegistered(TEST_USER_ID));
     }
 
     public void testChangeEventFilter() {

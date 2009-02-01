@@ -190,7 +190,13 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService.addEvent(TEST_DOMAIN, new DummyEvent());
         assertEquals(3, myEventService.getActiveListenDomains().size());
 
-        assertEquals(2, joinListen(theListenStartResult));
+        //depend on the timing, it could be that the two events recognized with the first listen or that one get recognized with the first and one with the second listen.
+        int theEventCount = joinListen(theListenStartResult);
+        assertTrue(theEventCount == 1 || theEventCount == 2);
+        if(theEventCount == 1) {
+            theListenStartResult = startListen();
+            assertEquals(1, joinListen(theListenStartResult));
+        }
     }
 
     public void testListen_5() throws Exception {
@@ -210,7 +216,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService.addEvent(TEST_DOMAIN_3, new DummyEvent());
         assertEquals(3, myEventService.getActiveListenDomains().size());
 
-        //depend on the timing, it could be that two events recognized with the first listen or that one get recognized with the first and one with the second listen.
+        //depend on the timing, it could be that the two events recognized with the first listen or that one get recognized with the first and one with the second listen.
         int theEventCount = joinListen(theListenResult);
         assertTrue(theEventCount == 1 || theEventCount == 2);
         if(theEventCount == 1) {
@@ -322,7 +328,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for another domain
+        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
@@ -379,26 +385,26 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for another domain
+        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for another domain
+        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for another domain
+        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
         myEventService.addEvent(TEST_DOMAIN_3, new ListenCycleCancelEvent());
         Thread.sleep(100);
         assertEquals(0, myEventService.listen().size()); //Event is filtered by TestEventFilter,
-        // because the three events above are for another domain and the EventFilter wasn't triggered
+        // because the three events above are for a other domain and the EventFilter wasn't triggered
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
