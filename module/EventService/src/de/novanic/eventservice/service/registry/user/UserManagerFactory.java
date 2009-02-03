@@ -87,7 +87,7 @@ public class UserManagerFactory
      */
     public synchronized UserManager getUserManager(long aTimeoutInterval) {
         if(myUserManager == null) {
-            myUserManager = new UserManager(aTimeoutInterval);
+            myUserManager = new DefaultUserManager(aTimeoutInterval);
         }
         return myUserManager;
     }

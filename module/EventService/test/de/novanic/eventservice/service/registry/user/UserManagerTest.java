@@ -37,10 +37,10 @@ public class UserManagerTest extends TestCase
     private static final UserInfo TEST_USER_INFO = new UserInfo(TEST_USER_ID);
     private static final UserInfo TEST_USER_INFO_2 = new UserInfo(TEST_USER_ID_2);
 
-    private UserManager myUserManager;
+    private DefaultUserManager myUserManager;
 
     public void setUp() {
-        myUserManager = new UserManager(99999);
+        myUserManager = new DefaultUserManager(99999);
     }
 
     public void tearDown() {
@@ -228,11 +228,11 @@ public class UserManagerTest extends TestCase
         UserActivityScheduler theUserActivityScheduler = myUserManager.getUserActivityScheduler();
         assertNotNull(theUserActivityScheduler);
         assertEquals(theUserActivityScheduler, myUserManager.getUserActivityScheduler());
-        assertFalse(theUserActivityScheduler.equals(new UserManager(99999).getUserActivityScheduler()));
+        assertFalse(theUserActivityScheduler.equals(new DefaultUserManager(99999).getUserActivityScheduler()));
     }
 
     public void testActivateUserActivityScheduler() throws Exception {
-        myUserManager = new UserManager(400);
+        myUserManager = new DefaultUserManager(400);
 
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserManager.getUserActivityScheduler().addTimeoutListener(theTimeoutListener);
@@ -260,7 +260,41 @@ public class UserManagerTest extends TestCase
 
         myUserManager.deactivateUserActivityScheduler();
 
-        myUserManager.activateUserActivityScheduler();
+        myUserManager.activateUserActivityScheduler(false);
+        myUserManager.deactivateUserActivityScheduler();
+    }
+
+    public void testActivateUserActivityScheduler_WithAutoClean() throws Exception {
+        myUserManager = new DefaultUserManager(400);
+
+        final UserInfo theUserInfo = myUserManager.addUser(TEST_USER_ID);
+        assertNotNull(myUserManager.getUser(TEST_USER_ID));
+
+        myUserManager.activateUserActivityScheduler(true);
+        Thread.sleep(200);
+        assertNotNull(myUserManager.getUser(TEST_USER_ID));
+
+        //Reactivate User
+        myUserManager.getUserActivityScheduler().reportUserActivity(theUserInfo);
+        assertNotNull(myUserManager.getUser(TEST_USER_ID));
+
+        Thread.sleep(300);
+        assertNotNull(myUserManager.getUser(TEST_USER_ID));
+
+        Thread.sleep(700);
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+
+        //re-add the user
+        myUserManager.addUser(TEST_USER_ID);
+        assertNotNull(myUserManager.getUser(TEST_USER_ID));
+
+        Thread.sleep(700);
+        //second timeout recognized
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+
+        myUserManager.deactivateUserActivityScheduler();
+
+        myUserManager.activateUserActivityScheduler(false);
         myUserManager.deactivateUserActivityScheduler();
     }
 
