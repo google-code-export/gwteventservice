@@ -19,8 +19,6 @@
  */
 package de.novanic.eventservice.util;
 
-import java.util.Calendar;
-
 /**
  * Utility class to ensure the platform independency.
  *
@@ -51,7 +49,7 @@ public final class PlatformUtil
      * @return current time in milliseconds
      */
     public static long getCurrentTime() {
-        return Calendar.getInstance().getTimeInMillis();
+        return System.currentTimeMillis();
     }
 
     /**
