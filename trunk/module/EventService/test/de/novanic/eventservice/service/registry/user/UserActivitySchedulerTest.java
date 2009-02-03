@@ -35,6 +35,9 @@ public class UserActivitySchedulerTest extends TestCase
 {
     private static final String TEST_USER_ID = "test_user_id";
     private static final String TEST_USER_ID_2 = "test_user_id_2";
+    private UserInfo TEST_USER_INFO;
+    private UserInfo TEST_USER_INFO_2;
+
     private Collection<UserInfo> myUserInfoCollection;
     private UserActivityScheduler myUserActivityScheduler;
 
@@ -52,7 +55,7 @@ public class UserActivitySchedulerTest extends TestCase
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
         
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         Thread.sleep(200);
         assertEquals(0, theTimeoutListener.getTimeoutCount());
 
@@ -67,7 +70,7 @@ public class UserActivitySchedulerTest extends TestCase
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         Thread.sleep(200);
         assertEquals(0, theTimeoutListener.getTimeoutCount());
 
@@ -86,7 +89,7 @@ public class UserActivitySchedulerTest extends TestCase
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         Thread.sleep(200);
         assertEquals(0, theTimeoutListener.getTimeoutCount());
 
@@ -105,7 +108,7 @@ public class UserActivitySchedulerTest extends TestCase
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         Thread.sleep(200);
         myUserActivityScheduler.stop();
 
@@ -124,7 +127,7 @@ public class UserActivitySchedulerTest extends TestCase
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         Thread.sleep(200);
         assertEquals(0, theTimeoutListener.getTimeoutCount());
 
@@ -145,7 +148,7 @@ public class UserActivitySchedulerTest extends TestCase
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         Thread.sleep(200);
         assertEquals(0, theTimeoutListener.getTimeoutCount());
 
@@ -175,15 +178,36 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(2, theTimeoutListener.getTimeoutCount());
     }
 
+    public void testSchedule_WithAutoClean() throws Exception {
+        myUserActivityScheduler.start(true);
+        Thread.sleep(200);
+        assertEquals(2, myUserInfoCollection.size());
+        assertTrue(myUserInfoCollection.contains(TEST_USER_INFO));
+        assertTrue(myUserInfoCollection.contains(TEST_USER_INFO_2));
+
+        //Reactivate User_1
+        assertTrue(myUserInfoCollection.iterator().hasNext());
+        myUserActivityScheduler.reportUserActivity(myUserInfoCollection.iterator().next());
+
+        Thread.sleep(300);
+        //User_2 gets a timeout, because it isn't reactivated
+        assertEquals(1, myUserInfoCollection.size());
+        assertTrue(myUserInfoCollection.contains(TEST_USER_INFO));
+
+        Thread.sleep(700);
+        //User_1 gets a timeout, because it isn't reactivated and the last reactivation is too long ago
+        assertEquals(0, myUserInfoCollection.size());
+    }
+
     public void testIsActive() {
         assertFalse(myUserActivityScheduler.isActive());
         assertFalse(myUserActivityScheduler.isActive());
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         assertTrue(myUserActivityScheduler.isActive());
         assertTrue(myUserActivityScheduler.isActive());
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         assertTrue(myUserActivityScheduler.isActive());
         assertTrue(myUserActivityScheduler.isActive());
 
@@ -195,7 +219,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertFalse(myUserActivityScheduler.isActive());
         assertFalse(myUserActivityScheduler.isActive());
 
-        myUserActivityScheduler.start();
+        myUserActivityScheduler.start(false);
         assertTrue(myUserActivityScheduler.isActive());
         assertTrue(myUserActivityScheduler.isActive());
     }
@@ -220,12 +244,12 @@ public class UserActivitySchedulerTest extends TestCase
     }
 
     private Collection<UserInfo> createUserInfoCollection() {
-        UserInfo theUser_1 = new UserInfo(TEST_USER_ID);
-        UserInfo theUser_2 = new UserInfo(TEST_USER_ID_2);
+        TEST_USER_INFO = new UserInfo(TEST_USER_ID);
+        TEST_USER_INFO_2 = new UserInfo(TEST_USER_ID_2);
 
         Collection<UserInfo> theUserInfoCollection = new ConcurrentLinkedQueue<UserInfo>();
-        theUserInfoCollection.add(theUser_1);
-        theUserInfoCollection.add(theUser_2);
+        theUserInfoCollection.add(TEST_USER_INFO);
+        theUserInfoCollection.add(TEST_USER_INFO_2);
 
         return theUserInfoCollection;
     }

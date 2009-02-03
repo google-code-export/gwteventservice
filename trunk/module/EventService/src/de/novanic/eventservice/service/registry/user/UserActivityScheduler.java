@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * UserActivityScheduler observes the activities of the users/clients and can report timeouts.
  * To observe the users/clients, the UserActivityScheduler must be started with the start method
- * ({@link UserActivityScheduler#start()}).
+ * ({@link UserActivityScheduler#start(boolean)}).
  *
  * @author sstrohschein
  *         <br>Date: 20.01.2009
@@ -40,6 +40,7 @@ public class UserActivityScheduler
     private Timer myTimer;
     private TimeoutTimerTask myTimeoutTimerTask;
     private long myTimeoutInterval;
+    private boolean isAutoClean;
     private boolean isActive;
 
     /**
@@ -85,9 +86,11 @@ public class UserActivityScheduler
     /**
      * That method starts the UserActivityScheduler to observe the users/clients. The activities will be checked like
      * the timeout interval is configured ({@link de.novanic.eventservice.config.EventServiceConfiguration#getTimeoutTime()}).
+     * @param isAutoClean when set to true, the users/clients are removed automatically on timeout
      */
-    public void start() {
+    public void start(boolean isAutoClean) {
         if(!isActive) {
+            this.isAutoClean = isAutoClean;
             myTimer = new Timer();
             myTimeoutTimerTask = new TimeoutTimerTask();
             isActive = true;
@@ -116,7 +119,7 @@ public class UserActivityScheduler
 
     /**
      * Returns the state of the UserActivityScheduler. Returns true when the UserActivityScheduler is started
-     * ({@link UserActivityScheduler#start()}) and false when the UserActivityScheduler isn't started or stopped
+     * ({@link UserActivityScheduler#start(boolean)}) and false when the UserActivityScheduler isn't started or stopped
      * ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#stop()}).
      * @return true when running/started, false when running (not started or stopped)
      */
@@ -151,7 +154,7 @@ public class UserActivityScheduler
 
     /**
      * That method is used to measure the timeout and it will remove the user automatically, if configured with the start method
-     * ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#start()}).
+     * ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#start(boolean)}).
      * @param aTimeoutTimerTask TimeoutTimerTask
      */
     private void schedule(Timer aTimer, TimeoutTimerTask aTimeoutTimerTask, long aTimeoutInterval) {
@@ -162,20 +165,26 @@ public class UserActivityScheduler
      * The TimeoutTimerTask runs in the interval which is configured with {@link de.novanic.eventservice.config.EventServiceConfiguration#getTimeoutTime()}.
      * All added {@link de.novanic.eventservice.service.UserTimeoutListener} get informed about the occurred timeout
      * with the execution of that {@link java.util.TimerTask}. The TimeoutTimerTask starts when the UserActivityScheduler
-     * is started ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#start()}) and stops when
+     * is started ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#start(boolean)}) and stops when
      * the UserActivityScheduler is stopped ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#stop()}).
      */
     private class TimeoutTimerTask extends TimerTask
     {
         public void run() {
-            long theTimeoutCriteriatTime = createCurrentTime() - myTimeoutInterval;
+            long theTimeoutCriteriaTime = createCurrentTime() - myTimeoutInterval;
 
             synchronized(myTimeoutListeners) {
-                for(UserInfo theUserInfo: myUserInfoCollection) {
-                    if(isTimeout(theUserInfo, theTimeoutCriteriatTime)) {
+                Iterator<UserInfo> theUserInfoIterator = myUserInfoCollection.iterator();
+                while(theUserInfoIterator.hasNext()) {
+                    UserInfo theUserInfo = theUserInfoIterator.next();
+                    if(isTimeout(theUserInfo, theTimeoutCriteriaTime)) {
                         //report about user timeout
                         for(UserTimeoutListener theTimeoutListener: myTimeoutListeners) {
                             theTimeoutListener.onTimeout(theUserInfo);
+                        }
+                        //remove the user/client automatically if auto-clean is switched on
+                        if(isAutoClean) {
+                            theUserInfoIterator.remove();
                         }
                     }
                 }

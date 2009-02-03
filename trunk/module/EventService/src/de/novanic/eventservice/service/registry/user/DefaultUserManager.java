@@ -19,7 +19,8 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
-import java.util.Collection;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The UserManager is a container for {@link de.novanic.eventservice.service.registry.user.UserInfo} and provides various
@@ -28,42 +29,71 @@ import java.util.Collection;
  * as a singleton.
  *
  * @author sstrohschein
- *         <br>Date: 03.02.2009
- *         <br>Time: 00:20:09
+ *         <br>Date: 27.01.2009
+ *         <br>Time: 22:05:42
  */
-public interface UserManager
+public class DefaultUserManager implements UserManager
 {
+    private Map<String, UserInfo> myUserMap;
+    private UserActivityScheduler myUserActivityScheduler;
+
+    /**
+     * Creates a new UserManager. To create the UserManager as a singleton (default), the UserManager can be created with
+     * {@link de.novanic.eventservice.service.registry.user.UserManagerFactory#getUserManager(long)})
+     * @param aTimeoutInterval timeout interval (is only required if the {@link de.novanic.eventservice.service.registry.user.UserActivityScheduler}
+     * needs to be started.
+     */
+    public DefaultUserManager(long aTimeoutInterval) {
+        myUserMap = new ConcurrentHashMap<String, UserInfo>();
+        myUserActivityScheduler = new UserActivityScheduler(myUserMap.values(), aTimeoutInterval);
+    }
+
     /**
      * Creates and adds the {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id.
      * @param aUserId id of the user to add
      * @return created {@link de.novanic.eventservice.service.registry.user.UserInfo}
      */
-    UserInfo addUser(String aUserId);
+    public UserInfo addUser(String aUserId) {
+        UserInfo theUserInfo = getUser(aUserId);
+        if(theUserInfo == null) {
+            theUserInfo = new UserInfo(aUserId);
+        }
+        addUser(theUserInfo);
+        return theUserInfo;
+    }
 
     /**
      * Adds the {@link de.novanic.eventservice.service.registry.user.UserInfo} to the UserManager.
      * @param aUserInfo {@link de.novanic.eventservice.service.registry.user.UserInfo} to add
      */
-    void addUser(UserInfo aUserInfo);
+    public void addUser(UserInfo aUserInfo) {
+        myUserMap.put(aUserInfo.getUserId(), aUserInfo);
+    }
 
     /**
      * Removes the {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id.
      * @param aUserId user id of the {@link de.novanic.eventservice.service.registry.user.UserInfo} to remove
      * @return removed {@link de.novanic.eventservice.service.registry.user.UserInfo}
      */
-    UserInfo removeUser(String aUserId);
+    public UserInfo removeUser(String aUserId) {
+        return myUserMap.remove(aUserId);
+    }
 
     /**
      * Removes the {@link de.novanic.eventservice.service.registry.user.UserInfo}.
      * @param aUserInfo {@link de.novanic.eventservice.service.registry.user.UserInfo} to remove
      * @return true if it had an effect, otherwise false
      */
-    boolean removeUser(UserInfo aUserInfo);
+    public boolean removeUser(UserInfo aUserInfo) {
+        return (removeUser(aUserInfo.getUserId()) != null);
+    }
 
     /**
      * Removes all added {@link UserInfo} objects.
      */
-    void removeUsers();
+    public void removeUsers() {
+        myUserMap.clear();
+    }
 
     /**
      * Returns the {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id. It returns NULL when no
@@ -72,13 +102,17 @@ public interface UserManager
      * @return {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id. NULL when no
      * {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id is added.
      */
-    UserInfo getUser(String aUserId);
+    public UserInfo getUser(String aUserId) {
+        return myUserMap.get(aUserId);
+    }
 
     /**
      * Returns the count of the added {@link de.novanic.eventservice.service.registry.user.UserInfo} objects.
      * @return count of the added {@link de.novanic.eventservice.service.registry.user.UserInfo} objects
      */
-    int getUserCount();
+    public int getUserCount() {
+        return myUserMap.size();
+    }
 
     /**
      * Returns all added {@link de.novanic.eventservice.service.registry.user.UserInfo} objects. It returns an empty
@@ -86,29 +120,39 @@ public interface UserManager
      * {@link de.novanic.eventservice.service.registry.user.UserInfo} objects are added.
      * @return all added {@link de.novanic.eventservice.service.registry.user.UserInfo} objects
      */
-    Collection<UserInfo> getUsers();
+    public Collection<UserInfo> getUsers() {
+        return myUserMap.values();
+    }
 
     /**
      * Activates the {@link UserActivityScheduler} to observe the user activities. When the users/clients should be
      * removed automatically, please use {@link de.novanic.eventservice.service.registry.user.UserManager#activateUserActivityScheduler(boolean)}.
      */
-    void activateUserActivityScheduler();
+    public void activateUserActivityScheduler() {
+        activateUserActivityScheduler(false);
+    }
 
     /**
      * Activates the {@link UserActivityScheduler} to observe the user activities.
      * @param isAutoClean when set to true, the users/clients are removed automatically on timeout
      */
-    void activateUserActivityScheduler(boolean isAutoClean);
+    public void activateUserActivityScheduler(boolean isAutoClean) {
+        myUserActivityScheduler.start(isAutoClean);
+    }
 
     /**
      * Deactivates the {@link UserActivityScheduler}. See {@link UserActivityScheduler} for more information.
      */
-    void deactivateUserActivityScheduler();
+    public void deactivateUserActivityScheduler() {
+        myUserActivityScheduler.stop();
+    }
 
     /**
      * Returns the {@link UserActivityScheduler} which is instantiated with the UserManager. The method
      * {@link UserManager#activateUserActivityScheduler()} must be called to start the {@link UserActivityScheduler}.
      * @return the {@link UserActivityScheduler} which is instantiated with the UserManager
      */
-    UserActivityScheduler getUserActivityScheduler();
+    public UserActivityScheduler getUserActivityScheduler() {
+        return myUserActivityScheduler;
+    }
 }
