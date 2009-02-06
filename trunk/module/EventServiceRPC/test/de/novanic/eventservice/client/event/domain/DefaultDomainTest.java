@@ -54,6 +54,17 @@ public class DefaultDomainTest extends TestCase
         assertFalse(theDomain.compareTo(theDomain_3) == 0);
     }
 
+    public void testCompareTo() {
+        final String theName = "testName1";
+        Domain theDomain = new DefaultDomain(theName);
+        
+        assertEquals(0, theDomain.compareTo(theDomain));
+        assertEquals(0, theDomain.compareTo(new DefaultDomain(theName)));
+        assertEquals(-1, theDomain.compareTo(new DefaultDomain("testName2")));
+        assertEquals(1, theDomain.compareTo(new DefaultDomain("testName0")));
+        assertEquals(1, theDomain.compareTo(null));
+    }
+
     public void testInit_Error() {
         Domain theDomain = new DefaultDomain();
         assertNull(theDomain.getName());

@@ -28,7 +28,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
  * <br>Date: 05.08.2008
  * <br>Time: 17:25:12
  */
-public class DefaultDomainEvent implements DomainEvent
+public class DefaultDomainEvent implements DomainEvent, Comparable<DomainEvent>
 {
     private Event myEvent;
     private Domain myDomain;
@@ -86,6 +86,32 @@ public class DefaultDomainEvent implements DomainEvent
      */
     public Domain getDomain() {
         return myDomain;
+    }
+
+    public int compareTo(DomainEvent aDomainEvent) {
+        int theCompareResult = 0;
+        if(myDomain != null) {
+            theCompareResult = myDomain.compareTo(aDomainEvent.getDomain());
+        } else if(aDomainEvent.getDomain() != null) {
+            theCompareResult--;
+        }
+
+        //when not decided
+        if(theCompareResult == 0) {
+            if(myEvent != null) {
+                theCompareResult = compareEvent(myEvent, aDomainEvent.getEvent());
+            } else if(aDomainEvent.getEvent() != null) {
+                theCompareResult--;
+            }
+        }
+        return theCompareResult;
+    }
+
+    private int compareEvent(Event anEvent_1, Event anEvent_2) {
+        if(anEvent_2 != null) {
+            return anEvent_1.getClass().getName().compareTo(anEvent_2.getClass().getName());
+        }
+        return 1;
     }
 
     public boolean equals(Object anObject) {

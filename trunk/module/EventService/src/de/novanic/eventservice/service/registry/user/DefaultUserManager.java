@@ -103,7 +103,10 @@ public class DefaultUserManager implements UserManager
      * {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id is added.
      */
     public UserInfo getUser(String aUserId) {
-        return myUserMap.get(aUserId);
+        if(aUserId != null) {
+            return myUserMap.get(aUserId);
+        }
+        return null;
     }
 
     /**
