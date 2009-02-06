@@ -70,7 +70,10 @@ public final class DefaultDomain implements Domain
     }
 
     public int compareTo(Domain aDomain) {
-        return myName.compareTo(aDomain.getName());
+        if(aDomain != null) {
+            return myName.compareTo(aDomain.getName());
+        }
+        return 1;
     }
 
     public boolean equals(Object anObject) {

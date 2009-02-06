@@ -25,9 +25,12 @@ import de.novanic.eventservice.service.testhelper.AddEventRunnable;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author sstrohschein
@@ -36,18 +39,23 @@ import java.util.ArrayList;
  */
 public abstract class EventServiceServerThreadingTest extends EventServiceTestCase
 {
+    private static Logger LOG = Logger.getLogger(EventServiceServerThreadingTest.class.getName());
+
     private EventService myEventService;
     private EventRegistry myEventRegistry;
     private Collection<EventThread> myEventThreads;
     private Collection<ListenStartResult> myListenStartResults;
+    private long myStartTime;
 
     public void setUp(EventService anEventService) {
+        myStartTime = PlatformUtil.getCurrentTime();
         myEventService = anEventService;
         myEventThreads = new ArrayList<EventThread>();
         myListenStartResults = new ArrayList<ListenStartResult>();
     }
 
     public void setUp(EventRegistry anEventRegistry) {
+        myStartTime = PlatformUtil.getCurrentTime();
         myEventRegistry = anEventRegistry;
         myEventThreads = new ArrayList<EventThread>();
         myListenStartResults = new ArrayList<ListenStartResult>();
@@ -57,6 +65,12 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         //Join all threads to ensure that the next test doesn't collidate with other threads.
         joinEventThreads();
         joinListenThreads();
+
+        if(LOG.isLoggable(Level.INFO) && myStartTime > 0) {
+            long theExecutionTime = PlatformUtil.getCurrentTime() - myStartTime;
+            LOG.log(Level.INFO, "Execution time: " + theExecutionTime + "ms (" + theExecutionTime / 1000 + " second(s))");
+        }
+        myStartTime = 0;
     }
 
     public void joinEventThreads() throws EventServiceServerThreadingTestException {
