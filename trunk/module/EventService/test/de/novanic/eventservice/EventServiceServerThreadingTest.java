@@ -19,9 +19,9 @@
  */
 package de.novanic.eventservice;
 
-import de.novanic.eventservice.service.testhelper.ListenStartResult;
-import de.novanic.eventservice.service.testhelper.ListenRunnable;
-import de.novanic.eventservice.service.testhelper.AddEventRunnable;
+import de.novanic.eventservice.test.testhelper.ListenStartResult;
+import de.novanic.eventservice.test.testhelper.ListenRunnable;
+import de.novanic.eventservice.test.testhelper.AddEventRunnable;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.domain.Domain;

@@ -17,32 +17,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.service.testhelper;
+package de.novanic.eventservice.test.testhelper;
 
 import de.novanic.eventservice.client.event.Event;
-import de.novanic.eventservice.client.event.filter.EventFilter;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author sstrohschein
  * <br>Date: 17.08.2008
- * <br>Time: 21:50:42
- *
- * Filters every second event.
+ * <br>Time: 21:54:44
  */
-public class TestEventFilter implements EventFilter
+public class DummyEvent implements Event
 {
-    private AtomicBoolean isExcluded;
+    private static final String DUMMY_EVENT_KEY = DummyEvent.class.getName();
 
-    public TestEventFilter() {
-        isExcluded = new AtomicBoolean(true);
+    private int myId;
+
+    public DummyEvent() {
+        myId = AutoIncrementFactory.getInstance().getNextValue(DUMMY_EVENT_KEY);
     }
 
-    public boolean match(Event anEvent) {
-        //atomic toggle (every second event is filtered)
-        boolean theOldIsExcluded = isExcluded.get();
-        while(!(isExcluded.compareAndSet(theOldIsExcluded, !theOldIsExcluded))) {}
-        return !theOldIsExcluded;
+    public int getId() {
+        return myId;
+    }
+
+    public boolean equals(Object anObject) {
+        if(this == anObject) {
+            return true;
+        }
+        if(anObject == null || getClass() != anObject.getClass()) {
+            return false;
+        }
+        DummyEvent that = (DummyEvent)anObject;
+        return myId == that.myId;
+    }
+
+    public int hashCode() {
+        return myId;
+    }
+
+    public String toString() {
+        return "Event: DummyEvent";
     }
 }

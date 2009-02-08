@@ -22,7 +22,7 @@ package de.novanic.eventservice.service;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.service.EventService;
-import de.novanic.eventservice.service.testhelper.*;
+import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 
 import java.util.*;

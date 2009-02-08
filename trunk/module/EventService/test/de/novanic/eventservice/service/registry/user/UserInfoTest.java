@@ -23,8 +23,8 @@ import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.DomainEvent;
-import de.novanic.eventservice.service.testhelper.DummyEvent;
-import de.novanic.eventservice.service.testhelper.TestEventFilter;
+import de.novanic.eventservice.test.testhelper.DummyEvent;
+import de.novanic.eventservice.test.testhelper.TestEventFilter;
 
 import java.util.List;
 

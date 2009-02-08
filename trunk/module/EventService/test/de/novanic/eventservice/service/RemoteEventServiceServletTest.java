@@ -29,7 +29,11 @@ import de.novanic.eventservice.service.exception.NoSessionAvailableException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import org.easymock.MockControl;
 
 /**
  * @author sstrohschein
@@ -38,8 +42,24 @@ import java.util.List;
  */
 public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
 {
+    private MockControl myRequestMockControl;
+    private MockControl mySessionMockControl;
+
     public EventExecutorService initEventExecutorService() {
-        return new DummyRemoteEventServiceServlet();
+        return setUpRemoteEventServiceServlet();
+    }
+
+    public void setUp() throws Exception {
+        super.setUp();
+        setUpRemoteEventServiceServlet();
+    }
+
+    public void tearDown() throws Exception {
+        myRequestMockControl.verify();
+        mySessionMockControl.verify();
+        myRequestMockControl.reset();
+        mySessionMockControl.reset();
+        super.tearDown();
     }
 
     public void testInit_SessionLess() {
@@ -54,6 +74,30 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         } catch(Exception e) {
             fail("No Exception expected, because the HTTPRequest shouldn't be used!");
         }
+    }
+
+    public void testInit_SessionDummy() {
+        RemoteEventServiceServlet theRemoteEventServiceServlet = setUpRemoteEventServiceServlet();
+        assertFalse(theRemoteEventServiceServlet.isUserRegistered());
+    }
+
+    private RemoteEventServiceServlet setUpRemoteEventServiceServlet() {
+        myRequestMockControl = MockControl.createControl(HttpServletRequest.class);
+        HttpServletRequest theRequestMock = (HttpServletRequest)myRequestMockControl.getMock();
+
+        mySessionMockControl = MockControl.createControl(HttpSession.class);
+        HttpSession theSessionMock = (HttpSession)mySessionMockControl.getMock();
+
+        theRequestMock.getSession();
+        myRequestMockControl.setDefaultReturnValue(theSessionMock);
+
+        theSessionMock.getId();
+        mySessionMockControl.setDefaultReturnValue(TEST_USER_ID);
+
+        myRequestMockControl.replay();
+        mySessionMockControl.replay();
+
+        return new DummyRemoteEventServiceServlet_Request(theRequestMock);
     }
 
     public void testAddEvent_Init_WithoutSession() throws Exception {
@@ -111,15 +155,10 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         assertTrue(theEvents.isEmpty());
     }
 
-    private class DummyRemoteEventServiceServlet extends RemoteEventServiceServlet {
-        protected EventExecutorService getEventExecutorService() {
-            return new DefaultEventExecutorService(TEST_USER_ID);
-        }
-    }
-
     private class DummyRemoteEventServiceServletOriginal extends RemoteEventServiceServlet {}
 
-    private class DummyRemoteEventServlet extends RemoteEventServiceServlet {
+    private class DummyRemoteEventServlet extends RemoteEventServiceServlet
+    {
         private final Domain myDomain;
         private final Event myEvent;
 
@@ -138,6 +177,19 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
 
         public void addEventUserSpecificCall() {
             addEventUserSpecific(myEvent);
+        }
+    }
+
+    private class DummyRemoteEventServiceServlet_Request extends RemoteEventServiceServlet
+    {
+        private HttpServletRequest myRequest;
+
+        public DummyRemoteEventServiceServlet_Request(HttpServletRequest aRequest) {
+            myRequest = aRequest;
+        }
+
+        protected HttpServletRequest getRequest() {
+            return myRequest;
         }
     }
 }

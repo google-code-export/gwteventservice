@@ -17,20 +17,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.service.testhelper;
+package de.novanic.eventservice.test.testhelper;
 
 import de.novanic.eventservice.client.event.Event;
+import de.novanic.eventservice.client.event.filter.EventFilter;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author sstrohschein
  * <br>Date: 17.08.2008
- * <br>Time: 21:47:11
+ * <br>Time: 21:50:42
+ *
+ * Filters every second event.
  */
-public class ListenCycleCancelEvent implements Event
+public class TestEventFilter implements EventFilter
 {
-    public ListenCycleCancelEvent() {}
+    private AtomicBoolean isExcluded;
 
-    public String toString() {
-        return "Event: ListenCycleCancelEvent";
+    public TestEventFilter() {
+        isExcluded = new AtomicBoolean(true);
+    }
+
+    public boolean match(Event anEvent) {
+        //atomic toggle (every second event is filtered)
+        boolean theOldIsExcluded = isExcluded.get();
+        while(!(isExcluded.compareAndSet(theOldIsExcluded, !theOldIsExcluded))) {}
+        return !theOldIsExcluded;
     }
 }
