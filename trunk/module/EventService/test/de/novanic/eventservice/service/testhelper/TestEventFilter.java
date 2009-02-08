@@ -22,6 +22,8 @@ package de.novanic.eventservice.service.testhelper;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * @author sstrohschein
  * <br>Date: 17.08.2008
@@ -31,10 +33,16 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
  */
 public class TestEventFilter implements EventFilter
 {
-    private boolean isExcluded = true;
+    private AtomicBoolean isExcluded;
+
+    public TestEventFilter() {
+        isExcluded = new AtomicBoolean(true);
+    }
 
     public boolean match(Event anEvent) {
-        isExcluded = !isExcluded;
-        return isExcluded;
+        //atomic toggle (every second event is filtered)
+        boolean theOldIsExcluded = isExcluded.get();
+        while(!(isExcluded.compareAndSet(theOldIsExcluded, !theOldIsExcluded))) {}
+        return !theOldIsExcluded;
     }
 }

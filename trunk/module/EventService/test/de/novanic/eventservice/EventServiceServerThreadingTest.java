@@ -25,10 +25,10 @@ import de.novanic.eventservice.service.testhelper.AddEventRunnable;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.util.PlatformUtil;
 
-import java.util.Collection;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -120,12 +120,45 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
     }
 
     public Thread startAddEvent(Domain aDomain, long aWaitingTime) {
-        EventThread theEventThread = new EventThread(new AddEventRunnable(aDomain, aWaitingTime));
+        EventThread theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aDomain, aWaitingTime));
         return startAddEvent(theEventThread);
     }
 
     public Thread startAddEvent(String aUser, long aWaitingTime) {
-        EventThread theEventThread = new EventThread(new AddEventRunnable(aUser, aWaitingTime));
+        EventThread theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aUser, aWaitingTime));
+        return startAddEvent(theEventThread);
+    }
+
+    protected void startAddEvent(String[] aUserIds, Domain aDomain, long aWaitingTime, boolean isUserSpecific) {
+        startAddEvent(aUserIds, aDomain, aWaitingTime, isUserSpecific, true);
+    }
+
+    protected void startAddEvent(String[] aUserIds, Domain aDomain, long aWaitingTime, boolean isUserSpecific, boolean isCheckUser) {
+        if(isUserSpecific) {
+            for(String theUserId: aUserIds) {
+                startAddEvent(theUserId, aDomain, aWaitingTime, isUserSpecific, isCheckUser);
+            }
+        } else {
+            startAddEvent((String)null, aDomain, aWaitingTime, isUserSpecific, false);
+        }
+    }
+
+    protected Thread startAddEvent(String aUserId, Domain aDomain, long aWaitingTime, boolean isUserSpecific) {
+        return startAddEvent(aUserId, aDomain, aWaitingTime, isUserSpecific, true);
+    }
+
+    protected Thread startAddEvent(String aUserId, Domain aDomain, long aWaitingTime, boolean isUserSpecific, boolean isCheckUser) {
+        if(isCheckUser) {
+            assertTrue("The user \"" + aUserId + "\" isn't registered for domain \"" + aDomain + "\", but expected in test case!",
+                    myEventRegistry.getListenDomains(aUserId).contains(aDomain));
+        }
+
+        EventThread theEventThread;
+        if(isUserSpecific) {
+            theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aUserId, aWaitingTime));
+        } else {
+            theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aDomain, aWaitingTime));
+        }
         return startAddEvent(theEventThread);
     }
 
@@ -133,6 +166,22 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         myEventThreads.add(anEventThread);
         anEventThread.start();
         return anEventThread;
+    }
+
+    protected void addEvent(String aUserId, Domain aDomain, Event anEvent, boolean isUserSpecific) {
+        addEvent(aUserId, aDomain, anEvent, isUserSpecific, true);
+    }
+
+    protected void addEvent(String aUserId, Domain aDomain, Event anEvent, boolean isUserSpecific, boolean isCheckUser) {
+        if(isCheckUser) {
+            assertTrue("The user \"" + aUserId + "\" isn't registered for domain \"" + aDomain + "\", but expected in test case!",
+                    myEventRegistry.getListenDomains(aUserId).contains(aDomain));
+        }
+        if(isUserSpecific) {
+            myEventRegistry.addEventUserSpecific(aUserId, anEvent);
+        } else {
+            myEventRegistry.addEvent(aDomain, anEvent);
+        }
     }
 
     public int listen() throws EventServiceServerThreadingTestException {
@@ -156,11 +205,14 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
     }
 
     public int getEventCount(Domain aDomain) {
-        int theListenEventCount = 0;
+        Set<Event> theEvents = new HashSet<Event>(myListenStartResults.size() * 3);
         for(ListenStartResult theListenStartResult: myListenStartResults) {
-            theListenEventCount += theListenStartResult.getListenResult().getEventCount(aDomain);
+            final Collection<Event> theNewEvents = theListenStartResult.getListenResult().getDomainEvents().get(aDomain);
+            if(theNewEvents != null) {
+                theEvents.addAll(theNewEvents);
+            }
         }
-        return theListenEventCount;
+        return theEvents.size();
     }
 
     public int getEventCount(String aUser) {

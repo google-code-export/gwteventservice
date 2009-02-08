@@ -28,7 +28,32 @@ import de.novanic.eventservice.client.event.Event;
  */
 public class DummyEvent implements Event
 {
-    public DummyEvent() {}
+    private static final String DUMMY_EVENT_KEY = DummyEvent.class.getName();
+
+    private int myId;
+
+    public DummyEvent() {
+        myId = AutoIncrementFactory.getInstance().getNextValue(DUMMY_EVENT_KEY);
+    }
+
+    public int getId() {
+        return myId;
+    }
+
+    public boolean equals(Object anObject) {
+        if(this == anObject) {
+            return true;
+        }
+        if(anObject == null || getClass() != anObject.getClass()) {
+            return false;
+        }
+        DummyEvent that = (DummyEvent)anObject;
+        return myId == that.myId;
+    }
+
+    public int hashCode() {
+        return myId;
+    }
 
     public String toString() {
         return "Event: DummyEvent";

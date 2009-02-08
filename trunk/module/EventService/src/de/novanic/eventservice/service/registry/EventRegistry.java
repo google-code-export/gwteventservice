@@ -117,6 +117,12 @@ public interface EventRegistry
     Set<Domain> getListenDomains(String aUserId);
 
     /**
+     * Returns all registered/activated domains.
+     * @return all registered/activated domains
+     */
+    Set<Domain> getListenDomains();
+
+    /**
      * Adds an event to a domain.
      * @param aDomain domain for the event
      * @param anEvent event to add

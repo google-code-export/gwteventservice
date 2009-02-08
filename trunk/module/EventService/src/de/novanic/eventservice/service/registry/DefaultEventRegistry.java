@@ -212,16 +212,14 @@ public class DefaultEventRegistry implements EventRegistry
             EventServiceConfiguration theConfiguration = getConfiguration();
             Thread.sleep(theConfiguration.getMinWaitingTime());
             if(theUserInfo != null) {
-                synchronized(theUserInfo) {
-                    myUserActivityScheduler.reportUserActivity(theUserInfo);
-                    if(theUserInfo.getEvents().isEmpty()) {
+                myUserActivityScheduler.reportUserActivity(theUserInfo);
+                if(theUserInfo.isEventsEmpty()) {
+                    //monitor for event notification
+                    synchronized(theUserInfo) {
                         theUserInfo.wait(theConfiguration.getMaxWaitingTime());
                     }
-
-                    final List<DomainEvent> theEvents = theUserInfo.getEvents();
-                    theUserInfo.clearEvents();
-                    return theEvents;
                 }
+                return theUserInfo.retrieveEvents();
             }
         } catch(InterruptedException e) {
             LOG.error("Listen was interrupted (client id \"" + aUserId + "\")!", e);
@@ -238,10 +236,8 @@ public class DefaultEventRegistry implements EventRegistry
         UserInfo theUserInfo = getUserInfo(aUserId);
         if(theUserInfo != null) {
             LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
-            synchronized(theUserInfo) {
-                addEventUserSpecific(theUserInfo, new UnlistenEvent(aDomain));
-                removeUser(aDomain, theUserInfo);
-            }
+            addEventUserSpecific(theUserInfo, new UnlistenEvent(aDomain));
+            removeUser(aDomain, theUserInfo);
         }
     }
 
@@ -261,10 +257,8 @@ public class DefaultEventRegistry implements EventRegistry
     public void unlisten(UserInfo aUserInfo) {
         if(aUserInfo != null) {
             LOG.debug(aUserInfo.getUserId() + ": unlisten.");
-            synchronized(aUserInfo) {
-                addEventUserSpecific(aUserInfo, new UnlistenEvent());
-                removeUser(aUserInfo);
-            }
+            addEventUserSpecific(aUserInfo, new UnlistenEvent());
+            removeUser(aUserInfo);
         }
     }
 
@@ -320,11 +314,19 @@ public class DefaultEventRegistry implements EventRegistry
     }
 
     /**
+     * Returns all registered/activated domains.
+     * @return all registered/activated domains
+     */
+    public Set<Domain> getListenDomains() {
+        return myDomainUserInfoMap.keySet();
+    }
+
+    /**
      * Adds an event to a domain.
      * @param aDomain domain for the event
      * @param anEvent event to add
      */
-    public synchronized void addEvent(Domain aDomain, Event anEvent) {
+    public void addEvent(Domain aDomain, Event anEvent) {
         LOG.debug("Event \"" + anEvent + "\" added to domain \"" + aDomain + "\".");
         final Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
         //if the domain doesn't exist/no users assigned, no users must be notified for the event...
@@ -340,7 +342,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserId user
      * @param anEvent event
      */
-    public synchronized void addEventUserSpecific(String aUserId, Event anEvent) {
+    public void addEventUserSpecific(String aUserId, Event anEvent) {
         UserInfo theUserInfo = getUserInfo(aUserId);
         addEventUserSpecific(theUserInfo, anEvent);
     }
@@ -350,7 +352,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserInfo user
      * @param anEvent event
      */
-    private synchronized void addEventUserSpecific(UserInfo aUserInfo, Event anEvent) {
+    private void addEventUserSpecific(UserInfo aUserInfo, Event anEvent) {
         if(aUserInfo != null) {
             LOG.debug("User specific event \"" + anEvent + "\" added to client id \"" + aUserInfo + "\".");
             addEvent(null, aUserInfo, anEvent);

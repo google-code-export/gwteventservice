@@ -66,4 +66,12 @@ public class ListenResult
         }
         return 0;
     }
+
+    public Map<Domain, Collection<Event>> getDomainEvents() {
+        return myDomainEvents;
+    }
+
+    public Map<String, Collection<Event>> getUserEvents() {
+        return myUserEvents;
+    }
 }

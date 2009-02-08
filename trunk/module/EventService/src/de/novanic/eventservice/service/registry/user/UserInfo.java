@@ -27,6 +27,8 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * UserInfo is a class to represent all users/clients and to manage all their information.
@@ -40,7 +42,7 @@ import java.util.*;
 public class UserInfo
 {
     private final String myUserId;
-    private List<DomainEvent> myEvents;
+    private final Queue<DomainEvent> myEvents;
     private final Map<Domain, EventFilter> myDomainEventFilters;
     private long myLastActivityTime;
 
@@ -50,8 +52,8 @@ public class UserInfo
      */
     public UserInfo(String aUserId) {
         myUserId = aUserId;
-        myEvents = new ArrayList<DomainEvent>();
-        myDomainEventFilters = new HashMap<Domain, EventFilter>();
+        myEvents = new ConcurrentLinkedQueue<DomainEvent>();
+        myDomainEventFilters = new ConcurrentHashMap<Domain, EventFilter>();
         myLastActivityTime = PlatformUtil.getCurrentTime();
     }
 
@@ -68,7 +70,7 @@ public class UserInfo
      * @param aDomain domain
      * @param anEvent event
      */
-    public synchronized void addEvent(Domain aDomain, Event anEvent) {
+    public void addEvent(Domain aDomain, Event anEvent) {
         DomainEvent theDomainEvent = new DefaultDomainEvent(anEvent, aDomain);
         myEvents.add(theDomainEvent);
         doNotifyAll();
@@ -82,18 +84,20 @@ public class UserInfo
     }
 
     /**
-     * Removes all events from the user.
-     */
-    public synchronized void clearEvents() {
-        myEvents = new ArrayList<DomainEvent>();
-    }
-
-    /**
-     * Returns all recorded events.
+     * Returns and removes all recorded events.
      * @return all events according to the user
      */
-    public List<DomainEvent> getEvents() {
-        return myEvents;
+    public List<DomainEvent> retrieveEvents() {
+        List<DomainEvent> theEventList = new ArrayList<DomainEvent>();
+        DomainEvent theEvent;
+        while((theEvent = myEvents.poll()) != null) {
+            theEventList.add(theEvent);
+        }
+        return theEventList;
+    }
+
+    public boolean isEventsEmpty() {
+        return (myEvents.peek() == null);
     }
 
     /**
@@ -102,7 +106,9 @@ public class UserInfo
      * @param anEventFilter EventFilter to filter the events for the domain
      */
     public void setEventFilter(final Domain aDomain, EventFilter anEventFilter) {
-        myDomainEventFilters.put(aDomain, anEventFilter);
+        if(anEventFilter != null) {
+            myDomainEventFilters.put(aDomain, anEventFilter);
+        }
     }
 
     /**
@@ -110,7 +116,7 @@ public class UserInfo
      * @param aDomain domain where the EventFilter to remove is applied.
      */
     public boolean removeEventFilter(final Domain aDomain) {
-        return myDomainEventFilters.remove(aDomain) != null;
+        return aDomain != null && myDomainEventFilters.remove(aDomain) != null;
     }
 
     /**
@@ -119,7 +125,10 @@ public class UserInfo
      * @return EventFilter for the domain
      */
     public EventFilter getEventFilter(Domain aDomain) {
-        return myDomainEventFilters.get(aDomain);
+        if(aDomain != null) {
+            return myDomainEventFilters.get(aDomain);
+        }
+        return null;
     }
 
     /**
