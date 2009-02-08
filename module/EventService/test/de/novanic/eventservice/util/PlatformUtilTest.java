@@ -21,6 +21,9 @@ package de.novanic.eventservice.util;
 
 import junit.framework.TestCase;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author sstrohschein
  *         <br>Date: 11.01.2009
@@ -34,6 +37,27 @@ public class PlatformUtilTest extends TestCase
         final String theNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
         if(theNewLineChar != null) {
             assertEquals(theNewLineChar, PlatformUtil.getNewLine());
+        }
+    }
+
+    public void testGetNewLine_2() {
+        final String theCreateNewLineCharMethodName = "createNewLineChar";
+        final String theOldNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
+        try {
+            System.clearProperty(LINE_SEPARATOR_PROPERTY);
+
+            Method theCreateNewLineCharMethod = PlatformUtil.class.getDeclaredMethod(theCreateNewLineCharMethodName, new Class[]{});
+            theCreateNewLineCharMethod.setAccessible(true);
+            String theCreatedNewLineChar = (String)theCreateNewLineCharMethod.invoke(null);
+            assertEquals("\n", theCreatedNewLineChar);
+        } catch(NoSuchMethodException e) {
+            fail("The method \"" + theCreateNewLineCharMethodName + "\" could not be found (" + e.getMessage() + ")!");
+        } catch(IllegalAccessException e) {
+            fail("The method \"" + theCreateNewLineCharMethodName + "\" could not be accessed (" + e.getMessage() + ")!");
+        } catch(InvocationTargetException e) {
+            fail("The method \"" + theCreateNewLineCharMethodName + "\" could not be invoked (" + e.getMessage() + ")!");
+        } finally {
+            System.setProperty(LINE_SEPARATOR_PROPERTY, theOldNewLineChar);
         }
     }
 

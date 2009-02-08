@@ -99,6 +99,30 @@ public class UserManagerTest extends TestCase
         assertEquals(2, myUserManager.getUserCount());
     }
 
+    public void testAddUser_Error() {
+        assertEquals(0, myUserManager.getUserCount());
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+        assertEquals(0, myUserManager.getUserCount());
+        
+        myUserManager.addUser((UserInfo)null);
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+        assertEquals(0, myUserManager.getUserCount());
+    }
+
+    public void testAddUser_Error_2() {
+        assertEquals(0, myUserManager.getUserCount());
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+        assertEquals(0, myUserManager.getUserCount());
+        
+        myUserManager.addUser((String)null);
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+        assertEquals(0, myUserManager.getUserCount());
+    }
+
     public void testRemoveUser() {
         //test remove without users
         assertEquals(0, myUserManager.getUserCount());
@@ -181,6 +205,32 @@ public class UserManagerTest extends TestCase
         assertEquals(0, myUserManager.getUserCount());
     }
 
+    public void testRemoveUser_Error() {
+        assertEquals(0, myUserManager.getUserCount());
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+
+        assertFalse(myUserManager.removeUser(TEST_USER_INFO));
+        assertFalse(myUserManager.removeUser((UserInfo)null));
+
+        assertEquals(0, myUserManager.getUserCount());
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+    }
+
+    public void testRemoveUser_Error_2() {
+        assertEquals(0, myUserManager.getUserCount());
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+
+        assertFalse(myUserManager.removeUser(TEST_USER_INFO));
+        assertNull(myUserManager.removeUser((String)null));
+
+        assertEquals(0, myUserManager.getUserCount());
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertNull(myUserManager.getUser(null));
+    }
+
     public void testRemoveUsers() {
         assertEquals(0, myUserManager.getUserCount());
         myUserManager.removeUsers();
@@ -193,6 +243,19 @@ public class UserManagerTest extends TestCase
 
         myUserManager.removeUsers();
         assertEquals(0, myUserManager.getUserCount());
+    }
+
+    public void testGetUser() {
+        assertNull(myUserManager.getUser("unknownUser"));
+        assertNull(myUserManager.getUser(null));
+
+        UserInfo theAddedUser = myUserManager.addUser(TEST_USER_ID);
+        assertEquals(TEST_USER_ID, theAddedUser.getUserId());
+        
+        UserInfo theReturnedUser = myUserManager.getUser(TEST_USER_ID);
+        assertNotNull(theReturnedUser);
+        assertEquals(theAddedUser.getUserId(), theReturnedUser.getUserId());
+        assertEquals(theAddedUser, theReturnedUser);
     }
 
     public void testGetUsers() {

@@ -28,9 +28,6 @@ import de.novanic.eventservice.service.EventExecutorServiceFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 
-import java.util.Collection;
-import java.util.ArrayList;
-
 /**
  * @author sstrohschein
  * <br>Date: 23.08.2008
@@ -70,6 +67,28 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_Extreme() throws Exception {
+        testListen_Extreme(false);
+        assertEquals(5000, getEventCount(TEST_DOMAIN));
+        assertEquals(5000, getEventCount(TEST_DOMAIN_2));
+        assertEquals(5000, getEventCount(TEST_DOMAIN_3));
+    }
+
+    /**
+     * Adding 15000 events and a single listen at the end (without threads).
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_Extreme_UserSpecific() throws Exception {
+        testListen_Extreme(true);
+        assertEquals(15000, getEventCount(TEST_USER_ID));
+        assertEquals(0, getEventCount(TEST_USER_ID_2));
+    }
+
+    /**
+     * Adding 15000 events and a single listen at the end (without threads).
+     * @throws Exception
+     */
+    private void testListen_Extreme(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -83,18 +102,15 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
 
         for(int i = 0; i < 5000; i++) {
-            myEventRegistry.addEvent(TEST_DOMAIN_2, new DummyEvent());
-            myEventRegistry.addEvent(TEST_DOMAIN, new DummyEvent());
-            myEventRegistry.addEvent(TEST_DOMAIN_3, new DummyEvent());
+            addEvent(TEST_USER_ID, TEST_DOMAIN_2, new DummyEvent(), isUserSpecific);
+            addEvent(TEST_USER_ID, TEST_DOMAIN, new DummyEvent(), isUserSpecific);
+            addEvent(TEST_USER_ID, TEST_DOMAIN_3, new DummyEvent(), isUserSpecific);
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(15000, getEventCount());
-        assertEquals(5000, getEventCount(TEST_DOMAIN));
-        assertEquals(5000, getEventCount(TEST_DOMAIN_2));
-        assertEquals(5000, getEventCount(TEST_DOMAIN_3));
     }
 
     /**
@@ -102,6 +118,32 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_Extreme_2() throws Exception {
+        testListen_Extreme_2(false);
+        assertEquals(10000, getEventCount());
+        assertEquals(5000, getEventCount(TEST_DOMAIN));
+        assertEquals(5000, getEventCount(TEST_DOMAIN_2));
+        assertEquals(0, getEventCount(TEST_DOMAIN_3));
+    }
+
+    /**
+     * Adding 10000 events and a single listen at the end (without threads). The user is not registered for all domains.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_Extreme_2_UserSpecific() throws Exception {
+        testListen_Extreme_2(true);
+        //more events than testListen_Extreme_2, because the user isn't registered for TEST_DOMAIN_3, but unimportant
+        //for user-specific tests.
+        assertEquals(15000, getEventCount());
+        assertEquals(15000, getEventCount(TEST_USER_ID));
+        assertEquals(0, getEventCount(TEST_USER_ID_2));
+    }
+
+    /**
+     * Adding 10000 events and a single listen at the end (without threads). The user is not registered for all domains.
+     * @throws Exception
+     */
+    private void testListen_Extreme_2(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -112,18 +154,14 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertEquals(2, myEventRegistry.getListenDomains(TEST_USER_ID).size());
 
         for(int i = 0; i < 5000; i++) {
-            myEventRegistry.addEvent(TEST_DOMAIN_2, new DummyEvent());
-            myEventRegistry.addEvent(TEST_DOMAIN, new DummyEvent());
-            myEventRegistry.addEvent(TEST_DOMAIN_3, new DummyEvent());
+            addEvent(TEST_USER_ID, TEST_DOMAIN_2, new DummyEvent(), isUserSpecific);
+            addEvent(TEST_USER_ID, TEST_DOMAIN, new DummyEvent(), isUserSpecific);
+            addEvent(TEST_USER_ID, TEST_DOMAIN_3, new DummyEvent(), isUserSpecific, false);
             assertEquals(2, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
-        assertEquals(10000, getEventCount());
-        assertEquals(5000, getEventCount(TEST_DOMAIN));
-        assertEquals(5000, getEventCount(TEST_DOMAIN_2));
-        assertEquals(0, getEventCount(TEST_DOMAIN_3));
     }
 
     /**
@@ -131,6 +169,28 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading() throws Exception {
+        testListen_ExtremeThreading(false);
+        assertEquals(1500, getEventCount(TEST_DOMAIN));
+        assertEquals(1500, getEventCount(TEST_DOMAIN_2));
+        assertEquals(1500, getEventCount(TEST_DOMAIN_3));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_UserSpecific() throws Exception {
+        testListen_ExtremeThreading(true);
+        assertEquals(4500, getEventCount(TEST_USER_ID));
+        assertEquals(0, getEventCount(TEST_USER_ID_2));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end.
+     * @throws Exception
+     */
+    private void testListen_ExtremeThreading(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -144,15 +204,15 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
 
         for(int i = 0; i < 500; i++) {
-            startAddEvent(TEST_DOMAIN, 0);
-            startAddEvent(TEST_DOMAIN_2, 1);
-            startAddEvent(TEST_DOMAIN_3, 2);
-            startAddEvent(TEST_DOMAIN_2, 4);
-            startAddEvent(TEST_DOMAIN, 3);
-            startAddEvent(TEST_DOMAIN_3, 5);
-            startAddEvent(TEST_DOMAIN, 6);
-            startAddEvent(TEST_DOMAIN_3, 8);
-            startAddEvent(TEST_DOMAIN_2, 7);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 0, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 1, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 2, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 4, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 3, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 5, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 6, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 8, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 7, isUserSpecific);
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
@@ -160,9 +220,6 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());
-        assertEquals(1500, getEventCount(TEST_DOMAIN));
-        assertEquals(1500, getEventCount(TEST_DOMAIN_2));
-        assertEquals(1500, getEventCount(TEST_DOMAIN_3));
     }
 
     /**
@@ -170,6 +227,26 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_2() throws Exception {
+        testListen_ExtremeThreading_2(false);
+        assertEquals(1500, getEventCount(TEST_DOMAIN));
+        assertEquals(1500, getEventCount(TEST_DOMAIN_2));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end. Test with different users.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_2_UserSpecific() throws Exception {
+        testListen_ExtremeThreading_2(true);
+        assertEquals(3000, getEventCount(TEST_USER_ID));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end. Test with different users.
+     * @throws Exception
+     */
+    private void testListen_ExtremeThreading_2(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -184,15 +261,15 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
         for(int i = 0; i < 500; i++) {
-            startAddEvent(TEST_DOMAIN, 0);
-            startAddEvent(TEST_DOMAIN_2, 1);
-            startAddEvent(TEST_DOMAIN_3, 2);
-            startAddEvent(TEST_DOMAIN_2, 4);
-            startAddEvent(TEST_DOMAIN, 3);
-            startAddEvent(TEST_DOMAIN_3, 5);
-            startAddEvent(TEST_DOMAIN, 6);
-            startAddEvent(TEST_DOMAIN_3, 8);
-            startAddEvent(TEST_DOMAIN_2, 7);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 0, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 1, isUserSpecific);
+            startAddEvent(TEST_USER_ID_2, TEST_DOMAIN_3, 2, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 4, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 3, isUserSpecific);
+            startAddEvent(TEST_USER_ID_2, TEST_DOMAIN_3, 5, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 6, isUserSpecific);
+            startAddEvent(TEST_USER_ID_2, TEST_DOMAIN_3, 8, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 7, isUserSpecific);
             assertEquals(2, myEventRegistry.getListenDomains(TEST_USER_ID).size());
             assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
         }
@@ -200,9 +277,12 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         joinEventThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
+
         assertEquals(3000, getEventCount());
-        assertEquals(1500, getEventCount(TEST_DOMAIN));
-        assertEquals(1500, getEventCount(TEST_DOMAIN_2));
+        if(!isUserSpecific) {
+            assertEquals(1500, getEventCount(TEST_DOMAIN));
+            assertEquals(1500, getEventCount(TEST_DOMAIN_2));
+        }
         assertEquals(0, getEventCount(TEST_DOMAIN_3));
 
         final ListenStartResult theListenStartResult_2 = startListen(TEST_USER_ID_2);
@@ -215,6 +295,30 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_3() throws Exception {
+        testListen_ExtremeThreading_3(false);
+        assertEquals(900, getEventCount(TEST_DOMAIN));
+        assertEquals(600, getEventCount(TEST_DOMAIN_2));
+        assertEquals(1, getEventCount(TEST_DOMAIN_3)); //event for TEST_USER_ID_2
+    }
+
+    /**
+     * Adding 2100 events with multithreading and multi listen threads. Another user has only one listen thread and it
+     * will be tested that the listen thread will not be aborted when other events received.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_3_UserSpecific() throws Exception {
+        testListen_ExtremeThreading_3(true);
+        assertEquals(1500, getEventCount(TEST_USER_ID));
+        assertEquals(1, getEventCount(TEST_USER_ID_2)); //event for TEST_USER_ID_2
+    }
+
+    /**
+     * Adding 2100 events with multithreading and multi listen threads. Another user has only one listen thread and it
+     * will be tested that the listen thread will not be aborted when other events received.
+     * @throws Exception
+     */
+    private void testListen_ExtremeThreading_3(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -233,13 +337,13 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         ListenStartResult theListenStartResult = startListen(TEST_USER_ID_2);
 
         for(int i = 0; i < 300; i++) {
-            startAddEvent(TEST_DOMAIN, 0);
-            startAddEvent(TEST_DOMAIN_2, 1);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 0, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 1, isUserSpecific);
             startListen(TEST_USER_ID);
-            startAddEvent(TEST_DOMAIN_2, 3);
-            startAddEvent(TEST_DOMAIN, 4);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 3, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 4, isUserSpecific);
             startListen(TEST_USER_ID);
-            startAddEvent(TEST_DOMAIN, 6);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 6, isUserSpecific);
             assertEquals(2, myEventRegistry.getListenDomains(TEST_USER_ID).size());
             assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
         }
@@ -249,11 +353,13 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertNull(theListenStartResult.getListenResult());
 
         //the listen thread of TEST_USER_ID_2 should abort, because there is an event for TEST_DOMAIN_3.
-        myEventRegistry.addEvent(TEST_DOMAIN_3, new DummyEvent());
+        addEvent(TEST_USER_ID_2, TEST_DOMAIN_3, new DummyEvent(), isUserSpecific);
         Thread.sleep(500);
         assertFalse(theListenStartResult.getThread().isAlive());
         assertNotNull(theListenStartResult.getListenResult());
-        assertEquals(1, theListenStartResult.getListenResult().getEventCount(TEST_DOMAIN_3));
+        if(!isUserSpecific) {
+            assertEquals(1, theListenStartResult.getListenResult().getEventCount(TEST_DOMAIN_3));
+        }
 
         joinEventThreads();
 
@@ -264,9 +370,6 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         joinListenThreads();
 
         assertEquals(1501, getEventCount());
-        assertEquals(900, getEventCount(TEST_DOMAIN));
-        assertEquals(600, getEventCount(TEST_DOMAIN_2));
-        assertEquals(1, getEventCount(TEST_DOMAIN_3)); //event for TEST_USER_ID_2 (analysed above)
     }
 
     /**
@@ -274,6 +377,30 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_4() throws Exception {
+        testListen_ExtremeThreading_4(false);
+
+        assertEquals(900, getEventCount(TEST_DOMAIN));
+        assertEquals(600, getEventCount(TEST_DOMAIN_2));
+        assertEquals(600, getEventCount(TEST_DOMAIN_3));
+    }
+
+    /**
+     * Adding 2100 events with multithreading and a listen thread at every third event.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_4_UserSpecific() throws Exception {
+        testListen_ExtremeThreading_4(true);
+
+        assertEquals(2100, getEventCount(TEST_USER_ID));
+        assertEquals(2100, getEventCount(TEST_USER_ID_2));
+    }
+
+    /**
+     * Adding 2100 events with multithreading and a listen thread at every third event.
+     * @throws Exception
+     */
+    private void testListen_ExtremeThreading_4(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -291,59 +418,32 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
-        Collection<ListenStartResult> theListenStartResults_User = new ArrayList<ListenStartResult>();
-        Collection<ListenStartResult> theListenStartResults_User_2 = new ArrayList<ListenStartResult>();
-
-        ListenStartResult theListenStartResult_User = startListen(TEST_USER_ID);
-        theListenStartResults_User.add(theListenStartResult_User);
-
-        ListenStartResult theListenStartResult_User_2 = startListen(TEST_USER_ID_2);
-        theListenStartResults_User_2.add(theListenStartResult_User_2);
+        startListen(TEST_USER_ID);
+        startListen(TEST_USER_ID_2);
 
         for(int i = 0; i < 300; i++) {
-            theListenStartResult_User = startListen(TEST_USER_ID);
-            theListenStartResults_User.add(theListenStartResult_User);
-            startAddEvent(TEST_DOMAIN, 0);
-            startAddEvent(TEST_DOMAIN_2, 1);
-            startAddEvent(TEST_DOMAIN_3, 2);
-            theListenStartResult_User_2 = startListen(TEST_USER_ID_2);
-            theListenStartResults_User_2.add(theListenStartResult_User_2);
-            theListenStartResult_User = startListen(TEST_USER_ID);
-            theListenStartResults_User.add(theListenStartResult_User);
-            startAddEvent(TEST_DOMAIN_2, 3);
-            startAddEvent(TEST_DOMAIN, 4);
-            startAddEvent(TEST_DOMAIN_3, 5);
-            theListenStartResult_User_2 = startListen(TEST_USER_ID_2);
-            theListenStartResults_User_2.add(theListenStartResult_User_2);
-            startAddEvent(TEST_DOMAIN, 6);
+            startListen(TEST_USER_ID);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN, 0, isUserSpecific);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN_2, 1, isUserSpecific);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN_3, 2, isUserSpecific);
+            startListen(TEST_USER_ID_2);
+            startListen(TEST_USER_ID);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN_2, 3, isUserSpecific);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN, 4, isUserSpecific);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN_3, 5, isUserSpecific);
+            startListen(TEST_USER_ID_2);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN, 6, isUserSpecific);
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
         joinEventThreads();
 
-        theListenStartResult_User = startListen(TEST_USER_ID);
-        theListenStartResults_User.add(theListenStartResult_User);
-        theListenStartResult_User_2 = startListen(TEST_USER_ID_2);
-        theListenStartResults_User_2.add(theListenStartResult_User_2);
+        startListen(TEST_USER_ID);
+        startListen(TEST_USER_ID_2);
         Thread.sleep(500);
         myEventRegistry.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
         joinListenThreads();
-
-        //check events for TEST_USER_ID
-        int theEventCount = 0;
-        for(ListenStartResult theListenStartResult: theListenStartResults_User) {
-            theEventCount += theListenStartResult.getListenResult().getEventCount();
-        }
-        assertEquals(2100, theEventCount);
-
-        //check events for TEST_USER_ID_2 (should be equal to the events of TEST_USER_ID)
-        int theEventCount_2 = 0;
-        for(ListenStartResult theListenStartResult: theListenStartResults_User_2) {
-            theEventCount_2 += theListenStartResult.getListenResult().getEventCount();
-        }
-        assertEquals(2100, theEventCount_2);
-        assertEquals(theEventCount, theEventCount_2);
     }
 
     /**
@@ -351,6 +451,33 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_EventFilter() throws Exception {
+        testListen_ExtremeThreading_EventFilter(false);
+
+        assertEquals(3750, getEventCount());
+        assertEquals(1500, getEventCount(TEST_DOMAIN));
+        assertEquals(750, getEventCount(TEST_DOMAIN_2)); //every second event of TEST_DOMAIN_2 was filtered
+        assertEquals(1500, getEventCount(TEST_DOMAIN_3));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_EventFilter_UserSpecific() throws Exception {
+        testListen_ExtremeThreading_EventFilter(true);
+
+        //All added events will be returned (The EventFilter doesn't filter the events, because the events are added user-specific and not to a domain.).
+        assertEquals(4500, getEventCount());
+        assertEquals(4500, getEventCount(TEST_USER_ID));
+        assertEquals(0, getEventCount(TEST_USER_ID_2));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered.
+     * @throws Exception
+     */
+    private void testListen_ExtremeThreading_EventFilter(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -366,25 +493,21 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         myEventRegistry.setEventFilter(TEST_DOMAIN_2, TEST_USER_ID, new TestEventFilter());
 
         for(int i = 0; i < 500; i++) {
-            startAddEvent(TEST_DOMAIN, 0);
-            startAddEvent(TEST_DOMAIN_2, 1);
-            startAddEvent(TEST_DOMAIN_3, 2);
-            startAddEvent(TEST_DOMAIN_2, 4);
-            startAddEvent(TEST_DOMAIN, 3);
-            startAddEvent(TEST_DOMAIN_3, 5);
-            startAddEvent(TEST_DOMAIN, 6);
-            startAddEvent(TEST_DOMAIN_3, 8);
-            startAddEvent(TEST_DOMAIN_2, 7);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 0, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 1, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 2, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 4, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 3, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 5, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 6, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 8, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_2, 7, isUserSpecific);
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
         joinEventThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
-        assertEquals(3750, getEventCount());
-        assertEquals(1500, getEventCount(TEST_DOMAIN));
-        assertEquals(750, getEventCount(TEST_DOMAIN_2)); //every second event of TEST_DOMAIN_2 was filtered
-        assertEquals(1500, getEventCount(TEST_DOMAIN_3));
     }
 
     /**
@@ -393,6 +516,39 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_EventFilter_2() throws Exception {
+        testListen_ExtremeThreading_EventFilter_2(false);
+        
+        assertEquals(1500, getEventCount(TEST_DOMAIN));
+        assertEquals(1500, getEventCount(TEST_DOMAIN_2));
+        assertEquals(1500, getEventCount(TEST_DOMAIN_3));
+
+        //every second event of TEST_DOMAIN_2 was filtered for TEST_USER_ID_2
+        final ListenStartResult theListenStartResult_2 = startListen(TEST_USER_ID_2);
+        assertEquals(750, joinListen(theListenStartResult_2));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered, but only
+     * for another user.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_EventFilter_2_UserSpecific() throws Exception {
+        testListen_ExtremeThreading_EventFilter_2(true);
+
+        assertEquals(4500, getEventCount(TEST_USER_ID));
+
+        //All added events will be returned (The EventFilter doesn't filter the events, because the events are added user-specific and not to a domain.).
+        final ListenStartResult theListenStartResult_2 = startListen(TEST_USER_ID_2);
+        assertEquals(1500, joinListen(theListenStartResult_2));
+    }
+
+    /**
+     * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered, but only
+     * for another user.
+     * @throws Exception
+     */
+    private void testListen_ExtremeThreading_EventFilter_2(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -415,15 +571,15 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         myEventRegistry.setEventFilter(TEST_DOMAIN_2, TEST_USER_ID_2, new TestEventFilter());
 
         for(int i = 0; i < 500; i++) {
-            startAddEvent(TEST_DOMAIN, 0);
-            startAddEvent(TEST_DOMAIN_2, 1);
-            startAddEvent(TEST_DOMAIN_3, 2);
-            startAddEvent(TEST_DOMAIN_2, 4);
-            startAddEvent(TEST_DOMAIN, 3);
-            startAddEvent(TEST_DOMAIN_3, 5);
-            startAddEvent(TEST_DOMAIN, 6);
-            startAddEvent(TEST_DOMAIN_3, 8);
-            startAddEvent(TEST_DOMAIN_2, 7);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 0, isUserSpecific);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN_2, 1, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 2, isUserSpecific);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN_2, 4, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 3, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 5, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, 6, isUserSpecific);
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN_3, 8, isUserSpecific);
+            startAddEvent(new String[]{TEST_USER_ID, TEST_USER_ID_2}, TEST_DOMAIN_2, 7, isUserSpecific);
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
             assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
         }
@@ -432,12 +588,5 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());
-        assertEquals(1500, getEventCount(TEST_DOMAIN));
-        assertEquals(1500, getEventCount(TEST_DOMAIN_2));
-        assertEquals(1500, getEventCount(TEST_DOMAIN_3));
-
-        //every second event of TEST_DOMAIN_2 was filtered for TEST_USER_ID_2
-        final ListenStartResult theListenStartResult_2 = startListen(TEST_USER_ID_2);
-        assertEquals(750, joinListen(theListenStartResult_2));
     }
 }

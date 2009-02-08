@@ -54,11 +54,14 @@ public class DefaultUserManager implements UserManager
      * @return created {@link de.novanic.eventservice.service.registry.user.UserInfo}
      */
     public UserInfo addUser(String aUserId) {
-        UserInfo theUserInfo = getUser(aUserId);
-        if(theUserInfo == null) {
-            theUserInfo = new UserInfo(aUserId);
+        UserInfo theUserInfo = null;
+        if(aUserId != null) {
+            theUserInfo = getUser(aUserId);
+            if(theUserInfo == null) {
+                theUserInfo = new UserInfo(aUserId);
+            }
+            addUser(theUserInfo);
         }
-        addUser(theUserInfo);
         return theUserInfo;
     }
 
@@ -67,7 +70,9 @@ public class DefaultUserManager implements UserManager
      * @param aUserInfo {@link de.novanic.eventservice.service.registry.user.UserInfo} to add
      */
     public void addUser(UserInfo aUserInfo) {
-        myUserMap.put(aUserInfo.getUserId(), aUserInfo);
+        if(aUserInfo != null) {
+            myUserMap.put(aUserInfo.getUserId(), aUserInfo);
+        }
     }
 
     /**
@@ -76,7 +81,10 @@ public class DefaultUserManager implements UserManager
      * @return removed {@link de.novanic.eventservice.service.registry.user.UserInfo}
      */
     public UserInfo removeUser(String aUserId) {
-        return myUserMap.remove(aUserId);
+        if(aUserId != null) {
+            return myUserMap.remove(aUserId);
+        }
+        return null;
     }
 
     /**
@@ -85,7 +93,7 @@ public class DefaultUserManager implements UserManager
      * @return true if it had an effect, otherwise false
      */
     public boolean removeUser(UserInfo aUserInfo) {
-        return (removeUser(aUserInfo.getUserId()) != null);
+        return aUserInfo != null && (removeUser(aUserInfo.getUserId()) != null);
     }
 
     /**
