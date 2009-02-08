@@ -20,10 +20,10 @@
 package de.novanic.eventservice.service.registry;
 
 import de.novanic.eventservice.EventServiceServerThreadingTest;
-import de.novanic.eventservice.service.testhelper.DummyEvent;
-import de.novanic.eventservice.service.testhelper.ListenStartResult;
-import de.novanic.eventservice.service.testhelper.ListenCycleCancelEvent;
-import de.novanic.eventservice.service.testhelper.TestEventFilter;
+import de.novanic.eventservice.test.testhelper.DummyEvent;
+import de.novanic.eventservice.test.testhelper.ListenStartResult;
+import de.novanic.eventservice.test.testhelper.ListenCycleCancelEvent;
+import de.novanic.eventservice.test.testhelper.TestEventFilter;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;

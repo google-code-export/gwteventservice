@@ -26,8 +26,8 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.client.event.listen.UnlistenEvent;
-import de.novanic.eventservice.service.testhelper.TestEventFilter;
-import de.novanic.eventservice.service.testhelper.DummyEvent;
+import de.novanic.eventservice.test.testhelper.TestEventFilter;
+import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 

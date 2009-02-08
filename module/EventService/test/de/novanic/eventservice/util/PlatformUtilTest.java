@@ -21,8 +21,7 @@ package de.novanic.eventservice.util;
 
 import junit.framework.TestCase;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
+import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
 
 /**
  * @author sstrohschein
@@ -32,6 +31,10 @@ import java.lang.reflect.InvocationTargetException;
 public class PlatformUtilTest extends TestCase
 {
     private static final String LINE_SEPARATOR_PROPERTY = "line.separator";
+
+    public void testPrivateConstructor() {
+        assertNotNull(new PrivateMethodExecutor<PlatformUtil>(PlatformUtil.class).executePrivateConstructor());
+    }
 
     public void testGetNewLine() {
         final String theNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
@@ -43,19 +46,12 @@ public class PlatformUtilTest extends TestCase
     public void testGetNewLine_2() {
         final String theCreateNewLineCharMethodName = "createNewLineChar";
         final String theOldNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
+
         try {
             System.clearProperty(LINE_SEPARATOR_PROPERTY);
 
-            Method theCreateNewLineCharMethod = PlatformUtil.class.getDeclaredMethod(theCreateNewLineCharMethodName, new Class[]{});
-            theCreateNewLineCharMethod.setAccessible(true);
-            String theCreatedNewLineChar = (String)theCreateNewLineCharMethod.invoke(null);
+            String theCreatedNewLineChar = (String)new PrivateMethodExecutor<PlatformUtil>(PlatformUtil.class).executePrivateMethod(theCreateNewLineCharMethodName);
             assertEquals("\n", theCreatedNewLineChar);
-        } catch(NoSuchMethodException e) {
-            fail("The method \"" + theCreateNewLineCharMethodName + "\" could not be found (" + e.getMessage() + ")!");
-        } catch(IllegalAccessException e) {
-            fail("The method \"" + theCreateNewLineCharMethodName + "\" could not be accessed (" + e.getMessage() + ")!");
-        } catch(InvocationTargetException e) {
-            fail("The method \"" + theCreateNewLineCharMethodName + "\" could not be invoked (" + e.getMessage() + ")!");
         } finally {
             System.setProperty(LINE_SEPARATOR_PROPERTY, theOldNewLineChar);
         }

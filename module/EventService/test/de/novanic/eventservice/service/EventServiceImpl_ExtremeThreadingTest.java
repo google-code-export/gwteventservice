@@ -21,9 +21,9 @@ package de.novanic.eventservice.service;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.service.testhelper.ListenStartResult;
-import de.novanic.eventservice.service.testhelper.DummyEvent;
-import de.novanic.eventservice.service.testhelper.ListenCycleCancelEvent;
+import de.novanic.eventservice.test.testhelper.ListenStartResult;
+import de.novanic.eventservice.test.testhelper.DummyEvent;
+import de.novanic.eventservice.test.testhelper.ListenCycleCancelEvent;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 
 /**

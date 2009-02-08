@@ -93,14 +93,18 @@ public abstract class RemoteEventServiceServlet extends RemoteServiceServlet imp
      * Creates an instance of {@link de.novanic.eventservice.service.EventExecutorService}.
      * @return a new instance of {@link de.novanic.eventservice.service.EventExecutorService}
      */
-    protected EventExecutorService getEventExecutorService() {
+    private EventExecutorService getEventExecutorService() {
         final EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
 
         HttpSession theSession = null;
-        final HttpServletRequest theRequest = getThreadLocalRequest();
+        final HttpServletRequest theRequest = getRequest();
         if(theRequest != null) {
             theSession = theRequest.getSession();
         }
         return theEventExecutorServiceFactory.getEventExecutorService(theSession);
+    }
+
+    protected HttpServletRequest getRequest() {
+        return getThreadLocalRequest();
     }
 }
