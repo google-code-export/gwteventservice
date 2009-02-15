@@ -111,6 +111,8 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(15000, getEventCount());
+
+        checkEventSequence();
     }
 
     /**
@@ -162,6 +164,8 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
+
+        checkEventSequence();
     }
 
     /**

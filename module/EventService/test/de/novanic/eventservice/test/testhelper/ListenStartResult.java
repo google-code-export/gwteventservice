@@ -23,7 +23,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
 
 import java.util.Map;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author sstrohschein
@@ -49,8 +49,8 @@ public class ListenStartResult
     }
 
     public ListenResult getListenResult() {
-        Map<Domain, Collection<Event>> theDomainEvents = myListenRunnable.getDomainEvents();
-        Map<String, Collection<Event>> theUserEvents = myListenRunnable.getUserEvents();
+        Map<Domain, List<Event>> theDomainEvents = myListenRunnable.getDomainEvents();
+        Map<String, List<Event>> theUserEvents = myListenRunnable.getUserEvents();
         //the listen call is finished when the events are initialized
         if(theDomainEvents != null && theUserEvents != null) {
             return new ListenResult(theDomainEvents, theUserEvents);

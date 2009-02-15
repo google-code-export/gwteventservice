@@ -19,41 +19,14 @@
  */
 package de.novanic.eventservice.test.testhelper;
 
+import de.novanic.eventservice.client.event.Event;
+
 /**
  * @author sstrohschein
- * <br>Date: 17.08.2008
- * <br>Time: 21:54:44
+ *         <br>Date: 15.02.2009
+ *         <br>Time: 15:37:46
  */
-public class DummyEvent implements UniqueIdEvent
+public interface UniqueIdEvent extends Event
 {
-    private static final String DUMMY_EVENT_KEY = DummyEvent.class.getName();
-
-    private int myId;
-
-    public DummyEvent() {
-        myId = AutoIncrementFactory.getInstance().getNextValue(DUMMY_EVENT_KEY);
-    }
-
-    public int getId() {
-        return myId;
-    }
-
-    public boolean equals(Object anObject) {
-        if(this == anObject) {
-            return true;
-        }
-        if(anObject == null || getClass() != anObject.getClass()) {
-            return false;
-        }
-        DummyEvent that = (DummyEvent)anObject;
-        return myId == that.myId;
-    }
-
-    public int hashCode() {
-        return myId;
-    }
-
-    public String toString() {
-        return "DummyEvent (id " + myId + ')';
-    }
+    int getId();
 }

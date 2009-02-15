@@ -24,6 +24,7 @@ import de.novanic.eventservice.client.event.Event;
 
 import java.util.Map;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author sstrohschein
@@ -32,10 +33,10 @@ import java.util.Collection;
  */
 public class ListenResult
 {
-    private Map<Domain, Collection<Event>> myDomainEvents;
-    private Map<String, Collection<Event>> myUserEvents;
+    private Map<Domain, List<Event>> myDomainEvents;
+    private Map<String, List<Event>> myUserEvents;
 
-    public ListenResult(Map<Domain, Collection<Event>> aDomainEvents, Map<String, Collection<Event>> aUserEvents) {
+    public ListenResult(Map<Domain, List<Event>> aDomainEvents, Map<String, List<Event>> aUserEvents) {
         myDomainEvents = aDomainEvents;
         myUserEvents = aUserEvents;
     }
@@ -67,11 +68,11 @@ public class ListenResult
         return 0;
     }
 
-    public Map<Domain, Collection<Event>> getDomainEvents() {
+    public Map<Domain, List<Event>> getDomainEvents() {
         return myDomainEvents;
     }
 
-    public Map<String, Collection<Event>> getUserEvents() {
+    public Map<String, List<Event>> getUserEvents() {
         return myUserEvents;
     }
 }
