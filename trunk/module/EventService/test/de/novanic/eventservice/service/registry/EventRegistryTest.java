@@ -56,7 +56,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     private Level myOldLoggingLevel;
     private Logger myLogger;
 
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         setUp(createConfiguration(0, 500, 2500));
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         setUp(myEventRegistry);
@@ -821,12 +822,12 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
         
         myEventRegistry.addEventUserSpecific(TEST_USER_ID, new DummyEvent());
-        testLog(4, "Server: User specific event \"Event: DummyEvent\" added to client id \"test_user_id\".",
-                "Server: Event: DummyEvent for user \"test_user_id\".");
+        testLog(4, "Server: User specific event \"DummyEvent (id 1)\" added to client id \"test_user_id\".",
+                "Server: DummyEvent (id 1) for user \"test_user_id\".");
 
         myEventRegistry.addEventUserSpecific(TEST_USER_ID_2, new DummyEvent());
-        testLog(6, "Server: User specific event \"Event: DummyEvent\" added to client id \"test_user_id_2\".",
-                "Server: Event: DummyEvent for user \"test_user_id_2\".");
+        testLog(6, "Server: User specific event \"DummyEvent (id 2)\" added to client id \"test_user_id_2\".",
+                "Server: DummyEvent (id 2) for user \"test_user_id_2\".");
     }
 
     public void testAddUserSpecificEvent_2() throws Exception {

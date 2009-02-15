@@ -37,8 +37,8 @@ public class ListenRunnable implements Runnable
     private EventService myEventService;
     private EventRegistry myEventRegistry;
     private String myUserId;
-    private Map<Domain, Collection<Event>> myDomainEvents;
-    private Map<String, Collection<Event>> myUserEvents;
+    private Map<Domain, List<Event>> myDomainEvents;
+    private Map<String, List<Event>> myUserEvents;
     private boolean isStarted;
 
     public ListenRunnable(EventService anEventService) {
@@ -60,8 +60,8 @@ public class ListenRunnable implements Runnable
             theDomainEvents = myEventRegistry.listen(myUserId);
         }
 
-        Map<String, Collection<Event>> theUserEventMap = new HashMap<String, Collection<Event>>();
-        Map<Domain, Collection<Event>> theDomainEventMap = new HashMap<Domain, Collection<Event>>();
+        Map<String, List<Event>> theUserEventMap = new HashMap<String, List<Event>>();
+        Map<Domain, List<Event>> theDomainEventMap = new HashMap<Domain, List<Event>>();
 
         if(theDomainEvents != null) {
             for(DomainEvent theDomainEvent: theDomainEvents) {
@@ -78,8 +78,8 @@ public class ListenRunnable implements Runnable
         myDomainEvents = theDomainEventMap;
     }
 
-    private void processUserEvent(Map<String, Collection<Event>> aUserEventMap, Event anEvent) {
-        Collection<Event> theEvents = aUserEventMap.get(myUserId);
+    private void processUserEvent(Map<String, List<Event>> aUserEventMap, Event anEvent) {
+        List<Event> theEvents = aUserEventMap.get(myUserId);
         if(theEvents == null) {
             theEvents = new ArrayList<Event>();
             aUserEventMap.put(myUserId, theEvents);
@@ -87,8 +87,8 @@ public class ListenRunnable implements Runnable
         theEvents.add(anEvent);
     }
 
-    private void processDomainEvent(Map<Domain, Collection<Event>> aDomainEventMap, DomainEvent aDomainEvent) {
-        Collection<Event> theEvents = aDomainEventMap.get(aDomainEvent.getDomain());
+    private void processDomainEvent(Map<Domain, List<Event>> aDomainEventMap, DomainEvent aDomainEvent) {
+        List<Event> theEvents = aDomainEventMap.get(aDomainEvent.getDomain());
         if(theEvents == null) {
             theEvents = new ArrayList<Event>();
             aDomainEventMap.put(aDomainEvent.getDomain(), theEvents);
@@ -96,11 +96,11 @@ public class ListenRunnable implements Runnable
         theEvents.add(aDomainEvent.getEvent());
     }
 
-    public Map<String, Collection<Event>> getUserEvents() {
+    public Map<String, List<Event>> getUserEvents() {
         return myUserEvents;
     }
 
-    public Map<Domain, Collection<Event>> getDomainEvents() {
+    public Map<Domain, List<Event>> getDomainEvents() {
         return myDomainEvents;
     }
 

@@ -19,9 +19,7 @@
  */
 package de.novanic.eventservice;
 
-import de.novanic.eventservice.test.testhelper.ListenStartResult;
-import de.novanic.eventservice.test.testhelper.ListenRunnable;
-import de.novanic.eventservice.test.testhelper.AddEventRunnable;
+import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -52,6 +50,7 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         myEventService = anEventService;
         myEventThreads = new ArrayList<EventThread>();
         myListenStartResults = new ArrayList<ListenStartResult>();
+        AutoIncrementFactory.reset();
     }
 
     public void setUp(EventRegistry anEventRegistry) {
@@ -59,6 +58,7 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         myEventRegistry = anEventRegistry;
         myEventThreads = new ArrayList<EventThread>();
         myListenStartResults = new ArrayList<ListenStartResult>();
+        AutoIncrementFactory.reset();
     }
 
     public void tearDown() throws Exception {
@@ -71,6 +71,7 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
             LOG.log(Level.INFO, "Execution time: " + theExecutionTime + "ms (" + theExecutionTime / 1000 + " second(s))");
         }
         myStartTime = 0;
+        AutoIncrementFactory.reset();
     }
 
     public void joinEventThreads() throws EventServiceServerThreadingTestException {
@@ -221,6 +222,39 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
             theListenEventCount += theListenStartResult.getListenResult().getEventCount(aUser);
         }
         return theListenEventCount;
+    }
+
+    public void checkEventSequence() {
+        for(ListenStartResult theListenStartResult: myListenStartResults) {
+            checkEventSequence(theListenStartResult);
+        }
+    }
+
+    public void checkEventSequence(ListenStartResult aListenStartResult) {
+        Map<Domain, List<Event>> theAllDomainEvents = aListenStartResult.getListenResult().getDomainEvents();
+        for(List<Event> theDomainSpecificEvents: theAllDomainEvents.values()) {
+            checkEventSequence(theDomainSpecificEvents);
+        }
+
+        Map<String, List<Event>> theAllUserEvents = aListenStartResult.getListenResult().getUserEvents();
+        for(List<Event> theUserSpecificEvents: theAllUserEvents.values()) {
+            checkEventSequence(theUserSpecificEvents);
+        }
+    }
+
+    private void checkEventSequence(List<Event> anEventList) {
+        int theLastEventId = -1;
+        for(Event theEvent: anEventList) {
+            if(theEvent instanceof UniqueIdEvent) {
+                final int theCurrentEventId = ((UniqueIdEvent)theEvent).getId();
+                assertTrue("Last event: " + theLastEventId + "; Current event: " + theCurrentEventId, theLastEventId < theCurrentEventId);
+                theLastEventId = theCurrentEventId;
+            }
+        }
+
+        if(theLastEventId == -1 && !(anEventList.isEmpty())) {
+            fail("There are no unique events available! To check the event sequence there must be events available which implement \"" + UniqueIdEvent.class.getName() + "\".");
+        }
     }
 
     public void joinListenThreads() throws EventServiceServerThreadingTestException {

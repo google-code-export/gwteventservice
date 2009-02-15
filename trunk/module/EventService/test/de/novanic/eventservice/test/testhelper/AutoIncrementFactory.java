@@ -54,6 +54,10 @@ public class AutoIncrementFactory
         return getAtomic(aKey).incrementAndGet();
     }
 
+    public static synchronized void reset() {
+        myInstance = null;
+    }
+
     private AtomicInteger getAtomic(String aKey) {
         AtomicInteger theAtomicInteger = myAutoIncrementMap.get(aKey);
         if(theAtomicInteger == null) {
