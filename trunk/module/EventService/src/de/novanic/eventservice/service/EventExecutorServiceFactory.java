@@ -65,7 +65,17 @@ public class EventExecutorServiceFactory
         if(aHttpSession != null) {
             theClientId = aHttpSession.getId();
         }
-        return new DefaultEventExecutorService(theClientId);
+        return getEventExecutorService(theClientId);
+    }
+
+    /**
+     * This method should be used to create an instance of EventExecutorService.
+     * EventExecutorService is a singleton, so this method returns always the same instance of EventExecutorService.
+     * @param aClientId the client/user id
+     * @return EventRegistry (singleton)
+     */
+    public EventExecutorService getEventExecutorService(final String aClientId) {
+        return new DefaultEventExecutorService(aClientId);
     }
 
     public static void reset() {
