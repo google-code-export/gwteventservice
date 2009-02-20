@@ -88,7 +88,7 @@ public class UserInfo
      * @return all events according to the user
      */
     public List<DomainEvent> retrieveEvents() {
-        List<DomainEvent> theEventList = new ArrayList<DomainEvent>();
+        List<DomainEvent> theEventList = new ArrayList<DomainEvent>(myEvents.size());
         DomainEvent theEvent;
         while((theEvent = myEvents.poll()) != null) {
             theEventList.add(theEvent);
@@ -97,7 +97,7 @@ public class UserInfo
     }
 
     public boolean isEventsEmpty() {
-        return (myEvents.peek() == null);
+        return myEvents.isEmpty();
     }
 
     /**
@@ -114,6 +114,8 @@ public class UserInfo
     /**
      * Removes the EventFilter for a domain.
      * @param aDomain domain where the EventFilter to remove is applied.
+     * @return true when the {@link de.novanic.eventservice.client.event.filter.EventFilter} is removed, otherwise false
+     * (for example the {@link de.novanic.eventservice.client.event.filter.EventFilter} was already removed before)
      */
     public boolean removeEventFilter(final Domain aDomain) {
         return aDomain != null && myDomainEventFilters.remove(aDomain) != null;

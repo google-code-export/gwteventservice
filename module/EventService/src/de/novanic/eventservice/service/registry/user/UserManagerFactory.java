@@ -82,7 +82,8 @@ public class UserManagerFactory
 
     /**
      * Returns the {@link de.novanic.eventservice.service.registry.user.UserManager} as a singleton.
-     * @param aTimeoutInterval
+     * @param aTimeoutInterval timeout interval (is only required if the {@link de.novanic.eventservice.service.registry.user.UserActivityScheduler}
+     * needs to be started).
      * @return {@link de.novanic.eventservice.service.registry.user.UserManager} (singleton)
      */
     public synchronized UserManager getUserManager(long aTimeoutInterval) {

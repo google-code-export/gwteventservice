@@ -37,10 +37,10 @@ public class UserActivityScheduler
 {
     private final Collection<UserInfo> myUserInfoCollection;
     private final List<UserTimeoutListener> myTimeoutListeners;
+    private final long myTimeoutInterval;
     private Timer myTimer;
     private TimeoutTimerTask myTimeoutTimerTask;
-    private long myTimeoutInterval;
-    private boolean isAutoClean;
+    private boolean myIsAutoClean;
     private boolean isActive;
 
     /**
@@ -90,7 +90,7 @@ public class UserActivityScheduler
      */
     public void start(boolean isAutoClean) {
         if(!isActive) {
-            this.isAutoClean = isAutoClean;
+            myIsAutoClean = isAutoClean;
             myTimer = new Timer();
             myTimeoutTimerTask = new TimeoutTimerTask();
             isActive = true;
@@ -155,10 +155,11 @@ public class UserActivityScheduler
     /**
      * That method is used to measure the timeout and it will remove the user automatically, if configured with the start method
      * ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#start(boolean)}).
+     * @param aTimer timer to schedule
      * @param aTimeoutTimerTask TimeoutTimerTask
      */
     private void schedule(Timer aTimer, TimeoutTimerTask aTimeoutTimerTask, long aTimeoutInterval) {
-        aTimer.schedule(aTimeoutTimerTask, 0, aTimeoutInterval);
+        aTimer.schedule(aTimeoutTimerTask, 0L, aTimeoutInterval);
     }
 
     /**
@@ -183,7 +184,7 @@ public class UserActivityScheduler
                             theTimeoutListener.onTimeout(theUserInfo);
                         }
                         //remove the user/client automatically if auto-clean is switched on
-                        if(isAutoClean) {
+                        if(myIsAutoClean) {
                             theUserInfoIterator.remove();
                         }
                     }

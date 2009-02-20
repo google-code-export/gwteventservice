@@ -95,7 +95,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
     {
         private InputStream myInputStream;
 
-        public DummyClassLoader(InputStream anInputStream) {
+        private DummyClassLoader(InputStream anInputStream) {
             myInputStream = anInputStream;
         }
 

@@ -51,13 +51,13 @@ public class RemoteEventServiceConfigurationTest extends EventServiceTestCase
         EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2);
         assertEquals(theConfiguration, theConfiguration);
         assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2));
-        assertTrue(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2)));
+        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2));
         assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2).hashCode());
 
         EventServiceConfiguration theConfiguration_2 = null;
         assertFalse(theConfiguration.equals(theConfiguration_2));
         assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2)));
-        assertFalse(theConfiguration.hashCode() == new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2).hashCode());
+        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2).hashCode());
         assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 9, 2)));
         assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 9)));
     }

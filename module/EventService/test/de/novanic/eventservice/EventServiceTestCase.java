@@ -53,7 +53,7 @@ public abstract class EventServiceTestCase extends TestCase
     }
 
     public void tearDownEventServiceConfiguration() {
-        EventServiceConfigurationFactory.getInstance().reset();
+        EventServiceConfigurationFactory.reset();
         EventRegistryFactory.reset();
     }
 

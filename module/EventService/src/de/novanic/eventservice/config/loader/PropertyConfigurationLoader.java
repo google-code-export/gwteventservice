@@ -46,7 +46,7 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
     private static final String MIN_WAITING_TIME_TAG = "time.waiting.min";
     private static final String TIMEOUT_TIME_TAG = "time.timeout";
 
-    private String myPropertyName;
+    private final String myPropertyName;
 
     /**
      * Creates a {@link PropertyConfigurationLoader} with the default properties ("eventservice.properties").
@@ -146,10 +146,10 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
      * @return configuration description
      */
     private String getConfigDescription() {
-        StringBuffer theConfigDescriptionBuffer = new StringBuffer(15 + myPropertyName.length());
+        StringBuilder theConfigDescriptionBuffer = new StringBuilder(15 + myPropertyName.length());
         theConfigDescriptionBuffer.append("Properties \"");
         theConfigDescriptionBuffer.append(myPropertyName);
-        theConfigDescriptionBuffer.append("\"");
+        theConfigDescriptionBuffer.append('\"');
         return theConfigDescriptionBuffer.toString();
     }
 }

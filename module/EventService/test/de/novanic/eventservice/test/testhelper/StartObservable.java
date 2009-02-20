@@ -17,31 +17,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import de.novanic.eventservice.service.registry.EventRegistry_ExtremeThreadingTest;
-import de.novanic.eventservice.service.EventServiceImpl_ExtremeThreadingTest;
-import de.novanic.eventservice.util.TestLoggingConfigurator;
+package de.novanic.eventservice.test.testhelper;
 
 /**
  * @author sstrohschein
- * <br>Date: 23.08.2008
- * <br>Time: 10:21:30
+ *         <br>Date: 20.02.2009
+ *         <br>Time: 19:15:30
  */
-public class EventService_ExtremeThreadingTestSuite
+public interface StartObservable
 {
-    private EventService_ExtremeThreadingTestSuite() {}
-
-    public static Test suite() throws Exception {
-        TestSuite theSuite = new TestSuite("EventService - ExtremeThreading-Tests");
-
-        TestLoggingConfigurator.configureLogging();
-
-        theSuite.addTestSuite(EventRegistry_ExtremeThreadingTest.class);
-        theSuite.addTestSuite(EventServiceImpl_ExtremeThreadingTest.class);
-
-        return theSuite;
-    }
+    boolean isStarted();
 }

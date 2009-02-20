@@ -28,8 +28,6 @@ import de.novanic.eventservice.client.event.Event;
  */
 public class ListenCycleCancelEvent implements Event
 {
-    public ListenCycleCancelEvent() {}
-
     public String toString() {
         return "Event: ListenCycleCancelEvent";
     }

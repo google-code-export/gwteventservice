@@ -40,7 +40,7 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         try {
             theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new TestEvent());
         } catch(NoSessionAvailableException e) {
-            fail("No Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+            fail("No Exception \"" + e.getClass().getName() + "\" expected!");
         }
     }
 

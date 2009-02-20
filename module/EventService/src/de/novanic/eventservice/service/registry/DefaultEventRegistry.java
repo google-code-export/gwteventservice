@@ -53,10 +53,10 @@ public class DefaultEventRegistry implements EventRegistry
 {
     private final ServerLogger LOG = ServerLoggerFactory.getServerLogger(DefaultEventRegistry.class.getName());
 
-    private EventServiceConfiguration myConfiguration;
+    private final EventServiceConfiguration myConfiguration;
     private final Map<Domain, Collection<UserInfo>> myDomainUserInfoMap;
-    private UserManager myUserManager;
-    private UserActivityScheduler myUserActivityScheduler;
+    private final UserManager myUserManager;
+    private final UserActivityScheduler myUserActivityScheduler;
 
     /**
      * Creates a new EventRegistry with a configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration}).
@@ -214,9 +214,11 @@ public class DefaultEventRegistry implements EventRegistry
             if(theUserInfo != null) {
                 myUserActivityScheduler.reportUserActivity(theUserInfo);
                 if(theUserInfo.isEventsEmpty()) {
-                    //monitor for event notification
+                    //monitor for event notification and double checked
                     synchronized(theUserInfo) {
-                        theUserInfo.wait(theConfiguration.getMaxWaitingTime());
+                        if(theUserInfo.isEventsEmpty()) {
+                            theUserInfo.wait(theConfiguration.getMaxWaitingTime());
+                        }
                     }
                 }
                 return theUserInfo.retrieveEvents();

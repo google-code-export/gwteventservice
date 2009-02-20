@@ -116,19 +116,19 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
     }
 
     public String toString() {
-        StringBuffer theConfigStringBuffer = new StringBuffer(120);
-        theConfigStringBuffer.append("EventServiceConfiguration (");
-        theConfigStringBuffer.append(getConfigDescription());
-        theConfigStringBuffer.append(")");
-        theConfigStringBuffer.append(PlatformUtil.getNewLine());
-        theConfigStringBuffer.append("  ");
-        theConfigStringBuffer.append("Min.: ");
-        theConfigStringBuffer.append(getMinWaitingTime());
-        theConfigStringBuffer.append("ms; Max.: ");
-        theConfigStringBuffer.append(getMaxWaitingTime());
-        theConfigStringBuffer.append("ms; Timeout: ");
-        theConfigStringBuffer.append(getTimeoutTime());
-        theConfigStringBuffer.append("ms");
-        return theConfigStringBuffer.toString();
+        StringBuilder theConfigStringBuilder = new StringBuilder(120);
+        theConfigStringBuilder.append("EventServiceConfiguration (");
+        theConfigStringBuilder.append(getConfigDescription());
+        theConfigStringBuilder.append(')');
+        theConfigStringBuilder.append(PlatformUtil.getNewLine());
+        theConfigStringBuilder.append("  ");
+        theConfigStringBuilder.append("Min.: ");
+        theConfigStringBuilder.append(getMinWaitingTime());
+        theConfigStringBuilder.append("ms; Max.: ");
+        theConfigStringBuilder.append(getMaxWaitingTime());
+        theConfigStringBuilder.append("ms; Timeout: ");
+        theConfigStringBuilder.append(getTimeoutTime());
+        theConfigStringBuilder.append("ms");
+        return theConfigStringBuilder.toString();
     }
 }

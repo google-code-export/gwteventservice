@@ -34,14 +34,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultUserManager implements UserManager
 {
-    private Map<String, UserInfo> myUserMap;
-    private UserActivityScheduler myUserActivityScheduler;
+    private final Map<String, UserInfo> myUserMap;
+    private final UserActivityScheduler myUserActivityScheduler;
 
     /**
      * Creates a new UserManager. To create the UserManager as a singleton (default), the UserManager can be created with
      * {@link de.novanic.eventservice.service.registry.user.UserManagerFactory#getUserManager(long)})
      * @param aTimeoutInterval timeout interval (is only required if the {@link de.novanic.eventservice.service.registry.user.UserActivityScheduler}
-     * needs to be started.
+     * needs to be started).
      */
     public DefaultUserManager(long aTimeoutInterval) {
         myUserMap = new ConcurrentHashMap<String, UserInfo>();

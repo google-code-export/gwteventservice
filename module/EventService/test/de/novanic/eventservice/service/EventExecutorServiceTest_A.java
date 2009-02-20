@@ -57,13 +57,13 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         EventExecutorServiceFactory.reset();
     }
 
-    public void testIsUserRegistered() throws Exception {
+    public void testIsUserRegistered() {
         assertFalse(myEventExecutorService.isUserRegistered());
         EventRegistryFactory.getInstance().getEventRegistry().registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         assertTrue(myEventExecutorService.isUserRegistered());
     }
 
-    public void testIsUserRegistered_2() throws Exception {
+    public void testIsUserRegistered_2() {
         assertFalse(myEventExecutorService.isUserRegistered(TEST_DOMAIN));
         assertFalse(myEventExecutorService.isUserRegistered(TEST_DOMAIN_2));
 
@@ -72,7 +72,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertFalse(myEventExecutorService.isUserRegistered(TEST_DOMAIN_2));
     }
 
-    public void testAddEvent() throws Exception {
+    public void testAddEvent() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
@@ -87,7 +87,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEvents.size());
     }
 
-    public void testAddEvent_2() throws Exception {
+    public void testAddEvent_2() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
@@ -101,7 +101,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertTrue(theEvents.isEmpty());
     }
 
-    public void testAddEventUserSpecific() throws Exception {
+    public void testAddEventUserSpecific() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
@@ -116,7 +116,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEvents.size());
     }
 
-    public void testAddEventUserSpecific_2() throws Exception {
+    public void testAddEventUserSpecific_2() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
         List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
@@ -127,7 +127,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertNull(theEvents);
     }
 
-    public void testAddEventUserSpecific_3() throws Exception {
+    public void testAddEventUserSpecific_3() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
@@ -142,7 +142,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertTrue(theEvents.isEmpty());
     }
 
-    public void testAddEventUserSpecific_4() throws Exception {
+    public void testAddEventUserSpecific_4() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
@@ -157,7 +157,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEvents.size());
     }
 
-    public void testSetEventFilter() throws Exception {
+    public void testSetEventFilter() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
@@ -170,7 +170,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
     }
 
-    public void testRemoveEventFilter() throws Exception {
+    public void testRemoveEventFilter() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
@@ -188,7 +188,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
     }
 
-    public void testRemoveEventFilter_2() throws Exception {
+    public void testRemoveEventFilter_2() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
@@ -206,10 +206,9 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
     }
 
-    private class EmptyEvent implements Event
-    {}
+    private static class EmptyEvent implements Event {}
 
-    private class EmptyEventFilter implements EventFilter
+    private static class EmptyEventFilter implements EventFilter
     {
         public boolean match(Event anEvent) {
             return true;
