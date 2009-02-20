@@ -110,7 +110,7 @@ public class DefaultServerLoggerTest extends EventServiceTestCase
         private Level myLevel;
         private String myMessage;
 
-        public TestLoggerHandler(Level aLevel, String aMessage) {
+        private TestLoggerHandler(Level aLevel, String aMessage) {
             myLevel = aLevel;
             myMessage = aMessage;
         }

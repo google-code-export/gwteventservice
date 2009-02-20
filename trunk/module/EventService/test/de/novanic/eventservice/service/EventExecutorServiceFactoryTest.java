@@ -77,7 +77,7 @@ public class EventExecutorServiceFactoryTest extends TestCase
         try {
             theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new Event() {});
         } catch(NoSessionAvailableException e) {
-            fail("No Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+            fail("No Exception \"" + e.getClass().getName() + "\" expected!");
         }
     }
 }

@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  */
 public final class PrivateMethodExecutor<T>
 {
-    private Class<T> myClass;
+    private final Class<T> myClass;
 
     /**
      * Creates a new PrivateMethodExecutor for access the related class (<b>only for testing purposes</b>).

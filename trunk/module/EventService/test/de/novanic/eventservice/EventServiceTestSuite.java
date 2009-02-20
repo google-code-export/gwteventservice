@@ -50,6 +50,8 @@ import junit.framework.TestSuite;
  */
 public class EventServiceTestSuite
 {
+    private EventServiceTestSuite() {}
+
     public static Test suite() throws Exception {
         TestSuite theSuite = new TestSuite("EventService - Tests");
 

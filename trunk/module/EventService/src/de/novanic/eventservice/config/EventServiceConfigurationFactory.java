@@ -40,7 +40,7 @@ public class EventServiceConfigurationFactory
 {
     private static EventServiceConfigurationFactory myInstance;
 
-    private List<ConfigurationLoader> myCustomConfigurationLoaders;
+    private final List<ConfigurationLoader> myCustomConfigurationLoaders;
 
     /**
      * The EventServiceConfigurationFactory should be created via the getInstance method.
@@ -55,7 +55,7 @@ public class EventServiceConfigurationFactory
      * EventServiceConfigurationFactory is a singleton, so this method returns always the same instance of EventServiceConfigurationFactory.
      * @return EventServiceConfigurationFactory (singleton)
      */
-    public static EventServiceConfigurationFactory getInstance() {
+    public static synchronized EventServiceConfigurationFactory getInstance() {
         if(myInstance == null) {
             myInstance = new EventServiceConfigurationFactory();
         }
@@ -115,8 +115,10 @@ public class EventServiceConfigurationFactory
     /**
      * Resets the factory and the {@link de.novanic.eventservice.config.loader.ConfigurationLoader} queue.
      */
-    public void reset() {
-        myInstance = null;
-        myCustomConfigurationLoaders.clear();
+    public static void reset() {
+        if(myInstance != null) {
+            myInstance.myCustomConfigurationLoaders.clear();
+            myInstance = null;
+        }
     }
 }

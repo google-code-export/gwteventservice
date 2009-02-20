@@ -32,7 +32,7 @@ public class TestLoggingConfiguratorTest extends EventServiceTestCase
 {
     private static final String LOGGING_FILE_PROPERTY = "java.util.logging.config.file";
 
-    private static String myLoggingFilePropertyBackup;
+    private String myLoggingFilePropertyBackup;
 
     public void setUp() {
         myLoggingFilePropertyBackup = System.getProperty(LOGGING_FILE_PROPERTY);

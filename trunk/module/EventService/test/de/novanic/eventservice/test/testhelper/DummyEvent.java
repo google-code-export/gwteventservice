@@ -28,7 +28,7 @@ public class DummyEvent implements UniqueIdEvent
 {
     private static final String DUMMY_EVENT_KEY = DummyEvent.class.getName();
 
-    private int myId;
+    private final int myId;
 
     public DummyEvent() {
         myId = AutoIncrementFactory.getInstance().getNextValue(DUMMY_EVENT_KEY);

@@ -97,9 +97,9 @@ public class UserManagerFactoryTest extends TestCase
 
     private class TestEventServiceConfiguration implements EventServiceConfiguration
     {
-        private int myTimeoutTime;
+        private final int myTimeoutTime;
 
-        public TestEventServiceConfiguration(int aTimeoutTime) {
+        private TestEventServiceConfiguration(int aTimeoutTime) {
             myTimeoutTime = aTimeoutTime;
         }
 

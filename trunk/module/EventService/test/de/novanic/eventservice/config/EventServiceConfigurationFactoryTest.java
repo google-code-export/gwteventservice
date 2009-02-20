@@ -39,7 +39,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         assertSame(theEventServiceConfigurationFactory, EventServiceConfigurationFactory.getInstance());
 
-        theEventServiceConfigurationFactory.reset();
+        EventServiceConfigurationFactory.reset();
         assertNotSame(theEventServiceConfigurationFactory, EventServiceConfigurationFactory.getInstance());
 
         theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -96,7 +96,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
 
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
-        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration, true);
+        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration);
         theConfigurationFactory.addCustomConfigurationLoader(theCustomConfigurationLoader);
 
         EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
@@ -118,7 +118,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
 
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
-        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration, true);
+        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration);
         theConfigurationFactory.addCustomConfigurationLoader(theCustomConfigurationLoader);
 
         EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
@@ -127,7 +127,8 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
 
         //reset
-        theConfigurationFactory.reset();
+        EventServiceConfigurationFactory.reset();
+        EventServiceConfigurationFactory.reset();
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
         assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
@@ -140,7 +141,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
 
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
-        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration, true);
+        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration);
         theConfigurationFactory.addCustomConfigurationLoader(theCustomConfigurationLoader);
 
         EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
@@ -149,7 +150,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
 
         //reset and re-init
-        theConfigurationFactory.reset();
+        EventServiceConfigurationFactory.reset();
         theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
@@ -160,16 +161,14 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
 
     private class DummyConfigurationLoader implements ConfigurationLoader
     {
-        private boolean myIsAvailable;
         private EventServiceConfiguration myEventServiceConfiguration;
 
-        public DummyConfigurationLoader(EventServiceConfiguration anEventServiceConfiguration, boolean aIsAvailable) {
+        private DummyConfigurationLoader(EventServiceConfiguration anEventServiceConfiguration) {
             myEventServiceConfiguration = anEventServiceConfiguration;
-            myIsAvailable = aIsAvailable;
         }
 
         public boolean isAvailable() {
-            return myIsAvailable;
+            return true;
         }
 
         public EventServiceConfiguration load() {

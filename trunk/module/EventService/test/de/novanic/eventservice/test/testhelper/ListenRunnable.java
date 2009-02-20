@@ -32,7 +32,7 @@ import java.util.*;
  * <br>Date: 17.08.2008
  * <br>Time: 21:46:37
  */
-public class ListenRunnable implements Runnable
+public class ListenRunnable implements Runnable, StartObservable
 {
     private EventService myEventService;
     private EventRegistry myEventRegistry;

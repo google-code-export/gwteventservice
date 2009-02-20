@@ -67,7 +67,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_Extreme() throws Exception {
-        testListen_Extreme(false);
+        checkListen_Extreme(false);
         assertEquals(5000, getEventCount(TEST_DOMAIN));
         assertEquals(5000, getEventCount(TEST_DOMAIN_2));
         assertEquals(5000, getEventCount(TEST_DOMAIN_3));
@@ -79,16 +79,17 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_Extreme_UserSpecific() throws Exception {
-        testListen_Extreme(true);
+        checkListen_Extreme(true);
         assertEquals(15000, getEventCount(TEST_USER_ID));
         assertEquals(0, getEventCount(TEST_USER_ID_2));
     }
 
     /**
      * Adding 15000 events and a single listen at the end (without threads).
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_Extreme(boolean isUserSpecific) throws Exception {
+    private void checkListen_Extreme(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -120,7 +121,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_Extreme_2() throws Exception {
-        testListen_Extreme_2(false);
+        checkListen_Extreme_2(false);
         assertEquals(10000, getEventCount());
         assertEquals(5000, getEventCount(TEST_DOMAIN));
         assertEquals(5000, getEventCount(TEST_DOMAIN_2));
@@ -133,8 +134,8 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_Extreme_2_UserSpecific() throws Exception {
-        testListen_Extreme_2(true);
-        //more events than testListen_Extreme_2, because the user isn't registered for TEST_DOMAIN_3, but unimportant
+        checkListen_Extreme_2(true);
+        //more events than checkListen_Extreme_2, because the user isn't registered for TEST_DOMAIN_3, but unimportant
         //for user-specific tests.
         assertEquals(15000, getEventCount());
         assertEquals(15000, getEventCount(TEST_USER_ID));
@@ -143,9 +144,10 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
     /**
      * Adding 10000 events and a single listen at the end (without threads). The user is not registered for all domains.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_Extreme_2(boolean isUserSpecific) throws Exception {
+    private void checkListen_Extreme_2(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -173,7 +175,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading() throws Exception {
-        testListen_ExtremeThreading(false);
+        checkListen_ExtremeThreading(false);
         assertEquals(1500, getEventCount(TEST_DOMAIN));
         assertEquals(1500, getEventCount(TEST_DOMAIN_2));
         assertEquals(1500, getEventCount(TEST_DOMAIN_3));
@@ -185,16 +187,17 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_UserSpecific() throws Exception {
-        testListen_ExtremeThreading(true);
+        checkListen_ExtremeThreading(true);
         assertEquals(4500, getEventCount(TEST_USER_ID));
         assertEquals(0, getEventCount(TEST_USER_ID_2));
     }
 
     /**
      * Adding 4500 events with multithreading and a single listen at the end.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_ExtremeThreading(boolean isUserSpecific) throws Exception {
+    private void checkListen_ExtremeThreading(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -231,7 +234,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_2() throws Exception {
-        testListen_ExtremeThreading_2(false);
+        checkListen_ExtremeThreading_2(false);
         assertEquals(1500, getEventCount(TEST_DOMAIN));
         assertEquals(1500, getEventCount(TEST_DOMAIN_2));
     }
@@ -242,15 +245,16 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_2_UserSpecific() throws Exception {
-        testListen_ExtremeThreading_2(true);
+        checkListen_ExtremeThreading_2(true);
         assertEquals(3000, getEventCount(TEST_USER_ID));
     }
 
     /**
      * Adding 4500 events with multithreading and a single listen at the end. Test with different users.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_ExtremeThreading_2(boolean isUserSpecific) throws Exception {
+    private void checkListen_ExtremeThreading_2(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -299,7 +303,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_3() throws Exception {
-        testListen_ExtremeThreading_3(false);
+        checkListen_ExtremeThreading_3(false);
         assertEquals(900, getEventCount(TEST_DOMAIN));
         assertEquals(600, getEventCount(TEST_DOMAIN_2));
         assertEquals(1, getEventCount(TEST_DOMAIN_3)); //event for TEST_USER_ID_2
@@ -312,7 +316,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_3_UserSpecific() throws Exception {
-        testListen_ExtremeThreading_3(true);
+        checkListen_ExtremeThreading_3(true);
         assertEquals(1500, getEventCount(TEST_USER_ID));
         assertEquals(1, getEventCount(TEST_USER_ID_2)); //event for TEST_USER_ID_2
     }
@@ -320,9 +324,10 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
     /**
      * Adding 2100 events with multithreading and multi listen threads. Another user has only one listen thread and it
      * will be tested that the listen thread will not be aborted when other events received.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_ExtremeThreading_3(boolean isUserSpecific) throws Exception {
+    private void checkListen_ExtremeThreading_3(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -381,7 +386,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_4() throws Exception {
-        testListen_ExtremeThreading_4(false);
+        checkListen_ExtremeThreading_4(false);
 
         assertEquals(900, getEventCount(TEST_DOMAIN));
         assertEquals(600, getEventCount(TEST_DOMAIN_2));
@@ -394,7 +399,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_4_UserSpecific() throws Exception {
-        testListen_ExtremeThreading_4(true);
+        checkListen_ExtremeThreading_4(true);
 
         assertEquals(2100, getEventCount(TEST_USER_ID));
         assertEquals(2100, getEventCount(TEST_USER_ID_2));
@@ -402,9 +407,10 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
     /**
      * Adding 2100 events with multithreading and a listen thread at every third event.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_ExtremeThreading_4(boolean isUserSpecific) throws Exception {
+    private void checkListen_ExtremeThreading_4(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -451,11 +457,69 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
     }
 
     /**
+     * Adding 2000 events with multithreading and a listen thread to one of three registered domains.
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_5() throws Exception {
+        checkListen_ExtremeThreading_5(false);
+
+        assertEquals(2000, getEventCount());
+        assertEquals(2000, getEventCount(TEST_DOMAIN));
+        assertEquals(0, getEventCount(TEST_DOMAIN_2));
+        assertEquals(0, getEventCount(TEST_DOMAIN_3));
+    }
+
+    /**
+     * Adding 2000 events with multithreading and a listen thread to one of three registered domains.
+     * That test is executed user-specific (events are registered for single users and not for domains).
+     * @throws Exception
+     */
+    public void testListen_ExtremeThreading_5_UserSpecific() throws Exception {
+        checkListen_ExtremeThreading_5(true);
+
+        assertEquals(2000, getEventCount());
+        assertEquals(2000, getEventCount(TEST_USER_ID));
+        assertEquals(0, getEventCount(TEST_USER_ID_2));
+    }
+
+    /**
+     * Adding 2000 events with multithreading and a listen thread to one of three registered domains.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
+     * @throws Exception
+     */
+    private void checkListen_ExtremeThreading_5(boolean isUserSpecific) throws Exception {
+        assertEquals(0, myEventRegistry.getListenDomains().size());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertEquals(1, myEventRegistry.getListenDomains().size());
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
+        assertEquals(2, myEventRegistry.getListenDomains().size());
+
+        myEventRegistry.registerUser(TEST_DOMAIN_3, TEST_USER_ID, null);
+        assertEquals(3, myEventRegistry.getListenDomains().size());
+
+        for(int i = 2000; i > 0; i--) {
+            startAddEvent(TEST_USER_ID, TEST_DOMAIN, i, isUserSpecific);
+            startListen(TEST_USER_ID);
+            assertEquals(3, myEventRegistry.getListenDomains().size());
+        }
+
+        joinEventThreads();
+
+        startListen(TEST_USER_ID);
+        Thread.sleep(500);
+        myEventRegistry.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
+
+        joinListenThreads();
+    }
+
+    /**
      * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered.
      * @throws Exception
      */
     public void testListen_ExtremeThreading_EventFilter() throws Exception {
-        testListen_ExtremeThreading_EventFilter(false);
+        checkListen_ExtremeThreading_EventFilter(false);
 
         assertEquals(3750, getEventCount());
         assertEquals(1500, getEventCount(TEST_DOMAIN));
@@ -469,7 +533,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_EventFilter_UserSpecific() throws Exception {
-        testListen_ExtremeThreading_EventFilter(true);
+        checkListen_ExtremeThreading_EventFilter(true);
 
         //All added events will be returned (The EventFilter doesn't filter the events, because the events are added user-specific and not to a domain.).
         assertEquals(4500, getEventCount());
@@ -479,9 +543,10 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
     /**
      * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_ExtremeThreading_EventFilter(boolean isUserSpecific) throws Exception {
+    private void checkListen_ExtremeThreading_EventFilter(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
@@ -520,7 +585,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_EventFilter_2() throws Exception {
-        testListen_ExtremeThreading_EventFilter_2(false);
+        checkListen_ExtremeThreading_EventFilter_2(false);
         
         assertEquals(1500, getEventCount(TEST_DOMAIN));
         assertEquals(1500, getEventCount(TEST_DOMAIN_2));
@@ -538,7 +603,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
      * @throws Exception
      */
     public void testListen_ExtremeThreading_EventFilter_2_UserSpecific() throws Exception {
-        testListen_ExtremeThreading_EventFilter_2(true);
+        checkListen_ExtremeThreading_EventFilter_2(true);
 
         assertEquals(4500, getEventCount(TEST_USER_ID));
 
@@ -550,9 +615,10 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
     /**
      * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered, but only
      * for another user.
+     * @param isUserSpecific flag to run the method in user- or domain-specific mode
      * @throws Exception
      */
-    private void testListen_ExtremeThreading_EventFilter_2(boolean isUserSpecific) throws Exception {
+    private void checkListen_ExtremeThreading_EventFilter_2(boolean isUserSpecific) throws Exception {
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 

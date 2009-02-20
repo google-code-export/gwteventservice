@@ -37,18 +37,18 @@ import java.util.logging.Logger;
  */
 public abstract class EventServiceServerThreadingTest extends EventServiceTestCase
 {
-    private static Logger LOG = Logger.getLogger(EventServiceServerThreadingTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(EventServiceServerThreadingTest.class.getName());
 
     private EventService myEventService;
     private EventRegistry myEventRegistry;
-    private Collection<EventThread> myEventThreads;
+    private Collection<EventThread<AddEventRunnable>> myEventThreads;
     private Collection<ListenStartResult> myListenStartResults;
     private long myStartTime;
 
     public void setUp(EventService anEventService) {
         myStartTime = PlatformUtil.getCurrentTime();
         myEventService = anEventService;
-        myEventThreads = new ArrayList<EventThread>();
+        myEventThreads = new ArrayList<EventThread<AddEventRunnable>>();
         myListenStartResults = new ArrayList<ListenStartResult>();
         AutoIncrementFactory.reset();
     }
@@ -56,7 +56,7 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
     public void setUp(EventRegistry anEventRegistry) {
         myStartTime = PlatformUtil.getCurrentTime();
         myEventRegistry = anEventRegistry;
-        myEventThreads = new ArrayList<EventThread>();
+        myEventThreads = new ArrayList<EventThread<AddEventRunnable>>();
         myListenStartResults = new ArrayList<ListenStartResult>();
         AutoIncrementFactory.reset();
     }
@@ -66,11 +66,11 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         joinEventThreads();
         joinListenThreads();
 
-        if(LOG.isLoggable(Level.INFO) && myStartTime > 0) {
+        if(LOG.isLoggable(Level.INFO) && myStartTime > 0L) {
             long theExecutionTime = PlatformUtil.getCurrentTime() - myStartTime;
-            LOG.log(Level.INFO, "Execution time: " + theExecutionTime + "ms (" + theExecutionTime / 1000 + " second(s))");
+            LOG.log(Level.INFO, "Execution time: " + theExecutionTime + "ms (" + theExecutionTime / 1000L + " second(s))");
         }
-        myStartTime = 0;
+        myStartTime = 0L;
         AutoIncrementFactory.reset();
     }
 
@@ -115,18 +115,18 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         myListenStartResults.add(theStartResult);
 
         theListenThread.start();
-        waitForListenStart(aListenRunnable);
+        waitForStart(aListenRunnable);
 
         return theStartResult;
     }
 
     public Thread startAddEvent(Domain aDomain, long aWaitingTime) {
-        EventThread theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aDomain, aWaitingTime));
+        EventThread<AddEventRunnable> theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aDomain, aWaitingTime));
         return startAddEvent(theEventThread);
     }
 
     public Thread startAddEvent(String aUser, long aWaitingTime) {
-        EventThread theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aUser, aWaitingTime));
+        EventThread<AddEventRunnable> theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aUser, aWaitingTime));
         return startAddEvent(theEventThread);
     }
 
@@ -154,7 +154,7 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
                     myEventRegistry.getListenDomains(aUserId).contains(aDomain));
         }
 
-        EventThread theEventThread;
+        EventThread<AddEventRunnable> theEventThread;
         if(isUserSpecific) {
             theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aUserId, aWaitingTime));
         } else {
@@ -163,9 +163,10 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         return startAddEvent(theEventThread);
     }
 
-    private Thread startAddEvent(EventThread anEventThread) {
+    private Thread startAddEvent(EventThread<AddEventRunnable> anEventThread) {
         myEventThreads.add(anEventThread);
         anEventThread.start();
+        waitForStart(anEventThread);
         return anEventThread;
     }
 
@@ -272,14 +273,21 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         }
     }
 
-    private void waitForListenStart(ListenRunnable aListenRunnable) {
-        while(!aListenRunnable.isStarted()) {}
+    private void waitForStart(StartObservable aStartObservable) {
+        while(!aStartObservable.isStarted()) {}
     }
 
-    private class EventThread<AddEventRunnable> extends Thread
+    private class EventThread<T extends AddEventRunnable> extends Thread implements StartObservable
     {
-        public EventThread(AddEventRunnable aRunnable) {
-            super((Runnable)aRunnable);
+        private T myAddEventRunnable;
+
+        private EventThread(T aRunnable) {
+            super(aRunnable);
+            myAddEventRunnable = aRunnable;
+        }
+
+        public boolean isStarted() {
+            return myAddEventRunnable.isStarted();
         }
     }
 }

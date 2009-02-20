@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AutoIncrementFactory
 {
     private static AutoIncrementFactory myInstance;
-    private Map<String, AtomicInteger> myAutoIncrementMap;
+    private final Map<String, AtomicInteger> myAutoIncrementMap;
 
     private AutoIncrementFactory() {
         myAutoIncrementMap = new ConcurrentHashMap<String, AtomicInteger>();

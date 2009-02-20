@@ -162,7 +162,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         private final Domain myDomain;
         private final Event myEvent;
 
-        public DummyRemoteEventServlet(final Domain aDomain, final Event anEvent) {
+        private DummyRemoteEventServlet(final Domain aDomain, final Event anEvent) {
             myDomain = aDomain;
             myEvent = anEvent;
         }
@@ -184,7 +184,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
     {
         private HttpServletRequest myRequest;
 
-        public DummyRemoteEventServiceServlet_Request(HttpServletRequest aRequest) {
+        private DummyRemoteEventServiceServlet_Request(HttpServletRequest aRequest) {
             myRequest = aRequest;
         }
 

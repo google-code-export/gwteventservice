@@ -33,11 +33,12 @@ import java.util.Enumeration;
  * <br>Date: 17.08.2008
  * <br>Time: 23:09:11
  */
-public class AddEventRunnable implements Runnable
+public class AddEventRunnable implements Runnable, StartObservable
 {
     private EventExecutorService myEventExecutorService;
     private Domain myDomain;
     private long myWaitingTime;
+    private boolean isStarted;
 
     private AddEventRunnable(long aWaitingTime) {
         init("internalTestUser", aWaitingTime);
@@ -60,23 +61,31 @@ public class AddEventRunnable implements Runnable
     }
 
     public void run() {
+        isStarted = true;
+
+        final DummyEvent theEvent = new DummyEvent();
         try {
             Thread.sleep(myWaitingTime);
         } catch(InterruptedException e) {
             throw new RuntimeException("Sleep of " + AddEventRunnable.class.getName() + " aborted!", e);
         }
+
         if(myDomain != null) {
-            myEventExecutorService.addEvent(myDomain, new DummyEvent());
+            myEventExecutorService.addEvent(myDomain, theEvent);
         } else {
-            myEventExecutorService.addEventUserSpecific(new DummyEvent());
+            myEventExecutorService.addEventUserSpecific(theEvent);
         }
+    }
+
+    public boolean isStarted() {
+        return isStarted;
     }
 
     private class HttpSessionDummy implements HttpSession
     {
         private String myUser;
 
-        public HttpSessionDummy(String aUser) {
+        private HttpSessionDummy(String aUser) {
             myUser = aUser;
         }
 
