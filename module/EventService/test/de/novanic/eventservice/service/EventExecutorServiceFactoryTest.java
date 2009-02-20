@@ -59,13 +59,24 @@ public class EventExecutorServiceFactoryTest extends TestCase
         assertFalse(theEventExecutorService.isUserRegistered());
     }
 
+    public void testFactory_2() {
+        EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
+        assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
+
+        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(TEST_USER_ID);
+        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(TEST_USER_ID));
+
+        assertFalse(theEventExecutorService.isUserRegistered());
+    }
+
     public void testFactory_SessionLess() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
-        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(null);
-        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(null));
+        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService((HttpSession)null);
+        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService((HttpSession)null));
 
+        //isUserRegistered() shouldn't work without a session (without client-/user-id)
         try {
             theEventExecutorService.isUserRegistered();
             fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
@@ -74,6 +85,31 @@ public class EventExecutorServiceFactoryTest extends TestCase
             assertNull(e.getCause());
         }
 
+        //addEvent() should work without a session, because the client-/user-id isn't required to add a domain specific event.
+        try {
+            theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new Event() {});
+        } catch(NoSessionAvailableException e) {
+            fail("No Exception \"" + e.getClass().getName() + "\" expected!");
+        }
+    }
+
+    public void testFactory_SessionLess_2() {
+        EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
+        assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
+
+        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService((String)null);
+        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService((String)null));
+
+        //isUserRegistered shouldn't work without the client-/user-id
+        try {
+            theEventExecutorService.isUserRegistered();
+            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
+        } catch(NoSessionAvailableException e) {
+            assertEquals("There is no session / client information available!", e.getMessage());
+            assertNull(e.getCause());
+        }
+
+        //addEvent should work without the client-/user-id, because the client-/user-id isn't required to add a domain specific event.
         try {
             theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new Event() {});
         } catch(NoSessionAvailableException e) {

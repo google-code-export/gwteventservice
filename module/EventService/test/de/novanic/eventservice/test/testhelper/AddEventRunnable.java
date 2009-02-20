@@ -23,11 +23,6 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.service.EventExecutorService;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
-import javax.servlet.ServletContext;
-import java.util.Enumeration;
-
 /**
  * @author sstrohschein
  * <br>Date: 17.08.2008
@@ -57,7 +52,7 @@ public class AddEventRunnable implements Runnable, StartObservable
         myWaitingTime = aWaitingTime;
         EventExecutorServiceFactory.reset();
         final EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
-        myEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(new HttpSessionDummy(aUser));
+        myEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(aUser);
     }
 
     public void run() {
@@ -79,70 +74,5 @@ public class AddEventRunnable implements Runnable, StartObservable
 
     public boolean isStarted() {
         return isStarted;
-    }
-
-    private class HttpSessionDummy implements HttpSession
-    {
-        private String myUser;
-
-        private HttpSessionDummy(String aUser) {
-            myUser = aUser;
-        }
-
-        public long getCreationTime() {
-            return 0;
-        }
-
-        public String getId() {
-            return myUser;
-        }
-
-        public long getLastAccessedTime() {
-            return 0;
-        }
-
-        public ServletContext getServletContext() {
-            return null;
-        }
-
-        public void setMaxInactiveInterval(int i) {}
-
-        public int getMaxInactiveInterval() {
-            return 0;
-        }
-
-        public HttpSessionContext getSessionContext() {
-            return null;
-        }
-
-        public Object getAttribute(String s) {
-            return null;
-        }
-
-        public Object getValue(String s) {
-            return null;
-        }
-
-        public Enumeration getAttributeNames() {
-            return null;
-        }
-
-        public String[] getValueNames() {
-            return new String[0];
-        }
-
-        public void setAttribute(String s, Object o) {}
-
-        public void putValue(String s, Object o) {}
-
-        public void removeAttribute(String s) {}
-
-        public void removeValue(String s) {}
-
-        public void invalidate() {}
-
-        public boolean isNew() {
-            return false;
-        }
     }
 }
