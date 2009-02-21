@@ -52,14 +52,12 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
     public void tearDown() throws Exception {
         super.tearDown();
-        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
         tearDownEventServiceConfiguration();
 
         myEventRegistry.unlisten(TEST_USER_ID);
         myEventRegistry.unlisten(TEST_USER_ID_2);
         EventRegistryFactory.reset();
         EventExecutorServiceFactory.reset();
-        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
     }
 
     /**
@@ -373,7 +371,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         joinEventThreads();
 
         startListen(TEST_USER_ID);
-        Thread.sleep(500);
+        Thread.sleep(200);
         myEventRegistry.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
         joinListenThreads();
@@ -450,7 +448,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
         startListen(TEST_USER_ID);
         startListen(TEST_USER_ID_2);
-        Thread.sleep(500);
+        Thread.sleep(200);
         myEventRegistry.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
         joinListenThreads();
@@ -508,7 +506,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         joinEventThreads();
 
         startListen(TEST_USER_ID);
-        Thread.sleep(500);
+        Thread.sleep(200);
         myEventRegistry.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
         joinListenThreads();

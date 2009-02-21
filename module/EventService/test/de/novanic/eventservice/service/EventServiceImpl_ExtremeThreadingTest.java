@@ -49,12 +49,10 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
 
     public void tearDown() throws Exception {
         super.tearDown();
-        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
         tearDownEventServiceConfiguration();
 
         myEventService.unlisten();
         EventExecutorServiceFactory.reset();
-        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
     }
 
     public void testListen() throws Exception {
@@ -183,7 +181,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
         joinEventThreads();
 
         startListen();
-        Thread.sleep(500);
+        Thread.sleep(200);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
         joinListenThreads();
@@ -228,7 +226,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
         joinEventThreads();
 
         startListen();
-        Thread.sleep(500);
+        Thread.sleep(200);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
         joinListenThreads();
@@ -293,7 +291,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
         joinEventThreads();
 
         startListen();
-        Thread.sleep(500);
+        Thread.sleep(200);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
         joinListenThreads();

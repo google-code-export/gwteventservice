@@ -54,7 +54,6 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         myEventService.unlisten();
         EventExecutorServiceFactory.reset();
-        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
     }
 
     public void testInit() {
