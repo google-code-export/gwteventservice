@@ -57,7 +57,6 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     private Logger myLogger;
 
     public void setUp() throws Exception {
-        super.setUp();
         setUp(createConfiguration(0, 500, 2500));
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         setUp(myEventRegistry);
@@ -84,7 +83,6 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         EventRegistryFactory.reset();
         EventExecutorServiceFactory.reset();
-        Thread.sleep(500);
     }
 
     public void testRegisterUser() {
@@ -557,7 +555,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(6, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -567,8 +565,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
         startAddEvent(TEST_DOMAIN, 200);
         assertEquals(1, myEventRegistry.listen(TEST_USER_ID).size());
-        
-        Thread.sleep(600);
+
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -582,9 +580,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
-        startAddEvent(TEST_DOMAIN, 500);
+        startAddEvent(TEST_DOMAIN, 250);
 
-        Thread.sleep(700);
+        joinEventThreads();
 
         final ListenCallable theListenCallable = new ListenCallable(TEST_USER_ID);
         final FutureTask<ListenResult> theFutureTask = new FutureTask<ListenResult>(theListenCallable);
@@ -627,7 +625,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(6, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -649,7 +647,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(3, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         //the user is added too late to get the events
@@ -684,7 +682,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(3, myEventRegistry.listen(TEST_USER_ID_2).size());
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID_2).size());
     }
@@ -704,7 +702,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -723,7 +721,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, new EmptyEventFilter());
@@ -740,7 +738,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(4, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -759,7 +757,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         myEventRegistry.removeEventFilter(TEST_DOMAIN, TEST_USER_ID);
@@ -776,7 +774,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(4, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -795,7 +793,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         //set event filter to NULL should have the same effect as removeEventFilter
@@ -813,7 +811,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(4, theResult);
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -843,7 +841,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID_2).size());
 
         //all events got
-        Thread.sleep(300);
+        joinEventThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID_2).size());
     }
@@ -858,9 +856,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
-        startAddEvent(TEST_USER_ID, 500);
+        startAddEvent(TEST_USER_ID, 250);
 
-        Thread.sleep(700);
+        joinEventThreads();
 
         final ListenCallable theListenCallable = new ListenCallable(TEST_USER_ID);
         final FutureTask<ListenResult> theFutureTask = new FutureTask<ListenResult>(theListenCallable);
@@ -914,6 +912,11 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         //It is waiting for events and will cause a timeout, because the max. waiting time is configured longer than the timeout time.
         //The result is a UnlistenEvent, because the timeout doesn't effect that method, but the next call.
         theEvents = theEventRegistry.listen(TEST_USER_ID);
+
+        //wait for the UserActivityScheduler-Thread
+        Thread.yield();
+        Thread.sleep(theNewEventServiceConfiguration.getTimeoutTime() + 100);
+        
         assertNotNull(theEvents);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.iterator().next().getEvent() instanceof UnlistenEvent);
