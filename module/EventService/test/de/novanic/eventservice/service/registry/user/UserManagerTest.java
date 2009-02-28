@@ -99,6 +99,28 @@ public class UserManagerTest extends TestCase
         assertEquals(2, myUserManager.getUserCount());
     }
 
+    public void testAddUser_4() {
+        assertEquals(0, myUserManager.getUserCount());
+        assertNull(myUserManager.getUser(TEST_USER_ID));
+        assertEquals(0, myUserManager.getUserCount());
+
+        myUserManager.addUser(TEST_USER_ID);
+        assertEquals(1, myUserManager.getUserCount());
+        UserInfo theUserInfo = myUserManager.getUser(TEST_USER_ID);
+        assertNotNull(theUserInfo);
+
+        //to add the same user shouldn't cause to create a new UserInfo and shouldn't effect the number of users
+        myUserManager.addUser(TEST_USER_ID);
+        assertEquals(1, myUserManager.getUserCount());
+        assertSame(theUserInfo, myUserManager.getUser(TEST_USER_ID));
+        assertNotSame(theUserInfo, TEST_USER_INFO);
+
+        myUserManager.addUser(TEST_USER_ID_2);
+        assertEquals(2, myUserManager.getUserCount());
+        assertSame(theUserInfo, myUserManager.getUser(TEST_USER_ID));
+        assertNotSame(theUserInfo, myUserManager.getUser(TEST_USER_ID_2));
+    }
+
     public void testAddUser_Error() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));

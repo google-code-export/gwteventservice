@@ -23,6 +23,7 @@ import de.novanic.eventservice.service.UserTimeoutListener;
 import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * UserActivityScheduler observes the activities of the users/clients and can report timeouts.
@@ -36,7 +37,7 @@ import java.util.*;
 public class UserActivityScheduler
 {
     private final Collection<UserInfo> myUserInfoCollection;
-    private final List<UserTimeoutListener> myTimeoutListeners;
+    private final Queue<UserTimeoutListener> myTimeoutListeners;
     private final long myTimeoutInterval;
     private Timer myTimer;
     private TimeoutTimerTask myTimeoutTimerTask;
@@ -51,7 +52,7 @@ public class UserActivityScheduler
     protected UserActivityScheduler(Collection<UserInfo> aUserInfoCollection, long aTimeoutInterval) {
         myUserInfoCollection = aUserInfoCollection;
         myTimeoutInterval = aTimeoutInterval;
-        myTimeoutListeners = new ArrayList<UserTimeoutListener>();
+        myTimeoutListeners = new ConcurrentLinkedQueue<UserTimeoutListener>();
     }
 
     /**
@@ -59,9 +60,7 @@ public class UserActivityScheduler
      * @param aTimeoutListener listener to get reported timeouts
      */
     public void addTimeoutListener(UserTimeoutListener aTimeoutListener) {
-        synchronized(myTimeoutListeners) {
-            myTimeoutListeners.add(aTimeoutListener);
-        }
+        myTimeoutListeners.add(aTimeoutListener);
     }
 
     /**
@@ -69,18 +68,14 @@ public class UserActivityScheduler
      * @param aTimeoutListener listener to get reported timeouts
      */
     public void removeTimeoutListener(UserTimeoutListener aTimeoutListener) {
-        synchronized(myTimeoutListeners) {
-            myTimeoutListeners.remove(aTimeoutListener);
-        }
+        myTimeoutListeners.remove(aTimeoutListener);
     }
 
     /**
      * Removes all {@link de.novanic.eventservice.service.UserTimeoutListener} from the {@link de.novanic.eventservice.service.registry.user.UserActivityScheduler}.
      */
     public void removeTimeoutListeners() {
-        synchronized(myTimeoutListeners) {
-            myTimeoutListeners.clear();
-        }
+        myTimeoutListeners.clear();
     }
 
     /**
@@ -174,19 +169,17 @@ public class UserActivityScheduler
         public void run() {
             long theTimeoutCriteriaTime = createCurrentTime() - myTimeoutInterval;
 
-            synchronized(myTimeoutListeners) {
-                Iterator<UserInfo> theUserInfoIterator = myUserInfoCollection.iterator();
-                while(theUserInfoIterator.hasNext()) {
-                    UserInfo theUserInfo = theUserInfoIterator.next();
-                    if(isTimeout(theUserInfo, theTimeoutCriteriaTime)) {
-                        //report about user timeout
-                        for(UserTimeoutListener theTimeoutListener: myTimeoutListeners) {
-                            theTimeoutListener.onTimeout(theUserInfo);
-                        }
-                        //remove the user/client automatically if auto-clean is switched on
-                        if(myIsAutoClean) {
-                            theUserInfoIterator.remove();
-                        }
+            Iterator<UserInfo> theUserInfoIterator = myUserInfoCollection.iterator();
+            while(theUserInfoIterator.hasNext()) {
+                UserInfo theUserInfo = theUserInfoIterator.next();
+                if(isTimeout(theUserInfo, theTimeoutCriteriaTime)) {
+                    //report about user timeout
+                    for(UserTimeoutListener theTimeoutListener: myTimeoutListeners) {
+                        theTimeoutListener.onTimeout(theUserInfo);
+                    }
+                    //remove the user/client automatically if auto-clean is switched on
+                    if(myIsAutoClean) {
+                        theUserInfoIterator.remove();
                     }
                 }
             }

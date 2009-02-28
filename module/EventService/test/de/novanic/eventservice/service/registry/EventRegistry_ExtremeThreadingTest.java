@@ -20,13 +20,17 @@
 package de.novanic.eventservice.service.registry;
 
 import de.novanic.eventservice.EventServiceServerThreadingTest;
-import de.novanic.eventservice.test.testhelper.DummyEvent;
-import de.novanic.eventservice.test.testhelper.ListenStartResult;
-import de.novanic.eventservice.test.testhelper.ListenCycleCancelEvent;
-import de.novanic.eventservice.test.testhelper.TestEventFilter;
+import de.novanic.eventservice.EventServiceServerThreadingTestException;
+import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
+
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author sstrohschein
@@ -45,6 +49,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
     public void setUp() {
         setUp(createConfiguration(0, 30000, 90000));
+        EventRegistryFactory.reset();
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
         super.setUp(myEventRegistry);
@@ -221,7 +226,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
-        joinEventThreads();
+        joinThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());
@@ -280,7 +285,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
         }
 
-        joinEventThreads();
+        joinThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
 
@@ -368,7 +373,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(1, theListenStartResult.getListenResult().getEventCount(TEST_DOMAIN_3));
         }
 
-        joinEventThreads();
+        joinThreads();
 
         startListen(TEST_USER_ID);
         Thread.sleep(200);
@@ -444,7 +449,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
-        joinEventThreads();
+        joinThreads();
 
         startListen(TEST_USER_ID);
         startListen(TEST_USER_ID_2);
@@ -503,7 +508,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(3, myEventRegistry.getListenDomains().size());
         }
 
-        joinEventThreads();
+        joinThreads();
 
         startListen(TEST_USER_ID);
         Thread.sleep(200);
@@ -572,7 +577,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         }
 
-        joinEventThreads();
+        joinThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
     }
@@ -652,9 +657,87 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
             assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
         }
 
-        joinEventThreads();
+        joinThreads();
         final ListenStartResult theListenStartResult = startListen(TEST_USER_ID);
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());
+    }
+
+    public void testRegisterUser_ExtremeThreading() throws EventServiceServerThreadingTestException {
+        final String theUserIdKey = "USER_NUMBER_KEY";
+        final String theUserIdPrefix = "UserId_";
+        final int theUserCount = 2000;
+
+        assertEquals(0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        AutoIncrementFactory theAutoIncrementFactory = AutoIncrementFactory.getInstance();
+        Collection<String> theUserIds = new ArrayList<String>(theUserCount);
+        for(int i = 0; i < theUserCount; i++) {
+            String theUserId = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            theUserIds.add(theUserId);
+            //register two times to test avoided conflicts
+            startRegisterUser(TEST_DOMAIN, theUserId);
+            startRegisterUser(TEST_DOMAIN, theUserId);
+        }
+        joinThreads();
+
+        assertEquals(theUserCount, theUserIds.size());
+        for(String theUserId: theUserIds) {
+            assertTrue(myEventRegistry.isUserRegistered(theUserId));
+        }
+        assertTrue(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getCurrentValue(theUserIdKey)));
+
+        assertEquals(1, myEventRegistry.getListenDomains().size());
+        assertEquals(1, myEventRegistry.getListenDomains(theUserIdPrefix + theAutoIncrementFactory.getCurrentValue(theUserIdKey)).size());
+        assertEquals(TEST_DOMAIN, myEventRegistry.getListenDomains().iterator().next());
+
+        assertTrue(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getCurrentValue(theUserIdKey)));
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey)));
+
+        assertEquals(theUserCount, UserManagerFactory.getInstance().getUserManager().getUserCount());
+    }
+
+    public void testRegisterUser_ExtremeThreading_2() throws EventServiceServerThreadingTestException {
+        final String theUserIdKey = "USER_NUMBER_KEY";
+        final String theUserIdPrefix = "UserId_";
+        final int theUserCount = 2000;
+
+        assertEquals(0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        AutoIncrementFactory theAutoIncrementFactory = AutoIncrementFactory.getInstance();
+        Map<String, Domain> theUsers = new HashMap<String, Domain>(theUserCount);
+        for(int i = 0; i < (theUserCount / 2); i++) {
+            final String theUserId = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            //register two times to test avoided conflicts
+            startRegisterUser(TEST_DOMAIN, theUserId);
+            startRegisterUser(TEST_DOMAIN, theUserId);
+            theUsers.put(theUserId, TEST_DOMAIN);
+
+            //register the next user to another domain
+            final String theUserId_2 = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            startRegisterUser(TEST_DOMAIN_2, theUserId_2);
+            theUsers.put(theUserId_2, TEST_DOMAIN_2);
+        }
+        joinThreads();
+
+        assertEquals(theUserCount, theUsers.size());
+        for(Map.Entry<String, Domain> theUserEntry: theUsers.entrySet()) {
+            String theUserId = theUserEntry.getKey();
+            Domain theUserDomain = theUserEntry.getValue();
+
+            assertTrue(myEventRegistry.isUserRegistered(theUserId));
+            assertTrue(myEventRegistry.isUserRegistered(theUserDomain, theUserId));
+            assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_3, theUserId));
+
+            assertEquals(1, myEventRegistry.getListenDomains(theUserId).size());
+            assertEquals(theUserDomain, myEventRegistry.getListenDomains(theUserId).iterator().next());
+        }
+
+        assertTrue(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getCurrentValue(theUserIdKey)));
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey)));
+
+        assertEquals(2, myEventRegistry.getListenDomains().size());
+
+        assertEquals(theUserCount, UserManagerFactory.getInstance().getUserManager().getUserCount());
     }
 }

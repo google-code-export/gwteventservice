@@ -38,6 +38,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author sstrohschein
@@ -555,7 +556,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(6, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -566,7 +567,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         startAddEvent(TEST_DOMAIN, 200);
         assertEquals(1, myEventRegistry.listen(TEST_USER_ID).size());
 
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -582,7 +583,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
         startAddEvent(TEST_DOMAIN, 250);
 
-        joinEventThreads();
+        joinThreads();
 
         final ListenCallable theListenCallable = new ListenCallable(TEST_USER_ID);
         final FutureTask<ListenResult> theFutureTask = new FutureTask<ListenResult>(theListenCallable);
@@ -625,7 +626,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(6, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -647,7 +648,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(3, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         //the user is added too late to get the events
@@ -682,7 +683,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(3, myEventRegistry.listen(TEST_USER_ID_2).size());
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID_2).size());
     }
@@ -702,7 +703,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -721,7 +722,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, new EmptyEventFilter());
@@ -738,7 +739,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(4, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -757,7 +758,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         myEventRegistry.removeEventFilter(TEST_DOMAIN, TEST_USER_ID);
@@ -774,7 +775,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(4, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -793,7 +794,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
 
         //set event filter to NULL should have the same effect as removeEventFilter
@@ -811,7 +812,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(4, theResult);
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
     }
 
@@ -841,7 +842,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID_2).size());
 
         //all events got
-        joinEventThreads();
+        joinThreads();
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID_2).size());
     }
@@ -858,7 +859,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
         startAddEvent(TEST_USER_ID, 250);
 
-        joinEventThreads();
+        joinThreads();
 
         final ListenCallable theListenCallable = new ListenCallable(TEST_USER_ID);
         final FutureTask<ListenResult> theFutureTask = new FutureTask<ListenResult>(theListenCallable);
@@ -984,8 +985,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     }
 
     private void checkLog(int anExpectedLogSize, String... anExpectedLogMessageList) {
-        assertTrue(myTestLoggingHandler.containsMessage(anExpectedLogMessageList));
         assertEquals(anExpectedLogSize, myTestLoggingHandler.getLogMessageSize());
+        assertTrue(myTestLoggingHandler.containsMessage(anExpectedLogMessageList));
     }
 
     private class EmptyEventFilter implements EventFilter
@@ -1039,10 +1040,10 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
     private class TestLoggingHandler extends Handler
     {
-        private List<String> myMessages;
+        private Queue<String> myMessages;
 
         private TestLoggingHandler() {
-            myMessages = new ArrayList<String>();
+            myMessages = new ConcurrentLinkedQueue<String>();
         }
 
         public void publish(LogRecord aRecord) {

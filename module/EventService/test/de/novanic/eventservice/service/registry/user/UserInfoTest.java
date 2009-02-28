@@ -209,4 +209,13 @@ public class UserInfoTest extends TestCase
         theOtherUserInfo = null;
         assertFalse(myUserInfo.equals(theOtherUserInfo));
     }
+
+    public void testCompareTo() {
+        UserInfo theUserInfo = new UserInfo("1");
+        UserInfo theUserInfo_2 = new UserInfo("2");
+        assertEquals(-1, theUserInfo.compareTo(theUserInfo_2));
+        assertEquals(1, theUserInfo_2.compareTo(theUserInfo));
+
+        assertEquals(0, theUserInfo.compareTo(new UserInfo("1")));
+    }
 }
