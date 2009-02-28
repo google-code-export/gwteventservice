@@ -24,7 +24,7 @@ package de.novanic.eventservice.test.testhelper;
  *         <br>Date: 20.02.2009
  *         <br>Time: 19:15:30
  */
-public interface StartObservable
+public interface StartObservable extends Runnable
 {
     boolean isStarted();
 }

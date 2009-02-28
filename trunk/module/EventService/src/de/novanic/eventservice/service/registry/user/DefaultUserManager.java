@@ -21,6 +21,7 @@ package de.novanic.eventservice.service.registry.user;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * The UserManager is a container for {@link de.novanic.eventservice.service.registry.user.UserInfo} and provides various
@@ -34,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultUserManager implements UserManager
 {
-    private final Map<String, UserInfo> myUserMap;
+    private final ConcurrentMap<String, UserInfo> myUserMap;
     private final UserActivityScheduler myUserActivityScheduler;
 
     /**
@@ -56,11 +57,11 @@ public class DefaultUserManager implements UserManager
     public UserInfo addUser(String aUserId) {
         UserInfo theUserInfo = null;
         if(aUserId != null) {
-            theUserInfo = getUser(aUserId);
+            UserInfo theNewUserInfo = new UserInfo(aUserId);
+            theUserInfo = myUserMap.putIfAbsent(aUserId, theNewUserInfo);
             if(theUserInfo == null) {
-                theUserInfo = new UserInfo(aUserId);
+                theUserInfo = theNewUserInfo;
             }
-            addUser(theUserInfo);
         }
         return theUserInfo;
     }

@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *         <br>Date: 19.01.2009
  *         <br>Time: 23:59:58
  */
-public class UserInfo
+public class UserInfo implements Comparable<UserInfo>
 {
     private final String myUserId;
     private final Queue<DomainEvent> myEvents;
@@ -147,6 +147,10 @@ public class UserInfo
      */
     public long getLastActivityTime() {
         return myLastActivityTime;
+    }
+
+    public int compareTo(UserInfo aUserInfo) {
+        return myUserId.compareTo(aUserInfo.myUserId);
     }
 
     public boolean equals(Object anObject) {

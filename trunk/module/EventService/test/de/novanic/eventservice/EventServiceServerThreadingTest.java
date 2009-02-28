@@ -21,6 +21,9 @@ package de.novanic.eventservice;
 
 import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.service.registry.EventRegistry;
+import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
+import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
@@ -41,29 +44,26 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
 
     private EventService myEventService;
     private EventRegistry myEventRegistry;
-    private Collection<EventThread<AddEventRunnable>> myEventThreads;
+    private Collection<RunningUnit> myRunningUnits; 
     private Collection<ListenStartResult> myListenStartResults;
     private long myStartTime;
 
     public void setUp(EventService anEventService) {
         myStartTime = PlatformUtil.getCurrentTime();
         myEventService = anEventService;
-        myEventThreads = new ArrayList<EventThread<AddEventRunnable>>();
+        myRunningUnits = new ArrayList<RunningUnit>();
         myListenStartResults = new ArrayList<ListenStartResult>();
         AutoIncrementFactory.reset();
     }
 
     public void setUp(EventRegistry anEventRegistry) {
-        myStartTime = PlatformUtil.getCurrentTime();
+        setUp((EventService)null);
         myEventRegistry = anEventRegistry;
-        myEventThreads = new ArrayList<EventThread<AddEventRunnable>>();
-        myListenStartResults = new ArrayList<ListenStartResult>();
-        AutoIncrementFactory.reset();
     }
 
     public void tearDown() throws Exception {
         //Join all threads to ensure that the next test doesn't collidate with other threads.
-        joinEventThreads();
+        joinThreads();
         joinListenThreads();
 
         if(LOG.isLoggable(Level.INFO) && myStartTime > 0L) {
@@ -72,15 +72,45 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         }
         myStartTime = 0L;
         AutoIncrementFactory.reset();
+
+        //remove all users (memory optimizations for recursive tests)
+        Collection<UserInfo> theUserInfoCollection = UserManagerFactory.getInstance().getUserManager(0L).getUsers();
+        for(UserInfo theUserInfo: theUserInfoCollection) {
+            myEventRegistry.unlisten(theUserInfo.getUserId());
+        }
+        myEventRegistry = null;
+        UserManagerFactory.reset();
+        EventRegistryFactory.reset();
     }
 
-    public void joinEventThreads() throws EventServiceServerThreadingTestException {
+    /**
+     * Ensures that all accuired threads are started and joined. To join the listen threads the method joinListenThreads() must
+     * be used, because the ordering is important (the listen threads must be joined at last).
+     * @throws EventServiceServerThreadingTestException
+     */
+    public void joinThreads() throws EventServiceServerThreadingTestException {
+        waitForStarts(myRunningUnits);
         try {
-            for(Thread theEventThread : myEventThreads) {
-                theEventThread.join();
+            for(RunningUnit theRunningUnit: myRunningUnits) {
+                theRunningUnit.getThread().join();
             }
         } catch(InterruptedException e) {
             throw new EventServiceServerThreadingTestException("Error on joining threads!", e);
+        }
+    }
+
+    public void joinListenThreads() throws EventServiceServerThreadingTestException {
+        for(ListenStartResult theListenStartResult: myListenStartResults) {
+            joinListen(theListenStartResult);
+        }
+    }
+
+    public int joinListen(ListenStartResult aListenResult) throws EventServiceServerThreadingTestException {
+        try {
+            aListenResult.getThread().join();
+            return aListenResult.getListenResult().getEventCount();
+        } catch(InterruptedException e) {
+            throw new EventServiceServerThreadingTestException("Listen thread interrupted!", e);
         }
     }
 
@@ -121,13 +151,11 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
     }
 
     public Thread startAddEvent(Domain aDomain, long aWaitingTime) {
-        EventThread<AddEventRunnable> theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aDomain, aWaitingTime));
-        return startAddEvent(theEventThread);
+        return startRunningUnit(new AddEventRunnable(aDomain, aWaitingTime)).getThread();
     }
 
     public Thread startAddEvent(String aUser, long aWaitingTime) {
-        EventThread<AddEventRunnable> theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aUser, aWaitingTime));
-        return startAddEvent(theEventThread);
+        return startRunningUnit(new AddEventRunnable(aUser, aWaitingTime)).getThread();
     }
 
     protected void startAddEvent(String[] aUserIds, Domain aDomain, long aWaitingTime, boolean isUserSpecific) {
@@ -154,20 +182,27 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
                     myEventRegistry.getListenDomains(aUserId).contains(aDomain));
         }
 
-        EventThread<AddEventRunnable> theEventThread;
+        AddEventRunnable theAddEventRunnable;
         if(isUserSpecific) {
-            theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aUserId, aWaitingTime));
+            theAddEventRunnable = new AddEventRunnable(aUserId, aWaitingTime);
         } else {
-            theEventThread = new EventThread<AddEventRunnable>(new AddEventRunnable(aDomain, aWaitingTime));
+            theAddEventRunnable = new AddEventRunnable(aDomain, aWaitingTime);
         }
-        return startAddEvent(theEventThread);
+        return startRunningUnit(theAddEventRunnable).getThread();
     }
 
-    private Thread startAddEvent(EventThread<AddEventRunnable> anEventThread) {
-        myEventThreads.add(anEventThread);
-        anEventThread.start();
-        waitForStart(anEventThread);
-        return anEventThread;
+    public void startRegisterUser(Domain aDomain, String aUserId) {
+        RegisterUserRunnable theRegisterUserRunnable = new RegisterUserRunnable(aDomain, aUserId);
+        startRunningUnit(theRegisterUserRunnable);
+    }
+
+    private RunningUnit startRunningUnit(StartObservable aStartObservable) {
+        Thread theThread = new Thread(aStartObservable);
+        theThread.start();
+
+        final RunningUnit theRunningUnit = new RunningUnit(aStartObservable, theThread);
+        myRunningUnits.add(theRunningUnit);
+        return theRunningUnit;
     }
 
     protected void addEvent(String aUserId, Domain aDomain, Event anEvent, boolean isUserSpecific) {
@@ -258,18 +293,9 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         }
     }
 
-    public void joinListenThreads() throws EventServiceServerThreadingTestException {
-        for(ListenStartResult theListenStartResult: myListenStartResults) {
-            joinListen(theListenStartResult);
-        }
-    }
-
-    public int joinListen(ListenStartResult aListenResult) throws EventServiceServerThreadingTestException {
-        try {
-            aListenResult.getThread().join();
-            return aListenResult.getListenResult().getEventCount();
-        } catch(InterruptedException e) {
-            throw new EventServiceServerThreadingTestException("Listen thread interrupted!", e);
+    private void waitForStarts(Collection<RunningUnit> aRunningUnits) {
+        for(RunningUnit theRunningUnit: aRunningUnits) {
+            waitForStart(theRunningUnit.getStartObservable());
         }
     }
 
@@ -277,17 +303,22 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         while(!aStartObservable.isStarted()) {}
     }
 
-    private class EventThread<T extends AddEventRunnable> extends Thread implements StartObservable
+    private class RunningUnit
     {
-        private T myAddEventRunnable;
+        private StartObservable myStartObservable;
+        private Thread myThread;
 
-        private EventThread(T aRunnable) {
-            super(aRunnable);
-            myAddEventRunnable = aRunnable;
+        private RunningUnit(StartObservable aStartObservable, Thread aThread) {
+            myStartObservable = aStartObservable;
+            myThread = aThread;
         }
 
-        public boolean isStarted() {
-            return myAddEventRunnable.isStarted();
+        public StartObservable getStartObservable() {
+            return myStartObservable;
+        }
+
+        public Thread getThread() {
+            return myThread;
         }
     }
 }

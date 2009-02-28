@@ -139,7 +139,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinEventThreads();
+        joinThreads();
         final ListenStartResult theListenStartResult = startListen();
         joinListen(theListenStartResult);
         assertEquals(4500, getEventCount());
@@ -178,7 +178,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinEventThreads();
+        joinThreads();
 
         startListen();
         Thread.sleep(200);
@@ -223,7 +223,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinEventThreads();
+        joinThreads();
 
         startListen();
         Thread.sleep(200);
@@ -258,7 +258,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinEventThreads();
+        joinThreads();
         listen();
         assertEquals(5000, getEventCount());
         assertEquals(5000, getEventCount(TEST_DOMAIN));
@@ -288,7 +288,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinEventThreads();
+        joinThreads();
 
         startListen();
         Thread.sleep(200);
