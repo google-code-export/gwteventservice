@@ -53,7 +53,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class DefaultEventRegistry implements EventRegistry
 {
-    private final ServerLogger LOG = ServerLoggerFactory.getServerLogger(DefaultEventRegistry.class.getName());
+    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(DefaultEventRegistry.class.getName());
 
     private final EventServiceConfiguration myConfiguration;
     private final ConcurrentMap<Domain, ConcurrentMap<String, UserInfo>> myDomainUserInfoMap;
@@ -211,23 +211,25 @@ public class DefaultEventRegistry implements EventRegistry
     public List<DomainEvent> listen(String aUserId) {
         UserInfo theUserInfo = getUserInfo(aUserId);
         LOG.debug(aUserId + ": listen (UserInfo " + theUserInfo + ").");
-        try {
-            EventServiceConfiguration theConfiguration = getConfiguration();
-            Thread.sleep(theConfiguration.getMinWaitingTime());
-            if(theUserInfo != null) {
+        if(theUserInfo != null) {
+            try {
+                final int theMinWaitingTime = myConfiguration.getMinWaitingTime();
+                if(theMinWaitingTime > 0) {
+                    Thread.sleep(theMinWaitingTime);
+                }
                 myUserActivityScheduler.reportUserActivity(theUserInfo);
                 if(theUserInfo.isEventsEmpty()) {
                     //monitor for event notification and double checked
                     synchronized(theUserInfo) {
                         if(theUserInfo.isEventsEmpty()) {
-                            theUserInfo.wait(theConfiguration.getMaxWaitingTime());
+                            theUserInfo.wait(myConfiguration.getMaxWaitingTime());
                         }
                     }
                 }
                 return theUserInfo.retrieveEvents();
+            } catch(InterruptedException e) {
+                LOG.error("Listen was interrupted (client id \"" + aUserId + "\")!", e);
             }
-        } catch(InterruptedException e) {
-            LOG.error("Listen was interrupted (client id \"" + aUserId + "\")!", e);
         }
         return null;
     }
