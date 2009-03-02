@@ -28,8 +28,10 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.client.event.listen.UnlistenEvent;
 import de.novanic.eventservice.test.testhelper.TestEventFilter;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
-import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import de.novanic.eventservice.service.DefaultEventExecutorService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
+import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -82,8 +84,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myLogger.removeHandler(myTestLoggingHandler);
         myTestLoggingHandler.clear();
 
-        EventRegistryFactory.reset();
-        EventExecutorServiceFactory.reset();
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
+        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
     public void testRegisterUser() {
@@ -503,6 +505,33 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
         startAddEvent(TEST_DOMAIN, 200);
         assertEquals(1, myEventRegistry.listen(TEST_USER_ID).size());
+    }
+
+    public void testListen_2() throws Exception {
+        //Tests listen with a min. waiting time
+        EventServiceConfiguration theEventServiceConfiguration = createConfiguration(500, 1500, 9999);
+        tearDownEventServiceConfiguration();
+        setUp(theEventServiceConfiguration);
+
+        myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
+        setUp(myEventRegistry);
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
+                    "Server: Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
+                        "  Min.: 500ms; Max.: 1500ms; Timeout: 9999ms");
+
+        long theStartTime = PlatformUtil.getCurrentTime();
+        assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
+        long theRunTime = PlatformUtil.getCurrentTime() - theStartTime;
+        assertTrue(theRunTime >= 1500);
+
+        myEventRegistry.addEvent(TEST_DOMAIN, new DummyEvent());
+        theStartTime = PlatformUtil.getCurrentTime();
+        assertEquals(1, myEventRegistry.listen(TEST_USER_ID).size());
+        theRunTime = PlatformUtil.getCurrentTime() - theStartTime;
+        assertTrue(theRunTime >= 500);
+        assertTrue(theRunTime < 1500);
     }
 
     public void testListenError() throws Exception {

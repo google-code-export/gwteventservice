@@ -22,6 +22,8 @@ package de.novanic.eventservice.test.testhelper;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.service.EventExecutorService;
 import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.service.DefaultEventExecutorService;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
 /**
  * @author sstrohschein
@@ -50,7 +52,7 @@ public class AddEventRunnable implements Runnable, StartObservable
 
     private void init(String aUser, long aWaitingTime) {
         myWaitingTime = aWaitingTime;
-        EventExecutorServiceFactory.reset();
+        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
         final EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         myEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(aUser);
     }

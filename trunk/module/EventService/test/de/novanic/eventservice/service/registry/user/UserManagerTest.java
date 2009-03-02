@@ -339,7 +339,7 @@ public class UserManagerTest extends TestCase
 
         //re-add the user
         myUserManager.addUser(TEST_USER_ID);
-        Thread.sleep(700);
+        Thread.sleep(850); //to guarantee that the UserActivityScheduler runs at least two times
         //second timeout recognized
         assertEquals(2, theTimeoutListener.getTimeoutCount());
 
@@ -373,7 +373,7 @@ public class UserManagerTest extends TestCase
         myUserManager.addUser(TEST_USER_ID);
         assertNotNull(myUserManager.getUser(TEST_USER_ID));
 
-        Thread.sleep(700);
+        Thread.sleep(850); //to guarantee that the UserActivityScheduler runs at least two times
         //second timeout recognized
         assertNull(myUserManager.getUser(TEST_USER_ID));
 

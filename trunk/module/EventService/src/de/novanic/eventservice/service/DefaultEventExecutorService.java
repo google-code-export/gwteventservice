@@ -40,7 +40,7 @@ public class DefaultEventExecutorService implements EventExecutorService
     private final String myClientId;
 
     static {
-        reset();
+        init();
     }
 
     /**
@@ -120,9 +120,9 @@ public class DefaultEventExecutorService implements EventExecutorService
     }
 
     /**
-     * Resets the EventExecutorService. This method should only be used in TestCases!
+     * Initializes the EventExecutorService.
      */
-    static void reset() {
+    private static void init() {
         final EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
         myEventRegistry = theEventRegistryFactory.getEventRegistry();
     }

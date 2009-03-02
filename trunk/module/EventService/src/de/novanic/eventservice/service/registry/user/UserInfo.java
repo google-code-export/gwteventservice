@@ -44,7 +44,7 @@ public class UserInfo implements Comparable<UserInfo>
     private final String myUserId;
     private final Queue<DomainEvent> myEvents;
     private final Map<Domain, EventFilter> myDomainEventFilters;
-    private long myLastActivityTime;
+    private volatile long myLastActivityTime;
 
     /**
      * Creates a new UserInfo for the user id.

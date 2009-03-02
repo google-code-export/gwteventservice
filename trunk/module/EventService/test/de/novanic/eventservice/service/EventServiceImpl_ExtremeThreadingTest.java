@@ -24,6 +24,7 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.test.testhelper.ListenStartResult;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.ListenCycleCancelEvent;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 
 /**
@@ -52,7 +53,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
         tearDownEventServiceConfiguration();
 
         myEventService.unlisten();
-        EventExecutorServiceFactory.reset();
+        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
     public void testListen() throws Exception {

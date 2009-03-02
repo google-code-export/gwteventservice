@@ -27,8 +27,10 @@ import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.config.loader.TestCustomConfigurationLoader;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
-import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.service.DefaultEventExecutorService;
 import de.novanic.eventservice.util.TestLoggingConfigurator;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetException;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
 import java.io.IOException;
 
@@ -42,19 +44,19 @@ public abstract class EventServiceTestCase extends TestCase
     public void setUp(EventServiceConfiguration anEventServiceConfiguration) {
         ConfigurationLoader theConfigurationLoader = new TestCustomConfigurationLoader(anEventServiceConfiguration);
         EventServiceConfigurationFactory.getInstance().addCustomConfigurationLoader(theConfigurationLoader);
-        EventRegistryFactory.reset();
-        EventExecutorServiceFactory.reset();
-        UserManagerFactory.reset();
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
+        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
+        FactoryResetService.resetFactory(UserManagerFactory.class);
     }
 
     public void tearDown() throws Exception {
         tearDownEventServiceConfiguration();
-        UserManagerFactory.reset();
+        FactoryResetService.resetFactory(UserManagerFactory.class);
     }
 
     public void tearDownEventServiceConfiguration() {
-        EventServiceConfigurationFactory.reset();
-        EventRegistryFactory.reset();
+        FactoryResetService.resetFactory(EventServiceConfigurationFactory.class);
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
     }
 
     public void logOn() throws IOException {
