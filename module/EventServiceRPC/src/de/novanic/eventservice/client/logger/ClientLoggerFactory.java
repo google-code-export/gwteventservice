@@ -36,7 +36,7 @@ public class ClientLoggerFactory
      * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
      */
     private static class ClientLoggerHolder {
-        private static ClientLogger CLIENT_LOGGER_INSTANCE = new GWTClientLogger();
+        private static final ClientLogger CLIENT_LOGGER_INSTANCE = new GWTClientLogger();
     }
 
     /**

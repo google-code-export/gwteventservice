@@ -42,7 +42,7 @@ public class EventExecutorServiceFactory
      * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
      */
     private static class EventExecutorServiceFactoryHolder {
-        private static EventExecutorServiceFactory INSTANCE = new EventExecutorServiceFactory();
+        private static final EventExecutorServiceFactory INSTANCE = new EventExecutorServiceFactory();
     }
 
     /**
