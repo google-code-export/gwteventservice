@@ -167,7 +167,7 @@ public class UserActivityScheduler
     private class TimeoutTimerTask extends TimerTask
     {
         public void run() {
-            long theTimeoutCriteriaTime = createCurrentTime() - myTimeoutInterval;
+            final long theTimeoutCriteriaTime = createCurrentTime() - myTimeoutInterval;
 
             Iterator<UserInfo> theUserInfoIterator = myUserInfoCollection.iterator();
             while(theUserInfoIterator.hasNext()) {

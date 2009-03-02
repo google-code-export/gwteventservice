@@ -20,6 +20,7 @@
 package de.novanic.eventservice;
 
 import de.novanic.eventservice.test.testhelper.*;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
@@ -53,7 +54,7 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         myEventService = anEventService;
         myRunningUnits = new ArrayList<RunningUnit>();
         myListenStartResults = new ArrayList<ListenStartResult>();
-        AutoIncrementFactory.reset();
+        FactoryResetService.resetFactory(AutoIncrementFactory.class);
     }
 
     public void setUp(EventRegistry anEventRegistry) {
@@ -71,7 +72,6 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
             LOG.log(Level.INFO, "Execution time: " + theExecutionTime + "ms (" + theExecutionTime / 1000L + " second(s))");
         }
         myStartTime = 0L;
-        AutoIncrementFactory.reset();
 
         //remove all users (memory optimizations for recursive tests)
         Collection<UserInfo> theUserInfoCollection = UserManagerFactory.getInstance().getUserManager(0L).getUsers();
@@ -79,8 +79,9 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
             myEventRegistry.unlisten(theUserInfo.getUserId());
         }
         myEventRegistry = null;
-        UserManagerFactory.reset();
-        EventRegistryFactory.reset();
+        FactoryResetService.resetFactory(UserManagerFactory.class);
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
+        FactoryResetService.resetFactory(AutoIncrementFactory.class);
     }
 
     /**

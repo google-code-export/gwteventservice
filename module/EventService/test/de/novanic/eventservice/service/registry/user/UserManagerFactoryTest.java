@@ -22,6 +22,7 @@ package de.novanic.eventservice.service.registry.user;
 import junit.framework.TestCase;
 import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
 import java.util.Collection;
 
@@ -35,12 +36,12 @@ public class UserManagerFactoryTest extends TestCase
     private UserManagerFactory myUserManagerFactory;
 
     public void setUp() {
-        UserManagerFactory.reset();
+        FactoryResetService.resetFactory(UserManagerFactory.class);
         myUserManagerFactory = UserManagerFactory.getInstance();
     }
 
     public void tearDown() {
-        UserManagerFactory.reset();
+        FactoryResetService.resetFactory(UserManagerFactory.class);
     }
 
     public void testGetInstance() {
@@ -48,7 +49,7 @@ public class UserManagerFactoryTest extends TestCase
         assertSame(theEventRegistryFactory, UserManagerFactory.getInstance());
         assertSame(theEventRegistryFactory, UserManagerFactory.getInstance());
         
-        UserManagerFactory.reset();
+        FactoryResetService.resetFactory(UserManagerFactory.class);
 
         UserManagerFactory theEventRegistryFactory_2 = UserManagerFactory.getInstance();
         assertNotSame(theEventRegistryFactory, theEventRegistryFactory_2);

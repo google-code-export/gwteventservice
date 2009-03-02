@@ -33,21 +33,24 @@ import de.novanic.eventservice.config.loader.ConfigurationException;
  */
 public class UserManagerFactory
 {
-    private static UserManagerFactory myInstance;
-    private UserManager myUserManager;
+    private volatile UserManager myUserManager;
 
     private UserManagerFactory() {}
+
+    /**
+     * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
+     */
+    private static class UserManagerFactoryHolder {
+        private static UserManagerFactory INSTANCE = new UserManagerFactory();
+    }
 
     /**
      * This method should be used to create an instance of UserManagerFactory.
      * UserManagerFactory is a singleton, so this method returns always the same instance of UserManagerFactory.
      * @return UserManagerFactory (singleton)
      */
-    public static synchronized UserManagerFactory getInstance() {
-        if(myInstance == null) {
-            myInstance = new UserManagerFactory();
-        }
-        return myInstance;
+    public static UserManagerFactory getInstance() {
+        return UserManagerFactoryHolder.INSTANCE;
     }
 
     /**
@@ -63,7 +66,7 @@ public class UserManagerFactory
      * initiated first with {@link de.novanic.eventservice.service.registry.user.UserManagerFactory#getUserManager(de.novanic.eventservice.config.EventServiceConfiguration)}
      * or {@link de.novanic.eventservice.service.registry.user.UserManagerFactory#getUserManager(long)}
      */
-    public synchronized UserManager getUserManager() {
+    public UserManager getUserManager() {
         if(myUserManager != null) {
             return myUserManager;
         }
@@ -76,7 +79,7 @@ public class UserManagerFactory
      * @param aConfiguration {@link EventServiceConfiguration} used to read the timeout time/interval.
      * @return {@link de.novanic.eventservice.service.registry.user.UserManager} (singleton)
      */
-    public synchronized UserManager getUserManager(EventServiceConfiguration aConfiguration) {
+    public UserManager getUserManager(EventServiceConfiguration aConfiguration) {
         return getUserManager(aConfiguration.getTimeoutTime());
     }
 
@@ -86,18 +89,14 @@ public class UserManagerFactory
      * needs to be started).
      * @return {@link de.novanic.eventservice.service.registry.user.UserManager} (singleton)
      */
-    public synchronized UserManager getUserManager(long aTimeoutInterval) {
+    public UserManager getUserManager(long aTimeoutInterval) {
         if(myUserManager == null) {
-            myUserManager = new DefaultUserManager(aTimeoutInterval);
+            synchronized(this) {
+                if(myUserManager == null) {
+                    myUserManager = new DefaultUserManager(aTimeoutInterval);
+                }
+            }
         }
         return myUserManager;
-    }
-
-    /**
-     * This method should only be used in TestCases, because it resets the factory and the factory can't ensure
-     * anymore that only one instance exists!
-     */
-    public static synchronized void reset() {
-        myInstance = null;
     }
 }

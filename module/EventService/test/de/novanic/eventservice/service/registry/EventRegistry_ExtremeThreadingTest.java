@@ -22,7 +22,8 @@ package de.novanic.eventservice.service.registry;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 import de.novanic.eventservice.EventServiceServerThreadingTestException;
 import de.novanic.eventservice.test.testhelper.*;
-import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import de.novanic.eventservice.service.DefaultEventExecutorService;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
@@ -49,7 +50,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
     public void setUp() {
         setUp(createConfiguration(0, 30000, 90000));
-        EventRegistryFactory.reset();
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
         super.setUp(myEventRegistry);
@@ -61,8 +62,8 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
         myEventRegistry.unlisten(TEST_USER_ID);
         myEventRegistry.unlisten(TEST_USER_ID_2);
-        EventRegistryFactory.reset();
-        EventExecutorServiceFactory.reset();
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
+        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
     /**

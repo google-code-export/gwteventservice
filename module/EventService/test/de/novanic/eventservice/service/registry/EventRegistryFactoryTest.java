@@ -24,6 +24,7 @@ import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.EventServiceTestCase;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.logging.Logger;
@@ -41,7 +42,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
     public void tearDown() {
         tearDownEventServiceConfiguration();
 
-        EventRegistryFactory.reset();
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
     }
 
     public void testGetInstance() {
@@ -57,7 +58,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         assertSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
 
-        EventRegistryFactory.reset();
+        FactoryResetService.resetFactory(EventRegistryFactory.class);
         assertNotSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
     }
 

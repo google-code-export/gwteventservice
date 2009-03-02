@@ -23,6 +23,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.test.testhelper.*;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 
 import java.util.*;
@@ -53,7 +54,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         tearDownEventServiceConfiguration();
 
         myEventService.unlisten();
-        EventExecutorServiceFactory.reset();
+        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
     public void testInit() {

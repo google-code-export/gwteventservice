@@ -38,8 +38,6 @@ import java.util.ArrayList;
  */
 public class EventServiceConfigurationFactory
 {
-    private static EventServiceConfigurationFactory myInstance;
-
     private final List<ConfigurationLoader> myCustomConfigurationLoaders;
 
     /**
@@ -51,15 +49,19 @@ public class EventServiceConfigurationFactory
     }
 
     /**
+     * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
+     */
+    private static class EventServiceConfigurationFactoryHolder {
+        private static EventServiceConfigurationFactory INSTANCE = new EventServiceConfigurationFactory();
+    }
+
+    /**
      * This method should be used to create an instance of EventServiceConfigurationFactory.
      * EventServiceConfigurationFactory is a singleton, so this method returns always the same instance of EventServiceConfigurationFactory.
      * @return EventServiceConfigurationFactory (singleton)
      */
-    public static synchronized EventServiceConfigurationFactory getInstance() {
-        if(myInstance == null) {
-            myInstance = new EventServiceConfigurationFactory();
-        }
-        return myInstance;
+    public static EventServiceConfigurationFactory getInstance() {
+        return EventServiceConfigurationFactoryHolder.INSTANCE;
     }
 
     /**
@@ -110,15 +112,5 @@ public class EventServiceConfigurationFactory
      */
     public void removeCustomConfigurationLoader(ConfigurationLoader aConfigurationLoader) {
         myCustomConfigurationLoaders.remove(aConfigurationLoader);
-    }
-
-    /**
-     * Resets the factory and the {@link de.novanic.eventservice.config.loader.ConfigurationLoader} queue.
-     */
-    public static void reset() {
-        if(myInstance != null) {
-            myInstance.myCustomConfigurationLoaders.clear();
-            myInstance = null;
-        }
     }
 }

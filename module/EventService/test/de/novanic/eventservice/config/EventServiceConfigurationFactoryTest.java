@@ -22,6 +22,7 @@ package de.novanic.eventservice.config;
 import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.EventServiceTestCase;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
 /**
  * @author sstrohschein
@@ -39,7 +40,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         assertSame(theEventServiceConfigurationFactory, EventServiceConfigurationFactory.getInstance());
 
-        EventServiceConfigurationFactory.reset();
+        FactoryResetService.resetFactory(EventServiceConfigurationFactory.class);
         assertNotSame(theEventServiceConfigurationFactory, EventServiceConfigurationFactory.getInstance());
 
         theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -127,8 +128,8 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
 
         //reset
-        EventServiceConfigurationFactory.reset();
-        EventServiceConfigurationFactory.reset();
+        FactoryResetService.resetFactory(EventServiceConfigurationFactory.class);
+        theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
         assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
@@ -150,7 +151,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
 
         //reset and re-init
-        EventServiceConfigurationFactory.reset();
+        FactoryResetService.resetFactory(EventServiceConfigurationFactory.class);
         theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();

@@ -27,6 +27,7 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.EventServiceTestCase;
+import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
 
     public void tearDown() throws Exception {
         tearDownEventServiceConfiguration();
-        EventExecutorServiceFactory.reset();
+        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
     public void testIsUserRegistered() {

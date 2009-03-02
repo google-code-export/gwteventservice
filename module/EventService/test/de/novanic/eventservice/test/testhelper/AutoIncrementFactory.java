@@ -19,9 +19,9 @@
  */
 package de.novanic.eventservice.test.testhelper;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * AutoIncrementFactory can be used to create unique idents for various contexts. 
@@ -32,18 +32,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AutoIncrementFactory
 {
-    private static AutoIncrementFactory myInstance;
-    private final Map<String, AtomicInteger> myAutoIncrementMap;
+    private final ConcurrentMap<String, AtomicInteger> myAutoIncrementMap;
 
     private AutoIncrementFactory() {
         myAutoIncrementMap = new ConcurrentHashMap<String, AtomicInteger>();
     }
 
-    public static synchronized AutoIncrementFactory getInstance() {
-        if(myInstance == null) {
-            myInstance = new AutoIncrementFactory();
-        }
-        return myInstance;
+    private static class AutoIncrementFactoryHolder {
+        private static AutoIncrementFactory INSTANCE = new AutoIncrementFactory();
+    }
+
+    public static AutoIncrementFactory getInstance() {
+        return AutoIncrementFactoryHolder.INSTANCE;
     }
 
     public int getCurrentValue(String aKey) {
@@ -54,16 +54,8 @@ public class AutoIncrementFactory
         return getAtomic(aKey).incrementAndGet();
     }
 
-    public static synchronized void reset() {
-        myInstance = null;
-    }
-
     private AtomicInteger getAtomic(String aKey) {
-        AtomicInteger theAtomicInteger = myAutoIncrementMap.get(aKey);
-        if(theAtomicInteger == null) {
-            theAtomicInteger = new AtomicInteger();
-            myAutoIncrementMap.put(aKey, theAtomicInteger);
-        }
-        return theAtomicInteger;
+        myAutoIncrementMap.putIfAbsent(aKey, new AtomicInteger());
+        return myAutoIncrementMap.get(aKey);
     }
 }

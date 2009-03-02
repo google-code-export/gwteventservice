@@ -33,8 +33,7 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
  */
 public class EventRegistryFactory
 {
-    private static EventRegistryFactory myInstance;
-    private EventRegistry myEventRegistry;
+    private volatile EventRegistry myEventRegistry;
 
     /**
      * The EventRegistryFactory should be created via the getInstance method.
@@ -43,15 +42,19 @@ public class EventRegistryFactory
     private EventRegistryFactory() {}
 
     /**
+     * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
+     */
+    private static class EventRegistryFactoryHolder {
+        private static EventRegistryFactory INSTANCE = new EventRegistryFactory();
+    }
+
+    /**
      * This method should be used to create an instance of EventRegistryFactory.
      * EventRegistryFactory is a singleton, so this method returns always the same instance of EventRegistryFactory.
      * @return EventRegistryFactory (singleton)
      */
-    public static synchronized EventRegistryFactory getInstance() {
-        if(myInstance == null) {
-            myInstance = new EventRegistryFactory();
-        }
-        return myInstance;
+    public static EventRegistryFactory getInstance() {
+        return EventRegistryFactoryHolder.INSTANCE;
     }
 
     /**
@@ -59,22 +62,22 @@ public class EventRegistryFactory
      * EventRegistry is a singleton, so this method returns always the same instance of EventRegistry.
      * @return EventRegistry (singleton)
      */
-    public synchronized EventRegistry getEventRegistry() {
+    public EventRegistry getEventRegistry() {
         if(myEventRegistry == null) {
-            EventServiceConfiguration theConfiguration = getEventServiceConfiguration();
-            myEventRegistry = new DefaultEventRegistry(theConfiguration);
+            synchronized(this) {
+                if(myEventRegistry == null) {
+                    EventServiceConfiguration theConfiguration = getEventServiceConfiguration();
+                    myEventRegistry = new DefaultEventRegistry(theConfiguration);
+                }
+            }
         }
         return myEventRegistry;
     }
 
     /**
-     * This method should only be used in TestCases, because it resets the factory and the factory can't ensure
-     * anymore that only one instance exists!
+     * Loads the {@link de.novanic.eventservice.config.EventServiceConfiguration} with {@link de.novanic.eventservice.config.EventServiceConfigurationFactory}.
+     * @return configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration})
      */
-    public static synchronized void reset() {
-        myInstance = null;
-    }
-
     private EventServiceConfiguration getEventServiceConfiguration() {
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         return theConfigurationFactory.loadEventServiceConfiguration();

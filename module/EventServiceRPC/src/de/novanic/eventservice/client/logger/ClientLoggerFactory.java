@@ -30,19 +30,21 @@ package de.novanic.eventservice.client.logger;
  */
 public class ClientLoggerFactory
 {
-    private static ClientLogger myClientLogger;
-
     private ClientLoggerFactory() {}
+
+    /**
+     * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
+     */
+    private static class ClientLoggerHolder {
+        private static ClientLogger CLIENT_LOGGER_INSTANCE = new GWTClientLogger();
+    }
 
     /**
      * Creates a new {@link de.novanic.eventservice.client.logger.ClientLogger} and holds it as a sinlgeton (only one
      * instance can exist).
      * @return {@link de.novanic.eventservice.client.logger.ClientLogger}
      */
-    public static synchronized ClientLogger getClientLogger() {
-        if(myClientLogger == null) {
-            myClientLogger = new GWTClientLogger();
-        }
-        return myClientLogger;
+    public static ClientLogger getClientLogger() {
+        return ClientLoggerHolder.CLIENT_LOGGER_INSTANCE;
     }
 }

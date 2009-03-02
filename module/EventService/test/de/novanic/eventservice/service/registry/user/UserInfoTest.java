@@ -25,6 +25,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.TestEventFilter;
+import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.List;
 
@@ -194,6 +195,15 @@ public class UserInfoTest extends TestCase
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
     }
 
+    public void testSetGetLastActivityTime() {
+        long theLastActivityTime = myUserInfo.getLastActivityTime();
+        assertTrue(theLastActivityTime > 0);
+        assertTrue(theLastActivityTime <= PlatformUtil.getCurrentTime());
+
+        myUserInfo.setLastActivityTime(0);
+        assertEquals(0, myUserInfo.getLastActivityTime());
+    }
+
     public void testEquals() {
         UserInfo theOtherUserInfo = new UserInfo("test_user_id");
         assertEquals(myUserInfo, myUserInfo);
@@ -215,7 +225,9 @@ public class UserInfoTest extends TestCase
         UserInfo theUserInfo_2 = new UserInfo("2");
         assertEquals(-1, theUserInfo.compareTo(theUserInfo_2));
         assertEquals(1, theUserInfo_2.compareTo(theUserInfo));
-
         assertEquals(0, theUserInfo.compareTo(new UserInfo("1")));
+
+        Comparable<UserInfo> theComparableUserInfo = new UserInfo("1");
+        assertEquals(0, theComparableUserInfo.compareTo(new UserInfo("1")));
     }
 }
