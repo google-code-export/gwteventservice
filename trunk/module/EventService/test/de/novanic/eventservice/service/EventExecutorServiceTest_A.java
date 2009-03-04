@@ -165,7 +165,13 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
         assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
 
-        myEventExecutorService.setEventFilter(TEST_DOMAIN, new EmptyEventFilter());
+        assertNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
+
+        final EmptyEventFilter theEventFilter = new EmptyEventFilter(0);
+        myEventExecutorService.setEventFilter(TEST_DOMAIN, theEventFilter);
+
+        assertNotNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
+        assertEquals(theEventFilter, myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
         assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
@@ -178,7 +184,13 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
         assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
 
-        myEventExecutorService.setEventFilter(TEST_DOMAIN, new EmptyEventFilter());
+        assertNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
+
+        final EmptyEventFilter theEventFilter = new EmptyEventFilter(0);
+        myEventExecutorService.setEventFilter(TEST_DOMAIN, new EmptyEventFilter(0));
+
+        assertNotNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
+        assertEquals(theEventFilter, myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
         assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
@@ -196,7 +208,13 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
         assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
 
-        myEventExecutorService.setEventFilter(TEST_DOMAIN, new EmptyEventFilter());
+        assertNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
+
+        final EmptyEventFilter theEventFilter = new EmptyEventFilter(0);
+        myEventExecutorService.setEventFilter(TEST_DOMAIN, new EmptyEventFilter(0));
+
+        assertNotNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
+        assertEquals(theEventFilter, myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
         assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
@@ -211,8 +229,29 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
 
     private static class EmptyEventFilter implements EventFilter
     {
+        private final int myId;
+
+        private EmptyEventFilter(int anId) {
+            myId = anId;
+        }
+
         public boolean match(Event anEvent) {
             return true;
+        }
+
+        public boolean equals(Object anObject) {
+            if(this == anObject) {
+                return true;
+            }
+            if(anObject == null || getClass() != anObject.getClass()) {
+                return false;
+            }
+            EmptyEventFilter theOtherEventFilter = (EmptyEventFilter)anObject;
+            return myId == theOtherEventFilter.myId;
+        }
+
+        public int hashCode() {
+            return myId;
         }
     }
 }

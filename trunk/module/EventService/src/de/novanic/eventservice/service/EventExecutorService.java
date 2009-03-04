@@ -70,6 +70,13 @@ public interface EventExecutorService
     void setEventFilter(Domain aDomain, EventFilter anEventFilter);
 
     /**
+     * Returns the EventFilter for the user domain combination.
+     * @param aDomain domain
+     * @return EventFilter for the domain
+     */
+    EventFilter getEventFilter(Domain aDomain);
+
+    /**
      * Removes the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
      * @param aDomain domain to drop the {@link de.novanic.eventservice.client.event.filter.EventFilter} from
      */

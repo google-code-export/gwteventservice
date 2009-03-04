@@ -281,12 +281,12 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         }
     }
 
-    protected class RecordedCallback implements AsyncCallback<Object>
+    protected class RecordedCallback implements AsyncCallback<Void>
     {
         private boolean myIsOnSuccessCalled;
         private boolean myIsOnFailureCalled;
 
-        public void onSuccess(Object aResult) {
+        public void onSuccess(Void aResult) {
             if(myIsOnSuccessCalled) {
                 throw new RuntimeException("onSuccess was called more than one time!");
             } else if(myIsOnFailureCalled) {

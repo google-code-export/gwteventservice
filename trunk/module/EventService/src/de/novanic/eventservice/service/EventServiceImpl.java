@@ -111,6 +111,16 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     }
 
     /**
+     * Returns the EventFilter for the user domain combination.
+     * @param aDomain domain
+     * @return EventFilter for the domain
+     */
+    public EventFilter getEventFilter(Domain aDomain) {
+        final String theClientId = getClientId();
+        return myEventRegistry.getEventFilter(aDomain, theClientId);
+    }
+
+    /**
      * The listen method returns all events for the user (events for all domains where the user is registered and user
      * specific events). If no events are available, the method waits a defined time before the events are returned.
      * The client side calls the method with a defined interval to receive all events. If the client don't call the

@@ -101,6 +101,15 @@ public class DefaultEventExecutorService implements EventExecutorService
     }
 
     /**
+     * Returns the EventFilter for the user domain combination.
+     * @param aDomain domain
+     * @return EventFilter for the domain
+     */
+    public EventFilter getEventFilter(Domain aDomain) {
+        return myEventRegistry.getEventFilter(aDomain, getClientId());
+    }
+
+    /**
      * Removes the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
      * @param aDomain domain to drop the EventFilter from
      */

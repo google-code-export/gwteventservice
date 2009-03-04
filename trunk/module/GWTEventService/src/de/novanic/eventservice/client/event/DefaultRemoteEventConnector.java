@@ -67,9 +67,9 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
      * @param anEventNotification supports the notification about incoming events
      * @param aCallback callback
      */
-    public <T> void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<T> aCallback) {
+    public void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<Void> aCallback) {
         LOG.log("Activate RemoteEventConnector for domain \"" + aDomain + "\".");
-        activateStart(aDomain, anEventFilter, new ActivationCallback<T>(anEventNotification, aCallback));
+        activateStart(aDomain, anEventFilter, new ActivationCallback<Void>(anEventNotification, aCallback));
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    protected abstract <T> void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<T> aCallback);
+    protected abstract void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
 
     /**
      * Callback to activate listening of RemoteEventConnector.
