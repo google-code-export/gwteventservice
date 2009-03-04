@@ -350,6 +350,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
+
         Set<Domain> theDomains = new HashSet<Domain>();
         theDomains.add(TEST_DOMAIN);
         theDomains.add(TEST_DOMAIN_3);
@@ -364,6 +368,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertTrue(myEventService.isUserRegistered(TEST_DOMAIN));
         assertFalse(myEventService.isUserRegistered(TEST_DOMAIN_2));
         assertTrue(myEventService.isUserRegistered(TEST_DOMAIN_3));
+
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);
@@ -413,6 +421,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(1, myEventService.listen().size());
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
+
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_3));
     }
 
     public void testRegisterEventFilter() throws Exception {
@@ -440,7 +452,15 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
+
         myEventService.registerEventFilter(TEST_DOMAIN_2, new TestEventFilter());
+
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);
@@ -455,6 +475,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
 
         myEventService.registerEventFilter(TEST_DOMAIN, new TestEventFilter());
+
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);
@@ -481,6 +505,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
         
         myEventService.deregisterEventFilter(TEST_DOMAIN);
+
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
+        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
+        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);

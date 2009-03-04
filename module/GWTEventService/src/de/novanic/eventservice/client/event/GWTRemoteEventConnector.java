@@ -66,7 +66,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    public <T> void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<T> aCallback) {
+    public void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
         myEventService.register(aDomain, anEventFilter, aCallback);
     }
 
@@ -75,7 +75,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aDomains domains to deactivate
      * @param aCallback callback
      */
-    public void deactivate(Set<Domain> aDomains, AsyncCallback<?> aCallback) {
+    public void deactivate(Set<Domain> aDomains, AsyncCallback<Void> aCallback) {
         myEventService.unlisten(aDomains, aCallback);
     }
 
@@ -84,7 +84,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aDomain domain to deactivate
      * @param aCallback callback
      */
-    public void deactivate(Domain aDomain, AsyncCallback<?> aCallback) {
+    public void deactivate(Domain aDomain, AsyncCallback<Void> aCallback) {
         myEventService.unlisten(aDomain, aCallback);
     }
 
@@ -96,7 +96,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<?> aCallback) {
+    public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
         myEventService.registerEventFilter(aDomain, anEventFilter, aCallback);
     }
 
@@ -105,7 +105,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aDomain domain to remove the EventFilter from
      * @param aCallback callback
      */
-    public void deregisterEventFilter(Domain aDomain, AsyncCallback<?> aCallback) {
+    public void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback) {
         myEventService.deregisterEventFilter(aDomain, aCallback);
     }
 

@@ -42,7 +42,7 @@ public interface RemoteEventConnector
      * @param anEventNotification supports the notification about incoming events
      * @param aCallback callback
      */
-    <T> void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<T> aCallback);
+    void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<Void> aCallback);
 
     /**
      * Deactivates the connector for all domains (no events can be got from the domains).
@@ -54,14 +54,14 @@ public interface RemoteEventConnector
      * @param aDomains domains to deactivate
      * @param aCallback callback
      */
-    void deactivate(Set<Domain> aDomains, AsyncCallback<?> aCallback);
+    void deactivate(Set<Domain> aDomains, AsyncCallback<Void> aCallback);
 
     /**
      * Deactivates the connector for the domain (no events can be got from the domain).
      * @param aDomain domain to deactivate
      * @param aCallback callback
      */
-    void deactivate(Domain aDomain, AsyncCallback<?> aCallback);
+    void deactivate(Domain aDomain, AsyncCallback<Void> aCallback);
 
     /**
      * Checks if the connector is active (listening).
@@ -77,12 +77,12 @@ public interface RemoteEventConnector
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<?> aCallback);
+    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
 
     /**
      * Deregisters the {@link de.novanic.eventservice.client.event.filter.EventFilter} for a domain.
      * @param aDomain domain to remove the EventFilter from
      * @param aCallback callback
      */
-    void deregisterEventFilter(Domain aDomain, AsyncCallback<?> aCallback);
+    void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback);
 }

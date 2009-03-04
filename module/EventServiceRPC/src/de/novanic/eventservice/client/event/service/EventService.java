@@ -78,6 +78,13 @@ public interface EventService extends RemoteService
     void deregisterEventFilter(Domain aDomain);
 
     /**
+     * Returns the EventFilter for the user domain combination.
+     * @param aDomain domain
+     * @return EventFilter for the domain
+     */
+    EventFilter getEventFilter(Domain aDomain);
+
+    /**
      * The listen method returns all events for the user (events for all domains where the user is registered and user
      * specific events). If no events are available, the method waits a defined time before the events are returned.
      * The client side calls the method with a defined interval to receive all events. If the client don't call the
