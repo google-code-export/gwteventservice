@@ -74,9 +74,9 @@ public class DomainEventTest extends TestCase
     }
 
     public void testCompareTo() {
-        final DefaultDomainEvent theDomainEvent = createDefaultDomainEvent();
+        final Comparable<DomainEvent> theDomainEvent = createDefaultDomainEvent();
 
-        assertEquals(0, theDomainEvent.compareTo(theDomainEvent));
+        assertEquals(0, theDomainEvent.compareTo(createDefaultDomainEvent()));
         assertEquals(-1, theDomainEvent.compareTo(new DefaultDomainEvent(new EmptyEvent_1("key"))));
         assertEquals(-1, theDomainEvent.compareTo(new DefaultDomainEvent(new EmptyEvent_1("key"), TEST_DOMAIN)));
     }
