@@ -24,7 +24,7 @@
 || Open || Optional client side polling || Polling isn't required by GWTEventService, but it could be configured to reduce cycles of server calls when many "unimportant" events can occure. ||
 || <font color="orange">Started</font> || Documentation || Documentation and release notes ||
 
-==DemoApplicationApp==
+==!DemoApplicationApp==
 
 ===Refactoring===
 
