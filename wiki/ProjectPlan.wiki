@@ -1,4 +1,4 @@
-=GWTEventService=
+=GWTEventService - Project Plan=
 
 ==Core==
 
