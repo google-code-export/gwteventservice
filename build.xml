@@ -49,6 +49,9 @@
         <path refid="classpath"/>
         <pathelement location="${dest.build.test.dir}"/>
         <pathelement location="${module.eventservice}/etc/testdata"/>
+        <pathelement location="${module.gwteventservice}/${src.dir}"/>
+        <pathelement location="${module.eventservice.rpc}/${src.dir}"/>
+        <pathelement location="${module.gwteventservice}/test"/>
     </path>
 
     <target name="init" depends="clean">
@@ -104,7 +107,6 @@
                 </fileset>
                 <fileset dir="${module.gwteventservice}/${src.test.dir}">
                     <include name="**/*TestSuite.java"/>
-                    <exclude name="**/*GWTEventServiceGWTTestSuite.java"/>
                 </fileset>
             </batchtest>
         </junit>
