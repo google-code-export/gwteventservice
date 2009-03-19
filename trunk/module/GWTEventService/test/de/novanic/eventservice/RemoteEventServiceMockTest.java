@@ -17,11 +17,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice;
 
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -42,12 +43,12 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
     public void setUp() {
         super.setUp();
-        myRemoteEventService = new DefaultRemoteEventService(new GWTRemoteEventConnector(myEventServiceAsyncMock));
+        myRemoteEventService = TestDefaultRemoteEventServiceFactory.getInstance().getDefaultRemoteEventService(myEventServiceAsyncMock);
     }
 
     public void testInit_Error() {
         try {
-            new DefaultRemoteEventService(new GWTRemoteEventConnector());
+            TestDefaultRemoteEventServiceFactory.getInstance().getDefaultRemoteEventService();
             fail("Exception expected, because the GWTService is instantiated in a non GWT context!");
         } catch(Throwable e) {}
     }

@@ -17,10 +17,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
+import de.novanic.eventservice.client.event.*;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import de.novanic.eventservice.client.logger.AbstractClientLogger;
 
@@ -45,7 +46,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         myClientLogger = new DummyClientLogger();
         ClientLoggerFactory.getClientLogger().attach(myClientLogger);
 
-        myRemoteEventConnector = new GWTRemoteEventConnector(myEventServiceAsyncMock);
+        myRemoteEventConnector = TestDefaultRemoteEventServiceFactory.getInstance().getGWTRemoteEventConnector(myEventServiceAsyncMock);
     }
 
     public void tearDown() {
