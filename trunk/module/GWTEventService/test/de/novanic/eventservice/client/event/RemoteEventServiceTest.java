@@ -70,6 +70,50 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
         executeActions();
     }
 
+    public void testAddListener_Concurrent() {
+        assertFalse(myRemoteEventService.isActive());
+
+        //add second listener
+        addAction(new TestAction() {
+            public void execute() {
+                myRemoteEventService.addListener(TEST_DOMAIN_2, getListener(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(0, getEventCount());
+            }
+        });
+
+        //add event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
+            }
+        });
+        //add another event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                myEventService.addEvent(TEST_DOMAIN_2, new DummyEvent(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(2, getEventCount());
+            }
+        });
+
+        //start first listen call
+        myRemoteEventService.addListener(TEST_DOMAIN, myGlobalListener);
+        executeActions();
+    }
+
     public void testRemoveListener() {
         //start listen
         addAction(new TestAction() {

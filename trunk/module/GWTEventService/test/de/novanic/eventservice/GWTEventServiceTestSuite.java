@@ -24,6 +24,12 @@ import com.google.gwt.junit.tools.GWTTestSuite;
 
 import de.novanic.eventservice.client.event.RemoteEventServiceTest;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
+import de.novanic.eventservice.clientmock.GWTRemoteEventConnectorTest;
+import de.novanic.eventservice.clientmock.RemoteEventServiceMockTest;
+import de.novanic.eventservice.clientmock.event.command.ActivationCommandTest;
+import de.novanic.eventservice.clientmock.event.command.DeactivationCommandTest;
+import de.novanic.eventservice.clientmock.event.command.DeregistrationEventFilterCommandTest;
+import de.novanic.eventservice.clientmock.event.command.RegistrationEventFilterCommandTest;
 
 /**
  * @author sstrohschein
@@ -40,6 +46,12 @@ public class GWTEventServiceTestSuite extends GWTTestCase
         GWTTestSuite theGWTEventServiceTestSuite = new GWTTestSuite("GWTEventService - GWT-Tests");
 
         //Mock-Tests
+
+        //Command
+        theGWTEventServiceTestSuite.addTestSuite(ActivationCommandTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(DeactivationCommandTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(DeregistrationEventFilterCommandTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(RegistrationEventFilterCommandTest.class);
 
         //Event
         theGWTEventServiceTestSuite.addTestSuite(GWTRemoteEventConnectorTest.class);
