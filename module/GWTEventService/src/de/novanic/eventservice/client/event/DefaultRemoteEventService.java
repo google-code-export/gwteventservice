@@ -22,6 +22,7 @@ package de.novanic.eventservice.client.event;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.command.*;
 
 import java.util.*;
 
@@ -42,7 +43,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public final class DefaultRemoteEventService implements RemoteEventService
 {
     private RemoteEventConnector myRemoteEventConnector;
+    private Queue<ClientCommand> myClientCommandQueue;
     private Map<Domain, List<RemoteEventListener>> myDomainListenerMapping;
+    private boolean isSessionInitialized;
 
     /**
      * Creates a new RemoteEventService.
@@ -154,7 +157,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback
      */
     private void activate(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
-        myRemoteEventConnector.activate(aDomain, anEventFilter, new ListenerEventNotification(), aCallback);
+        schedule(new ActivationCommand(myRemoteEventConnector, aDomain, anEventFilter, new ListenerEventNotification(), aCallback));
     }
 
     /**
@@ -175,7 +178,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback
      */
     public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
-        myRemoteEventConnector.registerEventFilter(aDomain, anEventFilter, aCallback);
+        schedule(new RegistrationEventFilterCommand(myRemoteEventConnector, aDomain, anEventFilter, aCallback));
     }
 
     /**
@@ -192,7 +195,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback
      */
     public void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback) {
-        myRemoteEventConnector.deregisterEventFilter(aDomain, aCallback);
+        schedule(new DeregistrationEventFilterCommand(myRemoteEventConnector, aDomain, aCallback));
     }
 
     /**
@@ -246,7 +249,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
         }
         if(!theDomains.isEmpty()) {
             //removeListeners is called with a set of domains to reduce remote server calls.
-            myRemoteEventConnector.deactivate(theDomains, aCallback);
+            schedule(new DeactivationCommand(myRemoteEventConnector, theDomains, aCallback));
         }
     }
 
@@ -313,10 +316,10 @@ public final class DefaultRemoteEventService implements RemoteEventService
         boolean isRemoved = (myDomainListenerMapping.remove(aDomain) != null);
         if(isRemoved) {
             if(aCallback != null) {
-                myRemoteEventConnector.deactivate(aDomain, aCallback);
+                schedule(new DeactivationCommand(myRemoteEventConnector, aDomain, aCallback));
             }
             if(myDomainListenerMapping.isEmpty()) {
-                myRemoteEventConnector.deactivate();
+                schedule(new DeactivationCommand(myRemoteEventConnector));
             }
         }
         return isRemoved;
@@ -335,6 +338,27 @@ public final class DefaultRemoteEventService implements RemoteEventService
             return theCollectionCopy;
         }
         return aList;
+    }
+
+    private <R> void schedule(final ClientCommand<R> aClientCommand) {
+        if(myClientCommandQueue == null) {
+            myClientCommandQueue = new LinkedList<ClientCommand>();
+            final AsyncCallback<R> theAsyncCallback = aClientCommand.getCommandCallback();
+            aClientCommand.setCommandCallback(new FirstAsyncCallback<R>(theAsyncCallback));
+            aClientCommand.execute();
+        } else {
+            myClientCommandQueue.add(aClientCommand);
+        }
+        executeCommands();
+    }
+
+    private void executeCommands() {
+        if(isSessionInitialized) {
+            ClientCommand theClientCommand;
+            while((theClientCommand = myClientCommandQueue.poll()) != null) {
+                theClientCommand.execute();
+            }
+        }
     }
 
     /**
@@ -374,5 +398,33 @@ public final class DefaultRemoteEventService implements RemoteEventService
         public void onFailure(Throwable aThrowable) {}
 
         public void onSuccess(Void aResult) {}
+    }
+
+    private class FirstAsyncCallback<R> implements AsyncCallback<R>
+    {
+        private AsyncCallback<R> mySubAsyncCallback;
+
+        public FirstAsyncCallback(AsyncCallback<R> aSubAsyncCallback) {
+            mySubAsyncCallback = aSubAsyncCallback;
+        }
+
+        public void onSuccess(R aResult) {
+            if(mySubAsyncCallback != null) {
+                mySubAsyncCallback.onSuccess(aResult);
+            }
+            finishFirstCall();
+        }
+
+        public void onFailure(Throwable aThrowable) {
+            if(mySubAsyncCallback != null) {
+                mySubAsyncCallback.onFailure(aThrowable);
+            }
+            finishFirstCall();
+        }
+
+        private void finishFirstCall() {
+            isSessionInitialized = true;
+            executeCommands();
+        }
     }
 }
