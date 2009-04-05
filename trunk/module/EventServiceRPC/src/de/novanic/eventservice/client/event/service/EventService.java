@@ -39,6 +39,11 @@ import com.google.gwt.user.client.rpc.RemoteService;
 public interface EventService extends RemoteService
 {
     /**
+     * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
+     */
+    void initEventService();
+
+    /**
      * Register listen for a domain.
      * @param aDomain domain to listen to
      */

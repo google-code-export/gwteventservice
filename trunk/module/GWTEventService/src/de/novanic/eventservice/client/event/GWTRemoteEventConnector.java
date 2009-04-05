@@ -60,6 +60,14 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
     }
 
     /**
+     * That method is called to execute the first server call (for initialization).
+     * @param aCallback callback
+     */
+    public void init(AsyncCallback<Void> aCallback) {
+        myEventService.initEventService(aCallback);
+    }
+
+    /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}
      * to filter events on the server side is optional.
      * @param aDomain domain to activate
