@@ -17,14 +17,34 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.test.testhelper;
+package de.novanic.eventservice.client;
+
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.junit.tools.GWTTestSuite;
+
+import de.novanic.eventservice.GWTEventServiceTestSuite;
+import de.novanic.eventservice.client.event.RemoteEventServiceTest;
 
 /**
  * @author sstrohschein
- *         <br>Date: 20.02.2009
- *         <br>Time: 19:15:30
+ * Date: 28.07.2008   
+ * Time: 21:41:04
  */
-public interface StartObservable extends Runnable
+public class GWTEventServiceGWTTestSuite extends GWTTestCase
 {
-    boolean isStarted();
+    public String getModuleName() {
+    	return null;
+    }
+
+    public static GWTTestSuite suite() {
+        GWTTestSuite theGWTEventServiceTestSuite = new GWTTestSuite("GWTEventService - GWT-Tests");
+
+        //Mock-Tests
+        theGWTEventServiceTestSuite.addTest(GWTEventServiceTestSuite.suite());
+
+        //Event
+        theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceTest.class);
+
+        return theGWTEventServiceTestSuite;
+    }
 }

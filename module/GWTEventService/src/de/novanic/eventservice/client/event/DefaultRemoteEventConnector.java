@@ -67,16 +67,16 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
      * @param anEventNotification supports the notification about incoming events
      * @param aCallback callback
      */
-    public void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<Void> aCallback) {
+    public <T> void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<T> aCallback) {
         LOG.log("Activate RemoteEventConnector for domain \"" + aDomain + "\".");
-        activateStart(aDomain, anEventFilter, new ActivationCallback<Void>(anEventNotification, aCallback));
+        activateStart(aDomain, anEventFilter, new ActivationCallback(anEventNotification, aCallback));
     }
 
     /**
      * Starts listening for events (listen call to the server side).
      * @param aCallback callback
      */
-    protected abstract void listen(AsyncCallback<List<DomainEvent>> aCallback);
+    protected abstract void listen(AsyncCallback aCallback);
 
     /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}
@@ -85,7 +85,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    protected abstract void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
+    protected abstract <T> void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<T> aCallback);
 
     /**
      * Callback to activate listening of RemoteEventConnector.

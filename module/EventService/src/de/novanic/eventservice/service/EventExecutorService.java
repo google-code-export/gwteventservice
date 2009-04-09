@@ -59,26 +59,9 @@ public interface EventExecutorService
     void addEventUserSpecific(Event anEvent);
 
     /**
-     * Changes the {@link de.novanic.eventservice.client.event.filter.EventFilter} for the user-domain combination.
-     * The {@link de.novanic.eventservice.client.event.filter.EventFilter} can be removed with the method
-     * {@link de.novanic.eventservice.service.EventExecutorService#removeEventFilter(de.novanic.eventservice.client.event.domain.Domain)}
-     * or when that method is called with NULL as the {@link de.novanic.eventservice.client.event.filter.EventFilter}
-     * parameter value.
-     * @param aDomain domain to set the {@link de.novanic.eventservice.client.event.filter.EventFilter} (user-domain combination)
-     * @param anEventFilter new {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * Changes the {@link EventFilter} for the user-domain combination.
+     * @param aDomain domain to set the {@link EventFilter} (user-domain combination)
+     * @param anEventFilter new {@link EventFilter}
      */
     void setEventFilter(Domain aDomain, EventFilter anEventFilter);
-
-    /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    EventFilter getEventFilter(Domain aDomain);
-
-    /**
-     * Removes the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
-     * @param aDomain domain to drop the {@link de.novanic.eventservice.client.event.filter.EventFilter} from
-     */
-    void removeEventFilter(Domain aDomain);
 }

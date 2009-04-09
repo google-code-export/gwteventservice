@@ -28,7 +28,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
  * <br>Date: 05.08.2008
  * <br>Time: 17:25:12
  */
-public class DefaultDomainEvent implements DomainEvent, Comparable<DomainEvent>
+public class DefaultDomainEvent implements DomainEvent
 {
     private Event myEvent;
     private Domain myDomain;
@@ -88,32 +88,6 @@ public class DefaultDomainEvent implements DomainEvent, Comparable<DomainEvent>
         return myDomain;
     }
 
-    public int compareTo(DomainEvent aDomainEvent) {
-        int theCompareResult = 0;
-        if(myDomain != null) {
-            theCompareResult = myDomain.compareTo(aDomainEvent.getDomain());
-        } else if(aDomainEvent.getDomain() != null) {
-            theCompareResult--;
-        }
-
-        //when not decided
-        if(theCompareResult == 0) {
-            if(myEvent != null) {
-                theCompareResult = compareEvent(myEvent, aDomainEvent.getEvent());
-            } else if(aDomainEvent.getEvent() != null) {
-                theCompareResult--;
-            }
-        }
-        return theCompareResult;
-    }
-
-    private int compareEvent(Event anEvent_1, Event anEvent_2) {
-        if(anEvent_2 != null) {
-            return anEvent_1.getClass().getName().compareTo(anEvent_2.getClass().getName());
-        }
-        return 1;
-    }
-
     public boolean equals(Object anObject) {
         if(this == anObject) {
             return true;
@@ -131,21 +105,5 @@ public class DefaultDomainEvent implements DomainEvent, Comparable<DomainEvent>
         int theResult = myEvent != null ? myEvent.hashCode() : 0;
         theResult = 31 * theResult + (myDomain != null ? myDomain.hashCode() : 0);
         return theResult;
-    }
-
-    public String toString() {
-        StringBuilder theStringBuilder = new StringBuilder(80);
-        theStringBuilder.append("DomainEvent (");
-        if(myDomain != null) {
-            theStringBuilder.append(myDomain.getName());
-        }
-        if(myDomain != null && myEvent != null) {
-            theStringBuilder.append(" - ");
-        }
-        if(myEvent != null) {
-            theStringBuilder.append(myEvent);
-        }
-        theStringBuilder.append(')');
-        return theStringBuilder.toString();
     }
 }

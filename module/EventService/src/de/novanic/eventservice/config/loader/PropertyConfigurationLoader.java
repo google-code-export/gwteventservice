@@ -46,7 +46,7 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
     private static final String MIN_WAITING_TIME_TAG = "time.waiting.min";
     private static final String TIMEOUT_TIME_TAG = "time.timeout";
 
-    private final String myPropertyName;
+    private String myPropertyName;
 
     /**
      * Creates a {@link PropertyConfigurationLoader} with the default properties ("eventservice.properties").
@@ -122,7 +122,7 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
         int theMinWaitingTime = getIntValue(aProperties.getProperty(MIN_WAITING_TIME_TAG));
         int theTimeoutTime = getIntValue(aProperties.getProperty(TIMEOUT_TIME_TAG));
 
-        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime);
+        return new RemoteEventServiceConfiguration(theMinWaitingTime, theMaxWaitingTime, theTimeoutTime);
     }
 
     /**
@@ -139,17 +139,5 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
             throw new ConfigurationException("Error on processing configuration \"" + myPropertyName + "\"! " +
                     "The value \"" + aString + "\" couldn't parsed to an integer!");
         }
-    }
-
-    /**
-     * Returns the description of the configuration (could for example contain the config file name).
-     * @return configuration description
-     */
-    private String getConfigDescription() {
-        StringBuilder theConfigDescriptionBuffer = new StringBuilder(15 + myPropertyName.length());
-        theConfigDescriptionBuffer.append("Properties \"");
-        theConfigDescriptionBuffer.append(myPropertyName);
-        theConfigDescriptionBuffer.append('\"');
-        return theConfigDescriptionBuffer.toString();
     }
 }

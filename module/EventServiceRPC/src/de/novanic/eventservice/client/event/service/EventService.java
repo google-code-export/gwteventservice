@@ -39,11 +39,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 public interface EventService extends RemoteService
 {
     /**
-     * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
-     */
-    void initEventService();
-
-    /**
      * Register listen for a domain.
      * @param aDomain domain to listen to
      */
@@ -81,13 +76,6 @@ public interface EventService extends RemoteService
      * @param aDomain domain to drop the EventFilters from
      */
     void deregisterEventFilter(Domain aDomain);
-
-    /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    EventFilter getEventFilter(Domain aDomain);
 
     /**
      * The listen method returns all events for the user (events for all domains where the user is registered and user

@@ -19,18 +19,15 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.EventServiceTestCase;
-
-import java.io.InputStream;
-import java.io.IOException;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 15:46:58
  */
-public class PropertyConfigurationLoaderTest extends EventServiceTestCase
+public class PropertyConfigurationLoaderTest extends TestCase
 {
     public void testAvailable() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
@@ -45,13 +42,11 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
     public void testAvailable_Error() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("notAnExistingFile");
         assertFalse(theConfigurationLoader.isAvailable());
-        assertNull(theConfigurationLoader.load());
     }
 
     public void testLoad() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
         EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
-        assertEquals("Properties \"eventservice.properties\"", theConfiguration.getConfigDescription());
         assertEquals(0, theConfiguration.getMinWaitingTime());
         assertEquals(20000, theConfiguration.getMaxWaitingTime());
         assertEquals(90000, theConfiguration.getTimeoutTime());
@@ -60,10 +55,14 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
     public void testLoad_2() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice.bak.properties");
         EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
-        assertEquals("Properties \"eventservice.bak.properties\"", theConfiguration.getConfigDescription());
         assertEquals(2000, theConfiguration.getMinWaitingTime());
         assertEquals(5000, theConfiguration.getMaxWaitingTime());
         assertEquals(50000, theConfiguration.getTimeoutTime());
+    }
+
+    public void testLoad_Error() {
+        ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("notAnExistingFile");
+        assertNull(theConfigurationLoader.load());
     }
 
     public void testLoad_Failure() {
@@ -72,46 +71,5 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
             theConfigurationLoader.load();
             fail("Exception expected!");
         } catch(ConfigurationException e) {}
-    }
-
-    public void testLoad_ClassLoaderError() throws Exception {
-        ClassLoader theDefaultClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(new DummyClassLoader(new DummyInputStream()));
-
-        try {
-            logOff();
-
-            ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice_error.properties");
-            theConfigurationLoader.load();
-            fail("Exception expected!");
-        } catch(ConfigurationException e) {
-        } finally {
-            Thread.currentThread().setContextClassLoader(theDefaultClassLoader);
-            logOn();
-        }
-    }
-
-    private class DummyClassLoader extends ClassLoader
-    {
-        private InputStream myInputStream;
-
-        private DummyClassLoader(InputStream anInputStream) {
-            myInputStream = anInputStream;
-        }
-
-        public InputStream getResourceAsStream(String name) {
-            return myInputStream;
-        }
-    }
-
-    private class DummyInputStream extends InputStream
-    {
-        public void close() throws IOException {
-            throw new IOException("testDummyException on closing");
-        }
-
-        public int read() throws IOException {
-            throw new IOException("testDummyException on reading");
-        }
     }
 }

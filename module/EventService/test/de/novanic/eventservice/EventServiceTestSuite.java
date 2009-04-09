@@ -26,10 +26,6 @@ import de.novanic.eventservice.service.RemoteEventServiceServletTest;
 import de.novanic.eventservice.service.exception.NoSessionAvailableExceptionTest;
 import de.novanic.eventservice.service.registry.EventRegistryFactoryTest;
 import de.novanic.eventservice.service.registry.EventRegistryTest;
-import de.novanic.eventservice.service.registry.user.UserInfoTest;
-import de.novanic.eventservice.service.registry.user.UserActivitySchedulerTest;
-import de.novanic.eventservice.service.registry.user.UserManagerTest;
-import de.novanic.eventservice.service.registry.user.UserManagerFactoryTest;
 import de.novanic.eventservice.logger.ServerLoggerFactoryTest;
 import de.novanic.eventservice.logger.DefaultServerLoggerTest;
 import de.novanic.eventservice.config.RemoteEventServiceConfigurationTest;
@@ -37,9 +33,6 @@ import de.novanic.eventservice.config.EventServiceConfigurationFactoryTest;
 import de.novanic.eventservice.config.loader.DefaultConfigurationLoaderTest;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoaderTest;
 import de.novanic.eventservice.config.loader.ConfigurationExceptionTest;
-import de.novanic.eventservice.util.PlatformUtilTest;
-import de.novanic.eventservice.util.TestLoggingConfigurator;
-import de.novanic.eventservice.util.TestLoggingConfiguratorTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -50,16 +43,10 @@ import junit.framework.TestSuite;
  */
 public class EventServiceTestSuite
 {
-    private EventServiceTestSuite() {}
+    public static Test suite() {
+        TestSuite theSuite = new TestSuite();
 
-    public static Test suite() throws Exception {
-        TestSuite theSuite = new TestSuite("EventService - Tests");
-
-        TestLoggingConfigurator.configureLogging();
-
-        // Util
-        theSuite.addTestSuite(TestLoggingConfiguratorTest.class);
-        theSuite.addTestSuite(PlatformUtilTest.class);
+        theSuite.setName("EventService - Tests");
 
         // Logging
         theSuite.addTestSuite(ServerLoggerFactoryTest.class);
@@ -73,10 +60,6 @@ public class EventServiceTestSuite
         theSuite.addTestSuite(EventServiceConfigurationFactoryTest.class);
 
         // Registry
-        theSuite.addTestSuite(UserActivitySchedulerTest.class);
-        theSuite.addTestSuite(UserInfoTest.class);
-        theSuite.addTestSuite(UserManagerFactoryTest.class);
-        theSuite.addTestSuite(UserManagerTest.class);
         theSuite.addTestSuite(EventRegistryFactoryTest.class);
         theSuite.addTestSuite(EventRegistryTest.class);
 

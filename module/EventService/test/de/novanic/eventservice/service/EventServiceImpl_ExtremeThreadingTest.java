@@ -19,12 +19,12 @@
  */
 package de.novanic.eventservice.service;
 
+import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.test.testhelper.ListenStartResult;
-import de.novanic.eventservice.test.testhelper.DummyEvent;
-import de.novanic.eventservice.test.testhelper.ListenCycleCancelEvent;
-import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import de.novanic.eventservice.service.testhelper.ListenStartResult;
+import de.novanic.eventservice.service.testhelper.DummyEvent;
+import de.novanic.eventservice.service.testhelper.ListenCycleCancelEvent;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 
 /**
@@ -42,7 +42,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
     private DummyEventServiceImpl myEventService;
 
     public void setUp() {
-        setUp(createConfiguration(0, 30000, 90000));
+        setUp(new RemoteEventServiceConfiguration(0, 30000, 90000));
 
         myEventService = new DummyEventServiceImpl();
         super.setUp(myEventService);
@@ -50,10 +50,12 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
 
     public void tearDown() throws Exception {
         super.tearDown();
+        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
         tearDownEventServiceConfiguration();
 
         myEventService.unlisten();
-        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
+        EventExecutorServiceFactory.reset();
+        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
     }
 
     public void testListen() throws Exception {
@@ -179,14 +181,11 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
-        joinThreads();
-
         startListen();
-        Thread.sleep(200);
+        Thread.sleep(500);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
 
-        joinListenThreads();
-
+        joinThreads();
         assertEquals(2100, getEventCount());
         assertEquals(900, getEventCount(TEST_DOMAIN));
         assertEquals(600, getEventCount(TEST_DOMAIN_2));
@@ -227,10 +226,8 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
         joinThreads();
 
         startListen();
-        Thread.sleep(200);
+        Thread.sleep(500);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
-
-        joinListenThreads();
 
         assertEquals(2100, getEventCount());
         assertEquals(900, getEventCount(TEST_DOMAIN));
@@ -292,10 +289,8 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
         joinThreads();
 
         startListen();
-        Thread.sleep(200);
+        Thread.sleep(500);
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
-
-        joinListenThreads();
 
         assertEquals(2000, getEventCount());
         assertEquals(2000, getEventCount(TEST_DOMAIN));

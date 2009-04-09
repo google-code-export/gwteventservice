@@ -33,22 +33,18 @@ import java.util.List;
  * EventService is the server side interface to register listen requests for domains and to add events.
  *
  * @author sstrohschein
- *         <br>Date: 05.06.2008
- *         <br>Time: 19:07:07
+ * <br>Date: 05.06.2008
+ * <br>Time: 19:07:07
  */
 public interface EventServiceAsync
 {
-    /**
-     * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
-     */
-    void initEventService(AsyncCallback<Void> async);
 
     /**
      * Register listen for a domain.
      *
      * @param aDomain domain to listen to
      */
-    void register(Domain aDomain, AsyncCallback<Void> async);
+    void register(Domain aDomain, AsyncCallback async);
 
     /**
      * Register listen for a domain.
@@ -56,14 +52,14 @@ public interface EventServiceAsync
      * @param aDomain       domain to listen to
      * @param anEventFilter EventFilter to filter events
      */
-    void register(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> async);
+    void register(Domain aDomain, EventFilter anEventFilter, AsyncCallback async);
 
     /**
      * Register listen for a domain.
      *
      * @param aDomains domains to listen to
      */
-    void register(Set<Domain> aDomains, AsyncCallback<Void> async);
+    void register(Set<Domain> aDomains, AsyncCallback async);
 
     /**
      * Register listen for domains.
@@ -71,7 +67,7 @@ public interface EventServiceAsync
      * @param aDomains      domains to listen to
      * @param anEventFilter EventFilter to filter events (applied to all domains)
      */
-    void register(Set<Domain> aDomains, EventFilter anEventFilter, AsyncCallback<Void> async);
+    void register(Set<Domain> aDomains, EventFilter anEventFilter, AsyncCallback async);
 
     /**
      * Registers an {@link de.novanic.eventservice.client.event.filter.EventFilter} for the domain.
@@ -79,22 +75,14 @@ public interface EventServiceAsync
      * @param aDomain       domain to register the EventFilter to
      * @param anEventFilter EventFilter to filter events for the domain
      */
-    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> async);
+    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback async);
 
     /**
-     * Deregisters the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
+     * Deregisteres the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
      *
      * @param aDomain domain to drop the EventFilters from
      */
-    void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> async);
-
-    /**
-     * Returns the EventFilter for the user domain combination.
-     *
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    void getEventFilter(Domain aDomain, AsyncCallback<EventFilter> async);
+    void deregisterEventFilter(Domain aDomain, AsyncCallback async);
 
     /**
      * The listen method returns all events for the user (events for all domains where the user is registered and user
@@ -103,35 +91,32 @@ public interface EventServiceAsync
      * method in the interval, the user will be removed from the EventRegistry. The timeout time and the waiting time
      * can be configured with EventServiceConfiguration/-Factory (server side) and initialized with the init method of
      * EventRegistryFactory (server side).
-     *
-     * @return list of events
      */
     void listen(AsyncCallback<List<DomainEvent>> async);
 
     /**
-     * Unlisten for events (for the current user) in all domains (deregisteres the user from all domains).
+     * Unlisten for events (for the current user) in all domains (deregisters the user from all domains).
      */
-    void unlisten(AsyncCallback<Void> async);
+    void unlisten(AsyncCallback async);
 
     /**
      * Unlisten for events
      *
      * @param aDomain the domain to unlisten
      */
-    void unlisten(Domain aDomain, AsyncCallback<Void> async);
+    void unlisten(Domain aDomain, AsyncCallback async);
 
     /**
-     * Unlisten for events (for the current user) in the domains and deregisteres the user from the domains.
+     * Unlisten for events (for the current user) in the domains and deregisters the user from the domains.
      *
      * @param aDomains set of domains to unlisten
      */
-    void unlisten(Set<Domain> aDomains, AsyncCallback<Void> async);
+    void unlisten(Set<Domain> aDomains, AsyncCallback async);
 
     /**
      * Checks if the user is registered for event listening.
      *
      * @param aDomain domain to check
-     * @return true when the user is registered for listening, otherwise false
      */
     void isUserRegistered(Domain aDomain, AsyncCallback<Boolean> async);
 
@@ -141,19 +126,17 @@ public interface EventServiceAsync
      * @param aDomain domain to add the event
      * @param anEvent event to add
      */
-    void addEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> async);
+    void addEvent(Domain aDomain, Event anEvent, AsyncCallback async);
 
     /**
      * Adds an event only for the current user.
      *
      * @param anEvent event to add to the user
      */
-    void addEventUserSpecific(Event anEvent, AsyncCallback<Void> async);
+    void addEventUserSpecific(Event anEvent, AsyncCallback async);
 
     /**
      * Returns the domain names, where the user is listening to
-     *
-     * @return collection of domain names
      */
     void getActiveListenDomains(AsyncCallback<Set<Domain>> async);
 }

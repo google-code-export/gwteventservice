@@ -19,11 +19,11 @@
  */
 package de.novanic.eventservice.service;
 
+import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.service.EventService;
-import de.novanic.eventservice.test.testhelper.*;
-import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import de.novanic.eventservice.service.testhelper.*;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 
 import java.util.*;
@@ -43,7 +43,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     private EventService myEventService;
 
     public void setUp() throws Exception {
-        setUp(createConfiguration(0, 30000, 90000));
+        setUp(new RemoteEventServiceConfiguration(0, 30000, 90000));
 
         myEventService = new DummyEventServiceImpl();
         super.setUp(myEventService);
@@ -54,7 +54,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         tearDownEventServiceConfiguration();
 
         myEventService.unlisten();
-        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
+        EventExecutorServiceFactory.reset();
+        Thread.sleep(500); //waiting between the test cases is needed to avoid conflicts between the test cases/scenarios
     }
 
     public void testInit() {
@@ -190,13 +191,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService.addEvent(TEST_DOMAIN, new DummyEvent());
         assertEquals(3, myEventService.getActiveListenDomains().size());
 
-        //depend on the timing, it could be that the two events recognized with the first listen or that one get recognized with the first and one with the second listen.
-        int theEventCount = joinListen(theListenStartResult);
-        assertTrue(theEventCount == 1 || theEventCount == 2);
-        if(theEventCount == 1) {
-            theListenStartResult = startListen();
-            assertEquals(1, joinListen(theListenStartResult));
-        }
+        assertEquals(2, joinListen(theListenStartResult));
     }
 
     public void testListen_5() throws Exception {
@@ -216,7 +211,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService.addEvent(TEST_DOMAIN_3, new DummyEvent());
         assertEquals(3, myEventService.getActiveListenDomains().size());
 
-        //depend on the timing, it could be that the two events recognized with the first listen or that one get recognized with the first and one with the second listen.
+        //depend on the timing, it could be that two events recognized with the first listen or that one get recognized with the first and one with the second listen.
         int theEventCount = joinListen(theListenResult);
         assertTrue(theEventCount == 1 || theEventCount == 2);
         if(theEventCount == 1) {
@@ -227,7 +222,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testListen_UserSpecific() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(createConfiguration(0, 300, 9999));
+        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         Set<Domain> theDomains = new HashSet<Domain>();
@@ -290,7 +285,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testRegisterMultiDomain() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(createConfiguration(0, 300, 9999));
+        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         Set<Domain> theDomains = new HashSet<Domain>();
@@ -328,7 +323,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
+        assertEquals(0, myEventService.listen().size()); //Event is for another domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
@@ -347,12 +342,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testRegisterMultiDomain_2() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(createConfiguration(0, 300, 9999));
+        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
-
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         Set<Domain> theDomains = new HashSet<Domain>();
         theDomains.add(TEST_DOMAIN);
@@ -368,10 +359,6 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertTrue(myEventService.isUserRegistered(TEST_DOMAIN));
         assertFalse(myEventService.isUserRegistered(TEST_DOMAIN_2));
         assertTrue(myEventService.isUserRegistered(TEST_DOMAIN_3));
-
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);
@@ -393,26 +380,26 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
+        assertEquals(0, myEventService.listen().size()); //Event is for another domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
+        assertEquals(0, myEventService.listen().size()); //Event is for another domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         Thread.sleep(100);
-        assertEquals(0, myEventService.listen().size()); //Event is for a other domain
+        assertEquals(0, myEventService.listen().size()); //Event is for another domain
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
         myEventService.addEvent(TEST_DOMAIN_3, new ListenCycleCancelEvent());
         Thread.sleep(100);
         assertEquals(0, myEventService.listen().size()); //Event is filtered by TestEventFilter,
-        // because the three events above are for a other domain and the EventFilter wasn't triggered
+        // because the three events above are for another domain and the EventFilter wasn't triggered
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
@@ -421,15 +408,11 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(1, myEventService.listen().size());
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
-
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_3));
     }
 
     public void testRegisterEventFilter() throws Exception {
         tearDownEventServiceConfiguration();
-        setUp(createConfiguration(0, 300, 9999));
+        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         myEventService.register(TEST_DOMAIN);
@@ -452,15 +435,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
-
         myEventService.registerEventFilter(TEST_DOMAIN_2, new TestEventFilter());
-
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);
@@ -475,10 +450,6 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
 
         myEventService.registerEventFilter(TEST_DOMAIN, new TestEventFilter());
-
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);
@@ -505,10 +476,6 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
         
         myEventService.deregisterEventFilter(TEST_DOMAIN);
-
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN));
-        assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
-        assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
         Thread.sleep(100);
@@ -541,7 +508,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public void testUnlisten_2() throws InterruptedException {
         tearDownEventServiceConfiguration();
-        setUp(createConfiguration(0, 300, 9999));
+        setUp(new RemoteEventServiceConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
 
         myEventService.register(TEST_DOMAIN);
@@ -579,7 +546,11 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     private class DummyEventServiceImpl extends EventServiceImpl
     {
-        protected String getClientId(boolean isInitSession) {
+        public void resetService() {
+//            reset();
+        }
+
+        protected String getClientId() {
             return TEST_USER_ID;
         }
     }

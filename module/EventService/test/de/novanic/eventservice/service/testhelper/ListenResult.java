@@ -17,14 +17,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.test.testhelper;
+package de.novanic.eventservice.service.testhelper;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
 
 import java.util.Map;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author sstrohschein
@@ -33,10 +32,10 @@ import java.util.List;
  */
 public class ListenResult
 {
-    private Map<Domain, List<Event>> myDomainEvents;
-    private Map<String, List<Event>> myUserEvents;
+    private Map<Domain, Collection<Event>> myDomainEvents;
+    private Map<String, Collection<Event>> myUserEvents;
 
-    public ListenResult(Map<Domain, List<Event>> aDomainEvents, Map<String, List<Event>> aUserEvents) {
+    public ListenResult(Map<Domain, Collection<Event>> aDomainEvents, Map<String, Collection<Event>> aUserEvents) {
         myDomainEvents = aDomainEvents;
         myUserEvents = aUserEvents;
     }
@@ -66,13 +65,5 @@ public class ListenResult
             return theEvents.size();
         }
         return 0;
-    }
-
-    public Map<Domain, List<Event>> getDomainEvents() {
-        return myDomainEvents;
-    }
-
-    public Map<String, List<Event>> getUserEvents() {
-        return myUserEvents;
     }
 }

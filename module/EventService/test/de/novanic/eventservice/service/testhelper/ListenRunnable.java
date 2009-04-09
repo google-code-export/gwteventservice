@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.test.testhelper;
+package de.novanic.eventservice.service.testhelper;
 
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.Event;
@@ -32,14 +32,13 @@ import java.util.*;
  * <br>Date: 17.08.2008
  * <br>Time: 21:46:37
  */
-public class ListenRunnable implements Runnable, StartObservable
+public class ListenRunnable implements Runnable
 {
     private EventService myEventService;
     private EventRegistry myEventRegistry;
     private String myUserId;
-    private Map<Domain, List<Event>> myDomainEvents;
-    private Map<String, List<Event>> myUserEvents;
-    private boolean isStarted;
+    private Map<Domain, Collection<Event>> myDomainEvents;
+    private Map<String, Collection<Event>> myUserEvents;
 
     public ListenRunnable(EventService anEventService) {
         myEventService = anEventService;
@@ -51,8 +50,6 @@ public class ListenRunnable implements Runnable, StartObservable
     }
 
     public void run() {
-        isStarted = true;
-        
         final List<DomainEvent> theDomainEvents;
         if(myEventService != null) {
             theDomainEvents = myEventService.listen();
@@ -60,8 +57,8 @@ public class ListenRunnable implements Runnable, StartObservable
             theDomainEvents = myEventRegistry.listen(myUserId);
         }
 
-        Map<String, List<Event>> theUserEventMap = new HashMap<String, List<Event>>();
-        Map<Domain, List<Event>> theDomainEventMap = new HashMap<Domain, List<Event>>();
+        Map<String, Collection<Event>> theUserEventMap = new HashMap<String, Collection<Event>>();
+        Map<Domain, Collection<Event>> theDomainEventMap = new HashMap<Domain, Collection<Event>>();
 
         if(theDomainEvents != null) {
             for(DomainEvent theDomainEvent: theDomainEvents) {
@@ -78,8 +75,8 @@ public class ListenRunnable implements Runnable, StartObservable
         myDomainEvents = theDomainEventMap;
     }
 
-    private void processUserEvent(Map<String, List<Event>> aUserEventMap, Event anEvent) {
-        List<Event> theEvents = aUserEventMap.get(myUserId);
+    private void processUserEvent(Map<String, Collection<Event>> aUserEventMap, Event anEvent) {
+        Collection<Event> theEvents = aUserEventMap.get(myUserId);
         if(theEvents == null) {
             theEvents = new ArrayList<Event>();
             aUserEventMap.put(myUserId, theEvents);
@@ -87,8 +84,8 @@ public class ListenRunnable implements Runnable, StartObservable
         theEvents.add(anEvent);
     }
 
-    private void processDomainEvent(Map<Domain, List<Event>> aDomainEventMap, DomainEvent aDomainEvent) {
-        List<Event> theEvents = aDomainEventMap.get(aDomainEvent.getDomain());
+    private void processDomainEvent(Map<Domain, Collection<Event>> aDomainEventMap, DomainEvent aDomainEvent) {
+        Collection<Event> theEvents = aDomainEventMap.get(aDomainEvent.getDomain());
         if(theEvents == null) {
             theEvents = new ArrayList<Event>();
             aDomainEventMap.put(aDomainEvent.getDomain(), theEvents);
@@ -96,15 +93,11 @@ public class ListenRunnable implements Runnable, StartObservable
         theEvents.add(aDomainEvent.getEvent());
     }
 
-    public Map<String, List<Event>> getUserEvents() {
+    public Map<String, Collection<Event>> getUserEvents() {
         return myUserEvents;
     }
 
-    public Map<Domain, List<Event>> getDomainEvents() {
+    public Map<Domain, Collection<Event>> getDomainEvents() {
         return myDomainEvents;
-    }
-
-    public boolean isStarted() {
-        return isStarted;
     }
 }

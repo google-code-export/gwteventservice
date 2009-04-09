@@ -23,7 +23,6 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import de.novanic.eventservice.service.registry.EventRegistry_ExtremeThreadingTest;
 import de.novanic.eventservice.service.EventServiceImpl_ExtremeThreadingTest;
-import de.novanic.eventservice.util.TestLoggingConfigurator;
 
 /**
  * @author sstrohschein
@@ -32,12 +31,10 @@ import de.novanic.eventservice.util.TestLoggingConfigurator;
  */
 public class EventService_ExtremeThreadingTestSuite
 {
-    private EventService_ExtremeThreadingTestSuite() {}
+    public static Test suite() {
+        TestSuite theSuite = new TestSuite();
 
-    public static Test suite() throws Exception {
-        TestSuite theSuite = new TestSuite("EventService - ExtremeThreading-Tests");
-
-        TestLoggingConfigurator.configureLogging();
+        theSuite.setName("EventService - ExtremeThreading-Tests");
 
         theSuite.addTestSuite(EventRegistry_ExtremeThreadingTest.class);
         theSuite.addTestSuite(EventServiceImpl_ExtremeThreadingTest.class);

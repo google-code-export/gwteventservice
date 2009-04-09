@@ -35,12 +35,6 @@ import java.util.Set;
 public interface RemoteEventConnector
 {
     /**
-     * That method is called to execute the first server call (for initialization).
-     * @param aCallback callback
-     */
-    void init(AsyncCallback<Void> aCallback);
-
-    /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}
      * to filter events on the server side is optional.
      * @param aDomain domain to activate
@@ -48,7 +42,7 @@ public interface RemoteEventConnector
      * @param anEventNotification supports the notification about incoming events
      * @param aCallback callback
      */
-    void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<Void> aCallback);
+    <T> void activate(Domain aDomain, EventFilter anEventFilter, EventNotification anEventNotification, AsyncCallback<T> aCallback);
 
     /**
      * Deactivates the connector for all domains (no events can be got from the domains).
@@ -60,14 +54,14 @@ public interface RemoteEventConnector
      * @param aDomains domains to deactivate
      * @param aCallback callback
      */
-    void deactivate(Set<Domain> aDomains, AsyncCallback<Void> aCallback);
+    void deactivate(Set<Domain> aDomains, AsyncCallback<?> aCallback);
 
     /**
      * Deactivates the connector for the domain (no events can be got from the domain).
      * @param aDomain domain to deactivate
      * @param aCallback callback
      */
-    void deactivate(Domain aDomain, AsyncCallback<Void> aCallback);
+    void deactivate(Domain aDomain, AsyncCallback<?> aCallback);
 
     /**
      * Checks if the connector is active (listening).
@@ -83,12 +77,12 @@ public interface RemoteEventConnector
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
+    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<?> aCallback);
 
     /**
      * Deregisters the {@link de.novanic.eventservice.client.event.filter.EventFilter} for a domain.
      * @param aDomain domain to remove the EventFilter from
      * @param aCallback callback
      */
-    void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback);
+    void deregisterEventFilter(Domain aDomain, AsyncCallback<?> aCallback);
 }

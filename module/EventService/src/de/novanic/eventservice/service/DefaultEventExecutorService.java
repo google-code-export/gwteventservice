@@ -40,7 +40,7 @@ public class DefaultEventExecutorService implements EventExecutorService
     private final String myClientId;
 
     static {
-        init();
+        reset();
     }
 
     /**
@@ -90,31 +90,12 @@ public class DefaultEventExecutorService implements EventExecutorService
     }
 
     /**
-     * Changes the {@link de.novanic.eventservice.client.event.filter.EventFilter} for the user-domain combination.
-     * The {@link de.novanic.eventservice.client.event.filter.EventFilter} can be removed with the method
-     * {@link de.novanic.eventservice.service.EventExecutorService#removeEventFilter(de.novanic.eventservice.client.event.domain.Domain)}
-     * or when that method is called with NULL as the {@link de.novanic.eventservice.client.event.filter.EventFilter}
-     * parameter value.
+     * Changes the {@link EventFilter} for the user-domain combination.
+     * @param aDomain domain to set the {@link EventFilter} (user-domain combination)
+     * @param anEventFilter new {@link EventFilter}
      */
     public void setEventFilter(Domain aDomain, EventFilter anEventFilter) {
         myEventRegistry.setEventFilter(aDomain, getClientId(), anEventFilter);
-    }
-
-    /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    public EventFilter getEventFilter(Domain aDomain) {
-        return myEventRegistry.getEventFilter(aDomain, getClientId());
-    }
-
-    /**
-     * Removes the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
-     * @param aDomain domain to drop the EventFilter from
-     */
-    public void removeEventFilter(Domain aDomain) {
-        myEventRegistry.removeEventFilter(aDomain, getClientId());
     }
 
     /**
@@ -129,9 +110,9 @@ public class DefaultEventExecutorService implements EventExecutorService
     }
 
     /**
-     * Initializes the EventExecutorService.
+     * Resets the EventExecutorService. This method should only be used in TestCases!
      */
-    private static void init() {
+    static void reset() {
         final EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
         myEventRegistry = theEventRegistryFactory.getEventRegistry();
     }

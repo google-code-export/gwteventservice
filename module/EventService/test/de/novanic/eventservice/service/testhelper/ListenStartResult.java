@@ -17,13 +17,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.test.testhelper;
+package de.novanic.eventservice.service.testhelper;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
 
 import java.util.Map;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author sstrohschein
@@ -49,8 +49,8 @@ public class ListenStartResult
     }
 
     public ListenResult getListenResult() {
-        Map<Domain, List<Event>> theDomainEvents = myListenRunnable.getDomainEvents();
-        Map<String, List<Event>> theUserEvents = myListenRunnable.getUserEvents();
+        Map<Domain, Collection<Event>> theDomainEvents = myListenRunnable.getDomainEvents();
+        Map<String, Collection<Event>> theUserEvents = myListenRunnable.getUserEvents();
         //the listen call is finished when the events are initialized
         if(theDomainEvents != null && theUserEvents != null) {
             return new ListenResult(theDomainEvents, theUserEvents);

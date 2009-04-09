@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2009, GWTEventService Committers
+ * Copyright (c) 2008, GWTEventService Committers
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,21 +17,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.clientmock.event.command;
+package de.novanic.eventservice.service.testhelper;
 
-import de.novanic.eventservice.client.event.command.InitEventServiceCommand;
+import de.novanic.eventservice.client.event.Event;
+import de.novanic.eventservice.client.event.filter.EventFilter;
 
 /**
  * @author sstrohschein
- *         <br>Date: 04.04.2009
- *         <br>Time: 20:15:58
+ * <br>Date: 17.08.2008
+ * <br>Time: 21:50:42
+ *
+ * Filters every second event.
  */
-public class InitEventServiceCommandTest extends ClientCommandTestCase
+public class TestEventFilter implements EventFilter
 {
-    public void testExecute() {
-        getRemoteEventConnectorMock().init(getCommandCallback());
-        getRemoteEventConnectorMockControl().setVoidCallable();
+    private boolean isExcluded = true;
 
-        testExecute(new InitEventServiceCommand(getRemoteEventConnectorMock(), getCommandCallback()));
+    public boolean match(Event anEvent) {
+        isExcluded = !isExcluded;
+        return isExcluded;
     }
 }

@@ -17,18 +17,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.test.testhelper;
+package de.novanic.eventservice.service.testhelper;
 
 import de.novanic.eventservice.client.event.Event;
 
 /**
  * @author sstrohschein
  * <br>Date: 17.08.2008
- * <br>Time: 21:47:11
+ * <br>Time: 21:54:44
  */
-public class ListenCycleCancelEvent implements Event
+public class DummyEvent implements Event
 {
+    public DummyEvent() {}
+
     public String toString() {
-        return "Event: ListenCycleCancelEvent";
+        return "Event: DummyEvent";
     }
 }

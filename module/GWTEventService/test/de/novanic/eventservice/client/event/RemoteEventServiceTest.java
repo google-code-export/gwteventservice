@@ -19,357 +19,155 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.event.service.EventServiceAsync;
+import de.novanic.eventservice.client.event.service.EventService;
+import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
+import de.novanic.eventservice.client.event.listener.RemoteEventListener;
+
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.Timer;
+
 /**
  * @author sstrohschein
  * Date: 20.07.2008
  * Time: 13:53:49
  */
-public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
+public class RemoteEventServiceTest extends GWTTestCase
 {
+    private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
+
+    private RemoteEventService myRemoteEventService;
+    private EventServiceAsync myEventService;
+
+    public void gwtSetUp() throws Exception {
+        super.gwtSetUp();
+        final RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
+        RemoteEventServiceFactory.reset();
+        myRemoteEventService = theRemoteEventServiceFactory.getRemoteEventService();
+        assertFalse(myRemoteEventService.isActive());
+
+        myEventService = (EventServiceAsync)getService(GWT.create(EventService.class), "gwteventservice");
+    }
+
+    public String getModuleName() {
+        return "de.novanic.eventservice.GWTEventService";
+    }
+
     public void testAddListener() {
-        assertFalse(myRemoteEventService.isActive());
+        final DummyEvent theTestEvent = new DummyEvent();
 
         //start listen
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
+        final TestEventListener theTestListener = new TestEventListener();
+        myRemoteEventService.addListener(TEST_DOMAIN, theTestListener);
+        assertEquals(0, theTestListener.getEventCount(DummyEvent.class.getName()));
 
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
+        new Timer() {
+            public void run() {
                 assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
+                
+                //add event
+                myEventService.addEvent(TEST_DOMAIN, theTestEvent, new TestCallback() {
+                    public void onSuccess(Object anObject) {
+                        new Timer() {
+                            public void run() {
+                                //check event count
+                                assertTrue(myRemoteEventService.isActive());
+                                assertEquals(1, theTestListener.getEventCount(DummyEvent.class.getName()));
 
-        //add another event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(2, getEventCount());
-            }
-        });
+                                new Timer() {
+                                    public void run() {
+                                        //add second event
+                                        myEventService.addEvent(TEST_DOMAIN, theTestEvent, new TestCallback() {
+                                            public void onSuccess(Object anObject) {
 
-        executeActions();
+                                                new Timer() {
+                                                    public void run() {
+                                                        //check event count
+                                                        assertTrue(myRemoteEventService.isActive());
+                                                        assertEquals(2, theTestListener.getEventCount(DummyEvent.class.getName()));
+                                                        finishTest();
+                                                    }
+                                                }.schedule(2000);
+                                            }
+                                        });
+                                    }
+                                }.schedule(2000);
+                            }
+                        }.schedule(2000);
+                    }
+                });
+            }
+        }.schedule(2000);
+
+        delayTestFinish(20000);
     }
 
-    public void testAddListener_Concurrent() {
-        assertFalse(myRemoteEventService.isActive());
+    public void testRemoveListener_Callback() {
+        final DummyEvent theTestEvent = new DummyEvent();
 
-        //add second listener
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN_2, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
+        //1. start listen
+        final TestEventListener theTestListener = new TestEventListener();
+        myRemoteEventService.addListener(TEST_DOMAIN, theTestListener, new TestCallback() {
+            public void onSuccess(Object anObject) {
+                theTestListener.setListener(new RemoteEventListener() {
+                    public void apply(Event anEvent) {
+                        //check event count
+                        assertTrue(myRemoteEventService.isActive());
+                        assertEquals(1, theTestListener.getEventCount(DummyEvent.class.getName()));
+
+                        new Timer() {
+                            public void run() {
+                                //3. remove listener
+                                myRemoteEventService.removeListener(TEST_DOMAIN, theTestListener, new TestCallback() {
+                                    public void onSuccess(Object anObject) {
+                                        assertFalse(myRemoteEventService.isActive());
+
+                                        //4. add ignored event
+                                        myEventService.addEvent(TEST_DOMAIN, theTestEvent, new TestCallback() {
+                                            public void onSuccess(Object anObject) {
+                                                new Timer() {
+                                                    public void run() {
+
+                                                        //check event count
+                                                        assertFalse(myRemoteEventService.isActive());
+                                                        assertEquals(1, theTestListener.getEventCount(DummyEvent.class.getName()));
+
+                                                        finishTest();
+                                                    }
+                                                }.schedule(3000);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }.schedule(6000);
+                    }
+                });
+                //2. add event
+                myEventService.addEvent(TEST_DOMAIN, theTestEvent, new TestCallback());
             }
         });
 
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //add another event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN_2, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(2, getEventCount());
-            }
-        });
-
-        //start first listen call
-        myRemoteEventService.addListener(TEST_DOMAIN, myGlobalListener);
-        executeActions();
+        delayTestFinish(20000);
     }
 
-    public void testRemoveListener() {
-        //start listen
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-            }
-        });
-
-        //remove listener / stop listening
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.removeListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-
-        //add ignored event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-            }
-        });
+    private ServiceDefTarget getService(Object aService, String aServiceMappingName) {
+        String theServiceURL = GWT.getModuleBaseURL() + aServiceMappingName;
+        ServiceDefTarget theServiceEndPoint = (ServiceDefTarget)aService;
+        theServiceEndPoint.setServiceEntryPoint(theServiceURL);
+        return theServiceEndPoint;
     }
 
-    public void testRemoveListeners() {
-        assertFalse(myRemoteEventService.isActive());
+    private class TestCallback implements AsyncCallback
+    {
+        public void onFailure(Throwable aThrowable) {
+            fail("Error occurred: " + aThrowable);
+        }
 
-        //start listen for TEST_DOMAIN
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //start listen for TEST_DOMAIN_2
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN_2, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //start listen for TEST_DOMAIN_3
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN_3, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //add event to TEST_DOMAIN_2
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN_2, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-            }
-        });
-
-        //add event to TEST_DOMAIN
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(2, getEventCount());
-            }
-        });
-
-        //add event to TEST_DOMAIN_3
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN_3, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(3, getEventCount());
-            }
-        });
-
-        //remove listener / stop listening for TEST_DOMAIN
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.removeListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-            }
-        });
-
-        //remove the other listeners / stop listening for TEST_DOMAIN_2 and TEST_DOMAIN_3
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.removeListeners(getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertFalse(myRemoteEventService.isActive());
-                assertEquals(3, getEventCount());
-            }
-        });
-        
-        executeActions();
-    }
-
-    public void testRegisterEventFilter() {
-        assertFalse(myRemoteEventService.isActive());
-
-        //start listen
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //register EventFilter
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.registerEventFilter(TEST_DOMAIN, getEventFilter(DummyIgnoredEvent.class), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //add ignored event
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyIgnoredEvent(), getCallback());
-            }
-        });
-
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount()); //the DummyIgnoredEvent was filtered by the EventFilter
-            }
-        });
-
-        //deregister EventFilter
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.deregisterEventFilter(TEST_DOMAIN, getCallback());
-            }
-        });
-
-        //add ignored event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyIgnoredEvent(), getCallback()); //the last DummyIgnoredEvent wasn't filtered, because the EventFilter is deregistered
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(2, getEventCount());
-            }
-        });
-
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(3, getEventCount());
-            }
-        });
-
-        executeActions();
+        public void onSuccess(Object anObject) {}
     }
 }

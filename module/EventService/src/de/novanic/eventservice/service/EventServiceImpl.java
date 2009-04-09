@@ -53,13 +53,6 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     }
 
     /**
-     * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
-     */
-    public void initEventService() {
-        getClientId(true);
-    }
-
-    /**
      * Register listen for a domain.
      * @param aDomain domain to listen to
      */
@@ -115,16 +108,6 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     public void deregisterEventFilter(Domain aDomain) {
         final String theClientId = getClientId();
         myEventRegistry.removeEventFilter(aDomain, theClientId);
-    }
-
-    /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    public EventFilter getEventFilter(Domain aDomain) {
-        final String theClientId = getClientId();
-        return myEventRegistry.getEventFilter(aDomain, theClientId);
     }
 
     /**
@@ -214,15 +197,6 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      * @return client id
      */
     protected String getClientId() {
-        return getClientId(false);
-    }
-
-    /**
-     * Returns the client id.
-     * @param isInitSession initializes the session (if not already initialized).
-     * @return client id
-     */
-    protected String getClientId(boolean isInitSession) {
-        return getThreadLocalRequest().getSession(isInitSession).getId();
+        return getThreadLocalRequest().getSession().getId();
     }
 }

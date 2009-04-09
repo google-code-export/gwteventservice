@@ -41,7 +41,6 @@ public class DefaultConfigurationLoaderTest extends TestCase
 
     public void testLoad() {
         EventServiceConfiguration theEventServiceConfiguration = myConfigurationLoader.load();
-        assertEquals("Default Configuration", theEventServiceConfiguration.getConfigDescription());
         assertEquals(0, theEventServiceConfiguration.getMinWaitingTime());
         assertEquals(20000, theEventServiceConfiguration.getMaxWaitingTime());
         assertEquals(90000, theEventServiceConfiguration.getTimeoutTime());

@@ -17,24 +17,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.service;
+package de.novanic.eventservice.service.testhelper;
 
-import de.novanic.eventservice.service.registry.user.UserInfo;
+import de.novanic.eventservice.client.event.Event;
 
 /**
- * UserTimeoutListener can be used to recognize the timeouts of registered users.
- * The {@link de.novanic.eventservice.service.UserTimeoutListener#onTimeout(UserInfo)}) method is called when a timeout
- * occurres.
- *
  * @author sstrohschein
- *         <br>Date: 20.01.2009
- *         <br>Time: 00:03:58
+ * <br>Date: 17.08.2008
+ * <br>Time: 21:47:11
  */
-public interface UserTimeoutListener
+public class ListenCycleCancelEvent implements Event
 {
-    /**
-     * The method onTimeout is called when a timeout is recognized for the user.
-     * @param aUserInfo the inactive user
-     */
-    void onTimeout(UserInfo aUserInfo);
+    public ListenCycleCancelEvent() {}
+
+    public String toString() {
+        return "Event: ListenCycleCancelEvent";
+    }
 }

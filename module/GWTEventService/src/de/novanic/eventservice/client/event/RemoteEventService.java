@@ -56,7 +56,7 @@ public interface RemoteEventService
      * @param aRemoteListener new listener
      * @param aCallback callback (only called when no listener is registered for the domain)
      */
-    void addListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<Void> aCallback);
+    void addListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<?> aCallback);
 
     /**
      * Adds a listener for a domain. The EventFilter is applied to the domain to filter events before the
@@ -77,7 +77,7 @@ public interface RemoteEventService
      * @param anEventFilter EventFilter to filter the events before RemoteEventListener
      * @param aCallback callback (only called when no listener is registered for the domain)
      */
-    void addListener(Domain aDomain, RemoteEventListener aRemoteListener, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
+    void addListener(Domain aDomain, RemoteEventListener aRemoteListener, EventFilter anEventFilter, AsyncCallback<?> aCallback);
 
     /**
      * Removes a listener for a domain.
@@ -94,7 +94,7 @@ public interface RemoteEventService
      * @param aRemoteListener listener to remove
      * @param aCallback callback
      */
-    void removeListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<Void> aCallback);
+    void removeListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<?> aCallback);
 
     /**
      * Registers an EventFilter for a domain. This can be used when a listener is already added and an EventFilter
@@ -111,7 +111,7 @@ public interface RemoteEventService
      * @param anEventFilter EventFilter to filter the events before RemoteEventListener
      * @param aCallback callback
      */
-    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
+    void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<?> aCallback);
 
     /**
      * Deregisters the EventFilter for a domain.
@@ -124,7 +124,7 @@ public interface RemoteEventService
      * @param aDomain domain to remove the EventFilter from
      * @param aCallback callback
      */
-    void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback);
+    void deregisterEventFilter(Domain aDomain, AsyncCallback<?> aCallback);
 
     /**
      * Checks if the RemoteEventService is active (listening).
@@ -141,7 +141,7 @@ public interface RemoteEventService
      * Removes all RemoteEventListeners and deactivates the RemoteEventService (stop listening).
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
-    void removeListeners(AsyncCallback<Void> aCallback);
+    void removeListeners(AsyncCallback<?> aCallback);
 
     /**
      * Calls unlisten for a set of domains (stop listening for these domains). The RemoteEventListeners for these
@@ -158,7 +158,7 @@ public interface RemoteEventService
      * @param aDomains domains to unlisten
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
-    void removeListeners(Set<Domain> aDomains, AsyncCallback<Void> aCallback);
+    void removeListeners(Set<Domain> aDomains, AsyncCallback<?> aCallback);
 
     /**
      * Stops listening for the corresponding domain. The RemoteEventFilters for the domain will also be removed.
@@ -173,5 +173,5 @@ public interface RemoteEventService
      * @param aDomain domain to unlisten
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
-    void removeListeners(Domain aDomain, AsyncCallback<Void> aCallback);
+    void removeListeners(Domain aDomain, AsyncCallback<?> aCallback);
 }

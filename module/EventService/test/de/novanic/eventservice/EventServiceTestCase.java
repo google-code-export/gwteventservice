@@ -22,52 +22,31 @@ package de.novanic.eventservice;
 import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
-import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.config.loader.TestCustomConfigurationLoader;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
-import de.novanic.eventservice.service.registry.user.UserManagerFactory;
-import de.novanic.eventservice.service.DefaultEventExecutorService;
-import de.novanic.eventservice.util.TestLoggingConfigurator;
-import de.novanic.eventservice.test.testhelper.factory.FactoryResetException;
-import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
-
-import java.io.IOException;
+import de.novanic.eventservice.service.EventExecutorServiceFactory;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 20:57:44
  */
-public abstract class EventServiceTestCase extends TestCase
+public class EventServiceTestCase extends TestCase
 {
     public void setUp(EventServiceConfiguration anEventServiceConfiguration) {
         ConfigurationLoader theConfigurationLoader = new TestCustomConfigurationLoader(anEventServiceConfiguration);
         EventServiceConfigurationFactory.getInstance().addCustomConfigurationLoader(theConfigurationLoader);
-        FactoryResetService.resetFactory(EventRegistryFactory.class);
-        FactoryResetService.resetFactory(DefaultEventExecutorService.class);
-        FactoryResetService.resetFactory(UserManagerFactory.class);
+        EventRegistryFactory.reset();
+        EventExecutorServiceFactory.reset();
     }
 
     public void tearDown() throws Exception {
         tearDownEventServiceConfiguration();
-        FactoryResetService.resetFactory(UserManagerFactory.class);
     }
 
     public void tearDownEventServiceConfiguration() {
-        FactoryResetService.resetFactory(EventServiceConfigurationFactory.class);
-        FactoryResetService.resetFactory(EventRegistryFactory.class);
-    }
-
-    public void logOn() throws IOException {
-        TestLoggingConfigurator.logOn();
-    }
-
-    public void logOff() throws IOException {
-        TestLoggingConfigurator.logOff();
-    }
-
-    protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime) {
-        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime);
+        EventServiceConfigurationFactory.getInstance().reset();
+        EventRegistryFactory.reset();
     }
 }

@@ -22,8 +22,6 @@ package de.novanic.eventservice.client.event;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
-import de.novanic.eventservice.client.event.command.*;
-import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 
 import java.util.*;
 
@@ -44,9 +42,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public final class DefaultRemoteEventService implements RemoteEventService
 {
     private RemoteEventConnector myRemoteEventConnector;
-    private Queue<ClientCommand> myClientCommandQueue;
     private Map<Domain, List<RemoteEventListener>> myDomainListenerMapping;
-    private boolean isSessionInitialized;
 
     /**
      * Creates a new RemoteEventService.
@@ -63,7 +59,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aRemoteListener new listener
      */
     public void addListener(Domain aDomain, RemoteEventListener aRemoteListener) {
-        addListener(aDomain, aRemoteListener, (AsyncCallback<Void>)null);
+        addListener(aDomain, aRemoteListener, (AsyncCallback<Object>)null);
     }
 
     /**
@@ -71,9 +67,9 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * It activates the RemoteEventService if it was inactive.
      * @param aDomain domain
      * @param aRemoteListener new listener
-     * @param aCallback callback (only called when no listener is already registered for the domain)
+     * @param aCallback callback (only called when no listener is registered for the domain)
      */
-    public void addListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<Void> aCallback) {
+    public void addListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<?> aCallback) {
         List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
         if(theListeners == null) {
             theListeners = new ArrayList<RemoteEventListener>();
@@ -106,7 +102,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param anEventFilter EventFilter to filter the events before RemoteEventListener
      * @param aCallback callback (only called when no listener is registered for the domain)
      */
-    public void addListener(Domain aDomain, RemoteEventListener aRemoteListener, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
+    public void addListener(Domain aDomain, RemoteEventListener aRemoteListener, EventFilter anEventFilter, AsyncCallback<?> aCallback) {
         List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
         if(theListeners == null) {
             theListeners = new ArrayList<RemoteEventListener>();
@@ -135,9 +131,13 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aRemoteListener listener to remove
      * @param aCallback callback
      */
-    public void removeListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<Void> aCallback) {
-        if(myDomainListenerMapping.containsKey(aDomain)) {
-            removeListenerInternal(aDomain, aRemoteListener, aCallback);
+    public void removeListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<?> aCallback) {
+        List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
+        if(theListeners != null) {
+            theListeners.remove(aRemoteListener);
+            if(removeListenDomain(aDomain)) {
+                myRemoteEventConnector.deactivate(aDomain, aCallback);
+            }
         }
     }
 
@@ -146,7 +146,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aDomain domain to register/activate
      * @param aCallback callback
      */
-    private void activate(Domain aDomain, AsyncCallback<Void> aCallback) {
+    private void activate(Domain aDomain, AsyncCallback<?> aCallback) {
         activate(aDomain, null, aCallback);
     }
 
@@ -157,8 +157,8 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param anEventFilter EventFilter to filter the events before RemoteEventListener
      * @param aCallback callback
      */
-    private void activate(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
-        schedule(new ActivationCommand(myRemoteEventConnector, aDomain, anEventFilter, new ListenerEventNotification(), aCallback));
+    private <T> void activate(Domain aDomain, EventFilter anEventFilter, AsyncCallback<T> aCallback) {
+        myRemoteEventConnector.activate(aDomain, anEventFilter, new ListenerEventNotification(), aCallback);
     }
 
     /**
@@ -178,8 +178,8 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param anEventFilter EventFilter to filter the events before RemoteEventListener
      * @param aCallback callback
      */
-    public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
-        schedule(new RegistrationEventFilterCommand(myRemoteEventConnector, aDomain, anEventFilter, aCallback));
+    public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<?> aCallback) {
+        myRemoteEventConnector.registerEventFilter(aDomain, anEventFilter, aCallback);
     }
 
     /**
@@ -195,8 +195,8 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aDomain domain to remove the EventFilter from
      * @param aCallback callback
      */
-    public void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback) {
-        schedule(new DeregistrationEventFilterCommand(myRemoteEventConnector, aDomain, aCallback));
+    public void deregisterEventFilter(Domain aDomain, AsyncCallback<?> aCallback) {
+        myRemoteEventConnector.deregisterEventFilter(aDomain, aCallback);
     }
 
     /**
@@ -218,7 +218,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * Removes all RemoteEventListeners and deactivates the RemoteEventService (stop listening).
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
-    public void removeListeners(AsyncCallback<Void> aCallback) {
+    public void removeListeners(AsyncCallback<?> aCallback) {
         removeListeners(myDomainListenerMapping.keySet(), aCallback);
     }
 
@@ -239,7 +239,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aDomains domains to unlisten
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
-    public void removeListeners(Set<Domain> aDomains, AsyncCallback<Void> aCallback) {
+    public void removeListeners(Set<Domain> aDomains, AsyncCallback<?> aCallback) {
         Set<Domain> theDomains = new HashSet<Domain>(aDomains);
         Iterator<Domain> theDomainIterator = theDomains.iterator();
         while(theDomainIterator.hasNext()) {
@@ -250,7 +250,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
         }
         if(!theDomains.isEmpty()) {
             //removeListeners is called with a set of domains to reduce remote server calls.
-            schedule(new DeactivationCommand(myRemoteEventConnector, theDomains, aCallback));
+            myRemoteEventConnector.deactivate(theDomains, aCallback);
         }
     }
 
@@ -269,7 +269,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aDomain domain to unlisten
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
-    public void removeListeners(Domain aDomain, AsyncCallback<Void> aCallback) {
+    public void removeListeners(Domain aDomain, AsyncCallback<?> aCallback) {
         unlisten(aDomain, aCallback);
     }
 
@@ -280,94 +280,39 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback (if it is NULL, no call is executed to the server)
      * @return true when listeners registered (remote call needed), otherwise false
      */
-    private boolean unlisten(Domain aDomain, AsyncCallback<Void> aCallback) {
-        return myDomainListenerMapping.containsKey(aDomain) && removeDomain(aDomain, aCallback);
-    }
-
-    /**
-     * Removes a listener from a domain. When it is the last listener, the domain will be deregistered for listening,
-     * because there aren't any listeners registered for the domain.
-     * It deactivates the RemoteEventService if no more domains/listeners are registered.
-     * @param aDomain domain to remove the listener from (the domain will be removed when no other listeners are registered to the domain)
-     * @param aListener listener to remove
-     * @param aCallback callback
-     */
-    private void removeListenerInternal(Domain aDomain, RemoteEventListener aListener, AsyncCallback<Void> aCallback) {
-        if(aListener != null) {
-            //remove the listener
-            List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
-            if(theListeners != null) {
-                myDomainListenerMapping.put(aDomain, removeOnCopy(theListeners, aListener));
-            }
-            theListeners = myDomainListenerMapping.get(aDomain);
-            if(theListeners == null || theListeners.isEmpty()) {
-                removeDomain(aDomain, aCallback);
-            }
-        }
-    }
-
-    /**
-     * Removes the domain with all listener registrations to the domain.
-     * @param aDomain domain to remove
-     * @param aCallback callback (only called when the domain isn't already removed)
-     * @return true when the domain is removed, otherwise false (false when the domain was already removed)
-     */
-    private boolean removeDomain(Domain aDomain, AsyncCallback<Void> aCallback) {
-        //remove the domain (all domain registrations)
-        boolean isRemoved = (myDomainListenerMapping.remove(aDomain) != null);
-        if(isRemoved) {
+    private boolean unlisten(Domain aDomain, AsyncCallback<?> aCallback) {
+        List<RemoteEventListener> theRemoteEventListeners = myDomainListenerMapping.get(aDomain);
+        if(theRemoteEventListeners != null) {
+            theRemoteEventListeners.clear();
+            removeListenDomain(aDomain);
             if(aCallback != null) {
-                schedule(new DeactivationCommand(myRemoteEventConnector, aDomain, aCallback));
+                myRemoteEventConnector.deactivate(aDomain, aCallback);
             }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Removes the domain if no RemoteEventListeners are registered to the domain.
+     * It deactivates the RemoteEventService if no more domains/listeners are registered.
+     * @param aDomain domain to remove/check for remove
+     * @return true if the domain is removed, false if the domain isn't removed
+     */
+    private boolean removeListenDomain(Domain aDomain) {
+        List<RemoteEventListener> theRemoteEventListeners = myDomainListenerMapping.get(aDomain);
+        if(theRemoteEventListeners == null || theRemoteEventListeners.isEmpty()) {
+            //remove the domain if the entry exists
+            if(theRemoteEventListeners != null) {
+                myDomainListenerMapping.remove(aDomain);
+            }
+            //deactivate the connector if no domain registered
             if(myDomainListenerMapping.isEmpty()) {
-                schedule(new DeactivationCommand(myRemoteEventConnector));
+                myRemoteEventConnector.deactivate();
             }
+            return true;
         }
-        return isRemoved;
-    }
-
-    /**
-     * Removes an entry from a list and avoids {@link ConcurrentModificationException} when an entry is removed while iterating.
-     * @param aList list to remove an entry from
-     * @param anEntry entry to remove
-     * @param <CT> type of the contained objects
-     * @return new list instance without the removed entry
-     */
-    private <CT> List<CT> removeOnCopy(List<CT> aList, CT anEntry) {
-        List<CT> theCollectionCopy = new ArrayList<CT>(aList);
-        if(theCollectionCopy.remove(anEntry)) {
-            return theCollectionCopy;
-        }
-        return aList;
-    }
-
-    /**
-     * Starts the init command and schedules all other commands till the init command is finished. That must be done
-     * to avoid double initialized sessions (race condition GWT issue 1846).  
-     * @param aClientCommand command to schedule
-     * @param <R> Return type of the command callback
-     */
-    private <R> void schedule(final ClientCommand<R> aClientCommand) {
-        if(myClientCommandQueue == null) {
-            myClientCommandQueue = new LinkedList<ClientCommand>();
-            ClientCommand theInitCommand = new InitEventServiceCommand(myRemoteEventConnector, new InitCommandCallback());
-            theInitCommand.execute();
-        }
-        myClientCommandQueue.add(aClientCommand);
-        executeCommands();
-    }
-
-    /**
-     * Executes the scheduled commands ({@link ClientCommand}. The commands can be scheduled with
-     * {@link de.novanic.eventservice.client.event.DefaultRemoteEventService#schedule(de.novanic.eventservice.client.event.command.ClientCommand)}.
-     */
-    private void executeCommands() {
-        if(isSessionInitialized) {
-            ClientCommand theClientCommand;
-            while((theClientCommand = myClientCommandQueue.poll()) != null) {
-                theClientCommand.execute();
-            }
-        }
+        return false;
     }
 
     /**
@@ -385,17 +330,13 @@ public final class DefaultRemoteEventService implements RemoteEventService
                 //all listeners for the domain of the event will be executed
                 List<RemoteEventListener> theListeners = myDomainListenerMapping.get(theDomainEvent.getDomain());
                 if(theListeners != null) {
-                    final Event theEvent = theDomainEvent.getEvent();
                     for(RemoteEventListener theListener: theListeners) {
-                        theListener.apply(theEvent);
+                        theListener.apply(theDomainEvent.getEvent());
                     }
                 }
             }
         }
 
-        /**
-        * That method will be called when the listening for events is aborted (unexpected).
-        */
         public void onAbort() {
             //if the remote doesn't know the client, all listeners will be removed and the connection gets inactive
             removeListeners();
@@ -405,48 +346,10 @@ public final class DefaultRemoteEventService implements RemoteEventService
     /**
      * Empty callback
      */
-    private static class VoidAsyncCallback implements AsyncCallback<Void>
+    private static class VoidAsyncCallback implements AsyncCallback<Object>
     {
         public void onFailure(Throwable aThrowable) {}
 
-        public void onSuccess(Void aResult) {}
-    }
-
-    /**
-     * Callback for the init command.
-     */
-    private class InitCommandCallback implements AsyncCallback<Void>
-    {
-        /**
-         * Executes the scheduled commands on success.
-         * @param aResult no result (void)
-         */
-        public void onSuccess(Void aResult) {
-            finishFirstCall();
-        }
-
-        /**
-         * Executes the scheduled commands on failure.
-         * @param aThrowable throwable caused by a failed server call
-         */
-        public void onFailure(Throwable aThrowable) {
-            finishFirstCall();
-        }
-
-        /**
-         * Executes the scheduled commands.
-         */
-        private void finishFirstCall() {
-            //Schedule the next command after the callback is finished. The timer is needed, because some browsers doesn't
-            //notice the server call cycle, when the next command is executed directly.
-            ClientCommandSchedulerFactory.getInstance().getClientCommandScheduler().schedule(new ClientCommand<Void>() {
-                public void execute() {
-                    isSessionInitialized = true;
-                    executeCommands();
-                }
-
-                public AsyncCallback<Void> getCommandCallback() { return null; }
-            });
-        }
+        public void onSuccess(Object aResult) {}
     }
 }

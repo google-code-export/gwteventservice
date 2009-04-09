@@ -78,15 +78,7 @@ public interface EventRegistry
     void setEventFilter(Domain aDomain, String aUserId, EventFilter anEventFilter);
 
     /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @param aUserId user
-     * @return EventFilter for the user domain combination
-     */
-    EventFilter getEventFilter(Domain aDomain, String aUserId);
-
-    /**
-     * EventFilters can be removed for a user domain combination with that method.
+     * EventFilters can be removed with that method.
      * @param aUserId user
      * @param aDomain domain
      */
@@ -123,12 +115,6 @@ public interface EventRegistry
      * @return domains where the user is registered to
      */
     Set<Domain> getListenDomains(String aUserId);
-
-    /**
-     * Returns all registered/activated domains.
-     * @return all registered/activated domains
-     */
-    Set<Domain> getListenDomains();
 
     /**
      * Adds an event to a domain.

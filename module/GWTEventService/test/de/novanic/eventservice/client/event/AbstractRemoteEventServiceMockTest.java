@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.clientmock;
+package de.novanic.eventservice.client.event;
 
 import org.easymock.ArgumentsMatcher;
 import org.easymock.MockControl;
@@ -30,10 +30,6 @@ import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
-import de.novanic.eventservice.client.event.DomainEvent;
-import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
-import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
-import de.novanic.eventservice.client.event.command.ClientCommand;
 
 /**
  * @author sstrohschein
@@ -47,27 +43,11 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     public void setUp() {
         myEventServiceAsyncMockControl = MockControl.createControl(EventServiceAsync.class);
-        myEventServiceAsyncMock = (EventServiceAsync)myEventServiceAsyncMockControl.getMock();
-        ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DirectCommandScheduler());
+        myEventServiceAsyncMock = (EventServiceAsync) myEventServiceAsyncMockControl.getMock();
     }
 
     public void tearDown() {
         myEventServiceAsyncMockControl.reset();
-        ClientCommandSchedulerFactory.getInstance().reset();
-    }
-
-    protected void mockInit() {
-        mockInit(null);
-    }
-
-    protected void mockInit(Throwable aThrowable) {
-        myEventServiceAsyncMock.initEventService(null);
-        if(aThrowable != null) {
-            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(aThrowable));
-        } else {
-            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher((Object)null));
-        }
-        myEventServiceAsyncMockControl.setVoidCallable();
     }
 
     protected void mockRegister(Domain aDomain, boolean isFirstCall) {
@@ -131,17 +111,9 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     }
 
     protected void mockListen(boolean isFirstCall) {
-        mockListen(null, isFirstCall);
-    }
-
-    protected void mockListen(Throwable aThrowable, boolean isFirstCall) {
         myEventServiceAsyncMock.listen(null);
         if(isFirstCall) {
-            if(aThrowable != null) {
-                myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(aThrowable));
-            } else {
-                myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(false));
-            }
+            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(false));
         }
         myEventServiceAsyncMockControl.setVoidCallable();
     }
@@ -309,12 +281,12 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         }
     }
 
-    protected class RecordedCallback implements AsyncCallback<Void>
+    protected class RecordedCallback implements AsyncCallback<Object>
     {
         private boolean myIsOnSuccessCalled;
         private boolean myIsOnFailureCalled;
 
-        public void onSuccess(Void aResult) {
+        public void onSuccess(Object aResult) {
             if(myIsOnSuccessCalled) {
                 throw new RuntimeException("onSuccess was called more than one time!");
             } else if(myIsOnFailureCalled) {
@@ -338,17 +310,6 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
         public boolean isOnFailureCalled() {
             return myIsOnFailureCalled;
-        }
-    }
-
-    private static class DirectCommandScheduler implements ClientCommandScheduler
-    {
-        public void schedule(ClientCommand aCommand) {
-            schedule(aCommand, 0);
-        }
-
-        public void schedule(ClientCommand aCommand, int aDelay) {
-            aCommand.execute();
         }
     }
 }
