@@ -5,20 +5,25 @@
     </tstamp>
 
     <property environment="osEnv"/>
-
     <property name="lib.dir" value="lib"/>
     <condition property="gwt.path" value="${osEnv.GWT_HOME}" else="${lib.dir}">
         <isset property="osEnv.GWT_HOME"/>
     </condition>
 
-    <property name="version" value="1.0"/>
+    <property name="version.number" value="1.0.1"/>
+    <property name="version.final" value="false"/>
+    <condition property="version" value="${version.number}" else="${version.number}-dev">
+        <istrue value="${version.final}"/>
+    </condition>
+
     <property name="conf.dir" value="conf"/>
     <property name="src.dir" value="src"/>
     <property name="src.test.dir" value="test"/>
     <property name="dest.build.dir" value="build/production"/>
     <property name="dest.build.test.dir" value="build/test"/>
     <property name="release.dir" value="release"/>
-    <property name="release.jar.file" value="${release.dir}/${ant.project.name}-${version}.jar"/>
+    <property name="release.jar" value="${ant.project.name}-${version}.jar"/>
+    <property name="release.jar.file" value="${release.dir}/${release.jar}"/>
     <property name="release.core.file" value="${release.dir}/${ant.project.name}-${version}-core.zip"/>
     <property name="release.developer.file" value="${release.dir}/${ant.project.name}-${version}-developer.zip"/>
     <property name="dest.javadoc.dir" value="${release.dir}/doc/javadoc"/>
@@ -48,8 +53,10 @@
     <path id="test.classpath">
         <path refid="classpath"/>
         <pathelement location="${dest.build.test.dir}"/>
-        <pathelement location="module/EventService/etc/testdata"/>
-        <pathelement location="module/EventService/etc/testdata/eventservice.properties"/>
+        <pathelement location="${module.eventservice}/etc/testdata"/>
+        <pathelement location="${module.gwteventservice}/${src.dir}"/>
+        <pathelement location="${module.eventservice.rpc}/${src.dir}"/>
+        <pathelement location="${module.gwteventservice}/test"/>
     </path>
 
     <target name="init" depends="clean">
@@ -92,10 +99,7 @@
 
     <target name="test" depends="compile, compile-test">
 
-        <!--<junit fork="yes" printsummary="yes" showoutput="no" haltonerror="no" haltonfailure="no" maxmemory="1024M">-->
-            <!--<jvmarg value="-Xmx128M"/>-->
-        <junit fork="no" printsummary="yes" showoutput="no" haltonerror="yes" haltonfailure="yes" maxmemory="512M">
-
+        <junit fork="yes" printsummary="yes" showoutput="no" haltonerror="yes" haltonfailure="yes" maxmemory="128M">
             <classpath refid="test.classpath"/>
             <formatter type="brief" usefile="false"/>
             <batchtest>
@@ -108,8 +112,6 @@
                 </fileset>
                 <fileset dir="${module.gwteventservice}/${src.test.dir}">
                     <include name="**/*TestSuite.java"/>
-                    <!-- TODO OutOfMemoryError - When Xmx is set and fork=yes, another error occurres ... -->
-                    <exclude name="**/*GWTEventServiceGWTTestSuite.java"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -148,7 +150,7 @@
         <zip destfile="${release.core.file}">
             <fileset dir="${release.dir}">
                 <!-- jar -->
-                <include name="${ant.project.name}-${version}.jar"/>
+                <include name="${release.jar}"/>
             </fileset>
             <fileset dir=".">
                 <!-- licence -->
@@ -166,7 +168,7 @@
         <zip destfile="${release.developer.file}">
             <fileset dir="${release.dir}">
                 <!-- jar -->
-                <include name="${ant.project.name}-${version}.jar"/>
+                <include name="${release.jar}"/>
             </fileset>
             <fileset dir=".">
                 <!-- licence -->

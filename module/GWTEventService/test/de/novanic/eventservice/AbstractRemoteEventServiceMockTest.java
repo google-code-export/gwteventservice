@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice;
 
 import org.easymock.ArgumentsMatcher;
 import org.easymock.MockControl;
@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
+import de.novanic.eventservice.client.event.DomainEvent;
 
 /**
  * @author sstrohschein
@@ -281,12 +282,12 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         }
     }
 
-    protected class RecordedCallback implements AsyncCallback<Object>
+    protected class RecordedCallback implements AsyncCallback<Void>
     {
         private boolean myIsOnSuccessCalled;
         private boolean myIsOnFailureCalled;
 
-        public void onSuccess(Object aResult) {
+        public void onSuccess(Void aResult) {
             if(myIsOnSuccessCalled) {
                 throw new RuntimeException("onSuccess was called more than one time!");
             } else if(myIsOnFailureCalled) {
