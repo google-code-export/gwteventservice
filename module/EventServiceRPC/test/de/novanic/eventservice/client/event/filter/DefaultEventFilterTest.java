@@ -34,7 +34,6 @@ public class DefaultEventFilterTest extends TestCase
         assertFalse(theEventFilter.match(new Event() {}));
     }
 
-    //TODO laesst sich das mit super.match(...) nicht umgehen? Da sollten sich die konkreten Implementationen eigentlich keine Gedanken drueber machen. Wie sieht dass das Filter-Pattern vor?
     public void testAppend() {
         AppendableEventFilter theEventFilter = new DefaultEventFilter() {
             public boolean match(Event anEvent) {
