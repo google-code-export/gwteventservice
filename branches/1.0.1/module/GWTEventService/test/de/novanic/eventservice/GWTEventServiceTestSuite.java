@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2008, GWTEventService Committers
+ * Copyright (c) 2009, GWTEventService Committers
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -19,29 +19,38 @@
  */
 package de.novanic.eventservice;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
-import de.novanic.eventservice.client.event.RemoteEventServiceMockTest;
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.junit.tools.GWTTestSuite;
+
+import de.novanic.eventservice.client.event.RemoteEventServiceTest;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
-import de.novanic.eventservice.client.event.GWTRemoteEventConnectorTest;
 
 /**
  * @author sstrohschein
- * Date: 04.08.2008
- * Time: 00:50:47
+ * Date: 28.07.2008   
+ * Time: 21:41:04
  */
-public class GWTEventServiceTestSuite extends TestSuite
+public class GWTEventServiceTestSuite extends GWTTestCase
 {
-    public static Test suite() {
-        TestSuite theSuite = new TestSuite();
+    public String getModuleName() {
+    	return "de.novanic.eventservice.GWTEventService";
+    }
 
-        theSuite.setName("GWTEventService - Tests");
+    public static GWTTestSuite suite() {
+        GWTTestSuite theGWTEventServiceTestSuite = new GWTTestSuite("GWTEventService - GWT-Tests");
+
+        //Mock-Tests
 
         //Event
-        theSuite.addTestSuite(GWTRemoteEventConnectorTest.class);
-        theSuite.addTestSuite(RemoteEventServiceFactoryTest.class);
-        theSuite.addTestSuite(RemoteEventServiceMockTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(GWTRemoteEventConnectorTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceFactoryTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceMockTest.class);
 
-        return theSuite;
+        //GWT-Tests
+
+        //Event
+        theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceTest.class);
+
+        return theGWTEventServiceTestSuite;
     }
 }
