@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice;
+package de.novanic.eventservice.clientmock;
 
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
@@ -229,7 +229,12 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             final TestEventListener theRemoteListener = new TestEventListener();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
+
+            //more than one call shouln't affect the mocks, because it is only removed/unlistened on first call
             myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener);
+            myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener);
+            myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener);
+
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();

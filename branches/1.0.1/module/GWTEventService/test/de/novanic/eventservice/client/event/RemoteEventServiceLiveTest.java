@@ -47,7 +47,7 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
     protected RemoteEventService myRemoteEventService;
     protected EventServiceAsync myEventService;
     private Queue<TestAction> myTestActions;
-    private TestListener myGlobalListener;
+    protected TestListener myGlobalListener;
 
     public void gwtSetUp() throws Exception {
         myTestActions = new LinkedList<TestAction>();
