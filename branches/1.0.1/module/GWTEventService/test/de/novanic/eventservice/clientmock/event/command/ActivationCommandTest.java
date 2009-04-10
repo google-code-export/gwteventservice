@@ -1,3 +1,22 @@
+/*
+ * GWTEventService
+ * Copyright (c) 2009, GWTEventService Committers
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package de.novanic.eventservice.clientmock.event.command;
 
 import de.novanic.eventservice.client.event.domain.DomainFactory;
@@ -27,36 +46,6 @@ public class ActivationCommandTest extends ClientCommandTestCase
 
         testExecute(new ActivationCommand(getRemoteEventConnectorMock(), theTestDomain, theEventFilter, theTestEventNotification, getCommandCallback()));
     }
-
-//    public void testExecute() {
-//        final Domain theTestDomain = DomainFactory.getDomain("test_domain");
-//        final TestAsyncCallback theAsyncCallback = new TestAsyncCallback();
-//        final EventFilter theEventFilter = new TestTypeEventFilter();
-//        final TestEventNotification theTestEventNotification = new TestEventNotification();
-//
-//        MockControl theRemoteEventConnectorMockControl = MockControl.createControl(RemoteEventConnector.class);
-//        RemoteEventConnector theRemoteEventConnectorMock = (RemoteEventConnector)theRemoteEventConnectorMockControl.getMock();
-//
-//        theRemoteEventConnectorMock.activate(theTestDomain, theEventFilter, theTestEventNotification, theAsyncCallback);
-//        theRemoteEventConnectorMockControl.setVoidCallable();
-//
-//        theRemoteEventConnectorMockControl.replay();
-//
-//        ActivationCommand theActivationCommand = new ActivationCommand(theRemoteEventConnectorMock, theTestDomain,
-//                theEventFilter, theTestEventNotification, theAsyncCallback);
-//
-//        Test init
-//        assertNotNull(theActivationCommand.getRemoteEventConnector());
-//        assertEquals(theRemoteEventConnectorMock, theActivationCommand.getRemoteEventConnector());
-//        assertNotNull(theActivationCommand.getCommandCallback());
-//        assertEquals(theAsyncCallback, theActivationCommand.getCommandCallback());
-//
-//        Test execute
-//        theActivationCommand.execute();
-//
-//        theRemoteEventConnectorMockControl.verify();
-//        theRemoteEventConnectorMockControl.reset();
-//    }
 
     private static class TestEventNotification implements EventNotification
     {

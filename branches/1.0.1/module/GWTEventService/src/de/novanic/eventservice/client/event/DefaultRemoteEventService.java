@@ -23,6 +23,7 @@ import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.command.*;
+import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 
 import java.util.*;
 
@@ -340,18 +341,26 @@ public final class DefaultRemoteEventService implements RemoteEventService
         return aList;
     }
 
+    /**
+     * Starts the init command and schedules all other commands till the init command is finished. That must be done
+     * to avoid double initialized sessions (race condition GWT issue 1846).  
+     * @param aClientCommand command to schedule
+     * @param <R> Return type of the command callback
+     */
     private <R> void schedule(final ClientCommand<R> aClientCommand) {
         if(myClientCommandQueue == null) {
             myClientCommandQueue = new LinkedList<ClientCommand>();
-            final AsyncCallback<R> theAsyncCallback = aClientCommand.getCommandCallback();
-            aClientCommand.setCommandCallback(new FirstAsyncCallback<R>(theAsyncCallback));
-            aClientCommand.execute();
-        } else {
-            myClientCommandQueue.add(aClientCommand);
+            ClientCommand theInitCommand = new InitEventServiceCommand(myRemoteEventConnector, new InitCommandCallback());
+            theInitCommand.execute();
         }
+        myClientCommandQueue.add(aClientCommand);
         executeCommands();
     }
 
+    /**
+     * Executes the scheduled commands ({@link ClientCommand}. The commands can be scheduled with
+     * {@link de.novanic.eventservice.client.event.DefaultRemoteEventService#schedule(de.novanic.eventservice.client.event.command.ClientCommand)}.
+     */
     private void executeCommands() {
         if(isSessionInitialized) {
             ClientCommand theClientCommand;
@@ -384,6 +393,9 @@ public final class DefaultRemoteEventService implements RemoteEventService
             }
         }
 
+        /**
+        * That method will be called when the listening for events is aborted (unexpected).
+        */
         public void onAbort() {
             //if the remote doesn't know the client, all listeners will be removed and the connection gets inactive
             removeListeners();
@@ -400,31 +412,41 @@ public final class DefaultRemoteEventService implements RemoteEventService
         public void onSuccess(Void aResult) {}
     }
 
-    private class FirstAsyncCallback<R> implements AsyncCallback<R>
+    /**
+     * Callback for the init command.
+     */
+    private class InitCommandCallback implements AsyncCallback<Void>
     {
-        private AsyncCallback<R> mySubAsyncCallback;
-
-        public FirstAsyncCallback(AsyncCallback<R> aSubAsyncCallback) {
-            mySubAsyncCallback = aSubAsyncCallback;
-        }
-
-        public void onSuccess(R aResult) {
-            if(mySubAsyncCallback != null) {
-                mySubAsyncCallback.onSuccess(aResult);
-            }
+        /**
+         * Executes the scheduled commands on success.
+         * @param aResult no result (void)
+         */
+        public void onSuccess(Void aResult) {
             finishFirstCall();
         }
 
+        /**
+         * Executes the scheduled commands on failure.
+         * @param aThrowable throwable caused by a failed server call
+         */
         public void onFailure(Throwable aThrowable) {
-            if(mySubAsyncCallback != null) {
-                mySubAsyncCallback.onFailure(aThrowable);
-            }
             finishFirstCall();
         }
 
+        /**
+         * Executes the scheduled commands.
+         */
         private void finishFirstCall() {
-            isSessionInitialized = true;
-            executeCommands();
+            //Schedule the next command after the callback is finished. The timer is needed, because some browsers doesn't
+            //notice the server call cycle, when the next command is executed directly.
+            ClientCommandSchedulerFactory.getInstance().getClientCommandScheduler().schedule(new ClientCommand<Void>() {
+                public void execute() {
+                    isSessionInitialized = true;
+                    executeCommands();
+                }
+
+                public AsyncCallback<Void> getCommandCallback() { return null; }
+            });
         }
     }
 }
