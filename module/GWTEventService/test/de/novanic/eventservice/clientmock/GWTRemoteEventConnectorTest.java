@@ -55,6 +55,22 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         ClientLoggerFactory.getClientLogger().detach(myClientLogger);
     }
 
+    public void testInit() {
+        assertFalse(myRemoteEventConnector.isActive());
+
+        mockInit();
+        
+        //init connector
+        myEventServiceAsyncMockControl.replay();
+
+            myRemoteEventConnector.init(null);
+
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+
+        assertFalse(myRemoteEventConnector.isActive());
+    }
+
     public void testDeactivate() {
         assertFalse(myRemoteEventConnector.isActive());
 

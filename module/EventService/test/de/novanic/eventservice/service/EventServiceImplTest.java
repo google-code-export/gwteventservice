@@ -546,11 +546,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     private class DummyEventServiceImpl extends EventServiceImpl
     {
-        public void resetService() {
-//            reset();
-        }
-
-        protected String getClientId() {
+        protected String getClientId(boolean isInitSession) {
             return TEST_USER_ID;
         }
     }

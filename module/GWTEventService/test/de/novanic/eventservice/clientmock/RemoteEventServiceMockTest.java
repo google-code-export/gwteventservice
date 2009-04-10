@@ -54,6 +54,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testAddListener() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -72,10 +74,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testAddListener_Error() {
+        mockInit();
+
         //caused by first addListener / activate
-        myEventServiceAsyncMock.register(TEST_DOMAIN, null, null);
-        myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(TestException.getInstance()));
-        myEventServiceAsyncMockControl.setVoidCallable();
+        mockRegister(TEST_DOMAIN, TestException.getInstance(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -85,7 +87,30 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.reset();
     }
 
+    public void testAddListener_Error_2() {
+        //should be equal to testAddListener, because the other/following commands are executed normally.
+        mockInit(TestException.getInstance());
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN, true);
+
+        //caused by callback of register
+        mockListen(true);
+
+        myEventServiceAsyncMockControl.replay();
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            assertTrue(myRemoteEventService.isActive());
+            //a second time
+            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            assertTrue(myRemoteEventService.isActive());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+    }
+
     public void testAddListener_Callback() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -122,6 +147,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testAddListener_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener
         mockRegister(TEST_DOMAIN, TestException.getInstance(), true);
 
@@ -137,6 +164,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testAddListener_EventFilter() {
+        mockInit();
+
         final TestEventFilter theEventFilter = new TestEventFilter();
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, theEventFilter, true);
@@ -159,6 +188,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testAddListener_EventFilter_Callback() {
+        mockInit();
+
         final TestEventFilter theEventFilter = new TestEventFilter();
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, theEventFilter, true);
@@ -199,6 +230,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testAddListener_EventFilter_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener
         final TestEventFilter theEventFilter = new TestEventFilter();
         mockRegister(TEST_DOMAIN, theEventFilter, TestException.getInstance(), true);
@@ -215,6 +248,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListener() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -241,6 +276,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListener_2() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         //caused by second addListener / reactivate
@@ -267,6 +304,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListener_3() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         //caused by second addListener / reactivate
@@ -299,6 +338,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListener_4() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -328,6 +369,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListener_Callback() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         //caused by second addListener / reactivate
@@ -365,6 +408,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListener_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -390,6 +435,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -418,6 +465,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domain() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -448,6 +497,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domains() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -476,6 +527,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domains_2() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -510,6 +563,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Callback() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -541,6 +596,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -568,6 +625,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domain_Callback() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -604,6 +663,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domain_Callback_2() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -646,6 +707,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domain_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -671,6 +734,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domains_Callback() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -702,6 +767,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domains_Callback_2() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -743,6 +810,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRemoveListeners_Domains_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -770,6 +839,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testUnlisten() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -801,6 +872,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testUnlisten_2() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
         mockRegister(TEST_DOMAIN_2, false);
@@ -832,6 +905,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testUnlisten_Error() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -854,6 +929,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testListen() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -878,13 +955,13 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testListen_Error() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
         //caused by callback of register
-        myEventServiceAsyncMock.listen(null);
-        myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(TestException.getInstance()));
-        myEventServiceAsyncMockControl.setVoidCallable();
+        mockListen(TestException.getInstance(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -899,6 +976,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testListen_Error_2() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -922,6 +1001,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRegisterEventFilter() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -957,6 +1038,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRegisterEventFilter_Callback() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -1000,6 +1083,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testRegisterEventFilter_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 
@@ -1043,6 +1128,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testDeregisterEventFilter_Callback_Failure() {
+        mockInit();
+
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
 

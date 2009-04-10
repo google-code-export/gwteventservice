@@ -19,23 +19,19 @@
  */
 package de.novanic.eventservice.clientmock.event.command;
 
-import de.novanic.eventservice.client.event.domain.Domain;
-import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.client.event.command.DeregistrationEventFilterCommand;
+import de.novanic.eventservice.client.event.command.InitEventServiceCommand;
 
 /**
  * @author sstrohschein
- *         <br>Date: 31.03.2009
- *         <br>Time: 20:46:42
+ *         <br>Date: 04.04.2009
+ *         <br>Time: 20:15:58
  */
-public class DeregistrationEventFilterCommandTest extends ClientCommandTestCase
+public class InitEventServiceCommandTest extends ClientCommandTestCase
 {
     public void testExecute() {
-        final Domain theTestDomain = DomainFactory.getDomain("test_domain");
-
-        getRemoteEventConnectorMock().deregisterEventFilter(theTestDomain, getCommandCallback());
+        getRemoteEventConnectorMock().init(getCommandCallback());
         getRemoteEventConnectorMockControl().setVoidCallable();
 
-        testExecute(new DeregistrationEventFilterCommand(getRemoteEventConnectorMock(), theTestDomain, getCommandCallback()));
+        testExecute(new InitEventServiceCommand(getRemoteEventConnectorMock(), getCommandCallback()));
     }
 }

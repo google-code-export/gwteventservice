@@ -38,6 +38,10 @@ import java.util.List;
  */
 public interface EventServiceAsync
 {
+    /**
+     * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
+     */
+    void initEventService(AsyncCallback<Void> async);
 
     /**
      * Register listen for a domain.
