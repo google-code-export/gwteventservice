@@ -121,6 +121,14 @@
         <delete dir="${temp.dir}" deleteonexit="true" failonerror="false"/>
     </target>
 
+    <target name="deploy-appengine" depends="deploy">
+        <copy todir="${dest.web.inf.dir}">
+            <fileset dir="${src.web.inf}/appengine">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+
     <target name="war" depends="deploy">
         <war warfile="${dest.war.file}" webxml="${dest.web.inf.dir}/web.xml">
             <fileset dir="${dest.web.dir}">
