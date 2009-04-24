@@ -9,7 +9,7 @@ GWTEventService Licence Information
 	http://gwteventservice.googlecode.com/
 
 	Do you have questions?
-	licensing@novanic.de
+	novanic@gmx.de
 
 
 Licence information regarding related third party software
