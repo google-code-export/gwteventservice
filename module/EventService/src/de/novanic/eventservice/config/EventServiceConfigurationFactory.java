@@ -41,7 +41,7 @@ import java.util.TreeMap;
  * There are three pre-registered ConfigurationLoaders at various levels.
  * <br> 1) Level {@link de.novanic.eventservice.config.level.ConfigLevelFactory#DEFAULT} (5000) - {@link de.novanic.eventservice.config.loader.PropertyConfigurationLoader}
  * <br> 2) Level {@link de.novanic.eventservice.config.level.ConfigLevelFactory#DEFAULT} (5000) - {@link de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader}
- * <br> 3) Level {@link de.novanic.eventservice.config.level.ConfigLevelFactory#HIGH}-1 (7999) - {@link de.novanic.eventservice.config.loader.DefaultConfigurationLoader}
+ * <br> 3) Level {@link de.novanic.eventservice.config.level.ConfigLevelFactory#HIGHEST} (10000) - {@link de.novanic.eventservice.config.loader.DefaultConfigurationLoader}
  * <br>
  * <br> That means when a property file is in the classpath, the property file is used for the configuration. When no property file is available,
  * the web-descriptor is used. When no servlet-parameters are registered in the web-descriptor, the default configuration is used.
