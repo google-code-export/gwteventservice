@@ -34,12 +34,15 @@ import de.novanic.eventservice.logger.ServerLoggerFactoryTest;
 import de.novanic.eventservice.logger.DefaultServerLoggerTest;
 import de.novanic.eventservice.config.RemoteEventServiceConfigurationTest;
 import de.novanic.eventservice.config.EventServiceConfigurationFactoryTest;
+import de.novanic.eventservice.config.level.ConfigLevelFactoryTest;
 import de.novanic.eventservice.config.loader.DefaultConfigurationLoaderTest;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoaderTest;
 import de.novanic.eventservice.config.loader.ConfigurationExceptionTest;
+import de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoaderTest;
 import de.novanic.eventservice.util.PlatformUtilTest;
 import de.novanic.eventservice.util.TestLoggingConfigurator;
 import de.novanic.eventservice.util.TestLoggingConfiguratorTest;
+import de.novanic.eventservice.util.StringUtilTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -59,6 +62,7 @@ public class EventServiceTestSuite
 
         // Util
         theSuite.addTestSuite(TestLoggingConfiguratorTest.class);
+        theSuite.addTestSuite(StringUtilTest.class);
         theSuite.addTestSuite(PlatformUtilTest.class);
 
         // Logging
@@ -66,10 +70,12 @@ public class EventServiceTestSuite
         theSuite.addTestSuite(DefaultServerLoggerTest.class);
 
         // Configuration
+        theSuite.addTestSuite(ConfigLevelFactoryTest.class);
         theSuite.addTestSuite(RemoteEventServiceConfigurationTest.class);
         theSuite.addTestSuite(ConfigurationExceptionTest.class);
         theSuite.addTestSuite(DefaultConfigurationLoaderTest.class);
         theSuite.addTestSuite(PropertyConfigurationLoaderTest.class);
+        theSuite.addTestSuite(WebDescriptorConfigurationLoaderTest.class);
         theSuite.addTestSuite(EventServiceConfigurationFactoryTest.class);
 
         // Registry

@@ -62,4 +62,8 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
     public EventServiceConfiguration load() {
         return new RemoteEventServiceConfiguration(DEFAULT_CONFIG_DESCRIPTION, DEFAULT_MIN_WAITING_TIME, DEFAULT_MAX_WAITING_TIME, DEFAULT_TIME_OUT);
     }
+
+    public boolean equals(Object anObject) {
+        return (anObject instanceof DefaultConfigurationLoader);
+    }
 }

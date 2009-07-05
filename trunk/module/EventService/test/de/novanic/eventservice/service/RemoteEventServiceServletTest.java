@@ -55,10 +55,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
     }
 
     public void tearDown() throws Exception {
-        myRequestMockControl.verify();
-        mySessionMockControl.verify();
-        myRequestMockControl.reset();
-        mySessionMockControl.reset();
+        tearDownRemoteEventServiceServlet();
         super.tearDown();
     }
 
@@ -98,6 +95,13 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         mySessionMockControl.replay();
 
         return new DummyRemoteEventServiceServlet_Request(theRequestMock);
+    }
+
+    private void tearDownRemoteEventServiceServlet() {
+        myRequestMockControl.verify();
+        mySessionMockControl.verify();
+        myRequestMockControl.reset();
+        mySessionMockControl.reset();
     }
 
     public void testAddEvent_Init_WithoutSession() throws Exception {

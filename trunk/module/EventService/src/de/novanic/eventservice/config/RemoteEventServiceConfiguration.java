@@ -39,7 +39,7 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
     private final int myMinWaitingTime;
     private final int myMaxWaitingTime;
     private final int myTimeoutTime;
-    private String myConfigDescription;
+    private final String myConfigDescription;
 
     /**
      * Creates a new RemoteEventServiceConfiguration.
