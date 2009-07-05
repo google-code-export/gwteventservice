@@ -33,6 +33,12 @@ import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
+import de.novanic.eventservice.config.EventServiceConfigurationFactory;
+import de.novanic.eventservice.config.level.ConfigLevelFactory;
+import de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
 
 /**
  * {@link de.novanic.eventservice.client.event.service.EventService} is the server side interface to register listen
@@ -45,18 +51,25 @@ import de.novanic.eventservice.logger.ServerLoggerFactory;
 public class EventServiceImpl extends RemoteServiceServlet implements EventService
 {
     private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(EventServiceImpl.class.getName());
-    private final EventRegistry myEventRegistry;
+    private EventRegistry myEventRegistry;
 
-    public EventServiceImpl() {
-        final EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
-        myEventRegistry = theEventRegistryFactory.getEventRegistry();
+    /**
+     * The init method should be called automatically before the servlet can be used and should called only one time.
+     * That method initialized the {@link de.novanic.eventservice.service.registry.EventRegistry}.
+     * @param aConfig servlet configuration
+     * @throws ServletException
+     */
+    public void init(ServletConfig aConfig) throws ServletException {
+        super.init(aConfig);
+        myEventRegistry = initEventRegistry(aConfig);
     }
 
     /**
      * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
      */
     public void initEventService() {
-        getClientId(true);
+        final String theClientId = getClientId(true);
+        LOG.debug("Client \"" + theClientId + "\" initialized.");
     }
 
     /**
@@ -210,10 +223,31 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     }
 
     /**
+     * Registers the {@link de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader},
+     * loads the first available configuration (with {@link de.novanic.eventservice.config.EventServiceConfigurationFactory})
+     * and initializes the {@link de.novanic.eventservice.service.registry.EventRegistry}.
+     * @param aConfig servlet configuration
+     * @return initialized {@link de.novanic.eventservice.service.registry.EventRegistry}
+     */
+    private EventRegistry initEventRegistry(ServletConfig aConfig) {
+        final WebDescriptorConfigurationLoader theWebDescriptorConfigurationLoader = new WebDescriptorConfigurationLoader(aConfig);
+        final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+        theEventServiceConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.DEFAULT, theWebDescriptorConfigurationLoader);
+
+        final EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
+        EventRegistry theEventRegistry = theEventRegistryFactory.getEventRegistry();
+
+        if(theWebDescriptorConfigurationLoader.isAvailable()) {
+            theEventServiceConfigurationFactory.loadEventServiceConfiguration();
+        }
+        return theEventRegistry;
+    }
+
+    /**
      * Returns the client id.
      * @return client id
      */
-    protected String getClientId() {
+    private String getClientId() {
         return getClientId(false);
     }
 

@@ -55,6 +55,9 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         myRunningUnits = new ArrayList<RunningUnit>();
         myListenStartResults = new ArrayList<ListenStartResult>();
         FactoryResetService.resetFactory(AutoIncrementFactory.class);
+        if(anEventService != null) {
+            anEventService.initEventService();
+        }
     }
 
     public void setUp(EventRegistry anEventRegistry) {

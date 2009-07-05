@@ -19,8 +19,8 @@
  */
 package de.novanic.eventservice.config;
 
-import de.novanic.eventservice.config.loader.ConfigurationException;
-import de.novanic.eventservice.config.loader.ConfigurationLoader;
+import de.novanic.eventservice.config.loader.*;
+import de.novanic.eventservice.config.level.ConfigLevelFactory;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
@@ -74,6 +74,31 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(50000, theConfiguration.getTimeoutTime());
     }
 
+    public void testLoadEventServiceConfiguration_Multiple() {
+        //loads the DefaultConfiguration at first and then loads the higher priorized PropertyConfiguration with eventservice.bak.properties
+        EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+
+        EventServiceConfiguration theConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(0, theConfiguration.getMinWaitingTime());
+        assertEquals(20000, theConfiguration.getMaxWaitingTime());
+        assertEquals(90000, theConfiguration.getTimeoutTime());
+
+        theConfiguration = theConfigurationFactory.loadEventServiceConfiguration("eventservice.bak.properties");
+        assertEquals(2000, theConfiguration.getMinWaitingTime());
+        assertEquals(5000, theConfiguration.getMaxWaitingTime());
+        assertEquals(50000, theConfiguration.getTimeoutTime());
+
+        theConfiguration = theConfigurationFactory.loadEventServiceConfiguration("eventservice.bak.properties");
+        assertEquals(2000, theConfiguration.getMinWaitingTime());
+        assertEquals(5000, theConfiguration.getMaxWaitingTime());
+        assertEquals(50000, theConfiguration.getTimeoutTime());
+
+        theConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(2000, theConfiguration.getMinWaitingTime());
+        assertEquals(5000, theConfiguration.getMaxWaitingTime());
+        assertEquals(50000, theConfiguration.getTimeoutTime());
+    }
+
     public void testLoadEventServiceConfiguration_Default() {
         //uses DefaultConfigurationLoader
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -92,6 +117,17 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         } catch(ConfigurationException e) {}
     }
 
+    public void testLoadEventServiceConfiguration_Failure_2() {
+        //loads no configuration, because no configuration loader is attached
+        EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+        theConfigurationFactory.removeConfigurationLoader(new DefaultConfigurationLoader());
+        theConfigurationFactory.removeConfigurationLoader(new PropertyConfigurationLoader("eventservice.properties"));
+        try {
+            theConfigurationFactory.loadEventServiceConfiguration();
+            fail(ConfigurationException.class.getName() + " expected!");
+        } catch(ConfigurationException e) {}
+    }
+
     public void testAddCustomConfigurationLoader() {
         //add custom ConfigurationLoader
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
@@ -106,12 +142,36 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
 
         //remove custom ConfigurationLoader
-        theConfigurationFactory.removeCustomConfigurationLoader(theCustomConfigurationLoader);
+        theConfigurationFactory.removeConfigurationLoader(theCustomConfigurationLoader);
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
         assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
         assertEquals(20000, theLoadedConfiguration.getMaxWaitingTime());
         assertEquals(90000, theLoadedConfiguration.getTimeoutTime());
+    }
+
+    public void testAddCustomConfigurationLoader_2() {
+        //add custom ConfigurationLoader
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
+
+        EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+
+        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOW, new WebDescriptorConfigurationLoader(new ServletConfigDummy(true)));
+
+        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration);
+        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.HIGH, theCustomConfigurationLoader);
+
+        EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(30000, theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(120000, theLoadedConfiguration.getTimeoutTime());
+
+        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOWEST, theCustomConfigurationLoader);
+
+        theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(3000, theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
     }
 
     public void testResetCustomConfigurationLoaders() {

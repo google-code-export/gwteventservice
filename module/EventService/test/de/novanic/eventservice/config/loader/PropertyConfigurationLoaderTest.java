@@ -50,6 +50,8 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
 
     public void testLoad() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
+        assertTrue(theConfigurationLoader.isAvailable());
+
         EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
         assertEquals("Properties \"eventservice.properties\"", theConfiguration.getConfigDescription());
         assertEquals(0, theConfiguration.getMinWaitingTime());
@@ -59,11 +61,25 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
 
     public void testLoad_2() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice.bak.properties");
+        assertTrue(theConfigurationLoader.isAvailable());
+
         EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
         assertEquals("Properties \"eventservice.bak.properties\"", theConfiguration.getConfigDescription());
         assertEquals(2000, theConfiguration.getMinWaitingTime());
         assertEquals(5000, theConfiguration.getMaxWaitingTime());
         assertEquals(50000, theConfiguration.getTimeoutTime());
+    }
+
+    public void testLoad_3() {
+        ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("empty.properties");
+        assertTrue(theConfigurationLoader.isAvailable());
+
+        try {
+            theConfigurationLoader.load();
+            fail(ConfigurationException.class.getName() + " expected!");
+        } catch(ConfigurationException e) {
+            assertTrue(e.getMessage().contains("[eventservice.time.waiting.max ; time.waiting.max]"));
+        }
     }
 
     public void testLoad_Failure() {
@@ -89,6 +105,37 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
             Thread.currentThread().setContextClassLoader(theDefaultClassLoader);
             logOn();
         }
+    }
+
+    public void testEquals() {
+        ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
+        ConfigurationLoader theConfigurationLoader_2 = new PropertyConfigurationLoader("eventservice_error.properties");
+        ConfigurationLoader theConfigurationLoader_2_1 = new PropertyConfigurationLoader("eventservice_error.properties");
+        ConfigurationLoader theConfigurationLoader_3 = new PropertyConfigurationLoader("eventservice.bak.properties");
+        ConfigurationLoader theConfigurationLoader_4 = new PropertyConfigurationLoader("notAnExistingFile");
+
+        assertTrue(theConfigurationLoader.equals(theConfigurationLoader));
+        assertEquals(theConfigurationLoader.hashCode(), theConfigurationLoader.hashCode());
+        assertFalse(theConfigurationLoader.equals(theConfigurationLoader_2));
+        assertFalse(theConfigurationLoader.equals(theConfigurationLoader_2_1));
+        assertFalse(theConfigurationLoader.equals(theConfigurationLoader_3));
+        assertFalse(theConfigurationLoader.equals(theConfigurationLoader_4));
+
+        assertTrue(theConfigurationLoader_2.equals(theConfigurationLoader_2));
+        assertEquals(theConfigurationLoader_2.hashCode(), theConfigurationLoader_2.hashCode());
+        assertTrue(theConfigurationLoader_2.equals(theConfigurationLoader_2_1));
+        assertFalse(theConfigurationLoader_2.equals(theConfigurationLoader_3));
+        assertFalse(theConfigurationLoader_2.equals(theConfigurationLoader_4));
+
+        assertTrue(theConfigurationLoader_2_1.equals(theConfigurationLoader_2_1));
+        assertEquals(theConfigurationLoader_2_1.hashCode(), theConfigurationLoader_2_1.hashCode());
+        assertTrue(theConfigurationLoader_2_1.equals(theConfigurationLoader_2));
+        assertFalse(theConfigurationLoader_2_1.equals(theConfigurationLoader_3));
+        assertFalse(theConfigurationLoader_2_1.equals(theConfigurationLoader_4));
+
+        assertTrue(theConfigurationLoader_3.equals(theConfigurationLoader_3));
+        assertEquals(theConfigurationLoader_3.hashCode(), theConfigurationLoader_3.hashCode());
+        assertFalse(theConfigurationLoader_3.equals(theConfigurationLoader_4));
     }
 
     private class DummyClassLoader extends ClassLoader

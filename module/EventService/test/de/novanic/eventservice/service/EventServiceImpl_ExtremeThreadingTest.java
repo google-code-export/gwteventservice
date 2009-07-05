@@ -41,10 +41,11 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
 
     private DummyEventServiceImpl myEventService;
 
-    public void setUp() {
+    public void setUp() throws Exception {
         setUp(createConfiguration(0, 30000, 90000));
 
         myEventService = new DummyEventServiceImpl();
+        myEventService.init(null);
         super.setUp(myEventService);
     }
 
@@ -305,7 +306,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
 
     private class DummyEventServiceImpl extends EventServiceImpl
     {
-        protected String getClientId() {
+        protected String getClientId(boolean isInitSession) {
             return TEST_USER_ID;
         }
     }

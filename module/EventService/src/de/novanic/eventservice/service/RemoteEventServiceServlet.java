@@ -28,6 +28,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * RemoteEventServiceServlet is an implementation of {@link de.novanic.eventservice.service.EventExecutorService} as a servlet
+ * and can be used to add events via the server side.
+ *
  * @author sstrohschein
  *         <br>Date: 20.09.2008
  *         <br>Time: 15:31:18

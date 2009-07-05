@@ -25,8 +25,16 @@ import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
+import de.novanic.eventservice.config.ConfigParameter;
+import de.novanic.eventservice.config.EventServiceConfigurationFactory;
+import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.config.loader.PropertyConfigurationLoader;
 
+import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author sstrohschein
@@ -42,13 +50,6 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     private EventService myEventService;
 
-    public void setUp() throws Exception {
-        setUp(createConfiguration(0, 30000, 90000));
-
-        myEventService = new DummyEventServiceImpl();
-        super.setUp(myEventService);
-    }
-
     public void tearDown() throws Exception {
         super.tearDown();
         tearDownEventServiceConfiguration();
@@ -57,7 +58,9 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
-    public void testInit() {
+    public void testInit() throws Exception {
+        initEventService();
+
         EventServiceImpl theEventService = new EventServiceImpl();
         try {
             theEventService.getActiveListenDomains();
@@ -69,7 +72,29 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, theEventService.getActiveListenDomains().size());
     }
 
+    public void testInit_3() throws Exception {
+        final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+        //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
+        theEventServiceConfigurationFactory.removeConfigurationLoader(new PropertyConfigurationLoader());
+
+        EventServiceImpl theEventService = new DummyEventServiceImpl_2(new DummyServletConfig());
+
+        myEventService = theEventService;
+        super.setUp(myEventService);
+
+        assertEquals(0, theEventService.getActiveListenDomains().size());
+
+        //Configuration of WebDescriptorConfigurationLoader (see DummyServletConfig). That configuration and ConfigurationLoader
+        //was initialized with the init-method of EventServiceImpl. 
+        EventServiceConfiguration theConfiguration = theEventServiceConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(40000, theConfiguration.getMaxWaitingTime());
+        assertEquals(5000, theConfiguration.getMinWaitingTime());
+        assertEquals(120000, theConfiguration.getTimeoutTime());
+    }
+
     public void testListen() throws Exception {
+        initEventService();
+
         myEventService.register(TEST_DOMAIN);
 
         assertEquals(1, myEventService.getActiveListenDomains().size());
@@ -109,6 +134,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testListen_2() throws Exception {
+        initEventService();
+
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
         myEventService.register(TEST_DOMAIN);
@@ -134,6 +161,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testListen_3() throws Exception {
+        initEventService();
+
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
         myEventService.register(TEST_DOMAIN);
@@ -154,6 +183,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testListen_4() throws Exception {
+        initEventService();
+
         assertEquals(0, myEventService.getActiveListenDomains().size());
         myEventService.register(TEST_DOMAIN);
         assertEquals(1, myEventService.getActiveListenDomains().size());
@@ -200,6 +231,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testListen_5() throws Exception {
+        initEventService();
+
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
         myEventService.register(TEST_DOMAIN);
@@ -226,6 +259,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testListen_UserSpecific() throws Exception {
+        initEventService();
+
         tearDownEventServiceConfiguration();
         setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
@@ -289,6 +324,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testRegisterMultiDomain() throws Exception {
+        initEventService();
+
         tearDownEventServiceConfiguration();
         setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
@@ -346,6 +383,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testRegisterMultiDomain_2() throws Exception {
+        initEventService();
+
         tearDownEventServiceConfiguration();
         setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
@@ -428,6 +467,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testRegisterEventFilter() throws Exception {
+        initEventService();
+
         tearDownEventServiceConfiguration();
         setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
@@ -523,7 +564,9 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
     }
 
-    public void testUnlisten() throws InterruptedException {
+    public void testUnlisten() throws Exception {
+        initEventService();
+
         myEventService.register(TEST_DOMAIN);
         assertEquals(1, myEventService.getActiveListenDomains().size());
         
@@ -539,7 +582,9 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.getActiveListenDomains().size());
     }
 
-    public void testUnlisten_2() throws InterruptedException {
+    public void testUnlisten_2() throws Exception {
+        initEventService();
+
         tearDownEventServiceConfiguration();
         setUp(createConfiguration(0, 300, 9999));
         myEventService = new DummyEventServiceImpl();
@@ -577,10 +622,60 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.getActiveListenDomains().size());
     }
 
+    private void initEventService() throws Exception {
+        setUp(createConfiguration(0, 30000, 90000));
+
+        myEventService = new DummyEventServiceImpl();
+        super.setUp(myEventService);
+    }
+
     private class DummyEventServiceImpl extends EventServiceImpl
     {
+        private DummyEventServiceImpl() throws ServletException {
+            init(null);
+        }
+
         protected String getClientId(boolean isInitSession) {
             return TEST_USER_ID;
+        }
+    }
+
+    private class DummyEventServiceImpl_2 extends EventServiceImpl
+    {
+        private DummyEventServiceImpl_2(ServletConfig aConfig) throws ServletException {
+            init(aConfig);
+        }
+
+        protected String getClientId(boolean isInitSession) {
+            return TEST_USER_ID;
+        }
+    }
+
+    private class DummyServletConfig implements ServletConfig
+    {
+        private ConcurrentHashMap<String, Integer> myParameterMap;
+
+        public DummyServletConfig() {
+            myParameterMap = new ConcurrentHashMap<String, Integer>(3);
+            myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG, 40000);
+            myParameterMap.put(ConfigParameter.MIN_WAITING_TIME_TAG, 5000);
+            myParameterMap.put(ConfigParameter.TIMEOUT_TIME_TAG, 120000);
+        }
+
+        public String getServletName() {
+            return "DummyEventServiceImpl_TestServlet";
+        }
+
+        public ServletContext getServletContext() {
+            return null;
+        }
+
+        public String getInitParameter(String aParameterName) {
+            return String.valueOf(myParameterMap.get(aParameterName));
+        }
+
+        public Enumeration getInitParameterNames() {
+            return myParameterMap.keys();
         }
     }
 }
