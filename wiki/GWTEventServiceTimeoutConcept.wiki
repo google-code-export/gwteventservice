@@ -5,7 +5,7 @@ There are two parts of a timeout listening implementation. One to allow the serv
 
 === Part 1 (!UnlistenEvents for all listening clients when a timeout occures) ===
 
-!RemoteEventService will provide methods to add !UnlistenListener instances to a global !UnlistenDomain. That method will require the !UnlistenListener and a has an optional parameter for a specific !UnlistenEvent. The !UnlistenEvent can be setup with client specific information for example the user object of your user management system. That event will be hold at the server side and will be sent to all clients which have an !UnlistenListener registered. With that way it is possible for other clients to remove the specific user for example from a view when a timeout of a other user occures.
+The interface !RemoteEventService will provide methods to add !UnlistenListener instances to a global !UnlistenDomain. That method will require the !UnlistenListener and a has an optional parameter for a specific !UnlistenEvent. The !UnlistenEvent can be setup with client specific information for example the user object of your user management system. That event will be hold at the server side and will be sent to all clients which have an !UnlistenListener registered. With that way it is possible for other clients to remove the specific user for example from a view when a timeout of a other user occures.
 	
 When no !UnlistenEvent is registered with the !UnlistenListener, a generic !UnlistenEvent is triggered and send to all registered clients. That solution doesn't need additional server side memory to hold specific !UnlistenEvents and the developer doesn't need to implement a specific !UnlistenEvent.
 
