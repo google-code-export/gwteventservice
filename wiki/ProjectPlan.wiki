@@ -16,7 +16,7 @@
 
 || *State* || *Task* || *Description* ||
 || <font color="green">Done</font> || !EventFilter enhancements || Additional interfaces and factories to simplify to building filter sequences ||
-|| <font color="orange">Partly Done</font> || Timeout listener || Timeout listener to observe client timeouts (moved from GWTEventService 1.2 to 1.1) ||
+|| <font color="orange">Partly Done</font> || Timeout listener || Timeout listener to observe client timeouts (moved from GWTEventService 1.2 to 1.1). See the concept: GWTEventServiceTimeoutConcept ||
 || <font color="green">Done</font> || Revised configuration loading || Improvements in registration of custom configuration loaders and generic proxy for caching purposes ||
 || <font color="green">Done</font> || Configration with Web-Descriptor || Additional configuration possibility with Web-Descriptor / Servlet-Parameters ||
 || Open || Support for Annotations || Extended support for Annotations (for e.g. for listener-event mappings) ||
