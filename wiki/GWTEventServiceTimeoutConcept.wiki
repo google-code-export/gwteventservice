@@ -1,5 +1,3 @@
-#summary One-sentence summary of this page.
-
 = GWTEventService - Timeout-Concept =
 
 There are two parts of a timeout listening implementation. One to allow the server side to send timeout events to all clients and one part to let the client observe their own connection state.
