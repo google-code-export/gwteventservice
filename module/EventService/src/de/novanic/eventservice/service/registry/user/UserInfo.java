@@ -22,6 +22,8 @@ package de.novanic.eventservice.service.registry.user;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.DefaultDomainEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.util.PlatformUtil;
@@ -44,6 +46,7 @@ public class UserInfo implements Comparable<UserInfo>
     private final String myUserId;
     private final Queue<DomainEvent> myEvents;
     private final Map<Domain, EventFilter> myDomainEventFilters;
+    private UnlistenEvent myUnlistenEvent;
     private volatile long myLastActivityTime;
 
     /**
@@ -131,6 +134,35 @@ public class UserInfo implements Comparable<UserInfo>
             return myDomainEventFilters.get(aDomain);
         }
         return null;
+    }
+
+    /**
+     * Returns the registered {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}. That can be
+     * a custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can be set with
+     * {@link de.novanic.eventservice.service.registry.user.UserInfo#setUnlistenEvent(de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent)}
+     * or a default/generic {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} when no custom
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is registered.
+     * @return {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to report a timeout or
+     * a user/client which left a domain.
+     */
+    public UnlistenEvent getUnlistenEvent() {
+        if(myUnlistenEvent == null) {
+            return new DefaultUnlistenEvent();//create here on request/unlisten to save memory
+        }
+        return myUnlistenEvent;
+    }
+
+    /**
+     * A custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can be set which is transfered
+     * to all registered {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} instances when
+     * an unlisten occurred (for example by a timeout or when a user/client leaves a domain). When no custom
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is registered, a default/generic
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} will be processed and reported.
+     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should be
+     * triggered.
+     */
+    public void setUnlistenEvent(UnlistenEvent anUnlistenEvent) {
+        myUnlistenEvent = anUnlistenEvent;
     }
 
     /**

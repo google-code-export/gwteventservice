@@ -23,6 +23,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.EventService;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.command.RemoteListenCommand;
 import de.novanic.eventservice.client.command.RemoteCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -94,6 +95,16 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      */
     public void deactivate(Domain aDomain, AsyncCallback<Void> aCallback) {
         myEventService.unlisten(aDomain, aCallback);
+    }
+
+    /**
+     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which
+     * will be triggered  when a timeout or unlisten/deactivation for a domain occurs.
+     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
+     * @param aCallback callback
+     */
+    public void registerUnlistenEvent(UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
+        myEventService.registerUnlistenEvent(anUnlistenEvent, aCallback);
     }
 
     /**

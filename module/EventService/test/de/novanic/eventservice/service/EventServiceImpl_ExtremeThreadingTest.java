@@ -55,6 +55,8 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
 
         myEventService.unlisten();
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
+        //clean up ressources
+        System.gc();
     }
 
     public void testListen() throws Exception {
