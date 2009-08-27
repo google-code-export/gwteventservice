@@ -28,9 +28,12 @@ import de.novanic.gwteventservice.demo.conversationapp.client.conversation.Conve
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.Channel;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.ConversationEvent;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.ConversationListenerAdapter;
+import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.UserUnlistenEvent;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.filter.ChannelEventFilter;
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListenerAdapter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -96,6 +99,14 @@ public class ConversationControl
     }
 
     private void init() {
+        myRemoteEventService.addUnlistenListener(new UnlistenEventListenerAdapter() {
+            public void onUnlisten(UnlistenEvent anUnlistenEvent) {
+                String theUserName = ((UserUnlistenEvent)anUnlistenEvent).getUserName();
+                GWT.log("Remove user \"" + theUserName + "\"!", null);
+                myConversationMainPanel.getConversationChannelPanel().removeContact(theUserName);
+            }
+        }, new UserUnlistenEvent(myUser), new VoidAsyncCallback<Void>());
+
         myRemoteEventService.addListener(CONVERSATION_DOMAIN, new DefaultConversationListener(), new ChannelEventFilter(GLOBAL_CHANNEL), new DefaultAsyncCallback<Void>() {
             public void onSuccess(Void aResult) {
                 final ConversationChannelPanel theChannelPanel = myConversationMainPanel.getConversationChannelPanel();
