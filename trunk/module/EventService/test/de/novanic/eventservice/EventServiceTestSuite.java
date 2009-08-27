@@ -43,6 +43,7 @@ import de.novanic.eventservice.util.PlatformUtilTest;
 import de.novanic.eventservice.util.TestLoggingConfigurator;
 import de.novanic.eventservice.util.TestLoggingConfiguratorTest;
 import de.novanic.eventservice.util.StringUtilTest;
+import de.novanic.eventservice.event.listener.unlisten.UnlistenEventFilterTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -77,6 +78,9 @@ public class EventServiceTestSuite
         theSuite.addTestSuite(PropertyConfigurationLoaderTest.class);
         theSuite.addTestSuite(WebDescriptorConfigurationLoaderTest.class);
         theSuite.addTestSuite(EventServiceConfigurationFactoryTest.class);
+
+        // Events
+        theSuite.addTestSuite(UnlistenEventFilterTest.class);
 
         // Registry
         theSuite.addTestSuite(UserActivitySchedulerTest.class);

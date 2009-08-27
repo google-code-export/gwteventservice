@@ -22,6 +22,9 @@ package de.novanic.eventservice.service;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.service.EventService;
+import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
@@ -464,6 +467,75 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
         assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
         assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_3));
+    }
+
+    public void testRegisterUnlistenEvent() throws Exception {
+        initEventService();
+
+        tearDownEventServiceConfiguration();
+        setUp(createConfiguration(0, 300, 9999));
+        myEventService = new DummyEventServiceImpl();
+        myEventService.initEventService();
+
+        myEventService.register(TEST_DOMAIN);
+        final DefaultUnlistenEvent theCustomUnlistenEvent = new DefaultUnlistenEvent();
+        myEventService.registerUnlistenEvent(theCustomUnlistenEvent);
+
+        final List<Domain> theActiveDomains = new ArrayList<Domain>(myEventService.getActiveListenDomains());
+        Collections.sort(theActiveDomains);
+
+        assertEquals(2, theActiveDomains.size());
+        assertEquals(DomainFactory.UNLISTEN_DOMAIN, theActiveDomains.get(0));
+        assertEquals(TEST_DOMAIN, theActiveDomains.get(1));
+        assertTrue(myEventService.isUserRegistered(TEST_DOMAIN));
+        assertFalse(myEventService.isUserRegistered(TEST_DOMAIN_2));
+        assertFalse(myEventService.isUserRegistered(TEST_DOMAIN_3));
+
+        myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
+        assertEquals(1, myEventService.listen().size());
+        assertEquals(0, myEventService.listen().size());
+
+        myEventService.unlisten(TEST_DOMAIN);
+        final List<DomainEvent> theEvents = myEventService.listen();
+        assertEquals(1, theEvents.size());
+        assertEquals(DomainFactory.UNLISTEN_DOMAIN, theEvents.get(0).getDomain());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertEquals(theCustomUnlistenEvent, theEvents.get(0).getEvent());
+
+        UnlistenEvent theUnlistenEvent = (UnlistenEvent)theEvents.get(0).getEvent();
+        assertEquals(TEST_DOMAIN, theUnlistenEvent.getDomain());
+        assertEquals(TEST_USER_ID, theUnlistenEvent.getUserId());
+        assertFalse(theUnlistenEvent.isTimeout());
+    }
+
+    public void testRegisterUnlistenEvent_FalseDomain() throws Exception {
+        initEventService();
+
+        tearDownEventServiceConfiguration();
+        setUp(createConfiguration(0, 300, 9999));
+        myEventService = new DummyEventServiceImpl();
+        myEventService.initEventService();
+
+        myEventService.register(TEST_DOMAIN);
+        final DefaultUnlistenEvent theCustomUnlistenEvent = new DefaultUnlistenEvent();
+        myEventService.registerUnlistenEvent(theCustomUnlistenEvent);
+
+        final List<Domain> theActiveDomains = new ArrayList<Domain>(myEventService.getActiveListenDomains());
+        Collections.sort(theActiveDomains);
+
+        assertEquals(2, theActiveDomains.size());
+        assertEquals(DomainFactory.UNLISTEN_DOMAIN, theActiveDomains.get(0));
+        assertEquals(TEST_DOMAIN, theActiveDomains.get(1));
+        assertTrue(myEventService.isUserRegistered(TEST_DOMAIN));
+        assertFalse(myEventService.isUserRegistered(TEST_DOMAIN_2));
+        assertFalse(myEventService.isUserRegistered(TEST_DOMAIN_3));
+
+        myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
+        assertEquals(1, myEventService.listen().size());
+        assertEquals(0, myEventService.listen().size());
+
+        myEventService.unlisten(TEST_DOMAIN_2); //false domain
+        assertTrue(myEventService.listen().isEmpty());
     }
 
     public void testRegisterEventFilter() throws Exception {

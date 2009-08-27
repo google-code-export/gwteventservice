@@ -23,8 +23,9 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.client.event.listen.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
 import de.novanic.eventservice.service.registry.user.UserInfo;
@@ -32,6 +33,7 @@ import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserActivityScheduler;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.service.UserTimeoutListener;
+import de.novanic.eventservice.event.listener.unlisten.UnlistenEventFilter;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -257,7 +259,9 @@ public class DefaultEventRegistry implements EventRegistry
         UserInfo theUserInfo = getUserInfo(aUserId);
         if(theUserInfo != null) {
             LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
-            addEventUserSpecific(theUserInfo, new UnlistenEvent(aDomain));
+            if(isUserRegistered(aDomain, theUserInfo)) {
+                addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(theUserInfo, aDomain, false));
+            }
             removeUser(aDomain, theUserInfo);
         }
     }
@@ -268,17 +272,19 @@ public class DefaultEventRegistry implements EventRegistry
      */
     public void unlisten(String aUserId) {
         UserInfo theUserInfo = getUserInfo(aUserId);
-        unlisten(theUserInfo);
+        unlisten(theUserInfo, false);
     }
 
     /**
      * This method causes a stop of listening for all domains ({@link DefaultEventRegistry#listen(String)}).
      * @param aUserInfo user
+     * @param isTimeout reason for the unlistening (timeout or leave of a specific domain)
      */
-    public void unlisten(UserInfo aUserInfo) {
+    private void unlisten(UserInfo aUserInfo, boolean isTimeout) {
         if(aUserInfo != null) {
-            LOG.debug(aUserInfo.getUserId() + ": unlisten.");
-            addEventUserSpecific(aUserInfo, new UnlistenEvent());
+            final String theUserId = aUserInfo.getUserId();
+            LOG.debug(theUserId + ": unlisten.");
+            addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(aUserInfo, null, isTimeout));
             removeUser(aUserInfo);
         }
     }
@@ -287,12 +293,16 @@ public class DefaultEventRegistry implements EventRegistry
      * Removes the user from a domain.
      * @param aDomain domain
      * @param aUserInfo user
+     * @return true when the user is removed from the domain, otherwise false
      */
-    private void removeUser(Domain aDomain, UserInfo aUserInfo) {
+    private boolean removeUser(Domain aDomain, UserInfo aUserInfo) {
+        boolean isUserRemoved = false;
+
         Map<String, UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
         if(theDomainUsers != null) {
             if(theDomainUsers.remove(aUserInfo.getUserId()) != null) {
                 LOG.debug("User \"" + aUserInfo + "\" removed from domain \"" + aDomain + "\".");
+                isUserRemoved = true;
             }
         }
         if(!isUserRegistered(aUserInfo)) {
@@ -301,6 +311,8 @@ public class DefaultEventRegistry implements EventRegistry
             //remove the eventfilter if the user isn't removed completely
             aUserInfo.removeEventFilter(aDomain);
         }
+
+        return isUserRemoved;
     }
 
     /**
@@ -381,6 +393,21 @@ public class DefaultEventRegistry implements EventRegistry
     }
 
     /**
+     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which is triggered on a
+     * timeout or when a user/client leaves a {@link de.novanic.eventservice.client.event.domain.Domain}. An
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is hold at the server side and can
+     * contain custom data. Other users/clients can use the custom data when the event is for example triggered by a timeout.
+     * @param aUserId user to register the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to
+     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
+     * be transfered to other users/clients when a timeout occurs or a domain is leaved.
+     */
+    public void registerUnlistenEvent(String aUserId, UnlistenEvent anUnlistenEvent) {
+        registerUser(DomainFactory.UNLISTEN_DOMAIN, aUserId, null);
+        UserInfo theUserInfo = getUserInfo(aUserId);
+        theUserInfo.setUnlistenEvent(anUnlistenEvent);
+    }
+
+    /**
      * Returns the initialized {@link de.novanic.eventservice.config.EventServiceConfiguration}
      * @return configuration {@link de.novanic.eventservice.config.EventServiceConfiguration}
      */
@@ -395,7 +422,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @param anEvent event to add
      */
     private void addEvent(Domain aDomain, UserInfo aUserInfo, Event anEvent) {
-        if(isEventValid(anEvent, aUserInfo.getEventFilter(aDomain))) {
+        if(isEventValid(aUserInfo.getUserId(), anEvent, aUserInfo.getEventFilter(aDomain))) {
             aUserInfo.addEvent(aDomain, anEvent);
             LOG.debug(anEvent + " for user \"" + aUserInfo + "\".");
         }
@@ -408,8 +435,9 @@ public class DefaultEventRegistry implements EventRegistry
      * @param anEventFilter EventFilter to check the event
      * @return true when the event is valid, false when the event isn't valid (filtered by the EventFilter)
      */
-    private boolean isEventValid(Event anEvent, EventFilter anEventFilter) {
-        return anEventFilter == null || !(anEventFilter.match(anEvent));
+    private boolean isEventValid(String aUserId, Event anEvent, EventFilter anEventFilter) {
+        return (anEventFilter == null || !(anEventFilter.match(anEvent)))
+                && (!(anEvent instanceof UnlistenEvent) || !(new UnlistenEventFilter(getListenDomains(aUserId)).match(anEvent)));
     }
 
     /**
@@ -419,6 +447,22 @@ public class DefaultEventRegistry implements EventRegistry
      */
     private UserInfo getUserInfo(final String aUserId) {
         return myUserManager.getUser(aUserId);
+    }
+
+    /**
+     * Initializes an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} with required information
+     * like the unlistened domain, user id of the unlistened user/client and the reason for the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}.
+     * @param aUserInfo
+     * @param aDomain
+     * @param isTimeout
+     * @return
+     */
+    private UnlistenEvent produceUnlistenEvent(UserInfo aUserInfo, Domain aDomain, boolean isTimeout) {
+        final UnlistenEvent theUnlistenEvent = aUserInfo.getUnlistenEvent();
+        theUnlistenEvent.setUserId(aUserInfo.getUserId());
+        theUnlistenEvent.setDomain(aDomain);
+        theUnlistenEvent.setTimeout(isTimeout);
+        return theUnlistenEvent;
     }
 
     /**
@@ -435,7 +479,7 @@ public class DefaultEventRegistry implements EventRegistry
          */
         public void onTimeout(UserInfo aUserInfo) {
             LOG.debug(aUserInfo.getUserId() + ": timeout.");
-            unlisten(aUserInfo);
+            unlisten(aUserInfo, true);
         }
     }
 }
