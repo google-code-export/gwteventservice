@@ -38,6 +38,7 @@ import de.novanic.eventservice.event.listener.unlisten.UnlistenEventFilter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * The EventRegistry handles the users/clients and the events per domain. Users can be registered for a domain/context
@@ -58,7 +59,7 @@ public class DefaultEventRegistry implements EventRegistry
     private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(DefaultEventRegistry.class.getName());
 
     private final EventServiceConfiguration myConfiguration;
-    private final ConcurrentMap<Domain, ConcurrentMap<String, UserInfo>> myDomainUserInfoMap;
+    private final ConcurrentMap<Domain, Set<UserInfo>> myDomainUserInfoMap;
     private final UserManager myUserManager;
     private final UserActivityScheduler myUserActivityScheduler;
 
@@ -70,7 +71,7 @@ public class DefaultEventRegistry implements EventRegistry
      */
     protected DefaultEventRegistry(EventServiceConfiguration aConfiguration) {
         myConfiguration = aConfiguration;
-        myDomainUserInfoMap = new ConcurrentHashMap<Domain, ConcurrentMap<String, UserInfo>>();
+        myDomainUserInfoMap = new ConcurrentHashMap<Domain, Set<UserInfo>>();
         myUserManager = UserManagerFactory.getInstance().getUserManager(aConfiguration);
         myUserActivityScheduler = myUserManager.getUserActivityScheduler();
         myUserActivityScheduler.addTimeoutListener(new TimeoutListener());
@@ -122,9 +123,9 @@ public class DefaultEventRegistry implements EventRegistry
      */
     private boolean isUserRegistered(Domain aDomain, UserInfo aUserInfo) {
         if(aDomain != null && aUserInfo != null) {
-            Map<String, UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+            Set<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
             if(theDomainUsers != null) {
-                return theDomainUsers.containsValue(aUserInfo);
+                return theDomainUsers.contains(aUserInfo);
             }
         }
         return false;
@@ -143,9 +144,9 @@ public class DefaultEventRegistry implements EventRegistry
         UserInfo theUserInfo = myUserManager.addUser(aUserId);
 
         //register UserInfo for the Domain
-        myDomainUserInfoMap.putIfAbsent(aDomain, new ConcurrentHashMap<String, UserInfo>());
-        ConcurrentMap<String, UserInfo> theUsers = myDomainUserInfoMap.get(aDomain);
-        theUsers.putIfAbsent(aUserId, theUserInfo);
+        myDomainUserInfoMap.putIfAbsent(aDomain, new ConcurrentSkipListSet<UserInfo>());
+        Set<UserInfo> theUsers = myDomainUserInfoMap.get(aDomain);
+        theUsers.add(theUserInfo);
 
         LOG.debug("User \"" + aUserId + "\" registered for domain \"" + aDomain + "\".");
 
@@ -298,9 +299,9 @@ public class DefaultEventRegistry implements EventRegistry
     private boolean removeUser(Domain aDomain, UserInfo aUserInfo) {
         boolean isUserRemoved = false;
 
-        Map<String, UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+        Set<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
         if(theDomainUsers != null) {
-            if(theDomainUsers.remove(aUserInfo.getUserId()) != null) {
+            if(theDomainUsers.remove(aUserInfo)) {
                 LOG.debug("User \"" + aUserInfo + "\" removed from domain \"" + aDomain + "\".");
                 isUserRemoved = true;
             }
@@ -320,9 +321,8 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserInfo user
      */
     private void removeUser(UserInfo aUserInfo) {
-        final String theUserId = aUserInfo.getUserId();
-        for(Map<String, UserInfo> theDomainUsers : myDomainUserInfoMap.values()) {
-            theDomainUsers.remove(theUserId);
+        for(Set<UserInfo> theDomainUsers : myDomainUserInfoMap.values()) {
+            theDomainUsers.remove(aUserInfo);
         }
         if(myUserManager.removeUser(aUserInfo.getUserId()) != null) {
             LOG.debug("User \"" + aUserInfo + "\" removed.");
@@ -331,19 +331,32 @@ public class DefaultEventRegistry implements EventRegistry
 
     /**
      * Returns all domains where the user is registered to.
-     * @param aUserId user
+     * @param aUserId user id
      * @return domains where the user is registered to
      */
     public Set<Domain> getListenDomains(String aUserId) {
-        Set<Domain> theDomains = new HashSet<Domain>(myDomainUserInfoMap.size());
+        UserInfo theUserInfo = getUserInfo(aUserId);
+        return getListenDomains(theUserInfo);
+    }
 
-        for(Map.Entry<Domain, ConcurrentMap<String, UserInfo>> theDomainUserEntry : myDomainUserInfoMap.entrySet()) {
-            Map<String, UserInfo> theDomainUsers = theDomainUserEntry.getValue();
-            if(theDomainUsers.containsKey(aUserId)) {
-                theDomains.add(theDomainUserEntry.getKey());
+    /**
+     * Returns all domains where the user is registered to.
+     * @param aUserInfo user
+     * @return domains where the user is registered to
+     */
+    private Set<Domain> getListenDomains(UserInfo aUserInfo) {
+        if(aUserInfo != null) {
+            Set<Domain> theDomains = new HashSet<Domain>(myDomainUserInfoMap.size());
+
+            for(Map.Entry<Domain, Set<UserInfo>> theDomainUserEntry : myDomainUserInfoMap.entrySet()) {
+                Set<UserInfo> theDomainUsers = theDomainUserEntry.getValue();
+                if(theDomainUsers.contains(aUserInfo)) {
+                    theDomains.add(theDomainUserEntry.getKey());
+                }
             }
+            return theDomains;
         }
-        return theDomains;
+        return new HashSet<Domain>(0);
     }
 
     /**
@@ -361,10 +374,10 @@ public class DefaultEventRegistry implements EventRegistry
      */
     public void addEvent(Domain aDomain, Event anEvent) {
         LOG.debug("Event \"" + anEvent + "\" added to domain \"" + aDomain + "\".");
-        final Map<String, UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+        final Set<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
         //if the domain doesn't exist/no users assigned, no users must be notified for the event...
         if(theDomainUsers != null) {
-            for(UserInfo theUserInfo : theDomainUsers.values()) {
+            for(UserInfo theUserInfo: theDomainUsers) {
                 addEvent(aDomain, theUserInfo, anEvent);
             }
         }
@@ -422,7 +435,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @param anEvent event to add
      */
     private void addEvent(Domain aDomain, UserInfo aUserInfo, Event anEvent) {
-        if(isEventValid(aUserInfo.getUserId(), anEvent, aUserInfo.getEventFilter(aDomain))) {
+        if(isEventValid(aUserInfo, anEvent, aUserInfo.getEventFilter(aDomain))) {
             aUserInfo.addEvent(aDomain, anEvent);
             LOG.debug(anEvent + " for user \"" + aUserInfo + "\".");
         }
@@ -435,9 +448,9 @@ public class DefaultEventRegistry implements EventRegistry
      * @param anEventFilter EventFilter to check the event
      * @return true when the event is valid, false when the event isn't valid (filtered by the EventFilter)
      */
-    private boolean isEventValid(String aUserId, Event anEvent, EventFilter anEventFilter) {
+    private boolean isEventValid(UserInfo aUserInfo, Event anEvent, EventFilter anEventFilter) {
         return (anEventFilter == null || !(anEventFilter.match(anEvent)))
-                && (!(anEvent instanceof UnlistenEvent) || !(new UnlistenEventFilter(getListenDomains(aUserId)).match(anEvent)));
+                && (!(anEvent instanceof UnlistenEvent) || !(new UnlistenEventFilter(getListenDomains(aUserInfo)).match(anEvent)));
     }
 
     /**
