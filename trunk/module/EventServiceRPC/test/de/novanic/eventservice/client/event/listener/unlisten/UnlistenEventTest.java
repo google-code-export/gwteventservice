@@ -52,6 +52,18 @@ public class UnlistenEventTest extends TestCase
     }
 
     public void testInit_2() {
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(myTestDomain, "XY", true);
+        assertEquals(myTestDomain, theUnlistenEvent.getDomain());
+        assertEquals("XY", theUnlistenEvent.getUserId());
+        assertTrue(theUnlistenEvent.isTimeout());
+
+        //test must-haves for toString
+        assertTrue(theUnlistenEvent.toString().contains("Unlisten") || theUnlistenEvent.toString().contains("unlisten"));
+        assertTrue(theUnlistenEvent.toString().contains(myTestDomain.getName()));
+        assertTrue(theUnlistenEvent.toString().contains("timeout"));
+    }
+
+    public void testInit_3() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         assertNull(theUnlistenEvent.getDomain());
         assertNull(theUnlistenEvent.getUserId());
