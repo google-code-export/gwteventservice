@@ -39,7 +39,7 @@ public class NoSessionAvailableExceptionTest extends TestCase
     }
 
     public void testInit_2() {
-        final String theErrorMessage = "testNoSessionAvailableExceptionMessage";
+        final String theErrorMessage = "testExceptionMessage";
         try {
             throwNoSessionAvailableException_Message(theErrorMessage);
             fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
@@ -50,7 +50,7 @@ public class NoSessionAvailableExceptionTest extends TestCase
     }
 
     public void testInit_3() {
-        final String theErrorMessage = "testNoSessionAvailableExceptionMessage";
+        final String theErrorMessage = "testExceptionMessage";
         try {
             throwNoSessionAvailableException_Cause(theErrorMessage);
             fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");

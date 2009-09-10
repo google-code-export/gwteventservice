@@ -20,10 +20,6 @@
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui;
 
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
  * @author sstrohschein
@@ -49,9 +45,9 @@ public class GWTConversationChannelCreatorDialog extends DialogBox implements Co
 
         final TextBox theChannelNameText = new TextBox();
         theChannelNameText.setMaxLength(30);
-        theChannelNameText.addKeyUpHandler(new KeyUpHandler() {
-            public void onKeyUp(KeyUpEvent aKeyUpEvent) {
-                switch(aKeyUpEvent.getNativeKeyCode()) {
+        theChannelNameText.addKeyboardListener(new KeyboardListenerAdapter() {
+            public void onKeyUp(Widget aSender, char aKeyCode, int aModifiers) {
+                switch(aKeyCode) {
                     case 13: theCreateChannelButton.click();
                              break;
                     case 27: theCancelButton.click();
@@ -60,15 +56,15 @@ public class GWTConversationChannelCreatorDialog extends DialogBox implements Co
         });
         theChannelNameText.setFocus(true);
 
-        theCreateChannelButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent aClickEvent) {
+        theCreateChannelButton.addClickListener(new ClickListener() {
+            public void onClick(Widget aSender) {
                 String theChannelName = theChannelNameText.getText();
                 close(theChannelName);
             }
         });
 
-        theCancelButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent aClickEvent) {
+        theCancelButton.addClickListener(new ClickListener() {
+            public void onClick(Widget aSender) {
                 close(null);
             }
         });

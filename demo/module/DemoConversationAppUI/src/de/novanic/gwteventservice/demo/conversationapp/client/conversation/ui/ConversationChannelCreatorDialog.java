@@ -19,9 +19,7 @@
  */
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui;
 
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PopupListener;
 
 /**
  * @author sstrohschein
@@ -32,7 +30,7 @@ public interface ConversationChannelCreatorDialog
 {
     String getChannelName();
 
-    HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> aCloseHandler);
+    void addPopupListener(PopupListener aListener);
 
     boolean isCanceled();
 

@@ -29,7 +29,7 @@ import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
+import de.novanic.eventservice.client.event.listen.UnlistenEvent;
 
 import java.util.*;
 
@@ -86,17 +86,17 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
         });
         addAction(new TestAction() {
             void execute() {
-                myEventService.addEvent(TEST_DOMAIN, new DefaultUnlistenEvent(), getCallback());
+                myEventService.addEvent(TEST_DOMAIN, new UnlistenEvent(), getCallback());
             }
         });
         addAction(new TestAction() {
             void execute() {
-                myEventService.addEvent(TEST_DOMAIN_2, new DefaultUnlistenEvent(), getCallback());
+                myEventService.addEvent(TEST_DOMAIN_2, new UnlistenEvent(), getCallback());
             }
         });
         addAction(new TestAction() {
             void execute() {
-                myEventService.addEvent(TEST_DOMAIN_3, new DefaultUnlistenEvent(), getCallback());
+                myEventService.addEvent(TEST_DOMAIN_3, new UnlistenEvent(), getCallback());
             }
         });
 

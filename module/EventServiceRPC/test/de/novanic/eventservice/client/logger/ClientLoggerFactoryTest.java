@@ -20,7 +20,6 @@
 package de.novanic.eventservice.client.logger;
 
 import junit.framework.TestCase;
-import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
 
 /**
  * @author sstrohschein
@@ -29,11 +28,6 @@ import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
  */
 public class ClientLoggerFactoryTest extends TestCase
 {
-    public void testConstructor() {
-        PrivateMethodExecutor<ClientLoggerFactory> thePrivateMethodExecutor = new PrivateMethodExecutor<ClientLoggerFactory>(ClientLoggerFactory.class);
-        thePrivateMethodExecutor.executePrivateConstructor();
-    }
-
     public void testFactory() {
         ClientLogger theClientLogger = ClientLoggerFactory.getClientLogger();
         assertNotNull(theClientLogger);

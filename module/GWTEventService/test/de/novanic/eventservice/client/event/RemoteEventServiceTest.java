@@ -19,9 +19,6 @@
  */
 package de.novanic.eventservice.client.event;
 
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListenerAdapter;
-import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
-
 /**
  * @author sstrohschein
  * Date: 20.07.2008
@@ -215,13 +212,6 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
             }
         });
 
-        //register unlisten listener
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addUnlistenListener(new UnlistenEventListenerAdapter(), new DefaultUnlistenEvent(), getCallback());
-            }
-        });
-
         //add event to TEST_DOMAIN_2
         addAction(new TestAction(true) {
             public void execute() {
@@ -293,7 +283,7 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
                 assertEquals(3, getEventCount());
             }
         });
-
+        
         executeActions();
     }
 

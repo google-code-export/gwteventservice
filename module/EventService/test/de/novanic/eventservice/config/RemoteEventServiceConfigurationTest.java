@@ -19,53 +19,34 @@
  */
 package de.novanic.eventservice.config;
 
-import de.novanic.eventservice.EventServiceTestCase;
-import de.novanic.eventservice.config.loader.ConfigurationException;
-import de.novanic.eventservice.util.PlatformUtil;
+import junit.framework.TestCase;
 
 /**
  * @author sstrohschein
  * Date: 10.08.2008
  * Time: 23:01:56
  */
-public class RemoteEventServiceConfigurationTest extends EventServiceTestCase
+public class RemoteEventServiceConfigurationTest extends TestCase
 {
-    private static final String TEST_CONFIG_DESCRIPTION = "TestConfig";
-
     public void testInit() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3);
-        assertEquals(TEST_CONFIG_DESCRIPTION, theConfiguration.getConfigDescription());
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(1, 2, 3);
         assertEquals(1, theConfiguration.getMinWaitingTime());
         assertEquals(2, theConfiguration.getMaxWaitingTime());
         assertEquals(3, theConfiguration.getTimeoutTime());
     }
 
-    public void testInit_Error() {
-        try {
-            new RemoteEventServiceConfiguration(null, 1, 2, 3);
-            fail(ConfigurationException.class.getName() + " expected!");
-        } catch(ConfigurationException e) {}
-    }
-
     public void testEquals() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2);
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(0, 1, 2);
         assertEquals(theConfiguration, theConfiguration);
-        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2));
-        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2));
-        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2).hashCode());
+        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(0, 1, 2));
+        assertTrue(theConfiguration.equals(new RemoteEventServiceConfiguration(0, 1, 2)));
+        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(0, 1, 2).hashCode());
 
         EventServiceConfiguration theConfiguration_2 = null;
         assertFalse(theConfiguration.equals(theConfiguration_2));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2)));
-        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2).hashCode());
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 9, 2)));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 9)));
-    }
-
-    public void testToString() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3);
-        final String theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
-                + "  Min.: 1ms; Max.: 2ms; Timeout: 3ms";
-        assertEquals(theExpectedRepresentation, theConfiguration.toString());
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(9, 1, 2)));
+        assertFalse(theConfiguration.hashCode() == new RemoteEventServiceConfiguration(9, 1, 2).hashCode());
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(0, 9, 2)));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(0, 1, 9)));
     }
 }

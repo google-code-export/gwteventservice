@@ -23,7 +23,6 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.EventService;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.command.RemoteListenCommand;
 import de.novanic.eventservice.client.command.RemoteCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -31,7 +30,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.core.client.GWT;
 
 import java.util.Set;
-import java.util.List;
 
 /**
  * RemoteEventConnector should handle the connections between client- and the server side.
@@ -75,7 +73,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    public void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
+    public <T> void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<T> aCallback) {
         myEventService.register(aDomain, anEventFilter, aCallback);
     }
 
@@ -84,7 +82,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aDomains domains to deactivate
      * @param aCallback callback
      */
-    public void deactivate(Set<Domain> aDomains, AsyncCallback<Void> aCallback) {
+    public void deactivate(Set<Domain> aDomains, AsyncCallback<?> aCallback) {
         myEventService.unlisten(aDomains, aCallback);
     }
 
@@ -93,18 +91,8 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aDomain domain to deactivate
      * @param aCallback callback
      */
-    public void deactivate(Domain aDomain, AsyncCallback<Void> aCallback) {
+    public void deactivate(Domain aDomain, AsyncCallback<?> aCallback) {
         myEventService.unlisten(aDomain, aCallback);
-    }
-
-    /**
-     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which
-     * will be triggered  when a timeout or unlisten/deactivation for a domain occurs.
-     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
-     * @param aCallback callback
-     */
-    public void registerUnlistenEvent(UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
-        myEventService.registerUnlistenEvent(anUnlistenEvent, aCallback);
     }
 
     /**
@@ -115,7 +103,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param anEventFilter EventFilter to filter the events on the server side (optional)
      * @param aCallback callback
      */
-    public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
+    public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<?> aCallback) {
         myEventService.registerEventFilter(aDomain, anEventFilter, aCallback);
     }
 
@@ -124,7 +112,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aDomain domain to remove the EventFilter from
      * @param aCallback callback
      */
-    public void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback) {
+    public void deregisterEventFilter(Domain aDomain, AsyncCallback<?> aCallback) {
         myEventService.deregisterEventFilter(aDomain, aCallback);
     }
 
@@ -132,8 +120,8 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * Starts listening for events (listen call to the server side).
      * @param aCallback callback
      */
-    protected void listen(AsyncCallback<List<DomainEvent>> aCallback) {
-        RemoteCommand<List<DomainEvent>> theRemoteListenCommand = new RemoteListenCommand();
+    protected void listen(AsyncCallback aCallback) {
+        RemoteCommand theRemoteListenCommand = new RemoteListenCommand();
         theRemoteListenCommand.init(aCallback);
         theRemoteListenCommand.execute(myEventService);
     }

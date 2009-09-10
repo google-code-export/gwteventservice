@@ -22,8 +22,6 @@ package de.novanic.eventservice.client.event;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 
 import java.util.Set;
 
@@ -80,28 +78,6 @@ public interface RemoteEventService
      * @param aCallback callback (only called when no listener is registered for the domain)
      */
     void addListener(Domain aDomain, RemoteEventListener aRemoteListener, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
-
-    /**
-     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
-     * user/client domain deregistrations and timeouts.
-     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
-     * to listen for all user/client domain deregistrations and timeouts.
-     * @param aCallback callback
-     */
-    void addUnlistenListener(UnlistenEventListener anUnlistenEventListener, AsyncCallback<Void> aCallback);
-
-    /**
-     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
-     * user/client domain deregistrations and timeouts. The custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
-     * will be registered at the server side and transfered to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
-     * registered. That {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can for example contain user information
-     * of your specific user-system to recover the user in your user-system on a timeout.
-     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
-     * to listen for all user/client domain deregistrations and timeouts.
-     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
-     * @param aCallback callback
-     */
-    void addUnlistenListener(UnlistenEventListener anUnlistenEventListener, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback);
 
     /**
      * Removes a listener for a domain.

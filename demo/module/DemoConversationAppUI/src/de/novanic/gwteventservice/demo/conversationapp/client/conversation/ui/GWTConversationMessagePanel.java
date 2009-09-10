@@ -20,14 +20,9 @@
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui;
 
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 
 import java.util.Collection;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * @author sstrohschein
@@ -38,19 +33,19 @@ public class GWTConversationMessagePanel extends HorizontalPanel implements Conv
 {
     private Button mySendButton;
     private TextBox myMessageTextBox;
-    private Collection<HandlerRegistration> myHandlerRegistrations;
+    private Collection<ClickListener> mySendButtonClickListeners;
 
     public GWTConversationMessagePanel() {
         mySendButton = new Button();
         mySendButton.setText("Send");
-        myHandlerRegistrations = new ArrayList<HandlerRegistration>();
+        mySendButtonClickListeners = new ArrayList<ClickListener>();
 
         myMessageTextBox = new TextBox();
         myMessageTextBox.setMaxLength(250);
         myMessageTextBox.setWidth("240px");
-        myMessageTextBox.addKeyUpHandler(new KeyUpHandler() {
-            public void onKeyUp(KeyUpEvent aKeyUpEvent) {
-                if(aKeyUpEvent.getNativeKeyCode() == 13) {
+        myMessageTextBox.addKeyboardListener(new KeyboardListenerAdapter() {
+            public void onKeyUp(Widget aSender, char aKeyCode, int aModifiers) {
+                if(aKeyCode == 13) {
                     mySendButton.click();
                 }
             }
@@ -76,12 +71,8 @@ public class GWTConversationMessagePanel extends HorizontalPanel implements Conv
 
     public void reset() {
         resetMessageText();
-
-        Iterator<HandlerRegistration> theHandlerRegistrationIterator = myHandlerRegistrations.iterator();
-        while(theHandlerRegistrationIterator.hasNext()) {
-            HandlerRegistration theHandlerRegistration = theHandlerRegistrationIterator.next();
-            theHandlerRegistration.removeHandler();
-            theHandlerRegistrationIterator.remove();
+        for(ClickListener theClickListener: new ArrayList<ClickListener>(mySendButtonClickListeners)) {
+            removeSendButtonListener(theClickListener);
         }
     }
 
@@ -97,9 +88,13 @@ public class GWTConversationMessagePanel extends HorizontalPanel implements Conv
         myMessageTextBox.setFocus(isFocus);
     }
 
-    public HandlerRegistration addSendButtonListener(ClickHandler aClickHandler) {
-        final HandlerRegistration theHandlerRegistration = mySendButton.addClickHandler(aClickHandler);
-        myHandlerRegistrations.add(theHandlerRegistration);
-        return theHandlerRegistration;
+    public void addSendButtonListener(ClickListener aClickListener) {
+        mySendButtonClickListeners.add(aClickListener);
+        mySendButton.addClickListener(aClickListener);
+    }
+
+    public void removeSendButtonListener(ClickListener aClickListener) {
+        mySendButton.removeClickListener(aClickListener);
+        mySendButtonClickListeners.remove(aClickListener);
     }
 }

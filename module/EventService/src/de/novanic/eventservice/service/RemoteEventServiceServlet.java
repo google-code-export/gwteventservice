@@ -28,9 +28,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * RemoteEventServiceServlet is an implementation of {@link de.novanic.eventservice.service.EventExecutorService} as a servlet
- * and can be used to add events via the server side.
- *
  * @author sstrohschein
  *         <br>Date: 20.09.2008
  *         <br>Time: 15:31:18
@@ -72,51 +69,26 @@ public abstract class RemoteEventServiceServlet extends RemoteServiceServlet imp
     }
 
     /**
-     * Changes the {@link de.novanic.eventservice.client.event.filter.EventFilter} for the user-domain combination.
-     * The {@link de.novanic.eventservice.client.event.filter.EventFilter} can be removed with the method
-     * {@link de.novanic.eventservice.service.EventExecutorService#removeEventFilter(de.novanic.eventservice.client.event.domain.Domain)}
-     * or when that method is called with NULL as the {@link de.novanic.eventservice.client.event.filter.EventFilter}
-     * parameter value.
-     * @param aDomain domain to set the {@link de.novanic.eventservice.client.event.filter.EventFilter}
-     * @param anEventFilter new {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * Changes the {@link EventFilter} for the user-domain combination.
+     * @param aDomain domain to set the {@link EventFilter} (user-domain combination)
+     * @param anEventFilter new {@link EventFilter}
      */
     public void setEventFilter(Domain aDomain, EventFilter anEventFilter) {
         getEventExecutorService().setEventFilter(aDomain, anEventFilter);
     }
 
     /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    public EventFilter getEventFilter(Domain aDomain) {
-        return getEventExecutorService().getEventFilter(aDomain);
-    }
-
-    /**
-     * Removes the {@link de.novanic.eventservice.client.event.filter.EventFilter} of the domain.
-     * @param aDomain domain to drop the {@link de.novanic.eventservice.client.event.filter.EventFilter} from
-     */
-    public void removeEventFilter(Domain aDomain) {
-        getEventExecutorService().removeEventFilter(aDomain);
-    }
-
-    /**
      * Creates an instance of {@link de.novanic.eventservice.service.EventExecutorService}.
      * @return a new instance of {@link de.novanic.eventservice.service.EventExecutorService}
      */
-    private EventExecutorService getEventExecutorService() {
+    protected EventExecutorService getEventExecutorService() {
         final EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
 
         HttpSession theSession = null;
-        final HttpServletRequest theRequest = getRequest();
+        final HttpServletRequest theRequest = getThreadLocalRequest();
         if(theRequest != null) {
             theSession = theRequest.getSession();
         }
         return theEventExecutorServiceFactory.getEventExecutorService(theSession);
-    }
-
-    protected HttpServletRequest getRequest() {
-        return getThreadLocalRequest();
     }
 }

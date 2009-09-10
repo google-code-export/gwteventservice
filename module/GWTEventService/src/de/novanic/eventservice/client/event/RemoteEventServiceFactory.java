@@ -30,7 +30,9 @@ package de.novanic.eventservice.client.event;
  */
 public class RemoteEventServiceFactory
 {
-    private volatile RemoteEventService myRemoteEventService;
+    private static RemoteEventServiceFactory myInstance;
+
+    private RemoteEventService myRemoteEventService;
 
     /**
      * The RemoteEventServiceFactory should be created via the getInstance method.
@@ -39,20 +41,16 @@ public class RemoteEventServiceFactory
     private RemoteEventServiceFactory() {}
 
     /**
-     * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
-     */
-    private static class RemoteEventServiceFactoryHolder {
-        private static RemoteEventServiceFactory INSTANCE = createRemoteEventServiceFactory();
-    }
-
-    /**
      * This method should be used to create an instance of RemoteEventServiceFactory.
      * RemoteEventServiceFactory is a singleton, so this method returns always the same instance of
      * RemoteEventServiceFactory.
      * @return RemoteEventServiceFactory (singleton)
      */
-    public static RemoteEventServiceFactory getInstance() {
-        return RemoteEventServiceFactoryHolder.INSTANCE;
+    public static synchronized RemoteEventServiceFactory getInstance() {
+        if(myInstance == null) {
+            myInstance = new RemoteEventServiceFactory();
+        }
+        return myInstance;
     }
 
     /**
@@ -61,26 +59,18 @@ public class RemoteEventServiceFactory
      * The session is needed to generate the client/user id.
      * @return RemoteEventService (singleton)
      */
-    public RemoteEventService getRemoteEventService() {
+    public synchronized RemoteEventService getRemoteEventService() {
         if(myRemoteEventService == null) {
-            synchronized(this) {
-                if(myRemoteEventService == null) {
-                    myRemoteEventService = new DefaultRemoteEventService(new GWTRemoteEventConnector());
-                }
-            }
+            myRemoteEventService = new DefaultRemoteEventService(new GWTRemoteEventConnector());
         }
         return myRemoteEventService;
     }
 
-    private static RemoteEventServiceFactory createRemoteEventServiceFactory() {
-        return new RemoteEventServiceFactory();
-    }
-
     /**
-     * That method should only be used in TestCases, because it resets the factory and the factory can't ensure
-     * anymore that only one instance exists!
+     * Resets/removes all listeners, but doesn't reset the {@link RemoteEventService} instance.
      */
-    public static void reset() {
-        RemoteEventServiceFactoryHolder.INSTANCE = createRemoteEventServiceFactory();
+    public static synchronized void reset() {
+        RemoteEventService theRemoteEventService = getInstance().getRemoteEventService();
+        theRemoteEventService.removeListeners();
     }
 }
