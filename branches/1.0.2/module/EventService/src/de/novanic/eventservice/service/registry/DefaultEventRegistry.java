@@ -53,7 +53,7 @@ public class DefaultEventRegistry implements EventRegistry
     private final ServerLogger LOG = ServerLoggerFactory.getServerLogger(DefaultEventRegistry.class.getName());
 
     private EventServiceConfiguration myConfiguration;
-    private final Map<Domain, Collection<UserInfo>> myDomainUserInfoMap;
+    private final ConcurrentMap<Domain, Collection<UserInfo>> myDomainUserInfoMap;
     private final ConcurrentMap<String, UserInfo> myUserInfoMap;
 
     /**
@@ -265,14 +265,15 @@ public class DefaultEventRegistry implements EventRegistry
     }
 
     /**
-     * Removes the user from a domain.
+     * Removes a user from a specified domain and removes the domain when no other users are added to the domain.
      * @param aDomain domain
      * @param aUserInfo user
+     * @return true when the user is removed from the domain, otherwise false
      */
     private void removeUser(Domain aDomain, UserInfo aUserInfo) {
         Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
         if(theDomainUsers != null) {
-            if(theDomainUsers.remove(aUserInfo)) {
+            if(removeUser(aDomain, theDomainUsers, aUserInfo)) {
                 LOG.debug("User \"" + aUserInfo + "\" removed from domain \"" + aDomain + "\".");
             }
         }
@@ -285,16 +286,37 @@ public class DefaultEventRegistry implements EventRegistry
     }
 
     /**
-     * Removes a user from all domains.
+     * Removes a user from all domains and removes the domains when no other users are added to the domain.
      * @param aUserInfo user
      */
     private void removeUser(UserInfo aUserInfo) {
-        for(Collection<UserInfo> theDomainUsers : myDomainUserInfoMap.values()) {
-            theDomainUsers.remove(aUserInfo);
+        for(Map.Entry<Domain, Collection<UserInfo>> theDomainUsersEntry: myDomainUserInfoMap.entrySet()) {
+            Domain theDomain = theDomainUsersEntry.getKey();
+            Collection<UserInfo> theDomainUsers = theDomainUsersEntry.getValue();
+            removeUser(theDomain, theDomainUsers, aUserInfo);
         }
         if(myUserInfoMap.remove(aUserInfo.getUserId()) != null) {
             LOG.debug("User \"" + aUserInfo + "\" removed.");
         }
+    }
+
+    /**
+     * Removes a user from a specified domain and removes the domain when no other users are added to the domain.
+     * @param aDomain domain
+     * @param aDomainUsers users of the domain
+     * @param aUserInfo user
+     * @return true when the user is removed from the domain, otherwise false
+     */
+    private boolean removeUser(Domain aDomain, Collection<UserInfo> aDomainUsers, UserInfo aUserInfo) {
+        boolean isUserRemoved = aDomainUsers.remove(aUserInfo);
+        if(isUserRemoved) {
+            if(aDomainUsers.isEmpty()) {
+                //Atomic operation to remove only when the collection is empty. Otherwise another thread could add a user between the check of is empty and remove.
+                //isEmpty is checked before for more performance for the most cases.
+                myDomainUserInfoMap.remove(aDomain, new HashSet<UserInfo>());
+            }
+        }
+        return isUserRemoved;
     }
 
     /**
