@@ -195,14 +195,41 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         return startRunningUnit(theAddEventRunnable).getThread();
     }
 
-    public void startRegisterUser(Domain aDomain, String aUserId) {
+    public FinishObservable startRegisterUser(Domain aDomain, String aUserId) {
         RegisterUserRunnable theRegisterUserRunnable = new RegisterUserRunnable(aDomain, aUserId);
         startRunningUnit(theRegisterUserRunnable);
+        return theRegisterUserRunnable;
+    }
+
+    public void startDeregisterUser(String aUserId) {
+        DeregisterUserRunnable theDeregisterUserRunnable = new DeregisterUserRunnable(aUserId);
+        startRunningUnit(theDeregisterUserRunnable);
+    }
+
+    public void startDeregisterUser(Domain aDomain, String aUserId) {
+        DeregisterUserRunnable theDeregisterUserRunnable = new DeregisterUserRunnable(aDomain, aUserId);
+        startRunningUnit(theDeregisterUserRunnable);
+    }
+
+    public void startDeregisterUser(Domain aDomain, String aUserId, FinishObservable aFinishObservable) {
+        DeregisterUserRunnable theDeregisterUserRunnable = new DeregisterUserRunnable(aDomain, aUserId);
+        addRunningUnit(theDeregisterUserRunnable);
+        waitForFinish(aFinishObservable);
+        startRunningUnit(theDeregisterUserRunnable);
     }
 
     private RunningUnit startRunningUnit(StartObservable aStartObservable) {
+        RunningUnit theRunningUnit = addRunningUnit(aStartObservable);
+        return startRunningUnit(theRunningUnit);
+    }
+
+    private RunningUnit startRunningUnit(RunningUnit aRunningUnit) {
+        aRunningUnit.getThread().start();
+        return aRunningUnit;
+    }
+
+    private RunningUnit addRunningUnit(StartObservable aStartObservable) {
         Thread theThread = new Thread(aStartObservable);
-        theThread.start();
 
         final RunningUnit theRunningUnit = new RunningUnit(aStartObservable, theThread);
         myRunningUnits.add(theRunningUnit);
@@ -305,6 +332,10 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
 
     private void waitForStart(StartObservable aStartObservable) {
         while(!aStartObservable.isStarted()) {}
+    }
+
+    private void waitForFinish(FinishObservable aFinishObservable) {
+        while(!aFinishObservable.isFinished()) {}
     }
 
     private class RunningUnit

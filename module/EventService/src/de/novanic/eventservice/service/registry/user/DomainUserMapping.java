@@ -63,8 +63,10 @@ public class DomainUserMapping
      * @param aUserInfo user
      */
     public void removeUser(UserInfo aUserInfo) {
-        for(Set<UserInfo> theDomainUsers: myDomainUserInfoMap.values()) {
-            theDomainUsers.remove(aUserInfo);
+        for(Map.Entry<Domain, Set<UserInfo>> theDomainUsersEntry: myDomainUserInfoMap.entrySet()) {
+            Domain theDomain = theDomainUsersEntry.getKey();
+            Set<UserInfo> theDomainUsers = theDomainUsersEntry.getValue();
+            removeUser(theDomain, theDomainUsers, aUserInfo);
         }
     }
 
@@ -79,8 +81,25 @@ public class DomainUserMapping
 
         Set<UserInfo> theDomainUsers = getUsers(aDomain);
         if(theDomainUsers != null) {
-            if(theDomainUsers.remove(aUserInfo)) {
-                isUserRemoved = true;
+            isUserRemoved = removeUser(aDomain, theDomainUsers, aUserInfo);
+        }
+        return isUserRemoved;
+    }
+
+    /**
+     * Removes a user from a specified domain and removes the domain when no other users are added to the domain.
+     * @param aDomain domain
+     * @param aDomainUsers users of the domain
+     * @param aUser user
+     * @return true when the user is removed from the domain, otherwise false
+     */
+    private boolean removeUser(Domain aDomain, Set<UserInfo> aDomainUsers, UserInfo aUser) {
+        boolean isUserRemoved = aDomainUsers.remove(aUser);
+        if(isUserRemoved) {
+            if(aDomainUsers.isEmpty()) {
+                //Atomic operation to remove only when the collection is empty. Otherwise another thread could add a user between the check of is empty and remove.
+                //isEmpty is checked before for more performance for the most cases.
+                myDomainUserInfoMap.remove(aDomain, new ConcurrentSkipListSet<UserInfo>());
             }
         }
         return isUserRemoved;

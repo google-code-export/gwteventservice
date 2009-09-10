@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2008, GWTEventService Committers
+ * Copyright (c) 2009, GWTEventService Committers
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -19,49 +19,42 @@
  */
 package de.novanic.eventservice.test.testhelper;
 
-import de.novanic.eventservice.service.registry.EventRegistryFactory;
-import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.service.registry.EventRegistry;
+import de.novanic.eventservice.service.registry.EventRegistryFactory;
 
 /**
  * @author sstrohschein
- *         <br>Date: 24.02.2009
- *         <br>Time: 22:21:58
+ *         <br>Date: 10.09.2009
+ *         <br>Time: 12:57:11
  */
-public class RegisterUserRunnable implements Runnable, StartObservable, FinishObservable
+public class DeregisterUserRunnable implements Runnable, StartObservable
 {
-    private final Domain myDomain;
-    private final String myUserId;
+    private Domain myDomain;
+    private String myUserId;
     private boolean isStarted;
-    private boolean isFinished;
 
-    public RegisterUserRunnable(Domain aDomain, String aUserId) {
-        myDomain = aDomain;
+    public DeregisterUserRunnable(String aUserId) {
         myUserId = aUserId;
+    }
+
+    public DeregisterUserRunnable(Domain aDomain, String aUserId) {
+        this(aUserId);
+        myDomain = aDomain;
     }
 
     public void run() {
         isStarted = true;
 
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
-        theEventRegistry.registerUser(myDomain, myUserId, null);
-
-        isFinished = true;
-    }
-
-    public Domain getDomain() {
-        return myDomain;
-    }
-
-    public String getUserId() {
-        return myUserId;
+        if(myDomain != null) {
+            theEventRegistry.unlisten(myDomain, myUserId);
+        } else {
+            theEventRegistry.unlisten(myUserId);
+        }
     }
 
     public boolean isStarted() {
         return isStarted;
-    }
-
-    public boolean isFinished() {
-        return isFinished;
     }
 }
