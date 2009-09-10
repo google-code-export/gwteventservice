@@ -242,6 +242,120 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(myEventRegistry.isUserRegistered(DomainFactory.getDomain("X"), TEST_USER_ID));
     }
 
+    public void testGetListenDomains() {
+        Set<Domain> theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertTrue(theDomains.isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertEquals(1, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertEquals(2, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+        assertTrue(theDomains.contains(TEST_DOMAIN_2));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertEquals(2, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+        assertTrue(theDomains.contains(TEST_DOMAIN_2));
+    }
+
+    public void testGetListenDomains_2() {
+        Set<Domain> theDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theDomains);
+        assertTrue(theDomains.isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        theDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theDomains);
+        assertEquals(1, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        theDomains = myEventRegistry.getListenDomains(TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertEquals(1, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN_2));
+
+        theDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theDomains);
+        assertEquals(1, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        theDomains = myEventRegistry.getListenDomains(TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertEquals(2, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+        assertTrue(theDomains.contains(TEST_DOMAIN_2));
+
+        theDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theDomains);
+        assertEquals(1, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+    }
+
+    public void testGetListenDomains_3() {
+        Set<Domain> theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertTrue(theDomains.isEmpty());
+
+        Set<Domain> theUserDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theUserDomains);
+        assertTrue(theUserDomains.isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertEquals(1, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+
+        theUserDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theUserDomains);
+        assertEquals(1, theUserDomains.size());
+        assertTrue(theUserDomains.contains(TEST_DOMAIN));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertNotNull(theDomains);
+        assertEquals(2, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN));
+        assertTrue(theDomains.contains(TEST_DOMAIN_2));
+
+        theUserDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theUserDomains);
+        assertEquals(1, theUserDomains.size());
+        assertTrue(theUserDomains.contains(TEST_DOMAIN));
+
+        Set<Domain> theUserDomains_2 = myEventRegistry.getListenDomains(TEST_USER_ID_2);
+        assertNotNull(theUserDomains_2);
+        assertEquals(1, theUserDomains_2.size());
+        assertTrue(theUserDomains_2.contains(TEST_DOMAIN_2));
+
+        //Remove TEST_USER_ID. TEST_DOMAIN should be removed automatically, because no other users are registered to the domain.
+        myEventRegistry.unlisten(TEST_USER_ID);
+        theUserDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
+        assertNotNull(theUserDomains);
+        assertEquals(0, theUserDomains.size());
+
+        theUserDomains_2 = myEventRegistry.getListenDomains(TEST_USER_ID_2);
+        assertNotNull(theUserDomains_2);
+        assertEquals(1, theUserDomains_2.size());
+        assertTrue(theUserDomains_2.contains(TEST_DOMAIN_2));
+
+        theDomains = getListenDomains(TEST_USER_ID, TEST_USER_ID_2);
+        assertEquals(1, theDomains.size());
+        assertTrue(theDomains.contains(TEST_DOMAIN_2));
+    }
+
     public void testUnlisten() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -914,6 +1028,14 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     private void testLog(int anExpectedLogSize, String... anExpectedLogMessageList) {
         assertTrue(myTestLoggingHandler.containsMessage(anExpectedLogMessageList));
         assertEquals(anExpectedLogSize, myTestLoggingHandler.getLogMessageSize());
+    }
+
+    private Set<Domain> getListenDomains(String... aUserIds) {
+        Set<Domain> theDomains = new HashSet<Domain>();
+        for(String theUserId: aUserIds) {
+            theDomains.addAll(myEventRegistry.getListenDomains(theUserId));
+        }
+        return theDomains;
     }
 
     private class EmptyEventFilter implements EventFilter
