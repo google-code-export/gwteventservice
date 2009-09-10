@@ -30,6 +30,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.core.client.GWT;
 
 import java.util.Set;
+import java.util.List;
 
 /**
  * RemoteEventConnector should handle the connections between client- and the server side.
@@ -120,8 +121,8 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * Starts listening for events (listen call to the server side).
      * @param aCallback callback
      */
-    protected void listen(AsyncCallback aCallback) {
-        RemoteCommand theRemoteListenCommand = new RemoteListenCommand();
+    protected void listen(AsyncCallback<List<DomainEvent>> aCallback) {
+        RemoteCommand<List<DomainEvent>> theRemoteListenCommand = new RemoteListenCommand();
         theRemoteListenCommand.init(aCallback);
         theRemoteListenCommand.execute(myEventService);
     }
