@@ -99,6 +99,10 @@ public class UserInfo implements Comparable<UserInfo>
         return theEventList;
     }
 
+    /**
+     * Checks if events are available.
+     * @return true when no events recognized, otherwise false
+     */
     public boolean isEventsEmpty() {
         return myEvents.isEmpty();
     }
