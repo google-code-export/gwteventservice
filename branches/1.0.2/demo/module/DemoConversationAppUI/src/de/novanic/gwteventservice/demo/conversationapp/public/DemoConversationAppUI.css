@@ -1,0 +1,27 @@
+body {
+    background-color: white;
+    color: black;
+    font-family: Arial, sans-serif;
+    font-size: small;
+    margin: 8px;
+}
+
+.gwt-Button {
+    padding: 2px 2px;
+    font-size: 14px;
+    height: 25px;
+    width: 70px;
+}
+
+.styledPanel {
+    background: #e3e8f3;
+    padding: 4px 4px 4px 8px;
+    border-bottom: 1px solid #bbbbbb;
+    border-top: 5px solid #d0e4f6;
+}
+
+.borderPanel {
+    padding: 8px 8px 8px 8px;
+    border: 2px solid #bbbbbb;
+}
+

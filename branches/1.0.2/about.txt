@@ -1,0 +1,9 @@
+GWTEventService
+
+
+Library:		GWTEventService 1.0.1
+Project home:	http://gwteventservice.googlecode.com/
+Contact:		novanic@gmx.de
+
+
+For license information and source code availability see "licence.txt".
