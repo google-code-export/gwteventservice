@@ -741,4 +741,131 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
 
         assertEquals(theUserCount, UserManagerFactory.getInstance().getUserManager().getUserCount());
     }
+
+    public void testDeregisterUser_ExtremeThreading_1() throws EventServiceServerThreadingTestException {
+        final String theUserIdKey = "USER_NUMBER_KEY";
+        final String theUserIdPrefix = "UserId_";
+        final int theUserCount = 2000;
+
+        assertEquals(0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        AutoIncrementFactory theAutoIncrementFactory = AutoIncrementFactory.getInstance();
+        Map<String, Domain> theUsers = new HashMap<String, Domain>(theUserCount);
+        for(int i = 0; i < (theUserCount / 2); i++) {
+            final String theUserId = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            //register two times to test avoided conflicts
+            startRegisterUser(TEST_DOMAIN, theUserId);
+            startRegisterUser(TEST_DOMAIN, theUserId);
+            theUsers.put(theUserId, TEST_DOMAIN);
+
+            //register the next user to another domain
+            final String theUserId_2 = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            startRegisterUser(TEST_DOMAIN_2, theUserId_2);
+            theUsers.put(theUserId_2, TEST_DOMAIN_2);
+        }
+        joinThreads();
+
+        theAutoIncrementFactory.reset();
+
+        for(int i = 0; i < (theUserCount / 2); i++) {
+            //deregister user 1
+            final String theUserId = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            startDeregisterUser(TEST_DOMAIN, theUserId);
+
+            //deregister user 2
+            final String theUserId_2 = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            startDeregisterUser(TEST_DOMAIN_2, theUserId_2);
+        }
+        joinThreads();
+
+        assertEquals(theUserCount, theUsers.size());
+        assertEquals(0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getCurrentValue(theUserIdKey)));
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey)));
+
+        assertEquals(0, myEventRegistry.getListenDomains().size());
+    }
+
+    public void testDeregisterUser_ExtremeThreading_2() throws EventServiceServerThreadingTestException {
+        final String theUserIdKey = "USER_NUMBER_KEY";
+        final String theUserIdPrefix = "UserId_";
+        final int theUserCount = 2000;
+
+        assertEquals(0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        AutoIncrementFactory theAutoIncrementFactory = AutoIncrementFactory.getInstance();
+        Map<String, Domain> theUsers = new HashMap<String, Domain>(theUserCount);
+        for(int i = 0; i < (theUserCount / 2); i++) {
+            final String theUserId = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            //register two times to test avoided conflicts
+            startRegisterUser(TEST_DOMAIN, theUserId);
+            startRegisterUser(TEST_DOMAIN, theUserId);
+            theUsers.put(theUserId, TEST_DOMAIN);
+
+            //register the next user to another domain
+            final String theUserId_2 = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            startRegisterUser(TEST_DOMAIN_2, theUserId_2);
+            theUsers.put(theUserId_2, TEST_DOMAIN_2);
+        }
+        joinThreads();
+
+        theAutoIncrementFactory.reset();
+
+        for(int i = 0; i < (theUserCount / 2); i++) {
+            //deregister user 1 from all domains
+            final String theUserId = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            startDeregisterUser(theUserId);
+
+            //deregister user 2 from all domains
+            final String theUserId_2 = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            startDeregisterUser(theUserId_2);
+        }
+        joinThreads();
+
+        assertEquals(theUserCount, theUsers.size());
+        assertEquals(0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getCurrentValue(theUserIdKey)));
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey)));
+
+        assertEquals(0, myEventRegistry.getListenDomains().size());
+    }
+
+    public void testDeregisterUser_ExtremeThreading_3() throws EventServiceServerThreadingTestException {
+        final String theUserIdKey = "USER_NUMBER_KEY";
+        final String theUserIdPrefix = "UserId_";
+        final int theUserCount = 2000;
+
+        assertEquals(0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        AutoIncrementFactory theAutoIncrementFactory = AutoIncrementFactory.getInstance();
+        Map<String, Domain> theUsers = new HashMap<String, Domain>(theUserCount);
+        for(int i = 0; i < (theUserCount / 2); i++) {
+            final String theUserId = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            //register two times to test avoided conflicts
+            FinishObservable theStartObservableRegister_1 = startRegisterUser(TEST_DOMAIN, theUserId);
+            theUsers.put(theUserId, TEST_DOMAIN);
+
+            //register the next user to another domain
+            final String theUserId_2 = theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey);
+            FinishObservable theStartObservableRegister_2 = startRegisterUser(TEST_DOMAIN_2, theUserId_2);
+            theUsers.put(theUserId_2, TEST_DOMAIN_2);
+
+            //deregister user 1
+            startDeregisterUser(TEST_DOMAIN, theUserId, theStartObservableRegister_1);
+
+            //deregister user 2
+            startDeregisterUser(TEST_DOMAIN_2, theUserId_2, theStartObservableRegister_2);
+        }
+        joinThreads();
+
+        assertEquals(theUserCount, theUsers.size());
+        assertEquals("Some users couldn't be removed!", 0, UserManagerFactory.getInstance().getUserManager().getUserCount());
+
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getCurrentValue(theUserIdKey)));
+        assertFalse(myEventRegistry.isUserRegistered(theUserIdPrefix + theAutoIncrementFactory.getNextValue(theUserIdKey)));
+
+        assertEquals(0, myEventRegistry.getListenDomains().size());
+    }
 }
