@@ -30,6 +30,9 @@ import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * The EventRegistry handles the users/clients and the events per domain. Users can be registered for a domain/context
@@ -51,18 +54,19 @@ public class DefaultEventRegistry implements EventRegistry
 
     private EventServiceConfiguration myConfiguration;
     private final Map<Domain, Collection<UserInfo>> myDomainUserInfoMap;
-    private final Map<String, UserInfo> myUserInfoMap;
+    private final ConcurrentMap<String, UserInfo> myUserInfoMap;
 
     /**
-     * Creates a new EventRegistry with * Initializes the EventRegistry with {@link de.novanic.eventservice.config.EventServiceConfiguration}.
+     * Creates a new EventRegistry which initializes the EventRegistry with a configuration
+     * {@link de.novanic.eventservice.config.EventServiceConfiguration}.
      * The {@link EventRegistryFactory} should be used instead of calling this constructor directly.
      * @param aConfiguration configuration
      * @see de.novanic.eventservice.service.registry.EventRegistryFactory#getEventRegistry()
      */
     protected DefaultEventRegistry(EventServiceConfiguration aConfiguration) {
         myConfiguration = aConfiguration;
-        myDomainUserInfoMap = new HashMap<Domain, Collection<UserInfo>>();
-        myUserInfoMap = new HashMap<String, UserInfo>();
+        myDomainUserInfoMap = new ConcurrentHashMap<Domain, Collection<UserInfo>>();
+        myUserInfoMap = new ConcurrentHashMap<String, UserInfo>();
 
         LOG.debug("Configuration changed - " + aConfiguration.toString());
     }
@@ -109,8 +113,11 @@ public class DefaultEventRegistry implements EventRegistry
      * @return true if registered, false if not registered
      */
     private boolean isUserRegistered(Domain aDomain, UserInfo aUserInfo) {
-        Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
-        return (aUserInfo != null && theDomainUsers != null && theDomainUsers.contains(aUserInfo));
+    	if(aDomain != null && aUserInfo != null) {
+	        Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+	        return(theDomainUsers != null && theDomainUsers.contains(aUserInfo));
+    	}
+    	return false;
     }
 
     /**
@@ -165,7 +172,7 @@ public class DefaultEventRegistry implements EventRegistry
         if(aUserInfo != null) {
             if(anEventFilter != null) {
                 LOG.debug(aUserInfo.getUserId() + ": EventFilter changed for domain \"" + aDomain + "\".");
-                aUserInfo.addEventFilter(aDomain, anEventFilter);
+                aUserInfo.setEventFilter(aDomain, anEventFilter);
             } else {
                 aUserInfo.removeEventFilter(aDomain);
             }
@@ -195,28 +202,27 @@ public class DefaultEventRegistry implements EventRegistry
      * @return list of events
      */
     public List<DomainEvent> listen(String aUserId) {
-        UserInfo theUserInfo = getUserInfo(aUserId);
-        LOG.debug(aUserId + ": listen (UserInfo " + theUserInfo + ").");
-        try {
-            EventServiceConfiguration theConfiguration = getConfiguration();
-            Thread.sleep(theConfiguration.getMinWaitingTime());
-            if(theUserInfo != null) {
-                synchronized(theUserInfo) {
-                    theUserInfo.schedule(theConfiguration.getTimeoutTime());
-                    if(theUserInfo.getEvents().isEmpty()) {
-                        theUserInfo.wait(theConfiguration.getMaxWaitingTime());
-                    }
-
-                    final List<DomainEvent> theEvents = theUserInfo.getEvents();
-                    theUserInfo.clearEvents();
-                    return theEvents;
-                }
-            }
-        } catch(InterruptedException e) {
-            LOG.error("Listen was interrupted (client id \"" + aUserId + "\")!", e);
-        }
-        return null;
-    }
+		UserInfo theUserInfo = getUserInfo(aUserId);
+		LOG.debug(aUserId + ": listen (UserInfo " + theUserInfo + ").");
+		if(theUserInfo != null) {
+			try {
+				final int theMinWaitingTime = myConfiguration.getMinWaitingTime();
+				if(theMinWaitingTime > 0) {
+					Thread.sleep(theMinWaitingTime);
+				}
+				synchronized(theUserInfo) {
+					theUserInfo.schedule(myConfiguration.getTimeoutTime());
+					if(theUserInfo.isEventsEmpty()) {
+						theUserInfo.wait(myConfiguration.getMaxWaitingTime());
+					}
+					return theUserInfo.retrieveEvents();
+				}
+			} catch(InterruptedException e) {
+				LOG.error("Listen was interrupted (client id \"" + aUserId + "\")!", e);
+			}
+		}
+		return null;
+	}
 
     /**
      * This method causes a stop of listening for a domain ({@link DefaultEventRegistry#listen(String)}).
@@ -241,9 +247,15 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserId user
      */
     public void unlisten(String aUserId) {
-        LOG.debug(aUserId + ": unlisten.");
-        UserInfo theUserInfo = getUserInfo(aUserId);
+    	final UserInfo theUserInfo = getUserInfo(aUserId);
+    	if(theUserInfo != null) {
+    		unlisten(theUserInfo);
+    	}
+    }
+
+    private void unlisten(final UserInfo theUserInfo) {
         if(theUserInfo != null) {
+        	LOG.debug(theUserInfo.getUserId() + ": unlisten.");
             synchronized(theUserInfo) {
                 theUserInfo.cancelSchedule();
                 addEventUserSpecific(theUserInfo, new UnlistenEvent());
@@ -334,7 +346,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserInfo user
      * @param anEvent event
      */
-    private synchronized void addEventUserSpecific(UserInfo aUserInfo, Event anEvent) {
+    private void addEventUserSpecific(UserInfo aUserInfo, Event anEvent) {
         if(aUserInfo != null) {
             LOG.debug("User specific event \"" + anEvent + "\" added to client id \"" + aUserInfo + "\".");
             addEvent(null, aUserInfo, anEvent);
@@ -363,8 +375,8 @@ public class DefaultEventRegistry implements EventRegistry
     }
 
     /**
-     * Checks if the EventFilter recognizes the event as valid. When no EventFilter is available (NULL), the event is
-     * ever valid.
+     * Checks if the EventFilter recognizes the event as valid. When no EventFilter is available (NULL),
+     * the event is always valid.
      * @param anEvent event
      * @param anEventFilter EventFilter to check the event
      * @return true when the event is valid, false when the event isn't valid (filtered by the EventFilter)
@@ -379,7 +391,10 @@ public class DefaultEventRegistry implements EventRegistry
      * @return UserInfo according to the user id
      */
     private UserInfo getUserInfo(final String aUserId) {
-        return myUserInfoMap.get(aUserId);
+    	if(aUserId != null) {
+    		return myUserInfoMap.get(aUserId);
+    	}
+    	return null;
     }
 
     /**
@@ -389,7 +404,7 @@ public class DefaultEventRegistry implements EventRegistry
     private class UserInfo
     {
         private final String myUserId;
-        private List<DomainEvent> myEvents;
+        private final Queue<DomainEvent> myEvents;
         private Timer myTimer;
         private TimerTask myInactivityTask;
         private final Map<Domain, EventFilter> myDomainEventFilters;
@@ -401,8 +416,8 @@ public class DefaultEventRegistry implements EventRegistry
         private UserInfo(String aUserId) {
             myUserId = aUserId;
             myTimer = new Timer();
-            myEvents = new ArrayList<DomainEvent>();
-            myDomainEventFilters = new HashMap<Domain, EventFilter>();
+            myEvents = new ConcurrentLinkedQueue<DomainEvent>();
+            myDomainEventFilters = new ConcurrentHashMap<Domain, EventFilter>();
         }
 
         /**
@@ -432,19 +447,25 @@ public class DefaultEventRegistry implements EventRegistry
         }
 
         /**
-         * Removes all events from the user.
-         */
-        public void clearEvents() {
-            myEvents = new ArrayList<DomainEvent>();
-        }
+		 * Returns and removes all recorded events.
+		 * @return all events according to the user
+		 */
+		public List<DomainEvent> retrieveEvents() {
+			List<DomainEvent> theEventList = new ArrayList<DomainEvent>();
+			DomainEvent theEvent;
+			while((theEvent = myEvents.poll()) != null) {
+				theEventList.add(theEvent);
+			}
+			return theEventList;
+		}
 
         /**
-         * Returns all recorded events.
-         * @return all events according to the user
+         * Checks if events are available.
+         * @return true when no events recognized, otherwise false
          */
-        public List<DomainEvent> getEvents() {
-            return myEvents;
-        }
+        public boolean isEventsEmpty() {
+			return myEvents.isEmpty();
+		}
 
         /**
          * This method is used to measure the timeout and it will remove the user automatically.
@@ -479,16 +500,21 @@ public class DefaultEventRegistry implements EventRegistry
          * @return EventFilter for the domain
          */
         public EventFilter getEventFilter(Domain aDomain) {
-            return myDomainEventFilters.get(aDomain);
+        	if(aDomain != null) {
+        		return myDomainEventFilters.get(aDomain);
+        	}
+        	return null;
         }
 
         /**
-         * Sets the an EventFilter to a domain.
+         * Sets an EventFilter to a domain.
          * @param aDomain domain where the EventFilter should be applied.
          * @param anEventFilter EventFilter to filter the events for the domain
          */
-        public void addEventFilter(final Domain aDomain, EventFilter anEventFilter) {
-            myDomainEventFilters.put(aDomain, anEventFilter);
+        public void setEventFilter(final Domain aDomain, EventFilter anEventFilter) {
+        	if(aDomain != null && anEventFilter != null) {
+        		myDomainEventFilters.put(aDomain, anEventFilter);
+        	}
         }
 
         /**
@@ -496,10 +522,12 @@ public class DefaultEventRegistry implements EventRegistry
          * @param aDomain domain where the EventFilter to remove is applied.
          */
         public void removeEventFilter(final Domain aDomain) {
-            if(myDomainEventFilters.remove(aDomain) != null) {
-                LOG.debug(getUserId() + ": EventFilter removed from domain \"" + aDomain + "\".");
-            }
-        }
+			if(aDomain != null) {
+				if(myDomainEventFilters.remove(aDomain) != null) {
+					LOG.debug(myUserId + ": EventFilter removed from domain \"" + aDomain + "\".");
+				}
+			}
+		}
 
         public boolean equals(Object anObject) {
             if(this == anObject) {
@@ -523,9 +551,8 @@ public class DefaultEventRegistry implements EventRegistry
         private class ScheduleTimer extends TimerTask
         {
             public void run() {
-                String theUserId = myUserId;
-                LOG.debug(theUserId + ": timeout.");
-                unlisten(theUserId); //remove the user
+                LOG.debug(myUserId + ": timeout.");
+                unlisten(UserInfo.this); //remove the user
             }
         }
     }
