@@ -59,7 +59,7 @@ public class DomainUserMapping
     }
 
     /**
-     * Removes a user from all domains.
+     * Removes a user from all domains and removes the domains when no other users are added to the domain.
      * @param aUserInfo user
      */
     public void removeUser(UserInfo aUserInfo) {
@@ -71,7 +71,7 @@ public class DomainUserMapping
     }
 
     /**
-     * Removes a user from a specified domain.
+     * Removes a user from a specified domain and removes the domain when no other users are added to the domain.
      * @param aDomain domain
      * @param aUserInfo user
      * @return true when the user is removed from the domain, otherwise false
