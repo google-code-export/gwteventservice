@@ -87,12 +87,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @return true if registered, false if not registered
      */
     private boolean isUserRegistered(UserInfo aUserInfo) {
-        for(Domain theDomain : myDomainUserInfoMap.keySet()) {
-            if(isUserRegistered(theDomain, aUserInfo)) {
-                return true;
-            }
-        }
-        return false;
+        return aUserInfo != null && myUserInfoMap.containsKey(aUserInfo.getUserId());
     }
 
     /**
@@ -114,10 +109,24 @@ public class DefaultEventRegistry implements EventRegistry
      */
     private boolean isUserRegistered(Domain aDomain, UserInfo aUserInfo) {
     	if(aDomain != null && aUserInfo != null) {
-	        Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+	        Collection<UserInfo> theDomainUsers = getUsers(aDomain);
 	        return(theDomainUsers != null && theDomainUsers.contains(aUserInfo));
     	}
     	return false;
+    }
+
+    /**
+     * Checks if a user is added to a domain.
+     * @param aUserInfo user
+     * @return true when the user is added to a domain, otherwise false
+     */
+    private boolean isUserRegisteredInAnyDomain(UserInfo aUserInfo) {
+        for(Collection<UserInfo> theDomainUsers: myDomainUserInfoMap.values()) {
+            if(theDomainUsers.contains(aUserInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -137,18 +146,22 @@ public class DefaultEventRegistry implements EventRegistry
         }
 
         //register UserInfo for the Domain
-        Collection<UserInfo> theUsers = myDomainUserInfoMap.get(aDomain);
-        if(theUsers == null) {
-            theUsers = new HashSet<UserInfo>();
-            myDomainUserInfoMap.put(aDomain, theUsers);
-        }
-        if(!theUsers.contains(theUserInfo)) {
-            theUsers.add(theUserInfo);
-        }
-        LOG.debug("User \"" + aUserId + "\" registered for domain \"" + aDomain + "\".");
+        if(aDomain != null) {
+            Collection<UserInfo> theUsers = getUsers(aDomain);
+            if(theUsers == null) {
+                theUsers = new HashSet<UserInfo>();
+                myDomainUserInfoMap.put(aDomain, theUsers);
+            }
+            if(!theUsers.contains(theUserInfo)) {
+                theUsers.add(theUserInfo);
+            }
+            LOG.debug("User \"" + aUserId + "\" registered for domain \"" + aDomain + "\".");
 
-        //set EventFilter
-        setEventFilter(aDomain, theUserInfo, anEventFilter);
+            //set EventFilter
+            setEventFilter(aDomain, theUserInfo, anEventFilter);
+        } else {
+            LOG.debug("User \"" + aUserId + "\" registered.");
+        }
     }
 
     /**
@@ -230,15 +243,19 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserId user
      */
     public void unlisten(Domain aDomain, String aUserId) {
-        LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
-        UserInfo theUserInfo = getUserInfo(aUserId);
-        if(theUserInfo != null) {
-            synchronized(theUserInfo) {
-                theUserInfo.cancelSchedule();
+        if(aDomain != null) {
+            LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
+            UserInfo theUserInfo = getUserInfo(aUserId);
+            if(theUserInfo != null) {
+                synchronized(theUserInfo) {
+                    theUserInfo.cancelSchedule();
 
-                addEventUserSpecific(theUserInfo, new UnlistenEvent(aDomain));
-                removeUser(aDomain, theUserInfo);
+                    addEventUserSpecific(theUserInfo, new UnlistenEvent(aDomain));
+                    removeUser(aDomain, theUserInfo);
+                }
             }
+        } else {
+            unlisten(aUserId);
         }
     }
 
@@ -253,13 +270,17 @@ public class DefaultEventRegistry implements EventRegistry
     	}
     }
 
-    private void unlisten(final UserInfo theUserInfo) {
-        if(theUserInfo != null) {
-        	LOG.debug(theUserInfo.getUserId() + ": unlisten.");
-            synchronized(theUserInfo) {
-                theUserInfo.cancelSchedule();
-                addEventUserSpecific(theUserInfo, new UnlistenEvent());
-                removeUser(theUserInfo);
+    /**
+     * This method causes a stop of listening for all domains ({@link DefaultEventRegistry#listen(String)}).
+     * @param aUserInfo user
+     */
+    private void unlisten(final UserInfo aUserInfo) {
+        if(aUserInfo != null) {
+        	LOG.debug(aUserInfo.getUserId() + ": unlisten.");
+            synchronized(aUserInfo) {
+                aUserInfo.cancelSchedule();
+                addEventUserSpecific(aUserInfo, new UnlistenEvent());
+                removeUser(aUserInfo);
             }
         }
     }
@@ -271,13 +292,13 @@ public class DefaultEventRegistry implements EventRegistry
      * @return true when the user is removed from the domain, otherwise false
      */
     private void removeUser(Domain aDomain, UserInfo aUserInfo) {
-        Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+        Collection<UserInfo> theDomainUsers = getUsers(aDomain);
         if(theDomainUsers != null) {
             if(removeUser(aDomain, theDomainUsers, aUserInfo)) {
                 LOG.debug("User \"" + aUserInfo + "\" removed from domain \"" + aDomain + "\".");
             }
         }
-        if(!isUserRegistered(aUserInfo)) {
+        if(!isUserRegisteredInAnyDomain(aUserInfo)) {
             myUserInfoMap.remove(aUserInfo.getUserId());
         } else {
             //remove the eventfilter if the user isn't removed completely
@@ -344,7 +365,7 @@ public class DefaultEventRegistry implements EventRegistry
      */
     public synchronized void addEvent(Domain aDomain, Event anEvent) {
         LOG.debug("Event \"" + anEvent + "\" added to domain \"" + aDomain + "\".");
-        final Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+        final Collection<UserInfo> theDomainUsers = getUsers(aDomain);
         //if the domain doesn't exist/no users assigned, no users must be notified for the event...
         if(theDomainUsers != null) {
             for(UserInfo theUserInfo : theDomainUsers) {
@@ -417,6 +438,18 @@ public class DefaultEventRegistry implements EventRegistry
     		return myUserInfoMap.get(aUserId);
     	}
     	return null;
+    }
+
+    /**
+     * Returns all users of a domain.
+     * @param aDomain domain
+     * @return all users of the domain
+     */
+    private Collection<UserInfo> getUsers(Domain aDomain) {
+        if(aDomain != null) {
+            return myDomainUserInfoMap.get(aDomain);
+        }
+        return null;
     }
 
     /**
