@@ -105,6 +105,15 @@ public class DefaultUserManager implements UserManager
     }
 
     /**
+     * Checks if a user is added to a domain.
+     * @param aUserInfo user
+     * @return true when the user is added to a domain, otherwise false
+     */
+    public boolean isUserContained(UserInfo aUserInfo) {
+        return myUserMap.containsKey(aUserInfo.getUserId());
+    }
+
+    /**
      * Returns the {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id. It returns NULL when no
      * {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id is added.
      * @param aUserId user id of the requested {@link de.novanic.eventservice.service.registry.user.UserInfo}

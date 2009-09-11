@@ -76,10 +76,13 @@ public class DeactivationCommand extends ServerCallCommand<Void>
      * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.event.RemoteEventConnector, java.util.Set, com.google.gwt.user.client.rpc.AsyncCallback)
      */
     public void execute() {
-        if(myDomain != null) {
-            getRemoteEventConnector().deactivate(myDomain, getCommandCallback());
-        } else if(myDomains != null) {
-            getRemoteEventConnector().deactivate(myDomains, getCommandCallback());
+        final AsyncCallback<Void> theCallback = getCommandCallback();
+        if(theCallback != null) {
+            if(myDomains != null) {
+                getRemoteEventConnector().deactivate(myDomains, getCommandCallback());
+            } else {
+                getRemoteEventConnector().deactivate(myDomain, getCommandCallback());
+            }
         } else {
             getRemoteEventConnector().deactivate();
         }

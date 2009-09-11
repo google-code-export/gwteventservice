@@ -139,7 +139,10 @@ public class DomainUserMapping
      * @return all users of the domain
      */
     public Set<UserInfo> getUsers(Domain aDomain) {
-        return myDomainUserInfoMap.get(aDomain);
+        if(aDomain != null) {
+            return myDomainUserInfoMap.get(aDomain);
+        }
+        return null;
     }
 
     /**
