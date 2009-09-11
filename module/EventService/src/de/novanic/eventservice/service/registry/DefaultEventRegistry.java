@@ -223,14 +223,17 @@ public class DefaultEventRegistry implements EventRegistry
 				if(theMinWaitingTime > 0) {
 					Thread.sleep(theMinWaitingTime);
 				}
-				synchronized(theUserInfo) {
-					theUserInfo.schedule(myConfiguration.getTimeoutTime());
-					if(theUserInfo.isEventsEmpty()) {
-						theUserInfo.wait(myConfiguration.getMaxWaitingTime());
-					}
-					return theUserInfo.retrieveEvents();
-				}
-			} catch(InterruptedException e) {
+                if(theUserInfo.isEventsEmpty()) {
+                    //monitor for event notification and double checked
+                    synchronized(theUserInfo) {
+                        theUserInfo.schedule(myConfiguration.getTimeoutTime());
+                        if(theUserInfo.isEventsEmpty()) {
+                            theUserInfo.wait(myConfiguration.getMaxWaitingTime());
+                        }
+                    }
+                }
+                return theUserInfo.retrieveEvents();
+            } catch(InterruptedException e) {
 				LOG.error("Listen was interrupted (client id \"" + aUserId + "\")!", e);
 			}
 		}
