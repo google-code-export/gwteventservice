@@ -70,6 +70,50 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
         executeActions();
     }
 
+    public void testAddListener_DomainLess() {
+        assertFalse(myRemoteEventService.isActive());
+
+        //start listen
+        addAction(new TestAction() {
+            public void execute() {
+                myRemoteEventService.addListener(null, getListener(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(0, getEventCount());
+            }
+        });
+
+        //add event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
+            }
+        });
+
+        //add another event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(1, getEventCount());
+                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(2, getEventCount());
+            }
+        });
+
+        executeActions();
+    }
+
     public void testAddListener_Concurrent() {
         assertFalse(myRemoteEventService.isActive());
 
@@ -165,6 +209,64 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
                 assertEquals(1, getEventCount());
             }
         });
+    }
+
+    public void testRemoveListener_DomainLess() {
+        assertFalse(myRemoteEventService.isActive());
+
+        //start listen
+        addAction(new TestAction() {
+            public void execute() {
+                myRemoteEventService.addListener(null, getListener(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(0, getEventCount());
+            }
+        });
+
+        //add event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
+            }
+        });
+
+        //add another event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(1, getEventCount());
+                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(2, getEventCount());
+            }
+        });
+
+        //remove listener
+        addAction(new TestAction() {
+            void execute() {
+                myRemoteEventService.removeListener(null, getListener(), getCallback());
+            }
+        });
+        //check if the callback was used
+        addAction(new TestAction() {
+            void execute() {
+                //when the callback isn't used, that action is never started and a timeout will occur.
+                assertFalse(myRemoteEventService.isActive());
+            }
+        });
+
+        executeActions();
     }
 
     public void testRemoveListeners() {
