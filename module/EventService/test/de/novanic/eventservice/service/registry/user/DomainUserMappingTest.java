@@ -313,6 +313,8 @@ public class DomainUserMappingTest extends TestCase
     }
 
     public void testGetDomains() {
+        assertNull(myDomainUserMapping.getUsers(null));
+
         myDomainUserMapping.addUser(TEST_DOMAIN, TEST_USER_INFO);
         myDomainUserMapping.addUser(TEST_DOMAIN_2, TEST_USER_INFO);
         myDomainUserMapping.addUser(TEST_DOMAIN_2, TEST_USER_INFO_2);
@@ -321,5 +323,6 @@ public class DomainUserMappingTest extends TestCase
         assertEquals(2, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
         assertEquals(1, myDomainUserMapping.getDomains(TEST_USER_INFO_2).size());
         assertEquals(0, myDomainUserMapping.getDomains(null).size());
+        assertNull(myDomainUserMapping.getUsers(null));
     }
 }

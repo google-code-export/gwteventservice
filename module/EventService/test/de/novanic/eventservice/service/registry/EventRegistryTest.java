@@ -126,6 +126,20 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.iterator().next());
     }
 
+    public void testRegisterUser_DomainLess() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(null, TEST_USER_ID, null);
+        checkLog(1, "Server: User \"test_user_id\" registered.");
+
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(DomainFactory.getDomain("X"), TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+    }
+
     public void testIsUserRegistered() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -560,6 +574,54 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(theListenDomains.isEmpty());
         assertEquals(1, theListenDomains.size());
         assertEquals(TEST_DOMAIN, theListenDomains.iterator().next());
+    }
+
+    public void testUnlisten_DomainLess() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(null, TEST_USER_ID, null);
+        checkLog(1, "Server: User \"test_user_id\" registered.");
+
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(DomainFactory.getDomain("X"), TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        checkLog(4, "Server: test_user_id: unlisten.",
+                "Server: Event \"Event: Unlisten\" added to domain \"service_unlisten_domain\".",
+                "Server: User \"test_user_id\" removed.");
+
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(DomainFactory.getDomain("X"), TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+    }
+
+    public void testUnlisten_DomainLess_2() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(null, TEST_USER_ID, null);
+        checkLog(1, "Server: User \"test_user_id\" registered.");
+
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(DomainFactory.getDomain("X"), TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.unlisten(null, TEST_USER_ID);
+        checkLog(4, "Server: test_user_id: unlisten.",
+                "Server: Event \"Event: Unlisten\" added to domain \"service_unlisten_domain\".",
+                "Server: User \"test_user_id\" removed.");
+
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(DomainFactory.getDomain("X"), TEST_USER_ID));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
     }
 
     public void testListen() throws Exception {

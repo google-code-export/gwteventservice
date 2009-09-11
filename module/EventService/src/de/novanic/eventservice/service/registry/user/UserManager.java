@@ -66,6 +66,13 @@ public interface UserManager
     void removeUsers();
 
     /**
+     * Checks if a user is added to a domain.
+     * @param aUserInfo user
+     * @return true when the user is added to a domain, otherwise false
+     */
+    boolean isUserContained(UserInfo aUserInfo);
+
+    /**
      * Returns the {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id. It returns NULL when no
      * {@link de.novanic.eventservice.service.registry.user.UserInfo} for the user id is added.
      * @param aUserId user id of the requested {@link de.novanic.eventservice.service.registry.user.UserInfo}

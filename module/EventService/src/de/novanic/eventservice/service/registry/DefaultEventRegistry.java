@@ -90,7 +90,7 @@ public class DefaultEventRegistry implements EventRegistry
      * @return true if registered, false if not registered
      */
     private boolean isUserRegistered(UserInfo aUserInfo) {
-        return aUserInfo != null && myDomainUserMapping.isUserContained(aUserInfo);
+        return aUserInfo != null && myUserManager.isUserContained(aUserInfo);
     }
 
     /**
@@ -127,12 +127,16 @@ public class DefaultEventRegistry implements EventRegistry
         UserInfo theUserInfo = myUserManager.addUser(aUserId);
 
         //register UserInfo for the Domain
-        myDomainUserMapping.addUser(aDomain, theUserInfo);
+        if(aDomain != null) {
+            myDomainUserMapping.addUser(aDomain, theUserInfo);
 
-        LOG.debug("User \"" + aUserId + "\" registered for domain \"" + aDomain + "\".");
+            LOG.debug("User \"" + aUserId + "\" registered for domain \"" + aDomain + "\".");
 
-        //set EventFilter
-        setEventFilter(aDomain, theUserInfo, anEventFilter);
+            //set EventFilter
+            setEventFilter(aDomain, theUserInfo, anEventFilter);
+        } else {
+            LOG.debug("User \"" + aUserId + "\" registered.");
+        }
     }
 
     /**
@@ -238,13 +242,17 @@ public class DefaultEventRegistry implements EventRegistry
      * @param aUserId user
      */
     public void unlisten(Domain aDomain, String aUserId) {
-        UserInfo theUserInfo = getUserInfo(aUserId);
-        if(theUserInfo != null) {
-            LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
-            if(isUserRegistered(aDomain, theUserInfo)) {
-                addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(theUserInfo, aDomain, false));
+        if(aDomain != null) {
+            UserInfo theUserInfo = getUserInfo(aUserId);
+            if(theUserInfo != null) {
+                LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
+                if(isUserRegistered(aDomain, theUserInfo)) {
+                    addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(theUserInfo, aDomain, false));
+                }
+                removeUser(aDomain, theUserInfo);
             }
-            removeUser(aDomain, theUserInfo);
+        } else {
+            unlisten(aUserId);
         }
     }
 
@@ -283,7 +291,7 @@ public class DefaultEventRegistry implements EventRegistry
             LOG.debug("User \"" + aUserInfo + "\" removed from domain \"" + aDomain + "\".");
         }
 
-        if(!isUserRegistered(aUserInfo)) {
+        if(!myDomainUserMapping.isUserContained(aUserInfo)) {
             myUserManager.removeUser(aUserInfo.getUserId());
         } else {
             //remove the eventfilter if the user isn't removed completely
