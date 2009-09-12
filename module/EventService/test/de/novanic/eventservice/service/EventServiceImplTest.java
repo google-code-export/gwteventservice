@@ -174,7 +174,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService.addEvent(TEST_DOMAIN_2, new ListenCycleCancelEvent());
         assertEquals(0, joinListen(theListenStartResult));
         theListenStartResult = startListen();
-        
+
         assertEquals(3, myEventService.getActiveListenDomains().size());
         myEventService.addEvent(TEST_DOMAIN_2, new DummyEvent());
         assertEquals(3, myEventService.getActiveListenDomains().size());
@@ -191,7 +191,13 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService.addEvent(TEST_DOMAIN, new DummyEvent());
         assertEquals(3, myEventService.getActiveListenDomains().size());
 
-        assertEquals(2, joinListen(theListenStartResult));
+        //depend on the timing, it could be that the two events recognized with the first listen or that one get recognized with the first and one with the second listen.
+        int theEventCount = joinListen(theListenStartResult);
+        assertTrue(theEventCount == 1 || theEventCount == 2);
+        if(theEventCount == 1) {
+            theListenStartResult = startListen();
+            assertEquals(1, joinListen(theListenStartResult));
+        }
     }
 
     public void testListen_5() throws Exception {
@@ -474,7 +480,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size()); //Event is filtered by TestEventFilter
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
-        
+
         myEventService.deregisterEventFilter(TEST_DOMAIN);
 
         myEventService.addEvent(TEST_DOMAIN, new ListenCycleCancelEvent());
@@ -493,7 +499,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     public void testUnlisten() throws InterruptedException {
         myEventService.register(TEST_DOMAIN);
         assertEquals(1, myEventService.getActiveListenDomains().size());
-        
+
         myEventService.unlisten(myEventService.getActiveListenDomains());
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
