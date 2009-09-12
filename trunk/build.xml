@@ -71,7 +71,12 @@
         <delete dir="${dest.build.test.dir}"/>
     </target>
 
-    <target name="build" depends="compile, compile-test"/>
+    <target name="info">
+        <echo message="Building GWTEventService ${version.number}..."/>
+        <echo message="GWT-Home: ${gwt.path}"/>
+    </target>
+
+    <target name="build" depends="info, compile, compile-test"/>
 
     <target name="compile" depends="init">
         <javac srcdir="${module.eventservice.rpc}/${src.dir}" destdir="${dest.build.dir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
