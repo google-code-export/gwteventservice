@@ -15,6 +15,7 @@
    # [SequenceDiagramPolling Polling sequence diagram]
    # [SequenceDiagramComet Comet / server-push sequence diagram]
  # [Deployment Deployment]
+ # [GWTEventServiceChangeLog Changelog]
  # [http://29539.webhosting15.1blu.de/gwteventservice/roadmap.html RoadMap]
  # [Feedback Conclusion / Feedback]
  # [FAQ FAQ]
