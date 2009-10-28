@@ -58,7 +58,7 @@ public class TestEventListener implements RemoteEventListener
         myListener = aListener;
     }
 
-    private void addEvent(Event anEvent) {
+    protected void addEvent(Event anEvent) {
         Integer theEventCount = getEventCountInternal(anEvent.getClass().getName());
         if(theEventCount == null || theEventCount == 0) {
             myEventMap.put(anEvent.getClass().getName(), 1);

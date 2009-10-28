@@ -22,11 +22,15 @@ package de.novanic.eventservice.client.event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
+import java.util.Arrays;
 
 import de.novanic.eventservice.client.logger.ClientLogger;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.filter.EventFilter;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 
 /**
  * RemoteEventConnector should handle the connections between client- and the server side.
@@ -40,6 +44,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     private static final ClientLogger LOG = ClientLoggerFactory.getClientLogger();
 
     private boolean isActive;
+    private UnlistenEvent myUnlistenEvent;
 
     /**
      * Deactivates the connector for all domains (no events can be got from the domains).
@@ -73,6 +78,17 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     }
 
     /**
+     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which
+     * will be triggered  when a timeout or unlisten/deactivation for a domain occurs.
+     * The UnlistenEvent will also be hold at the client side to trigger on local timeouts (for e.g. connection errors).
+     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
+     * @param aCallback callback
+     */
+    public void registerUnlistenEvent(UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
+        myUnlistenEvent = anUnlistenEvent;
+    }
+
+    /**
      * Starts listening for events (listen call to the server side).
      * @param aCallback callback
      */
@@ -86,6 +102,17 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
      * @param aCallback callback
      */
     protected abstract void activateStart(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback);
+
+    /**
+     * Creates the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} for local timeouts.
+     */
+    private void fireUnlistenEvent(EventNotification anEventNotification) {
+        if(myUnlistenEvent == null) {
+            myUnlistenEvent = new DefaultUnlistenEvent();
+        }
+        final DomainEvent theUnlistenDomainEvent = new DefaultDomainEvent(myUnlistenEvent, DomainFactory.UNLISTEN_DOMAIN);
+        anEventNotification.onNotify(Arrays.asList(theUnlistenDomainEvent));
+    }
 
     /**
      * Callback to activate listening of RemoteEventConnector.
@@ -119,6 +146,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
 
         public void onFailure(Throwable aThrowable) {
             LOG.error("Error on register client for domain!", aThrowable);
+            fireUnlistenEvent(myEventNotification);
             if(myCallback != null) {
                 myCallback.onFailure(aThrowable);
             }
@@ -139,6 +167,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
 
         public void onFailure(Throwable aThrowable) {
             LOG.error("Error on processing event!", aThrowable);
+            fireUnlistenEvent(myEventNotification);
         }
 
         /**

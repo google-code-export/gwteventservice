@@ -56,7 +56,7 @@ public class RegistrationUnlistenEventCommand extends ServerCallCommand<Void>
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}.
      */
     public void execute() {
-        LOG.log("Timeout-Listener registered.");
+        LOG.log("Unlisten-Listener registered.");
         getRemoteEventConnector().registerUnlistenEvent(myUnlistenEvent, getCommandCallback());
     }
 }

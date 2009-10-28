@@ -30,6 +30,8 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 
 import java.util.*;
 
@@ -48,10 +50,12 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
     protected EventServiceAsync myEventService;
     private Queue<TestAction> myTestActions;
     protected TestListener myGlobalListener;
+    protected TestUnlistenListener myGlobalUnlistenListener;
 
     public void gwtSetUp() throws Exception {
         myTestActions = new LinkedList<TestAction>();
         myGlobalListener = new TestListener();
+        myGlobalUnlistenListener = new TestUnlistenListener();
         final RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         myRemoteEventService = theRemoteEventServiceFactory.getRemoteEventService();
         assertFalse(myRemoteEventService.isActive());
@@ -181,6 +185,19 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
         }
     }
 
+    private class TestUnlistenListener extends TestListener implements UnlistenEventListener
+    {
+        public void apply(Event anEvent) {
+            if(anEvent instanceof UnlistenEvent) {
+                onUnlisten((UnlistenEvent)anEvent);
+            }
+        }
+
+        public void onUnlisten(UnlistenEvent anUnlistenEvent) {
+            super.apply(anUnlistenEvent);
+        }
+    }
+
     protected abstract class TestAction
     {
         private TestCallback myCallback;
@@ -205,6 +222,10 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
             return myGlobalListener;
         }
 
+        public UnlistenEventListener getUnlistenListener() {
+            return myGlobalUnlistenListener;
+        }
+
         public EventFilter getEventFilter(Class anIgnoredEventClass) {
             return new TestTypeEventFilter(anIgnoredEventClass);
         }
@@ -225,6 +246,10 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
 
         public int getEventCount(String anEventType) {
             return myGlobalListener.getEventCount(anEventType);
+        }
+
+        public int getUnlistenEventCount() {
+            return myGlobalUnlistenListener.getEventCount();
         }
     }
 }
