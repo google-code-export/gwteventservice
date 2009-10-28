@@ -23,6 +23,8 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.*;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -77,7 +79,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockInit();
 
         //caused by first addListener / activate
-        mockRegister(TEST_DOMAIN, TestException.getInstance(), true);
+        mockRegister(TEST_DOMAIN, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -89,7 +91,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
     public void testAddListener_Error_2() {
         //should be equal to testAddListener, because the other/following commands are executed normally.
-        mockInit(TestException.getInstance());
+        mockInit(new TestException());
 
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN, true);
@@ -150,7 +152,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockInit();
 
         //caused by first addListener
-        mockRegister(TEST_DOMAIN, TestException.getInstance(), true);
+        mockRegister(TEST_DOMAIN, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -234,7 +236,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         //caused by first addListener
         final TestEventFilter theEventFilter = new TestEventFilter();
-        mockRegister(TEST_DOMAIN, theEventFilter, TestException.getInstance(), true);
+        mockRegister(TEST_DOMAIN, theEventFilter, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -243,6 +245,61 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
             assertFalse(theRecordedCallback.isOnSuccessCalled());
             assertTrue(theRecordedCallback.isOnFailureCalled());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+    }
+
+    public void testAddUnlistenListener() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN, true);
+
+        //caused by addUnlistenListener
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN, false);
+        mockRegisterUnlistenEvent(null, false);
+
+        //caused by callback of register
+        mockListen(true);
+
+        myEventServiceAsyncMockControl.replay();
+            //add Listener
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            assertTrue(myRemoteEventService.isActive());
+
+            //add UnlistenListener
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            assertTrue(myRemoteEventService.isActive());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+    }
+
+    public void testAddUnlistenListener_2() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN, true);
+
+        //caused by addUnlistenListener
+        final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN, "testUser", true);
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN, false);
+        mockRegisterUnlistenEvent(theUnlistenEvent, false);
+
+        //caused by callback of register
+        mockListen(true);
+
+        myEventServiceAsyncMockControl.replay();
+            //add Listener
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            assertTrue(myRemoteEventService.isActive());
+
+            //add UnlistenListener
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), theUnlistenEvent, null);
+            assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
     }
@@ -417,7 +474,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockListen(true);
 
         //caused by first removeListener
-        mockUnlisten(TEST_DOMAIN, TestException.getInstance(), true);
+        mockUnlisten(TEST_DOMAIN, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -607,7 +664,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         //caused by removeListeners
         Set<Domain> theDomains = new HashSet<Domain>();
         theDomains.add(TEST_DOMAIN);
-        mockUnlisten(theDomains, TestException.getInstance(), true);
+        mockUnlisten(theDomains, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -716,7 +773,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockListen(true);
 
         //caused by first call to removeListeners
-        mockUnlisten(TEST_DOMAIN, TestException.getInstance(), true);
+        mockUnlisten(TEST_DOMAIN, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -821,7 +878,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         //caused by removeListeners
         Set<Domain> theDomains = new HashSet<Domain>();
         theDomains.add(TEST_DOMAIN);
-        mockUnlisten(theDomains, TestException.getInstance(), true);
+        mockUnlisten(theDomains, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -914,7 +971,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockListen(true);
 
         //caused by removeListeners for TEST_DOMAIN
-        mockUnlisten(TEST_DOMAIN, TestException.getInstance(), true);
+        mockUnlisten(TEST_DOMAIN, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -961,7 +1018,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockRegister(TEST_DOMAIN, true);
 
         //caused by callback of register
-        mockListen(TestException.getInstance(), true);
+        mockListen(new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
@@ -1098,7 +1155,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockListen(false);
 
         final TestEventFilter theEventFilter = new TestEventFilter();
-        mockRegisterEventFilter(TEST_DOMAIN, theEventFilter, TestException.getInstance(), true);
+        mockRegisterEventFilter(TEST_DOMAIN, theEventFilter, new TestException(), true);
 
         mockDeregisterEventFilter(TEST_DOMAIN, true);
 
@@ -1145,7 +1202,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         final TestEventFilter theEventFilter = new TestEventFilter();
         mockRegisterEventFilter(TEST_DOMAIN, theEventFilter, true);
 
-        mockDeregisterEventFilter(TEST_DOMAIN, TestException.getInstance(), true);
+        mockDeregisterEventFilter(TEST_DOMAIN, new TestException(), true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());

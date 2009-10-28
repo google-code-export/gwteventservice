@@ -104,6 +104,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aCallback callback
      */
     public void registerUnlistenEvent(UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
+        super.registerUnlistenEvent(anUnlistenEvent, aCallback);
         myEventService.registerUnlistenEvent(anUnlistenEvent, aCallback);
     }
 
