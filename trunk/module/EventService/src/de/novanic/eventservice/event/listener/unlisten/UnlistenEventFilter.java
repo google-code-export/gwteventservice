@@ -23,8 +23,9 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.service.registry.domain.ListenDomainAccessor;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * The UnlistenEventFilter filters all {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} instances
@@ -36,10 +37,12 @@ import java.util.Collection;
  */
 public class UnlistenEventFilter implements EventFilter
 {
-    private Collection<Domain> myRegisteredDomains;
+    private final String myUserId;
+    private final ListenDomainAccessor myListenDomainAccessor;
 
-    public UnlistenEventFilter(Collection<Domain> aRegisteredDomain) {
-        myRegisteredDomains = aRegisteredDomain;
+    public UnlistenEventFilter(ListenDomainAccessor aListenDomainAccessor, String aUserId) {
+        myUserId = aUserId;
+        myListenDomainAccessor = aListenDomainAccessor;
     }
 
     /**
@@ -50,9 +53,12 @@ public class UnlistenEventFilter implements EventFilter
      */
     public boolean match(Event anEvent) {
         if(anEvent instanceof UnlistenEvent) {
-            UnlistenEvent theUnlistenEvent = (UnlistenEvent)anEvent;
+            final UnlistenEvent theUnlistenEvent = (UnlistenEvent)anEvent;
             final Domain theUnlistenedDomain = theUnlistenEvent.getDomain();
-            return theUnlistenedDomain != null && !myRegisteredDomains.contains(theUnlistenedDomain);
+            if(theUnlistenedDomain != null) {
+                final Set<Domain> theRegisteredListenDomains = myListenDomainAccessor.getListenDomains(myUserId);
+                return !theRegisteredListenDomains.contains(theUnlistenedDomain);
+            }
         }
         return false;
     }

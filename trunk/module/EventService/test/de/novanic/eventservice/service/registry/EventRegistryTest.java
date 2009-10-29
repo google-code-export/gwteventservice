@@ -406,7 +406,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theListenDomains.size());
 
         myEventRegistry.unlisten(TEST_USER_ID);
-        checkLog(7, "Server: test_user_id: unlisten.",
+        checkLog(8, "Server: test_user_id: unlisten.",
                 "Server: Event \"Event: Unlisten\" added to domain \"service_unlisten_domain\".",
                 "Server: Event: Unlisten for user \"test_user_id\".",
                 "Server: User \"test_user_id\" removed.");

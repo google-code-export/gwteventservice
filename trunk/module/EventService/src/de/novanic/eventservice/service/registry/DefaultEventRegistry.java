@@ -29,6 +29,7 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
 import de.novanic.eventservice.service.registry.user.*;
+import de.novanic.eventservice.service.registry.domain.ListenDomainAccessor;
 import de.novanic.eventservice.service.UserTimeoutListener;
 import de.novanic.eventservice.event.listener.unlisten.UnlistenEventFilter;
 
@@ -48,7 +49,7 @@ import java.util.*;
  * <br>Date: 05.06.2008
  * <br>Time: 19:12:35
  */
-public class DefaultEventRegistry implements EventRegistry
+public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
 {
     private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(DefaultEventRegistry.class.getName());
 
@@ -387,7 +388,7 @@ public class DefaultEventRegistry implements EventRegistry
      * be transfered to other users/clients when a timeout occurs or a domain is leaved.
      */
     public void registerUnlistenEvent(String aUserId, UnlistenEvent anUnlistenEvent) {
-        registerUser(DomainFactory.UNLISTEN_DOMAIN, aUserId, null);
+        registerUser(DomainFactory.UNLISTEN_DOMAIN, aUserId, new UnlistenEventFilter(this, aUserId));
         UserInfo theUserInfo = getUserInfo(aUserId);
         theUserInfo.setUnlistenEvent(anUnlistenEvent);
     }
@@ -407,22 +408,21 @@ public class DefaultEventRegistry implements EventRegistry
      * @param anEvent event to add
      */
     private void addEvent(Domain aDomain, UserInfo aUserInfo, Event anEvent) {
-        if(isEventValid(aUserInfo, anEvent, aUserInfo.getEventFilter(aDomain))) {
+        if(isEventValid(anEvent, aUserInfo.getEventFilter(aDomain))) {
             aUserInfo.addEvent(aDomain, anEvent);
             LOG.debug(anEvent + " for user \"" + aUserInfo + "\".");
         }
     }
 
     /**
-     * Checks if the EventFilter recognizes the event as valid. When no EventFilter is available (NULL), the event is
-     * ever valid.
+     * Checks if the EventFilter recognizes the event as valid. When no EventFilter is available (NULL),
+     * the event is always valid.
      * @param anEvent event
      * @param anEventFilter EventFilter to check the event
      * @return true when the event is valid, false when the event isn't valid (filtered by the EventFilter)
      */
-    private boolean isEventValid(UserInfo aUserInfo, Event anEvent, EventFilter anEventFilter) {
-        return (anEventFilter == null || !(anEventFilter.match(anEvent)))
-                && (!(anEvent instanceof UnlistenEvent) || !(new UnlistenEventFilter(getListenDomains(aUserInfo)).match(anEvent)));
+    private boolean isEventValid(Event anEvent, EventFilter anEventFilter) {
+        return (anEventFilter == null || !(anEventFilter.match(anEvent)));
     }
 
     /**
