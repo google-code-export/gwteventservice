@@ -25,8 +25,9 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.Event;
+import de.novanic.eventservice.service.registry.domain.ListenDomainAccessor;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * @author sstrohschein
@@ -43,7 +44,7 @@ public class UnlistenEventFilterTest extends TestCase
     public void testMatch() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN, TEST_USER_ID, false);
 
-        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(Arrays.asList(TEST_DOMAIN));
+        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN), TEST_USER_ID);
         assertFalse(theUnlistenEventFilter.match(theUnlistenEvent));
 
         theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN_2, TEST_USER_ID, false);
@@ -51,7 +52,7 @@ public class UnlistenEventFilterTest extends TestCase
     }
 
     public void testMatch_2() {
-        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(Arrays.asList(TEST_DOMAIN, TEST_DOMAIN_2));
+        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN, TEST_DOMAIN_2), TEST_USER_ID);
         assertFalse(theUnlistenEventFilter.match(new Event() {}));
 
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN_2, TEST_USER_ID, false);
@@ -62,5 +63,22 @@ public class UnlistenEventFilterTest extends TestCase
 
         theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN_3, TEST_USER_ID, false);
         assertTrue(theUnlistenEventFilter.match(theUnlistenEvent));
+    }
+
+    private class DummyListenDomainAccessor implements ListenDomainAccessor
+    {
+        private Set<Domain> myDomains;
+
+        private DummyListenDomainAccessor(Domain... aDomains) {
+            myDomains = new HashSet<Domain>(Arrays.asList(aDomains));
+        }
+
+        public Set<Domain> getListenDomains(String aUserId) {
+            return myDomains;
+        }
+
+        public Set<Domain> getListenDomains() {
+            return myDomains;
+        }
     }
 }
