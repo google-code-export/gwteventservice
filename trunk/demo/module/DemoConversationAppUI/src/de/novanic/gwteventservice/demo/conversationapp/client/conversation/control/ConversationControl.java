@@ -102,7 +102,6 @@ public class ConversationControl
         myRemoteEventService.addUnlistenListener(new UnlistenEventListenerAdapter() {
             public void onUnlisten(UnlistenEvent anUnlistenEvent) {
                 String theUserName = ((UserUnlistenEvent)anUnlistenEvent).getUserName();
-                GWT.log("Remove user \"" + theUserName + "\"!", null);
                 myConversationMainPanel.getConversationChannelPanel().removeContact(theUserName);
             }
         }, new UserUnlistenEvent(myUser), new VoidAsyncCallback<Void>());
@@ -131,7 +130,7 @@ public class ConversationControl
             public void onClick(ClickEvent aClickEvent) {
                 final String theMessage = aConversationMessagePanel.getMessageText();
                 if(!theMessage.trim().equals("")) {
-                    myConversationService.sendMessage(myUser, theMessage, new VoidAsyncCallback());
+                    myConversationService.sendMessage(myUser, theMessage, new VoidAsyncCallback<Void>());
                     aConversationMessagePanel.resetMessageText();
                 }
             }
@@ -192,8 +191,9 @@ public class ConversationControl
     }
 
     private boolean logout() {
-        myConversationService.leave(myUser, new VoidAsyncCallback());
-        myRemoteEventService.removeListeners(CONVERSATION_DOMAIN);
+        myConversationService.leave(myUser, new VoidAsyncCallback<Void>());
+        myRemoteEventService.removeListeners(CONVERSATION_DOMAIN, new VoidAsyncCallback<Void>());
+        myRemoteEventService.removeUnlistenListeners(new VoidAsyncCallback<Void>());
         myConversationMainPanel.reset();
         return true;
     }
