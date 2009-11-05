@@ -83,7 +83,10 @@ public interface RemoteEventService
 
     /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
-     * user/client domain deregistrations and timeouts.
+     * user/client domain deregistrations and timeouts. The scope for unlisten events to receive is set to
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#UNLISTEN} by default.
+     * To use other scopes see
+     * {@link de.novanic.eventservice.client.event.RemoteEventService#addUnlistenListener(de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope, de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener, com.google.gwt.user.client.rpc.AsyncCallback)}.
      * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * to listen for all user/client domain deregistrations and timeouts.
      * @param aCallback callback
@@ -92,16 +95,43 @@ public interface RemoteEventService
 
     /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
+     * user/client domain deregistrations and timeouts.
+     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * to listen for all user/client domain deregistrations and timeouts.
+     * @param anUnlistenScope scope of the unlisten events to receive
+     * @param aCallback callback
+     */
+    void addUnlistenListener(UnlistenEventListener.Scope anUnlistenScope, UnlistenEventListener anUnlistenEventListener, AsyncCallback<Void> aCallback);
+
+    /**
+     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
      * user/client domain deregistrations and timeouts. The custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
      * will be registered at the server side and transfered to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * registered. That {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can for example contain user information
-     * of your specific user-system to recover the user in your user-system on a timeout.
+     * of your specific user-system to recover the user in your user-system on a timeout. The scope for unlisten events to receive is set to
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#UNLISTEN} by default.
+     * To use other scopes see
+     * {@link de.novanic.eventservice.client.event.RemoteEventService#addUnlistenListener(de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope, de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener, de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent, com.google.gwt.user.client.rpc.AsyncCallback)}.
      * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * to listen for all user/client domain deregistrations and timeouts.
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
      * @param aCallback callback
      */
     void addUnlistenListener(UnlistenEventListener anUnlistenEventListener, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback);
+
+    /**
+     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
+     * user/client domain deregistrations and timeouts. The custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
+     * will be registered at the server side and transfered to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * registered. That {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can for example contain user information
+     * of your specific user-system to recover the user in your user-system on a timeout.
+     * @param anUnlistenScope scope of the unlisten events to receive
+     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * to listen for all user/client domain deregistrations and timeouts.
+     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
+     * @param aCallback callback
+     */
+    void addUnlistenListener(UnlistenEventListener.Scope anUnlistenScope, UnlistenEventListener anUnlistenEventListener, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback);
 
     /**
      * Removes a listener for a domain.

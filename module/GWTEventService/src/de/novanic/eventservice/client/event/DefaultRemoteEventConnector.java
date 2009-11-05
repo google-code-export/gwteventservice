@@ -31,6 +31,7 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 
 /**
  * RemoteEventConnector should handle the connections between client- and the server side.
@@ -81,10 +82,11 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which
      * will be triggered  when a timeout or unlisten/deactivation for a domain occurs.
      * The UnlistenEvent will also be hold at the client side to trigger on local timeouts (for e.g. connection errors).
+     * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
      * @param aCallback callback
      */
-    public void registerUnlistenEvent(UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
+    public void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
         myUnlistenEvent = anUnlistenEvent;
     }
 

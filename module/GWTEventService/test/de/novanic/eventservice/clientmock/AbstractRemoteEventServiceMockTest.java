@@ -25,6 +25,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -32,6 +34,7 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
 import de.novanic.eventservice.client.event.command.ClientCommand;
@@ -45,8 +48,10 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 {
     protected MockControl myEventServiceAsyncMockControl;
     protected EventServiceAsync myEventServiceAsyncMock;
+    private Queue<Thread> myListenThreads;
 
     public void setUp() {
+        myListenThreads = new ConcurrentLinkedQueue<Thread>();
         myEventServiceAsyncMockControl = MockControl.createControl(EventServiceAsync.class);
         myEventServiceAsyncMock = (EventServiceAsync)myEventServiceAsyncMockControl.getMock();
         ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DirectCommandScheduler());
@@ -155,6 +160,14 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         myEventServiceAsyncMockControl.setVoidCallable();
     }
 
+    protected void mockListen(List<DomainEvent> anEvents, int aLoops, TestException aTestException) {
+        myEventServiceAsyncMock.listen(null);
+        if(aLoops > 0) {
+            myEventServiceAsyncMockControl.setMatcher(new AsyncListenCallArgumentsMatcherThreadable(anEvents, aLoops, aTestException));
+        }
+        myEventServiceAsyncMockControl.setVoidCallable();
+    }
+
     protected void mockUnlisten(Set<Domain> aDomains, boolean isFirstCall) {
         mockUnlisten(aDomains, null, isFirstCall);
     }
@@ -188,16 +201,43 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     }
 
     protected void mockRegisterUnlistenEvent(UnlistenEvent anUnlistenEvent, boolean isFirstCall) {
-        myEventServiceAsyncMock.registerUnlistenEvent(anUnlistenEvent, null);
+        myEventServiceAsyncMock.registerUnlistenEvent(UnlistenEventListener.Scope.UNLISTEN, anUnlistenEvent, null);
         if(isFirstCall) {
             myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(true));
         }
         myEventServiceAsyncMockControl.setVoidCallable();
     }
 
+    /**
+     * Waits till the expected count of listen threads is started and joins the threads.
+     * @param anExpectedListenThreadCount
+     */
+    public void joinAllListenThreads(int anExpectedListenThreadCount) {
+        final int theMaxCycleCount = 50;
+        final int theCycleWaitingTime = 500;
+        for(int i = 0; myListenThreads.size() < anExpectedListenThreadCount; i++) {
+            if(i > theMaxCycleCount) {
+                fail("The expected count of listen threads isn't reached in " + ((theMaxCycleCount * theCycleWaitingTime) / 1000) + " seconds!");
+            }
+            try {
+                Thread.sleep(theCycleWaitingTime);
+            } catch(InterruptedException e) {
+                throw new RuntimeException("The waiting for the listen threads was aborted in a test case!", e);
+            }
+        }
+        try {
+            Thread theListenThread;
+            while((theListenThread = myListenThreads.poll()) != null) {
+                theListenThread.join();
+            }
+        } catch(InterruptedException e) {
+            throw new RuntimeException("The joining of a listen thread was aborted in a test case!", e);
+        }
+    }
+
     protected class AsyncCallArgumentsMatcher implements ArgumentsMatcher
     {
-        private Object myCallbackResult;
+        protected Object myCallbackResult;
         private TestException myCallbackThrowable;
         private boolean myIsCall;
 
@@ -287,8 +327,8 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     protected class AsyncListenCallArgumentsMatcher extends AsyncCallArgumentsMatcher
     {
-        private int myExpectedLoops;
-        private int myLoops;
+        protected int myExpectedLoops;
+        protected int myLoops;
 
         public AsyncListenCallArgumentsMatcher(boolean isCall) {
             super(isCall);
@@ -308,6 +348,35 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
                 myLoops++;
                 super.runCall(anAsyncCallback);
             }
+        }
+    }
+
+    protected class AsyncListenCallArgumentsMatcherThreadable extends AsyncListenCallArgumentsMatcher
+    {
+        private TestException myCallbackThrowable;
+
+        public AsyncListenCallArgumentsMatcherThreadable(List<DomainEvent> aCallbackResult, int anExpectedLoops, TestException aCallbackThrowable) {
+            super(aCallbackResult, anExpectedLoops);
+            myCallbackThrowable = aCallbackThrowable;
+        }
+
+        protected void runCall(final AsyncCallback<? super Object> anAsyncCallback) {
+            Thread theThread = new Thread() {
+                public void run() {
+                    if(myExpectedLoops - 1 > myLoops) {
+                        myLoops++;
+                        anAsyncCallback.onSuccess(myCallbackResult);
+                    } else if(myExpectedLoops > myLoops) {
+                        try {
+                            myCallbackThrowable.throwTestException();
+                        } catch(Exception e) {
+                            anAsyncCallback.onFailure(e);
+                        }
+                    }
+                }
+            };
+            theThread.start();
+            myListenThreads.add(theThread);
         }
     }
 

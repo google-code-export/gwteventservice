@@ -23,6 +23,8 @@ import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author sstrohschein
@@ -31,22 +33,32 @@ import java.util.HashMap;
  */
 public class TestEventListener implements RemoteEventListener
 {
-    private Map<String, Integer> myEventMap;
+    private List<Event> myEvents;
+    private Map<Class, Integer> myEventCountMap;
     private RemoteEventListener myListener;
 
     public TestEventListener() {
-        myEventMap = new HashMap<String, Integer>();
+        myEvents = new ArrayList<Event>();
+        myEventCountMap = new HashMap<Class, Integer>();
     }
 
     public void apply(Event anEvent) {
         addEvent(anEvent);
     }
 
-    private Integer getEventCountInternal(String anEventType) {
-        return myEventMap.get(anEventType);
+    public List<Event> getEvents() {
+        return myEvents;
     }
 
-    public int getEventCount(String anEventType) {
+    private Integer getEventCountInternal(Class anEventType) {
+        return myEventCountMap.get(anEventType);
+    }
+
+    public int getEventCount() {
+        return myEventCountMap.size();
+    }
+
+    public int getEventCount(Class anEventType) {
         Integer theCount = getEventCountInternal(anEventType);
         if(theCount == null) {
             theCount = 0;
@@ -59,11 +71,12 @@ public class TestEventListener implements RemoteEventListener
     }
 
     protected void addEvent(Event anEvent) {
-        Integer theEventCount = getEventCountInternal(anEvent.getClass().getName());
+        myEvents.add(anEvent);
+        Integer theEventCount = getEventCountInternal(anEvent.getClass());
         if(theEventCount == null || theEventCount == 0) {
-            myEventMap.put(anEvent.getClass().getName(), 1);
+            myEventCountMap.put(anEvent.getClass(), 1);
         } else {
-            myEventMap.put(anEvent.getClass().getName(), theEventCount + 1);
+            myEventCountMap.put(anEvent.getClass(), theEventCount + 1);
         }
         if(myListener != null) {
             myListener.apply(anEvent);

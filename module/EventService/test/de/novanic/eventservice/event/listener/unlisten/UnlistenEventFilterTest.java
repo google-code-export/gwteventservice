@@ -24,6 +24,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.service.registry.domain.ListenDomainAccessor;
 
@@ -44,7 +45,7 @@ public class UnlistenEventFilterTest extends TestCase
     public void testMatch() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN, TEST_USER_ID, false);
 
-        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN), TEST_USER_ID);
+        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN), TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN);
         assertFalse(theUnlistenEventFilter.match(theUnlistenEvent));
 
         theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN_2, TEST_USER_ID, false);
@@ -52,7 +53,7 @@ public class UnlistenEventFilterTest extends TestCase
     }
 
     public void testMatch_2() {
-        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN, TEST_DOMAIN_2), TEST_USER_ID);
+        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN, TEST_DOMAIN_2), TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN);
         assertFalse(theUnlistenEventFilter.match(new Event() {}));
 
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN_2, TEST_USER_ID, false);
@@ -63,6 +64,34 @@ public class UnlistenEventFilterTest extends TestCase
 
         theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN_3, TEST_USER_ID, false);
         assertTrue(theUnlistenEventFilter.match(theUnlistenEvent));
+    }
+    
+    public void testMatch_Timeout() {
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN, TEST_USER_ID, false);
+        UnlistenEvent theUnlistenEvent_2 = new DefaultUnlistenEvent(TEST_DOMAIN_2, TEST_USER_ID, false);
+
+        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN), TEST_USER_ID, UnlistenEventListener.Scope.TIMEOUT);
+        assertTrue(theUnlistenEventFilter.match(theUnlistenEvent));
+        assertTrue(theUnlistenEventFilter.match(theUnlistenEvent_2));
+
+        theUnlistenEvent.setTimeout(true);
+        theUnlistenEvent_2.setTimeout(true);
+        assertFalse(theUnlistenEventFilter.match(theUnlistenEvent));
+        assertTrue(theUnlistenEventFilter.match(theUnlistenEvent_2));
+    }
+
+    public void testMatch_Local() {
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN, TEST_USER_ID, false);
+        UnlistenEvent theUnlistenEvent_2 = new DefaultUnlistenEvent(TEST_DOMAIN_2, TEST_USER_ID, false);
+
+        UnlistenEventFilter theUnlistenEventFilter = new UnlistenEventFilter(new DummyListenDomainAccessor(TEST_DOMAIN), TEST_USER_ID, UnlistenEventListener.Scope.LOCAL);
+        assertTrue(theUnlistenEventFilter.match(theUnlistenEvent));
+        assertTrue(theUnlistenEventFilter.match(theUnlistenEvent_2));
+
+        theUnlistenEvent.setTimeout(true);
+        theUnlistenEvent_2.setTimeout(true);
+        assertTrue(theUnlistenEventFilter.match(theUnlistenEvent));
+        assertTrue(theUnlistenEventFilter.match(theUnlistenEvent_2));
     }
 
     private class DummyListenDomainAccessor implements ListenDomainAccessor

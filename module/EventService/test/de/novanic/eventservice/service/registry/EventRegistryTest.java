@@ -27,6 +27,7 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.test.testhelper.TestEventFilter;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
@@ -400,7 +401,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(1, theListenDomains.size());
         assertEquals(TEST_DOMAIN, theListenDomains.iterator().next());
 
-        myEventRegistry.registerUnlistenEvent(TEST_USER_ID, null);
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN, null);
         theListenDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
         assertFalse(theListenDomains.isEmpty());
         assertEquals(2, theListenDomains.size());
@@ -1072,7 +1073,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         theEventRegistry.addEvent(TEST_DOMAIN, new DummyEvent());
         assertTrue(theEventRegistry.isUserRegistered(TEST_USER_ID));
 
-        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, null);
+        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN, null);
 
         List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
         assertNotNull(theEvents);
@@ -1126,7 +1127,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         theEventRegistry.addEvent(TEST_DOMAIN, new DummyEvent());
         assertTrue(theEventRegistry.isUserRegistered(TEST_USER_ID));
 
-        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, new TestUnlistenEvent("testuser", "123"));
+        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN, new TestUnlistenEvent("testuser", "123"));
 
         List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
         assertNotNull(theEvents);
@@ -1165,7 +1166,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testTimeOut_ImportantDomain() throws Exception {
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
-        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, null);
+        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN, null);
 
         //register first user to TEST_DOMAIN
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -1211,7 +1212,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testTimeOut_UnimportantDomain() throws Exception {
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
-        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, null);
+        theEventRegistry.registerUnlistenEvent(TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN, null);
 
         //register first user to TEST_DOMAIN
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
