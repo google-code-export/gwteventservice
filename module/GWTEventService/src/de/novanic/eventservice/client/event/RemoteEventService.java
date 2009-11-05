@@ -228,4 +228,18 @@ public interface RemoteEventService
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
     void removeListeners(Domain aDomain, AsyncCallback<Void> aCallback);
+
+    /**
+     * Removes an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}.
+     * The RemoteEventService will get inactive, when no other listeners are registered.
+     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to remove
+     * @param aCallback callback
+     */
+    void removeUnlistenListener(UnlistenEventListener anUnlistenEventListener, AsyncCallback<Void> aCallback);
+
+    /**
+     * Stops listening for {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} instances.
+     * @param aCallback callback (only called when an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} is registered)
+     */
+    void removeUnlistenListeners(AsyncCallback<Void> aCallback);
 }

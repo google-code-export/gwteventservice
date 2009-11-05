@@ -943,6 +943,126 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.reset();
     }
 
+    public void testRemoveUnlistenListener() {
+        mockInit();
+
+        //caused by addUnlistenListener
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN, true);
+        mockRegisterUnlistenEvent(null, false);
+
+        //caused by callback of register
+        mockListen(true);
+
+        //caused by removeUnlistenListener
+        mockUnlisten(DomainFactory.UNLISTEN_DOMAIN, true);
+
+        final TestUnlistenEventListener theTestUnlistenEventListener = new TestUnlistenEventListener();
+        myEventServiceAsyncMockControl.replay();
+            //add UnlistenListener
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(theTestUnlistenEventListener, null);
+            assertTrue(myRemoteEventService.isActive());
+
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.removeUnlistenListener(theTestUnlistenEventListener, new RecordedCallback());
+            assertFalse(myRemoteEventService.isActive());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+    }
+
+    public void testRemoveUnlistenListener_2() {
+        mockInit();
+
+        //caused by addUnlistenListener
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN, true);
+        mockRegisterUnlistenEvent(null, false);
+
+        //caused by callback of register
+        mockListen(true);
+
+        //caused by the second removeUnlistenListener
+        mockUnlisten(DomainFactory.UNLISTEN_DOMAIN, true);
+
+        final TestUnlistenEventListener theTestUnlistenEventListener = new TestUnlistenEventListener();
+        final TestUnlistenEventListener theTestUnlistenEventListener_2 = new TestUnlistenEventListener();
+        myEventServiceAsyncMockControl.replay();
+            //add UnlistenListener
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(theTestUnlistenEventListener, null);
+            assertTrue(myRemoteEventService.isActive());
+
+            //add second UnlistenListener
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(theTestUnlistenEventListener_2, null);
+            assertTrue(myRemoteEventService.isActive());
+
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.removeUnlistenListener(theTestUnlistenEventListener, new RecordedCallback());
+            assertTrue(myRemoteEventService.isActive());
+
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.removeUnlistenListener(theTestUnlistenEventListener_2, new RecordedCallback());
+            assertFalse(myRemoteEventService.isActive());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+    }
+
+    public void testRemoveUnlistenListeners() {
+        mockInit();
+
+        //caused by addUnlistenListener
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN, true);
+        mockRegisterUnlistenEvent(null, false);
+
+        //caused by callback of register
+        mockListen(true);
+
+        //caused by removeUnlistenListeners
+        mockUnlisten(DomainFactory.UNLISTEN_DOMAIN, true);
+
+        myEventServiceAsyncMockControl.replay();
+            //add UnlistenListener
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            assertTrue(myRemoteEventService.isActive());
+
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.removeUnlistenListeners(new RecordedCallback());
+            assertFalse(myRemoteEventService.isActive());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+    }
+
+    public void testRemoveUnlistenListeners_2() {
+        mockInit();
+
+        //caused by addUnlistenListener
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN, true);
+        mockRegisterUnlistenEvent(null, false);
+
+        //caused by callback of register
+        mockListen(true);
+
+        //caused by removeUnlistenListeners
+        mockUnlisten(DomainFactory.UNLISTEN_DOMAIN, true);
+
+        myEventServiceAsyncMockControl.replay();
+            //add UnlistenListener
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            assertTrue(myRemoteEventService.isActive());
+
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            assertTrue(myRemoteEventService.isActive());
+
+            assertTrue(myRemoteEventService.isActive());
+            myRemoteEventService.removeUnlistenListeners(new RecordedCallback());
+            assertFalse(myRemoteEventService.isActive());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+    }
+
     public void testUnlisten() {
         mockInit();
 

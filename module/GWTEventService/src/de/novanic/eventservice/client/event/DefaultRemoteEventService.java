@@ -374,6 +374,24 @@ public final class DefaultRemoteEventService implements RemoteEventService
     }
 
     /**
+     * Removes an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}.
+     * The RemoteEventService will get inactive, when no other listeners are registered.
+     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to remove
+     * @param aCallback callback
+     */
+    public void removeUnlistenListener(UnlistenEventListener anUnlistenEventListener, AsyncCallback<Void> aCallback) {
+        removeListener(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener, aCallback);
+    }
+
+    /**
+     * Stops listening for {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} instances.
+     * @param aCallback callback (only called when an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} is registered)
+     */
+    public void removeUnlistenListeners(AsyncCallback<Void> aCallback) {
+        unlisten(DomainFactory.UNLISTEN_DOMAIN, aCallback);
+    }
+
+    /**
      * Stops listening for the corresponding domain. The RemoteEventFilters for the domain will also be removed.
      * {@link DefaultRemoteEventService#removeListeners()} can be used to call unlisten for all domains.
      * @param aDomain domain to unlisten
