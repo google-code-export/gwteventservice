@@ -29,6 +29,7 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
@@ -117,12 +118,13 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      * timeout or when a user/client leaves a {@link de.novanic.eventservice.client.event.domain.Domain}. An
      * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is hold at the server side and can
      * contain custom data. Other users/clients can use the custom data when the event is for example triggered by a timeout.
+     * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
      * be transfered to other users/clients when a timeout occurs or a domain is leaved.
      */
-    public void registerUnlistenEvent(UnlistenEvent anUnlistenEvent) {
+    public void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent) {
         final String theClientId = getClientId();
-        myEventRegistry.registerUnlistenEvent(theClientId, anUnlistenEvent);
+        myEventRegistry.registerUnlistenEvent(theClientId, anUnlistenScope, anUnlistenEvent);
     }
 
     /**

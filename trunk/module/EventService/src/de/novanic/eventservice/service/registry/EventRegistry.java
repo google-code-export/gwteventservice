@@ -24,6 +24,7 @@ import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 
 import java.util.List;
@@ -151,10 +152,11 @@ public interface EventRegistry
      * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is hold at the server side and can
      * contain custom data. Other users/clients can use the custom data when the event is for example triggered by a timeout.
      * @param aUserId user to register the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to
+     * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
      * be transfered to other users/clients when a timeout occurs or a domain is leaved.
      */
-    void registerUnlistenEvent(String aUserId, UnlistenEvent anUnlistenEvent);
+    void registerUnlistenEvent(String aUserId, UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent);
 
     /**
      * Returns the initialized {@link de.novanic.eventservice.config.EventServiceConfiguration}

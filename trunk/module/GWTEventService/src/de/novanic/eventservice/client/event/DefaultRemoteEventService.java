@@ -77,14 +77,8 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback (only called when no listener is already registered for the domain)
      */
     public void addListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<Void> aCallback) {
-        List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
-        if(theListeners == null) {
-            theListeners = new ArrayList<RemoteEventListener>();
-            myDomainListenerMapping.put(aDomain, theListeners);
-            theListeners.add(aRemoteListener);
+        if(addListenerLocal(aDomain, aRemoteListener)) {
             activate(aDomain, aCallback);
-        } else {
-            theListeners.add(aRemoteListener);
         }
     }
 
@@ -110,15 +104,63 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback (only called when no listener is registered for the domain)
      */
     public void addListener(Domain aDomain, RemoteEventListener aRemoteListener, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
+        if(addListenerLocal(aDomain, aRemoteListener, anEventFilter)) {
+            activate(aDomain, anEventFilter, aCallback);
+        }
+    }
+
+    /**
+     * Adds a listener for a domain.
+     * @param aDomain domain
+     * @param aRemoteListener new listener
+     * @return true, when it is a new / unregistered domain for the client, otherwise false
+     */
+    private boolean addListenerLocal(Domain aDomain, RemoteEventListener aRemoteListener) {
         List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
+        final boolean isNewDomain = theListeners == null;
         if(theListeners == null) {
             theListeners = new ArrayList<RemoteEventListener>();
             myDomainListenerMapping.put(aDomain, theListeners);
-            activate(aDomain, anEventFilter, aCallback);
+            theListeners.add(aRemoteListener);
+        } else {
+            theListeners.add(aRemoteListener);
+        }
+        return isNewDomain;
+    }
+
+    /**
+     * Adds a listener for a domain. The EventFilter is applied to the domain to filter events before the
+     * RemoteEventListener recognizes the event.
+     * @param aDomain domain
+     * @param aRemoteListener new listener
+     * @param anEventFilter EventFilter to filter the events before RemoteEventListener
+     * @return true, when it is a new / unregistered domain for the client, otherwise false
+     */
+    private boolean addListenerLocal(Domain aDomain, RemoteEventListener aRemoteListener, EventFilter anEventFilter) {
+        List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
+        final boolean isNewDomain = theListeners == null;
+        if(isNewDomain) {
+            theListeners = new ArrayList<RemoteEventListener>();
+            myDomainListenerMapping.put(aDomain, theListeners);
         } else {
             registerEventFilter(aDomain, anEventFilter);
         }
         theListeners.add(aRemoteListener);
+        return isNewDomain;
+    }
+
+    /**
+     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
+     * user/client domain deregistrations and timeouts. The scope for unlisten events to receive is set to
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#UNLISTEN} by default.
+     * To use other scopes see
+     * {@link de.novanic.eventservice.client.event.RemoteEventService#addUnlistenListener(de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope, de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener, com.google.gwt.user.client.rpc.AsyncCallback)}.
+     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * to listen for all user/client domain deregistrations and timeouts.
+     * @param aCallback callback
+     */
+    public void addUnlistenListener(UnlistenEventListener anUnlistenEventListener, AsyncCallback<Void> aCallback) {
+        addUnlistenListener(UnlistenEventListener.Scope.UNLISTEN, anUnlistenEventListener, aCallback);
     }
 
     /**
@@ -126,10 +168,29 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * user/client domain deregistrations and timeouts.
      * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * to listen for all user/client domain deregistrations and timeouts.
+     * @param anUnlistenScope scope of the unlisten events to receive
      * @param aCallback callback
      */
-    public void addUnlistenListener(UnlistenEventListener anUnlistenEventListener, AsyncCallback<Void> aCallback) {
-        addUnlistenListener(anUnlistenEventListener, null, aCallback);
+    public void addUnlistenListener(UnlistenEventListener.Scope anUnlistenScope, UnlistenEventListener anUnlistenEventListener, AsyncCallback<Void> aCallback) {
+        addUnlistenListener(anUnlistenScope, anUnlistenEventListener, null, aCallback);
+    }
+
+    /**
+     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
+     * user/client domain deregistrations and timeouts. The custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
+     * will be registered at the server side and transfered to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * registered. That {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can for example contain user information
+     * of your specific user-system to recover the user in your user-system on a timeout. The scope for unlisten events to receive is set to
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#UNLISTEN} by default.
+     * To use other scopes see
+     * {@link de.novanic.eventservice.client.event.RemoteEventService#addUnlistenListener(de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope, de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener, de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent, com.google.gwt.user.client.rpc.AsyncCallback)}.
+     * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * to listen for all user/client domain deregistrations and timeouts.
+     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
+     * @param aCallback callback
+     */
+    public void addUnlistenListener(final UnlistenEventListener anUnlistenEventListener, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
+        addUnlistenListener(UnlistenEventListener.Scope.UNLISTEN, anUnlistenEventListener, anUnlistenEvent, aCallback);
     }
 
     /**
@@ -138,17 +199,23 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * will be registered at the server side and transfered to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * registered. That {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can for example contain user information
      * of your specific user-system to recover the user in your user-system on a timeout.
+     * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEventListener {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * to listen for all user/client domain deregistrations and timeouts.
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
      * @param aCallback callback
      */
-    public void addUnlistenListener(final UnlistenEventListener anUnlistenEventListener, final UnlistenEvent anUnlistenEvent, final AsyncCallback<Void> aCallback) {
-        addListener(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener, new VoidAsyncCallback() {
-            public void onSuccess(Void aResult) {
-                schedule(new RegistrationUnlistenEventCommand(myRemoteEventConnector, anUnlistenEvent, aCallback));
-            }
-        });
+    public void addUnlistenListener(final UnlistenEventListener.Scope anUnlistenScope, UnlistenEventListener anUnlistenEventListener, final UnlistenEvent anUnlistenEvent, final AsyncCallback<Void> aCallback) {
+        if(UnlistenEventListener.Scope.LOCAL == anUnlistenScope) {
+            addListenerLocal(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener);
+            schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, myRemoteEventConnector, anUnlistenEvent, aCallback));
+        } else {
+            addListener(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener, new VoidAsyncCallback() {
+                public void onSuccess(Void aResult) {
+                    schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, myRemoteEventConnector, anUnlistenEvent, aCallback));
+                }
+            });
+        }
     }
 
     /**

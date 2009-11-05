@@ -24,6 +24,7 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.command.RemoteListenCommand;
 import de.novanic.eventservice.client.command.RemoteCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -100,12 +101,16 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
     /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which
      * will be triggered  when a timeout or unlisten/deactivation for a domain occurs.
+     * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which can contain custom data
      * @param aCallback callback
      */
-    public void registerUnlistenEvent(UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
-        super.registerUnlistenEvent(anUnlistenEvent, aCallback);
-        myEventService.registerUnlistenEvent(anUnlistenEvent, aCallback);
+    public void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aCallback) {
+        super.registerUnlistenEvent(anUnlistenScope, anUnlistenEvent, aCallback);
+        //The UnlistenEvent mustn't be registered to the server side, when the scope is local.
+        if(UnlistenEventListener.Scope.LOCAL != anUnlistenScope) {
+            myEventService.registerUnlistenEvent(anUnlistenScope, anUnlistenEvent, aCallback);
+        }
     }
 
     /**

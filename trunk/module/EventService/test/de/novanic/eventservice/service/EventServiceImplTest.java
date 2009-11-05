@@ -24,6 +24,7 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
@@ -479,7 +480,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         myEventService.register(TEST_DOMAIN);
         final DefaultUnlistenEvent theCustomUnlistenEvent = new DefaultUnlistenEvent();
-        myEventService.registerUnlistenEvent(theCustomUnlistenEvent);
+        myEventService.registerUnlistenEvent(UnlistenEventListener.Scope.UNLISTEN, theCustomUnlistenEvent);
 
         final List<Domain> theActiveDomains = new ArrayList<Domain>(myEventService.getActiveListenDomains());
         Collections.sort(theActiveDomains);
@@ -518,7 +519,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         myEventService.register(TEST_DOMAIN);
         final DefaultUnlistenEvent theCustomUnlistenEvent = new DefaultUnlistenEvent();
-        myEventService.registerUnlistenEvent(theCustomUnlistenEvent);
+        myEventService.registerUnlistenEvent(UnlistenEventListener.Scope.UNLISTEN, theCustomUnlistenEvent);
 
         final List<Domain> theActiveDomains = new ArrayList<Domain>(myEventService.getActiveListenDomains());
         Collections.sort(theActiveDomains);

@@ -21,6 +21,7 @@ package de.novanic.eventservice.client.event.command;
 
 import de.novanic.eventservice.client.event.RemoteEventConnector;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.logger.ClientLogger;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -37,18 +38,20 @@ public class RegistrationUnlistenEventCommand extends ServerCallCommand<Void>
 {
     private static final ClientLogger LOG = ClientLoggerFactory.getClientLogger();
 
+    private UnlistenEventListener.Scope myUnlistenScope;
     private UnlistenEvent myUnlistenEvent;
 
     /**
      * Creates an ServerCallCommand to execute and handle server calls.
-     *
+     * @param anUnlistenScope scope of the unlisten events to receive
      * @param aRemoteEventConnector {@link de.novanic.eventservice.client.event.RemoteEventConnector}
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} will be transfered to other clients/users when
      * that user/client gets a timeout or deregisters a {@link de.novanic.eventservice.client.event.listener.RemoteEventListener}.
      * @param aVoidAsyncCallback callback of the command
      */
-    public RegistrationUnlistenEventCommand(RemoteEventConnector aRemoteEventConnector, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aVoidAsyncCallback) {
+    public RegistrationUnlistenEventCommand(UnlistenEventListener.Scope anUnlistenScope, RemoteEventConnector aRemoteEventConnector, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> aVoidAsyncCallback) {
         super(aRemoteEventConnector, aVoidAsyncCallback);
+        myUnlistenScope = anUnlistenScope;
         myUnlistenEvent = anUnlistenEvent;
     }
 
@@ -57,6 +60,6 @@ public class RegistrationUnlistenEventCommand extends ServerCallCommand<Void>
      */
     public void execute() {
         LOG.log("Unlisten-Listener registered.");
-        getRemoteEventConnector().registerUnlistenEvent(myUnlistenEvent, getCommandCallback());
+        getRemoteEventConnector().registerUnlistenEvent(myUnlistenScope, myUnlistenEvent, getCommandCallback());
     }
 }

@@ -23,6 +23,7 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
+import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.service.registry.domain.ListenDomainAccessor;
 
 import java.util.Set;
@@ -39,25 +40,32 @@ public class UnlistenEventFilter implements EventFilter
 {
     private final String myUserId;
     private final ListenDomainAccessor myListenDomainAccessor;
+    private final UnlistenEventListener.Scope myUnlistenScope;
 
-    public UnlistenEventFilter(ListenDomainAccessor aListenDomainAccessor, String aUserId) {
+    public UnlistenEventFilter(ListenDomainAccessor aListenDomainAccessor, String aUserId, UnlistenEventListener.Scope anUnlistenScope) {
         myUserId = aUserId;
         myListenDomainAccessor = aListenDomainAccessor;
+        myUnlistenScope = anUnlistenScope;
     }
 
     /**
      * Filters all {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} instances which doesn't
-     * match the registered domains for the current user/client.
+     * match the registered domains for the current user/client or which are sent on a other scope ({@link UnlistenEventListener.Scope}.
      * @param anEvent event to check
      * @return true when the event should be filtered, otherwise false
      */
     public boolean match(Event anEvent) {
         if(anEvent instanceof UnlistenEvent) {
             final UnlistenEvent theUnlistenEvent = (UnlistenEvent)anEvent;
-            final Domain theUnlistenedDomain = theUnlistenEvent.getDomain();
-            if(theUnlistenedDomain != null) {
-                final Set<Domain> theRegisteredListenDomains = myListenDomainAccessor.getListenDomains(myUserId);
-                return !theRegisteredListenDomains.contains(theUnlistenedDomain);
+            if(UnlistenEventListener.Scope.UNLISTEN == myUnlistenScope ||
+                    (UnlistenEventListener.Scope.TIMEOUT == myUnlistenScope && theUnlistenEvent.isTimeout())) {
+                final Domain theUnlistenedDomain = theUnlistenEvent.getDomain();
+                if(theUnlistenedDomain != null) {
+                    final Set<Domain> theRegisteredListenDomains = myListenDomainAccessor.getListenDomains(myUserId);
+                    return !theRegisteredListenDomains.contains(theUnlistenedDomain);
+                }
+            } else {
+                return true;
             }
         }
         return false;
