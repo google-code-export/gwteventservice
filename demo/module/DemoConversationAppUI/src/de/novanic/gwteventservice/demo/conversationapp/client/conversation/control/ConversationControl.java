@@ -86,11 +86,9 @@ public class ConversationControl
                             //in case of logout mode
                             isActionSuccessful = logout();
                         }
-
                         if(isActionSuccessful) {
-                            theLoginPanel.toggle(!isLoginMode);
-                            myConversationMainPanel.getConversationMessagePanel().enable(isLoginMode);
-                            myConversationMainPanel.getConversationChannelPanel().enable(isLoginMode);
+                            toggleLoginStateUI(theLoginPanel, isLoginMode);
+                            myConversationMainPanel.clearMessageHistory();
                         }
                     }
                 });
@@ -102,6 +100,14 @@ public class ConversationControl
         myRemoteEventService.addUnlistenListener(new UnlistenEventListenerAdapter() {
             public void onUnlisten(UnlistenEvent anUnlistenEvent) {
                 String theUserName = ((UserUnlistenEvent)anUnlistenEvent).getUserName();
+                if(myUser.equals(theUserName)) {
+                    if(anUnlistenEvent.isLocal()) {
+                        writeLocalSystemMessage("A connection error is occurred!");
+                    } else if(anUnlistenEvent.isTimeout()) {
+                        toggleLoginStateUI(myConversationMainPanel.getConversationLoginPanel(), false);
+                        writeLocalSystemMessage("A server side timeout is occurred! You need to login again.");
+                    }
+                }
                 myConversationMainPanel.getConversationChannelPanel().removeContact(theUserName);
             }
         }, new UserUnlistenEvent(myUser), new VoidAsyncCallback<Void>());
@@ -194,8 +200,14 @@ public class ConversationControl
         myConversationService.leave(myUser, new VoidAsyncCallback<Void>());
         myRemoteEventService.removeListeners(CONVERSATION_DOMAIN, new VoidAsyncCallback<Void>());
         myRemoteEventService.removeUnlistenListeners(new VoidAsyncCallback<Void>());
-        myConversationMainPanel.reset();
         return true;
+    }
+
+    private void toggleLoginStateUI(ConversationLoginPanel aConversationLoginPanel, boolean isLoginMode) {
+        aConversationLoginPanel.toggle(!isLoginMode);
+        myConversationMainPanel.getConversationMessagePanel().enable(isLoginMode);
+        myConversationMainPanel.getConversationChannelPanel().enable(isLoginMode);
+        myConversationMainPanel.reset();
     }
 
     private void joinChannel(String aChannelName, AsyncCallback<Channel> aCallback) {
@@ -218,6 +230,10 @@ public class ConversationControl
         }
         myConversationMainPanel.addMessageHistoryText(theMessage);
         myConversationMainPanel.getConversationMessagePanel().setFocus(true);
+    }
+
+    private void writeLocalSystemMessage(String aMessage) {
+        writeMessage("SYSTEM", aMessage);
     }
 
     private void switchChannel(Channel aNewChannel) {

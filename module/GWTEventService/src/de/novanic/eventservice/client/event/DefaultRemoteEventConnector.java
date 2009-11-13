@@ -112,6 +112,8 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
         if(myUnlistenEvent == null) {
             myUnlistenEvent = new DefaultUnlistenEvent();
         }
+        myUnlistenEvent.setTimeout(false);
+        myUnlistenEvent.setLocal(true);
         final DomainEvent theUnlistenDomainEvent = new DefaultDomainEvent(myUnlistenEvent, DomainFactory.UNLISTEN_DOMAIN);
         anEventNotification.onNotify(Arrays.asList(theUnlistenDomainEvent));
     }

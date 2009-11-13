@@ -73,4 +73,17 @@ public interface UnlistenEvent extends Event
      * @param aTimeout true when the UnlistenEvent marks a timeout, otherwise false (for example a domain specific UnlistenEvent)
      */
     void setTimeout(boolean aTimeout);
+
+    /**
+     * Returns true when the UnlistenEvent is triggered from the client side. That can for example occur on connection errors.
+     * @return true when triggered from client side, otherwise false
+     */
+    boolean isLocal();
+
+    /**
+     * Sets the local flag. It should be set true when the UnlistenEvent is triggered from the client side.  That can for example
+     * occur on connection errors.
+     * @param isLocal true when triggered from client side, otherwise false
+     */
+    void setLocal(boolean isLocal);
 }
