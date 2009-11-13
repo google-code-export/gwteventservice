@@ -38,6 +38,7 @@ public class DefaultUnlistenEvent implements UnlistenEvent
     private Domain myDomain;
     private String myUserId;
     private boolean isTimeout;
+    private boolean isLocal;
 
     /**
      * Creates an UnlistenEvent for all domains (global). This is useful if the user exits
@@ -49,12 +50,25 @@ public class DefaultUnlistenEvent implements UnlistenEvent
      * Creates an UnlistenEvent for a specific domain. That will be created when a user will be deregistered from a domain.
      * @param aDomain {@link de.novanic.eventservice.client.event.domain.Domain} which is unlistened (in combination with the user id)
      * @param aUserId user id which is unlistened (in combination with the domain)
-     * @param isTimeout
+     * @param isTimeout true when the creation of the UnlistenEvent is caused by a timeout
      */
     public DefaultUnlistenEvent(Domain aDomain, String aUserId, boolean isTimeout) {
         myDomain = aDomain;
         myUserId = aUserId;
         this.isTimeout = isTimeout;
+    }
+
+    /**
+     * Creates an UnlistenEvent for a specific domain. That will be created when a user will be deregistered from a domain or when the
+     * UnlistenEvent is triggered from the client side (see {@link UnlistenEvent#isLocal()}).
+     * @param aDomain {@link de.novanic.eventservice.client.event.domain.Domain} which is unlistened (in combination with the user id)
+     * @param aUserId user id which is unlistened (in combination with the domain)
+     * @param isTimeout true when the creation of the UnlistenEvent is caused by a timeout
+     * @param isLocal true when the UnlistenEvent was created from the client side (see {@link UnlistenEvent#isLocal()}).
+     */
+    public DefaultUnlistenEvent(Domain aDomain, String aUserId, boolean isTimeout, boolean isLocal) {
+        this(aDomain, aUserId, isTimeout);
+        this.isLocal = isLocal;
     }
 
     /**
@@ -105,6 +119,23 @@ public class DefaultUnlistenEvent implements UnlistenEvent
      */
     public void setTimeout(boolean aTimeout) {
         isTimeout = aTimeout;
+    }
+
+    /**
+     * Returns true when the UnlistenEvent is triggered from the client side. That can for example occur on connection errors.
+     * @return true when triggered from client side, otherwise false
+     */
+    public boolean isLocal() {
+        return isLocal;
+    }
+
+    /**
+     * Sets the local flag. It should be set true when the UnlistenEvent is triggered from the client side.  That can for example
+     * occur on connection errors.
+     * @param isLocal true when triggered from client side, otherwise false
+     */
+    public void setLocal(boolean isLocal) {
+        this.isLocal = isLocal;
     }
 
     public boolean equals(Object anObject) {

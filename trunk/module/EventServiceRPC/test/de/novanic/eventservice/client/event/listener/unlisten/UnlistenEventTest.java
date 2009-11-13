@@ -41,9 +41,11 @@ public class UnlistenEventTest extends TestCase
         theUnlistenEvent.setDomain(myTestDomain);
         theUnlistenEvent.setUserId("XY");
         theUnlistenEvent.setTimeout(true);
+        theUnlistenEvent.setLocal(true);
         assertEquals(myTestDomain, theUnlistenEvent.getDomain());
         assertEquals("XY", theUnlistenEvent.getUserId());
         assertTrue(theUnlistenEvent.isTimeout());
+        assertTrue(theUnlistenEvent.isLocal());
 
         //test must-haves for toString
         assertTrue(theUnlistenEvent.toString().contains("Unlisten") || theUnlistenEvent.toString().contains("unlisten"));
@@ -56,6 +58,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals(myTestDomain, theUnlistenEvent.getDomain());
         assertEquals("XY", theUnlistenEvent.getUserId());
         assertTrue(theUnlistenEvent.isTimeout());
+        assertFalse(theUnlistenEvent.isLocal());
 
         //test must-haves for toString
         assertTrue(theUnlistenEvent.toString().contains("Unlisten") || theUnlistenEvent.toString().contains("unlisten"));
@@ -64,10 +67,24 @@ public class UnlistenEventTest extends TestCase
     }
 
     public void testInit_3() {
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(myTestDomain, "XY", true, true);
+        assertEquals(myTestDomain, theUnlistenEvent.getDomain());
+        assertEquals("XY", theUnlistenEvent.getUserId());
+        assertTrue(theUnlistenEvent.isTimeout());
+        assertTrue(theUnlistenEvent.isLocal());
+
+        //test must-haves for toString
+        assertTrue(theUnlistenEvent.toString().contains("Unlisten") || theUnlistenEvent.toString().contains("unlisten"));
+        assertTrue(theUnlistenEvent.toString().contains(myTestDomain.getName()));
+        assertTrue(theUnlistenEvent.toString().contains("timeout"));
+    }
+
+    public void testInit_4() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         assertNull(theUnlistenEvent.getDomain());
         assertNull(theUnlistenEvent.getUserId());
         assertFalse(theUnlistenEvent.isTimeout());
+        assertFalse(theUnlistenEvent.isLocal());
 
         //test must-haves for toString
         assertTrue(theUnlistenEvent.toString().contains("Unlisten") || theUnlistenEvent.toString().contains("unlisten"));
