@@ -18,7 +18,7 @@
 		<table>
 			<tr>
 				<td>
-					<h3>< GWTEventService 1.0.1 ></h3>
+					<h3>< GWTEventService 1.0.2 ></h3>
 				</td>
 			</tr>
 		</table>
@@ -26,6 +26,7 @@
 		<ul>
 			<li>Encapsulation of the client-server communication</li>
 			<li>High-level API with listeners and events</li>
+			<li>Easy to use</li>
 			<li>Only one open connection for event listening</li>
 			<li>Reduction of server calls</li>
 			<li>Reduction of connection peaks</li>
@@ -34,12 +35,20 @@
 			<li>Based on the GWT-RPC mechanism</li>
 			<li>Automatic timeout recognition and handling</li>
 			<li>Extensible architecture</li>
+		</ul><br>
+		<h3>GWTEventService 1.0.2</h3>
+		<ul>
+			<li>Bugfix (Ticket 6): The callback wasn't used when a listener is removed without a domain (domain-less listener)</li>
+			<li>Bugfix (Ticket 7): Empty domains weren't removed automatically</li>
+			<li>Bugfix (Ticket 8): Possible dead-lock when a user is registered and another user is concurrent deregistered</li>
+			<li>Improvements for domain-less usage</li>
+			<li>Concurrency optimizations</li>
 		</ul>
-		<h3>Changes from GWTEventService 1.0 to 1.0.1</h3>
+		<h3>GWTEventService 1.0.1</h3>
 		<ul>
 			<li>Bugfix: Work-around to avoid multiple session creation (GWT issue 1826) when GWTEventService had to execute the first server call of the application</li>
-			<li>Bugfix: Chrome appeared as if the page never finishes loading when GWTEventService had to execute the first server call of the application</li>
-			<li>Bugfix: Client side multi-threading bug fixed, which could occure when a listener is removed while processing listen results</li>
+			<li>Bugfix (Ticket 3): Chrome appeared as if the page never finishes loading when GWTEventService had to execute the first server call of the application</li>
+			<li>Bugfix: Client side multi-threading bug fixed, which could occur when a listener is removed while processing listen results</li>
 			<li>Client commands introduced to solve the problems described above (new interfaces ClientCommand and ClientCommandScheduler)</li>
 			<li>Some client side optimizations</li>
 		</ul>
