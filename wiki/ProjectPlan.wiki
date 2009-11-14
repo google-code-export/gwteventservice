@@ -16,12 +16,12 @@
 
 || *State* || *Task* || *Description* ||
 || <font color="green">Done</font> || !EventFilter enhancements || Additional interfaces and factories to simplify to building filter sequences ||
-|| <font color="orange">Partly Done</font> || Timeout listener || Timeout listener to observe client timeouts (moved from GWTEventService 1.2 to 1.1). See the concept: [GWTEventServiceTimeoutConcept GWTEventService - Timeout-Concept] ||
+|| <font color="green">Done</font> || Timeout listener || Timeout listener to observe client timeouts (moved from GWTEventService 1.2 to 1.1). See the concept: [GWTEventServiceTimeoutConcept GWTEventService - Timeout-Concept] ||
 || <font color="green">Done</font> || Revised configuration loading || Improvements in registration of custom configuration loaders and generic proxy for caching purposes ||
 || <font color="green">Done</font> || Configration with Web-Descriptor || Additional configuration possibility with Web-Descriptor / Servlet-Parameters ||
-|| Open || Support for Annotations || Extended support for Annotations (for e.g. for listener-event mappings) ||
-|| Open || Simplified listener-event mapping || Simplified listener-event mapping and an optional solution with Annotations ||
-|| Open || Optional client side polling || Polling isn't required by GWTEventService, but it could be configured to reduce cycles of server calls when many "unimportant" events can occure. ||
+|| <font color="orange">Moved to 1.2</font> || Support for Annotations || Extended support for Annotations (for e.g. for listener-event mappings) ||
+|| <font color="orange">Moved to 1.2</font> || Simplified listener-event mapping || Simplified listener-event mapping and an optional solution with Annotations ||
+|| <font color="orange">Moved to 1.2</font> || Optional client side polling || Polling isn't required by GWTEventService, but it could be configured to reduce cycles of server calls when many "unimportant" events can occure. ||
 || <font color="orange">Started</font> || Documentation || Documentation and release notes ||
 
 ==!DemoApplicationApp==
