@@ -19,8 +19,7 @@
  */
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui;
 
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.ClickListener;
 
 import java.util.Set;
 
@@ -45,7 +44,9 @@ public interface ConversationChannelPanel
 
     void enable(boolean isEnable);
 
-    HandlerRegistration addAddChannelButtonListener(ClickHandler aClickListener);
+    void addAddChannelButtonListener(ClickListener aClickListener);
 
-    HandlerRegistration addChannelSelectListener(ChannelSelectListener aChannelSelectListener);
+    void removeAddChannelButtonListener(ClickListener aClickListener);
+
+    void addChannelSelectListener(ChannelSelectListener aChannelSelectListener);
 }

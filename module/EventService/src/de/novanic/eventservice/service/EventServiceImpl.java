@@ -28,19 +28,11 @@ import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.DomainEvent;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
-import de.novanic.eventservice.config.EventServiceConfigurationFactory;
-import de.novanic.eventservice.config.level.ConfigLevelFactory;
-import de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
 
 /**
  * {@link de.novanic.eventservice.client.event.service.EventService} is the server side interface to register listen
@@ -53,25 +45,18 @@ import javax.servlet.ServletConfig;
 public class EventServiceImpl extends RemoteServiceServlet implements EventService
 {
     private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(EventServiceImpl.class.getName());
-    private EventRegistry myEventRegistry;
+    private final EventRegistry myEventRegistry;
 
-    /**
-     * The init method should be called automatically before the servlet can be used and should called only one time.
-     * That method initialized the {@link de.novanic.eventservice.service.registry.EventRegistry}.
-     * @param aConfig servlet configuration
-     * @throws ServletException
-     */
-    public void init(ServletConfig aConfig) throws ServletException {
-        super.init(aConfig);
-        myEventRegistry = initEventRegistry(aConfig);
+    public EventServiceImpl() {
+        final EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
+        myEventRegistry = theEventRegistryFactory.getEventRegistry();
     }
 
     /**
      * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
      */
     public void initEventService() {
-        final String theClientId = getClientId(true);
-        LOG.debug("Client \"" + theClientId + "\" initialized.");
+        getClientId(true);
     }
 
     /**
@@ -114,20 +99,6 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     }
 
     /**
-     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which is triggered on a
-     * timeout or when a user/client leaves a {@link de.novanic.eventservice.client.event.domain.Domain}. An
-     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is hold at the server side and can
-     * contain custom data. Other users/clients can use the custom data when the event is for example triggered by a timeout.
-     * @param anUnlistenScope scope of the unlisten events to receive
-     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
-     * be transfered to other users/clients when a timeout occurs or a domain is leaved.
-     */
-    public void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent) {
-        final String theClientId = getClientId();
-        myEventRegistry.registerUnlistenEvent(theClientId, anUnlistenScope, anUnlistenEvent);
-    }
-
-    /**
      * Registers an {@link EventFilter} for the domain.
      * @param aDomain domain to register the EventFilter to
      * @param anEventFilter EventFilter to filter events for the domain
@@ -144,16 +115,6 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     public void deregisterEventFilter(Domain aDomain) {
         final String theClientId = getClientId();
         myEventRegistry.removeEventFilter(aDomain, theClientId);
-    }
-
-    /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    public EventFilter getEventFilter(Domain aDomain) {
-        final String theClientId = getClientId();
-        return myEventRegistry.getEventFilter(aDomain, theClientId);
     }
 
     /**
@@ -239,31 +200,10 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     }
 
     /**
-     * Registers the {@link de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader},
-     * loads the first available configuration (with {@link de.novanic.eventservice.config.EventServiceConfigurationFactory})
-     * and initializes the {@link de.novanic.eventservice.service.registry.EventRegistry}.
-     * @param aConfig servlet configuration
-     * @return initialized {@link de.novanic.eventservice.service.registry.EventRegistry}
-     */
-    private EventRegistry initEventRegistry(ServletConfig aConfig) {
-        final WebDescriptorConfigurationLoader theWebDescriptorConfigurationLoader = new WebDescriptorConfigurationLoader(aConfig);
-        final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
-        theEventServiceConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.DEFAULT, theWebDescriptorConfigurationLoader);
-
-        final EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
-        EventRegistry theEventRegistry = theEventRegistryFactory.getEventRegistry();
-
-        if(theWebDescriptorConfigurationLoader.isAvailable()) {
-            theEventServiceConfigurationFactory.loadEventServiceConfiguration();
-        }
-        return theEventRegistry;
-    }
-
-    /**
      * Returns the client id.
      * @return client id
      */
-    private String getClientId() {
+    protected String getClientId() {
         return getClientId(false);
     }
 

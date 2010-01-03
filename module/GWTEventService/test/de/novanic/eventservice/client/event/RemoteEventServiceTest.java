@@ -19,9 +19,6 @@
  */
 package de.novanic.eventservice.client.event;
 
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListenerAdapter;
-import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
-
 /**
  * @author sstrohschein
  * Date: 20.07.2008
@@ -161,71 +158,6 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
         executeActions();
     }
 
-    public void testAddUnlistenListener() {
-        assertFalse(myRemoteEventService.isActive());
-
-        //start listen
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //add UnlistenListener
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addUnlistenListener(getUnlistenListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-                assertEquals(0, getUnlistenEventCount());
-            }
-        });
-
-        //unlisten
-        addAction(new TestAction(true) {
-            void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.unlisten(TEST_DOMAIN, getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertEquals(1, getEventCount());
-                assertEquals(1, getUnlistenEventCount());
-            }
-        });
-
-        executeActions();
-    }
-
     public void testRemoveListener() {
         //start listen
         addAction(new TestAction() {
@@ -264,35 +196,6 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
         });
 
         //add ignored event
-        addAction(new TestAction(false) {
-            public void execute() {
-                assertFalse(myRemoteEventService.isActive());
-                myEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertFalse(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-            }
-        });
-
-        //start listen again
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(TEST_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount()); //the previous event is ignored, because the listeners was removed and the connection wasn't active
-            }
-        });
-
-        //add event
         addAction(new TestAction(true) {
             public void execute() {
                 assertTrue(myRemoteEventService.isActive());
@@ -303,11 +206,9 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
         addAction(new TestAction() {
             public void execute() {
                 assertTrue(myRemoteEventService.isActive());
-                assertEquals(2, getEventCount());
+                assertEquals(1, getEventCount());
             }
         });
-
-        executeActions();
     }
 
     public void testRemoveListener_DomainLess() {
@@ -413,13 +314,6 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
             }
         });
 
-        //register unlisten listener
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addUnlistenListener(new UnlistenEventListenerAdapter(), new DefaultUnlistenEvent(), getCallback());
-            }
-        });
-
         //add event to TEST_DOMAIN_2
         addAction(new TestAction(true) {
             public void execute() {
@@ -491,7 +385,7 @@ public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
                 assertEquals(3, getEventCount());
             }
         });
-
+        
         executeActions();
     }
 

@@ -19,7 +19,7 @@
  */
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui;
 
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.ClickListener;
 
 /**
  * @author sstrohschein
@@ -34,5 +34,5 @@ public interface ConversationLoginPanel
 
     boolean isLogin();
 
-    void addLoginButtonListener(ClickHandler aLoginButtonListener);
+    void addLoginButtonListener(ClickListener aLoginButtonListener);
 }

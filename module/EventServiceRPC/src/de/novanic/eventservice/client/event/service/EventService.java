@@ -22,8 +22,6 @@ package de.novanic.eventservice.client.event.service;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.DomainEvent;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.domain.Domain;
 
 import java.util.List;
@@ -72,17 +70,6 @@ public interface EventService extends RemoteService
     void register(Set<Domain> aDomains, EventFilter anEventFilter);
 
     /**
-     * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which is triggered on a
-     * timeout or when a user/client leaves a {@link de.novanic.eventservice.client.event.domain.Domain}. An
-     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is hold at the server side and can
-     * contain custom data. Other users/clients can use the custom data when the event is for example triggered by a timeout.
-     * @param anUnlistenScope scope of the unlisten events to receive
-     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
-     * be transfered to other users/clients when a timeout occurs or a domain is leaved.
-     */
-    void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent);
-
-    /**
      * Registers an {@link EventFilter} for the domain.
      * @param aDomain domain to register the EventFilter to
      * @param anEventFilter EventFilter to filter events for the domain
@@ -94,13 +81,6 @@ public interface EventService extends RemoteService
      * @param aDomain domain to drop the EventFilters from
      */
     void deregisterEventFilter(Domain aDomain);
-
-    /**
-     * Returns the EventFilter for the user domain combination.
-     * @param aDomain domain
-     * @return EventFilter for the domain
-     */
-    EventFilter getEventFilter(Domain aDomain);
 
     /**
      * The listen method returns all events for the user (events for all domains where the user is registered and user

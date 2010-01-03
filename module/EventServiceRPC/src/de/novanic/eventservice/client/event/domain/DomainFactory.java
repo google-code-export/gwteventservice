@@ -30,12 +30,6 @@ package de.novanic.eventservice.client.event.domain;
  */
 public final class DomainFactory
 {
-    /**
-     * All unlisten event ({@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}) will be registered to
-     * the UNLISTEN_DOMAIN.
-     */
-    public static final Domain UNLISTEN_DOMAIN = getDomain("service_unlisten_domain");
-
     private DomainFactory() {}
 
     /**

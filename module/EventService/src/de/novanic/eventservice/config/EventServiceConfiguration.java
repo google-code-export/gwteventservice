@@ -34,12 +34,6 @@ package de.novanic.eventservice.config;
 public interface EventServiceConfiguration
 {
     /**
-     * Returns the description of the configuration (for example the location).
-     * @return configuration description
-     */
-    String getConfigDescription();
-
-    /**
      * Returns the min waiting time. Listening should hold at least for min waiting time.
      * @return min waiting time
      */

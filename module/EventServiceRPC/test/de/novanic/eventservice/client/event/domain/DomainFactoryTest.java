@@ -20,7 +20,6 @@
 package de.novanic.eventservice.client.event.domain;
 
 import junit.framework.TestCase;
-import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
 
 /**
  * @author sstrohschein
@@ -29,11 +28,6 @@ import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
  */
 public class DomainFactoryTest extends TestCase
 {
-    public void testConstructor() {
-        PrivateMethodExecutor<DomainFactory> thePrivateMethodExecutor = new PrivateMethodExecutor<DomainFactory>(DomainFactory.class);
-        thePrivateMethodExecutor.executePrivateConstructor();
-    }
-
     public void testFactory() {
         final String TEST_DOMAIN = "testDomain";
         Domain theDomain = DomainFactory.getDomain(TEST_DOMAIN);

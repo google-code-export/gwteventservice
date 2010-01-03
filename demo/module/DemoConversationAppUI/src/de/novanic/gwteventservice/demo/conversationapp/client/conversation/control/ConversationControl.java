@@ -28,22 +28,18 @@ import de.novanic.gwteventservice.demo.conversationapp.client.conversation.Conve
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.Channel;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.ConversationEvent;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.ConversationListenerAdapter;
-import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.UserUnlistenEvent;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event.filter.ChannelEventFilter;
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListenerAdapter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.PopupListener;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
 
 import java.util.List;
 
@@ -75,8 +71,8 @@ public class ConversationControl
             public void onSuccess(List<Channel> aChannelList) {
                 
                 final ConversationLoginPanel theLoginPanel = myConversationMainPanel.getConversationLoginPanel();
-                theLoginPanel.addLoginButtonListener(new ClickHandler() {
-                    public void onClick(ClickEvent aClickEvent) {
+                theLoginPanel.addLoginButtonListener(new ClickListener() {
+                    public void onClick(Widget aSender) {
                         final boolean isLoginMode = theLoginPanel.isLogin();
                         boolean isActionSuccessful;
                         if(isLoginMode) {
@@ -86,9 +82,11 @@ public class ConversationControl
                             //in case of logout mode
                             isActionSuccessful = logout();
                         }
+
                         if(isActionSuccessful) {
-                            toggleLoginStateUI(theLoginPanel, isLoginMode);
-                            myConversationMainPanel.clearMessageHistory();
+                            theLoginPanel.toggle(!isLoginMode);
+                            myConversationMainPanel.getConversationMessagePanel().enable(isLoginMode);
+                            myConversationMainPanel.getConversationChannelPanel().enable(isLoginMode);
                         }
                     }
                 });
@@ -97,23 +95,8 @@ public class ConversationControl
     }
 
     private void init() {
-        myRemoteEventService.addUnlistenListener(new UnlistenEventListenerAdapter() {
-            public void onUnlisten(UnlistenEvent anUnlistenEvent) {
-                String theUserName = ((UserUnlistenEvent)anUnlistenEvent).getUserName();
-                if(myUser.equals(theUserName)) {
-                    if(anUnlistenEvent.isLocal()) {
-                        writeLocalSystemMessage("A connection error is occurred!");
-                    } else if(anUnlistenEvent.isTimeout()) {
-                        toggleLoginStateUI(myConversationMainPanel.getConversationLoginPanel(), false);
-                        writeLocalSystemMessage("A server side timeout is occurred! You need to login again.");
-                    }
-                }
-                myConversationMainPanel.getConversationChannelPanel().removeContact(theUserName);
-            }
-        }, new UserUnlistenEvent(myUser), new VoidAsyncCallback<Void>());
-
-        myRemoteEventService.addListener(CONVERSATION_DOMAIN, new DefaultConversationListener(), new ChannelEventFilter(GLOBAL_CHANNEL), new DefaultAsyncCallback<Void>() {
-            public void onSuccess(Void aResult) {
+        myRemoteEventService.addListener(CONVERSATION_DOMAIN, new DefaultConversationListener(), new ChannelEventFilter(GLOBAL_CHANNEL), new DefaultAsyncCallback() {
+            public void onSuccess(Object aResult) {
                 final ConversationChannelPanel theChannelPanel = myConversationMainPanel.getConversationChannelPanel();
 
                 joinChannel(GLOBAL_CHANNEL, new DefaultAsyncCallback<Channel>() {
@@ -132,11 +115,11 @@ public class ConversationControl
     }
 
     private void init(final ConversationMessagePanel aConversationMessagePanel) {
-        aConversationMessagePanel.addSendButtonListener(new ClickHandler() {
-            public void onClick(ClickEvent aClickEvent) {
+        aConversationMessagePanel.addSendButtonListener(new ClickListener() {
+            public void onClick(Widget aSender) {
                 final String theMessage = aConversationMessagePanel.getMessageText();
                 if(!theMessage.trim().equals("")) {
-                    myConversationService.sendMessage(myUser, theMessage, new VoidAsyncCallback<Void>());
+                    myConversationService.sendMessage(myUser, theMessage, new VoidAsyncCallback());
                     aConversationMessagePanel.resetMessageText();
                 }
             }
@@ -144,11 +127,11 @@ public class ConversationControl
     }
 
     private void init(final ConversationChannelPanel aConversationChannelPanel) {
-        aConversationChannelPanel.addAddChannelButtonListener(new ClickHandler() {
-            public void onClick(ClickEvent aClickEvent) {
+        aConversationChannelPanel.addAddChannelButtonListener(new ClickListener() {
+            public void onClick(Widget aSender) {
                 final ConversationChannelCreatorDialog theConversationChannelCreatorDialog = new GWTConversationChannelCreatorDialog();
-                theConversationChannelCreatorDialog.addCloseHandler(new CloseHandler<PopupPanel>() {
-                    public void onClose(CloseEvent aCloseEvent) {
+                theConversationChannelCreatorDialog.addPopupListener(new PopupListener() {
+                    public void onPopupClosed(PopupPanel aSender, boolean aIsAutoClosed) {
                         if(!theConversationChannelCreatorDialog.isCanceled()) {
                             //the new channel can be got with from the EventService and the user is joined by the server (ConversationService)
                             myConversationService.createChannel(myUser, theConversationChannelCreatorDialog.getChannelName(), new DefaultAsyncCallback<Channel>() {
@@ -197,17 +180,10 @@ public class ConversationControl
     }
 
     private boolean logout() {
-        myConversationService.leave(myUser, new VoidAsyncCallback<Void>());
-        myRemoteEventService.removeListeners(CONVERSATION_DOMAIN, new VoidAsyncCallback<Void>());
-        myRemoteEventService.removeUnlistenListeners(new VoidAsyncCallback<Void>());
-        return true;
-    }
-
-    private void toggleLoginStateUI(ConversationLoginPanel aConversationLoginPanel, boolean isLoginMode) {
-        aConversationLoginPanel.toggle(!isLoginMode);
-        myConversationMainPanel.getConversationMessagePanel().enable(isLoginMode);
-        myConversationMainPanel.getConversationChannelPanel().enable(isLoginMode);
+        myConversationService.leave(myUser, new VoidAsyncCallback());
+        myRemoteEventService.removeListeners(CONVERSATION_DOMAIN);
         myConversationMainPanel.reset();
+        return true;
     }
 
     private void joinChannel(String aChannelName, AsyncCallback<Channel> aCallback) {
@@ -230,10 +206,6 @@ public class ConversationControl
         }
         myConversationMainPanel.addMessageHistoryText(theMessage);
         myConversationMainPanel.getConversationMessagePanel().setFocus(true);
-    }
-
-    private void writeLocalSystemMessage(String aMessage) {
-        writeMessage("SYSTEM", aMessage);
     }
 
     private void switchChannel(Channel aNewChannel) {

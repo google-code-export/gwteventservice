@@ -24,13 +24,10 @@ import junit.framework.Test;
 import de.novanic.eventservice.client.logger.ClientLoggerFactoryTest;
 import de.novanic.eventservice.client.logger.GWTClientLoggerTest;
 import de.novanic.eventservice.client.event.DomainEventTest;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventTest;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListenerAdapterTest;
+import de.novanic.eventservice.client.event.listen.UnlistenEventTest;
 import de.novanic.eventservice.client.event.domain.DefaultDomainTest;
 import de.novanic.eventservice.client.event.domain.DomainFactoryTest;
 import de.novanic.eventservice.client.event.filter.DefaultEventFilterTest;
-import de.novanic.eventservice.client.event.filter.CompositeEventFilterTest;
-import de.novanic.eventservice.client.event.filter.EventFilterFactoryTest;
 import de.novanic.eventservice.client.command.DefaultRemoteCommandTest;
 import de.novanic.eventservice.client.command.RemoteListenCommandTest;
 
@@ -60,11 +57,8 @@ public class EventServiceRPCTestSuite
 
         //Event
         theSuite.addTestSuite(UnlistenEventTest.class);
-        theSuite.addTestSuite(UnlistenEventListenerAdapterTest.class);
         theSuite.addTestSuite(DomainEventTest.class);
         theSuite.addTestSuite(DefaultEventFilterTest.class);
-        theSuite.addTestSuite(CompositeEventFilterTest.class);
-        theSuite.addTestSuite(EventFilterFactoryTest.class);
 
         return theSuite;
     }

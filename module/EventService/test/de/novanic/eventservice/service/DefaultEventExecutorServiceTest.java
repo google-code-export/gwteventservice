@@ -40,7 +40,7 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         try {
             theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new TestEvent());
         } catch(NoSessionAvailableException e) {
-            fail("No Exception \"" + e.getClass().getName() + "\" expected!");
+            fail("No Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
         }
     }
 
@@ -81,17 +81,6 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
         try {
             theEventExecutorService.setEventFilter(DomainFactory.getDomain("X"), new TestEventFilter());
-            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
-        } catch(NoSessionAvailableException e) {
-            assertEquals("There is no session / client information available!", e.getMessage());
-            assertNull(e.getCause());
-        }
-    }
-
-    public void testRemoveEventFilter_Error() {
-        EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
-        try {
-            theEventExecutorService.removeEventFilter(DomainFactory.getDomain("X"));
             fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
         } catch(NoSessionAvailableException e) {
             assertEquals("There is no session / client information available!", e.getMessage());

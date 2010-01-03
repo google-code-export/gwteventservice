@@ -31,100 +31,10 @@ public class DefaultEventFilterTest extends TestCase
 {
     public void testMatch() {
         EventFilter theEventFilter = new DefaultEventFilter();
-        assertFalse(theEventFilter.match(new Event() {}));
-    }
-
-    public void testAppend() {
-        AppendableEventFilter theEventFilter = new DefaultEventFilter() {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 0 == ((TestEvent)anEvent).getId();
-            }
-        }.attach(new DefaultEventFilter() {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 1 == ((TestEvent)anEvent).getId();
-            }
-        }.attach(new DefaultEventFilter() {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 2 == ((TestEvent)anEvent).getId();
+        assertFalse(theEventFilter.match(new Event() {
+            public String getDomain() {
+                return null;
             }
         }));
-
-        assertFalse(theEventFilter.match(new TestEvent(-1)));
-        assertTrue(theEventFilter.match(new TestEvent(0)));
-        assertTrue(theEventFilter.match(new TestEvent(1)));
-        assertTrue(theEventFilter.match(new TestEvent(2)));
-        assertFalse(theEventFilter.match(new TestEvent(3)));
-    }
-
-    public void testAppend_2() {
-        AppendableEventFilter theEventFilter = new DefaultEventFilter() {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 1 == ((TestEvent)anEvent).getId();
-            }
-        }.attach(new DefaultEventFilter() {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 2 == ((TestEvent)anEvent).getId();
-            }
-        }.attach(new DefaultEventFilter() {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 0 == ((TestEvent)anEvent).getId();
-            }
-        }));
-
-        assertFalse(theEventFilter.match(new TestEvent(-1)));
-        assertTrue(theEventFilter.match(new TestEvent(0)));
-        assertTrue(theEventFilter.match(new TestEvent(1)));
-        assertTrue(theEventFilter.match(new TestEvent(2)));
-        assertFalse(theEventFilter.match(new TestEvent(3)));
-    }
-
-    public void testAppend_3() {
-        AppendableEventFilter theEventFilter = new DefaultEventFilter(new DefaultEventFilter(new DefaultEventFilter() {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 0 == ((TestEvent)anEvent).getId();
-            }
-        }) {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 1 == ((TestEvent)anEvent).getId();
-            }
-        }) {
-            public boolean match(Event anEvent) {
-                return super.match(anEvent) || 2 == ((TestEvent)anEvent).getId();
-            }
-        };
-
-        assertFalse(theEventFilter.match(new TestEvent(-1)));
-        assertTrue(theEventFilter.match(new TestEvent(0)));
-        assertTrue(theEventFilter.match(new TestEvent(1)));
-        assertTrue(theEventFilter.match(new TestEvent(2)));
-        assertFalse(theEventFilter.match(new TestEvent(3)));
-    }
-
-    public void testDetach() {
-        CascadingEventFilter theCascadingEventFilter = new DefaultEventFilter();
-        assertNull(theCascadingEventFilter.getAttachedEventFilter());
-
-        //shouldn't have an effect
-        theCascadingEventFilter.detach();
-        assertNull(theCascadingEventFilter.getAttachedEventFilter());
-
-        theCascadingEventFilter.attach(new DefaultEventFilter());
-        assertNotNull(theCascadingEventFilter.getAttachedEventFilter());
-
-        theCascadingEventFilter.detach();
-        assertNull(theCascadingEventFilter.getAttachedEventFilter());
-    }
-
-    private class TestEvent implements Event
-    {
-        private int myId;
-
-        private TestEvent(int anId) {
-            myId = anId;
-        }
-
-        public int getId() {
-            return myId;
-        }
     }
 }

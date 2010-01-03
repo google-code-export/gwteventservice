@@ -10,8 +10,8 @@
         <isset property="osEnv.GWT_HOME"/>
     </condition>
 
-    <property name="version.number" value="1.1"/>
-    <property name="version.final" value="false"/>
+    <property name="version.number" value="1.0.2"/>
+    <property name="version.final" value="true"/>
     <condition property="version" value="${version.number}" else="${version.number}-dev">
         <istrue value="${version.final}"/>
     </condition>
@@ -104,7 +104,7 @@
 
     <target name="test" depends="compile, compile-test">
 
-        <junit fork="yes" printsummary="yes" showoutput="yes" haltonerror="yes" haltonfailure="yes" maxmemory="128M">
+        <junit fork="yes" printsummary="yes" showoutput="no" haltonerror="yes" haltonfailure="yes" maxmemory="128M">
             <classpath refid="test.classpath"/>
             <formatter type="brief" usefile="false"/>
             <batchtest>

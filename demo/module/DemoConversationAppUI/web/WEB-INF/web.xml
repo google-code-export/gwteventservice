@@ -5,10 +5,6 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
 
-	<welcome-file-list>
-		<welcome-file>/de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI/DemoConversationAppUI.html</welcome-file>
-	</welcome-file-list>
-
     <servlet>
         <servlet-name>EventService</servlet-name>
         <servlet-class>de.novanic.eventservice.service.EventServiceImpl</servlet-class>

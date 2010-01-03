@@ -21,7 +21,6 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
-import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
 
@@ -43,8 +42,11 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
 {
     private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(PropertyConfigurationLoader.class.getName());
     private static final String DEFAULT_PROPERTY_NAME = "eventservice.properties";
+    private static final String MAX_WAITING_TIME_TAG = "time.waiting.max";
+    private static final String MIN_WAITING_TIME_TAG = "time.waiting.min";
+    private static final String TIMEOUT_TIME_TAG = "time.timeout";
 
-    private final String myPropertyName;
+    private String myPropertyName;
 
     /**
      * Creates a {@link PropertyConfigurationLoader} with the default properties ("eventservice.properties").
@@ -116,11 +118,11 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
      * @throws ConfigurationException thrown when the values aren't parsable to an integer
      */
     private EventServiceConfiguration load(Properties aProperties) {
-        final int theMaxWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MAX_WAITING_TIME_TAG, ConfigParameter.MAX_WAITING_TIME_TAG));
-        final int theMinWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MIN_WAITING_TIME_TAG, ConfigParameter.MIN_WAITING_TIME_TAG));
-        final int theTimeoutTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_TIMEOUT_TIME_TAG, ConfigParameter.TIMEOUT_TIME_TAG));
+        int theMaxWaitingTime = getIntValue(aProperties.getProperty(MAX_WAITING_TIME_TAG));
+        int theMinWaitingTime = getIntValue(aProperties.getProperty(MIN_WAITING_TIME_TAG));
+        int theTimeoutTime = getIntValue(aProperties.getProperty(TIMEOUT_TIME_TAG));
 
-        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime);
+        return new RemoteEventServiceConfiguration(theMinWaitingTime, theMaxWaitingTime, theTimeoutTime);
     }
 
     /**
@@ -137,58 +139,5 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
             throw new ConfigurationException("Error on processing configuration \"" + myPropertyName + "\"! " +
                     "The value \"" + aString + "\" couldn't parsed to an integer!");
         }
-    }
-
-    /**
-     * Returns the description of the configuration (could for example contain the config file name).
-     * @return configuration description
-     */
-    private String getConfigDescription() {
-        StringBuilder theConfigDescriptionBuffer = new StringBuilder(15 + myPropertyName.length());
-        theConfigDescriptionBuffer.append("Properties \"");
-        theConfigDescriptionBuffer.append(myPropertyName);
-        theConfigDescriptionBuffer.append('\"');
-        return theConfigDescriptionBuffer.toString();
-    }
-
-    /**
-     * Returns the best property value. The specified properties are checked in sequence and the value of the first available property is returned.
-     * @param aProperties properties
-     * @param aPropertyNames properties in sequence to check
-     * @return return the value of the best / first available property
-     */
-    private String getPropertyValue(Properties aProperties, String... aPropertyNames) {
-        for(String thePropertyName: aPropertyNames) {
-            String theValue = aProperties.getProperty(thePropertyName);
-            if(theValue != null) {
-                return theValue;
-            }
-        }
-
-        //write error message
-        StringBuffer theErrorMessageBuffer = new StringBuffer(200);
-        theErrorMessageBuffer.append("Error on loading configuration: Missing property. At least one of the following properties is required: [");
-        for(int i = 0; i < aPropertyNames.length - 1; i++) {
-            theErrorMessageBuffer.append(aPropertyNames[i]);
-            theErrorMessageBuffer.append(" ; ");
-        }
-        theErrorMessageBuffer.append(aPropertyNames[aPropertyNames.length - 1]);
-        theErrorMessageBuffer.append("].");
-        throw new ConfigurationException(theErrorMessageBuffer.toString());
-    }
-
-    public boolean equals(Object anObject) {
-        if(this == anObject) {
-            return true;
-        }
-        if(anObject == null || getClass() != anObject.getClass()) {
-            return false;
-        }
-        PropertyConfigurationLoader theOtherLoader = (PropertyConfigurationLoader)anObject;
-        return myPropertyName.equals(theOtherLoader.myPropertyName);
-    }
-
-    public int hashCode() {
-        return myPropertyName.hashCode();
     }
 }

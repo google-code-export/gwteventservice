@@ -39,7 +39,6 @@ import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
  */
 public class DefaultConfigurationLoader implements ConfigurationLoader
 {
-    private static final String DEFAULT_CONFIG_DESCRIPTION = "Default Configuration";
     private static final int DEFAULT_MIN_WAITING_TIME = 0;
     private static final int DEFAULT_MAX_WAITING_TIME = 20000;
     private static final int DEFAULT_TIME_OUT = 90000;
@@ -60,10 +59,6 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
      * @return the loaded configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration})
      */
     public EventServiceConfiguration load() {
-        return new RemoteEventServiceConfiguration(DEFAULT_CONFIG_DESCRIPTION, DEFAULT_MIN_WAITING_TIME, DEFAULT_MAX_WAITING_TIME, DEFAULT_TIME_OUT);
-    }
-
-    public boolean equals(Object anObject) {
-        return (anObject instanceof DefaultConfigurationLoader);
+        return new RemoteEventServiceConfiguration(DEFAULT_MIN_WAITING_TIME, DEFAULT_MAX_WAITING_TIME, DEFAULT_TIME_OUT);
     }
 }

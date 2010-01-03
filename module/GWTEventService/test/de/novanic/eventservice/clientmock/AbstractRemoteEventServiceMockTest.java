@@ -25,16 +25,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 import java.util.Set;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.DomainEvent;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
-import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
 import de.novanic.eventservice.client.event.command.ClientCommand;
@@ -48,10 +44,8 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 {
     protected MockControl myEventServiceAsyncMockControl;
     protected EventServiceAsync myEventServiceAsyncMock;
-    private Queue<Thread> myListenThreads;
 
     public void setUp() {
-        myListenThreads = new ConcurrentLinkedQueue<Thread>();
         myEventServiceAsyncMockControl = MockControl.createControl(EventServiceAsync.class);
         myEventServiceAsyncMock = (EventServiceAsync)myEventServiceAsyncMockControl.getMock();
         ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DirectCommandScheduler());
@@ -66,7 +60,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         mockInit(null);
     }
 
-    protected void mockInit(TestException aThrowable) {
+    protected void mockInit(Throwable aThrowable) {
         myEventServiceAsyncMock.initEventService(null);
         if(aThrowable != null) {
             myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(aThrowable));
@@ -80,7 +74,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         mockRegister(aDomain, null, null, isFirstCall);
     }
 
-    protected void mockRegister(Domain aDomain, TestException aThrowable, boolean isFirstCall) {
+    protected void mockRegister(Domain aDomain, Throwable aThrowable, boolean isFirstCall) {
         mockRegister(aDomain, null, aThrowable, isFirstCall);
     }
 
@@ -88,7 +82,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         mockRegister(aDomain, anEventFilter, null, isFirstCall);
     }
 
-    protected void mockRegister(Domain aDomain, EventFilter anEventFilter, TestException aThrowable, boolean isFirstCall) {
+    protected void mockRegister(Domain aDomain, EventFilter anEventFilter, Throwable aThrowable, boolean isFirstCall) {
         myEventServiceAsyncMock.register(aDomain, anEventFilter, null);
         if(isFirstCall) {
             if(aThrowable != null) {
@@ -104,7 +98,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         mockRegisterEventFilter(aDomain, anEventFilter, null, isFirstCall);
     }
 
-    protected void mockRegisterEventFilter(Domain aDomain, EventFilter anEventFilter, TestException aThrowable, boolean isFirstCall) {
+    protected void mockRegisterEventFilter(Domain aDomain, EventFilter anEventFilter, Throwable aThrowable, boolean isFirstCall) {
         myEventServiceAsyncMock.registerEventFilter(aDomain, anEventFilter, null);
         if(isFirstCall) {
             if(aThrowable != null) {
@@ -124,7 +118,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         myEventServiceAsyncMockControl.setVoidCallable();
     }
 
-    protected void mockDeregisterEventFilter(Domain aDomain, TestException aThrowable, boolean isFirstCall) {
+    protected void mockDeregisterEventFilter(Domain aDomain, Throwable aThrowable, boolean isFirstCall) {
         myEventServiceAsyncMock.deregisterEventFilter(aDomain, null);
         if(isFirstCall) {
             if(aThrowable != null) {
@@ -140,7 +134,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         mockListen(null, isFirstCall);
     }
 
-    protected void mockListen(TestException aThrowable, boolean isFirstCall) {
+    protected void mockListen(Throwable aThrowable, boolean isFirstCall) {
         myEventServiceAsyncMock.listen(null);
         if(isFirstCall) {
             if(aThrowable != null) {
@@ -160,19 +154,11 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         myEventServiceAsyncMockControl.setVoidCallable();
     }
 
-    protected void mockListen(List<DomainEvent> anEvents, int aLoops, TestException aTestException) {
-        myEventServiceAsyncMock.listen(null);
-        if(aLoops > 0) {
-            myEventServiceAsyncMockControl.setMatcher(new AsyncListenCallArgumentsMatcherThreadable(anEvents, aLoops, aTestException));
-        }
-        myEventServiceAsyncMockControl.setVoidCallable();
-    }
-
     protected void mockUnlisten(Set<Domain> aDomains, boolean isFirstCall) {
         mockUnlisten(aDomains, null, isFirstCall);
     }
 
-    protected void mockUnlisten(Set<Domain> aDomains, TestException aThrowable, boolean isFirstCall) {
+    protected void mockUnlisten(Set<Domain> aDomains, Throwable aThrowable, boolean isFirstCall) {
         myEventServiceAsyncMock.unlisten(aDomains, null);
         if(isFirstCall) {
             if(aThrowable != null) {
@@ -188,7 +174,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         mockUnlisten(aDomain, null, isFirstCall);
     }
 
-    protected void mockUnlisten(Domain aDomain, TestException aThrowable, boolean isFirstCall) {
+    protected void mockUnlisten(Domain aDomain, Throwable aThrowable, boolean isFirstCall) {
         myEventServiceAsyncMock.unlisten(aDomain, null);
         if(isFirstCall) {
             if(aThrowable != null) {
@@ -200,45 +186,10 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         myEventServiceAsyncMockControl.setVoidCallable();
     }
 
-    protected void mockRegisterUnlistenEvent(UnlistenEvent anUnlistenEvent, boolean isFirstCall) {
-        myEventServiceAsyncMock.registerUnlistenEvent(UnlistenEventListener.Scope.UNLISTEN, anUnlistenEvent, null);
-        if(isFirstCall) {
-            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(true));
-        }
-        myEventServiceAsyncMockControl.setVoidCallable();
-    }
-
-    /**
-     * Waits till the expected count of listen threads is started and joins the threads.
-     * @param anExpectedListenThreadCount
-     */
-    public void joinAllListenThreads(int anExpectedListenThreadCount) {
-        final int theMaxCycleCount = 50;
-        final int theCycleWaitingTime = 500;
-        for(int i = 0; myListenThreads.size() < anExpectedListenThreadCount; i++) {
-            if(i > theMaxCycleCount) {
-                fail("The expected count of listen threads isn't reached in " + ((theMaxCycleCount * theCycleWaitingTime) / 1000) + " seconds!");
-            }
-            try {
-                Thread.sleep(theCycleWaitingTime);
-            } catch(InterruptedException e) {
-                throw new RuntimeException("The waiting for the listen threads was aborted in a test case!", e);
-            }
-        }
-        try {
-            Thread theListenThread;
-            while((theListenThread = myListenThreads.poll()) != null) {
-                theListenThread.join();
-            }
-        } catch(InterruptedException e) {
-            throw new RuntimeException("The joining of a listen thread was aborted in a test case!", e);
-        }
-    }
-
     protected class AsyncCallArgumentsMatcher implements ArgumentsMatcher
     {
-        protected Object myCallbackResult;
-        private TestException myCallbackThrowable;
+        private Object myCallbackResult;
+        private Throwable myCallbackThrowable;
         private boolean myIsCall;
 
         public AsyncCallArgumentsMatcher(boolean isCall) {
@@ -250,7 +201,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
             myCallbackResult = aCallbackResult;
         }
 
-        public AsyncCallArgumentsMatcher(TestException aCallbackThrowable) {
+        public AsyncCallArgumentsMatcher(Throwable aCallbackThrowable) {
             myCallbackThrowable = aCallbackThrowable;
         }
 
@@ -272,11 +223,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
                 if(myIsCall) {
                     anAsyncCallback.onSuccess(myCallbackResult);
                 } else if(myCallbackThrowable != null) {
-                    try {
-                        myCallbackThrowable.throwTestException();
-                    } catch(Exception theTestException) {
-                        anAsyncCallback.onFailure(theTestException);
-                    }
+                    anAsyncCallback.onFailure(myCallbackThrowable);
                 }
             }
         }
@@ -327,19 +274,19 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     protected class AsyncListenCallArgumentsMatcher extends AsyncCallArgumentsMatcher
     {
-        protected int myExpectedLoops;
-        protected int myLoops;
+        private int myExpectedLoops;
+        private int myLoops;
 
         public AsyncListenCallArgumentsMatcher(boolean isCall) {
             super(isCall);
         }
 
-        public AsyncListenCallArgumentsMatcher(List<DomainEvent> aCallbackResult, int anExpectedLoops) {
+        public AsyncListenCallArgumentsMatcher(List<DomainEvent> aCallbackResult, int aExpectedLoops) {
             super(aCallbackResult);
-            myExpectedLoops = anExpectedLoops;
+            myExpectedLoops = aExpectedLoops;
         }
 
-        public AsyncListenCallArgumentsMatcher(TestException aCallbackThrowable) {
+        public AsyncListenCallArgumentsMatcher(Throwable aCallbackThrowable) {
             super(aCallbackThrowable);
         }
 
@@ -351,39 +298,14 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         }
     }
 
-    protected class AsyncListenCallArgumentsMatcherThreadable extends AsyncListenCallArgumentsMatcher
+    protected static class TestException extends Exception
     {
-        private TestException myCallbackThrowable;
-
-        public AsyncListenCallArgumentsMatcherThreadable(List<DomainEvent> aCallbackResult, int anExpectedLoops, TestException aCallbackThrowable) {
-            super(aCallbackResult, anExpectedLoops);
-            myCallbackThrowable = aCallbackThrowable;
+        public TestException() {
+            super("test_exception");
         }
 
-        protected void runCall(final AsyncCallback<? super Object> anAsyncCallback) {
-            Thread theThread = new Thread() {
-                public void run() {
-                    if(myExpectedLoops - 1 > myLoops) {
-                        myLoops++;
-                        anAsyncCallback.onSuccess(myCallbackResult);
-                    } else if(myExpectedLoops > myLoops) {
-                        try {
-                            myCallbackThrowable.throwTestException();
-                        } catch(Exception e) {
-                            anAsyncCallback.onFailure(e);
-                        }
-                    }
-                }
-            };
-            theThread.start();
-            myListenThreads.add(theThread);
-        }
-    }
-
-    protected static class TestException
-    {
-        public void throwTestException() throws Exception {
-            throw new Exception("test_exception");
+        public static TestException getInstance() {
+            return new TestException();
         }
     }
 
