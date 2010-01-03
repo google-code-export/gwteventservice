@@ -1,0 +1,29 @@
+GWTEventService Licence Information
+
+
+	The documentation and the source code of GWTEventService including the demo application is licensed under the
+	GNU Lesser General Public Licence (LGPL) v3.0.
+	http://www.gnu.org/licenses/lgpl.html
+
+	The source code of GWTEventService included in this distribution is available from the GWTEventService project.
+	http://gwteventservice.googlecode.com/
+
+	Do you have questions?
+	novanic@gmx.de
+
+
+Licence information regarding related third party software
+
+	The GWTEventService library uses and needs the following third party software/libraries to build.
+
+	-	Name:		Google Web Toolkit (GWT)
+		License:	Apache License v2.0
+		URL:		http://code.google.com/webtoolkit/
+
+	-	Name:		JUnit
+		Licence:	Common Public Licence v1.0
+		URL:		http://www.junit.org/
+	
+	-	Name:		EasyMock
+		Licence:	MIT Licence
+		URL:		http://www.easymock.org

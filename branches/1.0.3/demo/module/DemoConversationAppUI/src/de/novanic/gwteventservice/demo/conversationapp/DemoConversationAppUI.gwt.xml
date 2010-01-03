@@ -1,0 +1,13 @@
+<module>
+
+    <inherits name='com.google.gwt.user.User'/>
+    <inherits name="com.google.gwt.user.theme.standard.Standard"/>
+
+    <inherits name="de.novanic.eventservice.GWTEventService"/>
+
+    <entry-point class='de.novanic.gwteventservice.demo.conversationapp.client.DemoConversationAppUI'/>
+    <servlet path="/conversationport" class='de.novanic.gwteventservice.demo.conversationapp.service.ConversationServiceImpl'/>
+
+    <stylesheet src="DemoConversationAppUI.css"/>
+                  
+</module>
