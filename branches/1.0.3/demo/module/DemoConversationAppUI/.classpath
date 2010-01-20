@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.6.0_07"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="var" path="GWT_HOME/gwt-user.jar"/>
-	<classpathentry kind="var" path="GWT_HOME/gwt-servlet.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="D:/developer/GWTEventService/release/gwt-eventservice.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DemoConversationAppRPC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DemoConversationApp"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EventServiceRPC"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GWTEventService"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="output" path="war-ide/WEB-INF/classes"/>
 </classpath>

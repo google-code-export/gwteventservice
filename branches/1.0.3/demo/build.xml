@@ -9,7 +9,9 @@
 
     <property name="gwt.module" value="de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI"/>
 
-    <property name="src.web.inf" value="module/DemoConversationAppUI/web/WEB-INF"/>
+    <property name="src.conf.dir" value="conf"/>
+    <property name="src.web.dir" value="module/DemoConversationAppUI/war"/>
+    <property name="src.web.inf" value="${src.web.dir}/WEB-INF"/>
     <property name="src.gwt.dir" value="module/DemoConversationAppUI/src"/>
     <property name="src.gwt.rpc.dir" value="module/DemoConversationAppRPC/src"/>
     <property name="src.server.dir" value="module/DemoConversationApp/src"/>
@@ -65,10 +67,10 @@
     </target>
 
     <target name="compile-gwt" depends="init">
-        <java classname="com.google.gwt.dev.GWTCompiler" fork="yes">
+        <java classname="com.google.gwt.dev.Compiler" fork="yes">
             <classpath refid="classpath"/>
             <jvmarg value="-Xmx256M"/>
-            <arg value="-out"/>
+            <arg value="-war"/>
             <arg value="${temp.gwt.dir}"/>
             <arg value="${gwt.module}"/>
         </java>
@@ -89,7 +91,7 @@
     <target name="deploy" depends="compile">
         <copy todir="${dest.web.classes.dir}">
             <fileset dir="${src.gwt.dir}" includes="**/*.gwt.xml"/>
-            <fileset dir="${src.gwt.dir}" includes="**/public/**/*.*"/>
+            <fileset dir="${src.conf.dir}" includes="**/*.*"/>
         </copy>
 
         <copy todir="${dest.web.lib.dir}">
@@ -111,6 +113,13 @@
         <copy todir="${dest.web.inf.dir}">
             <fileset dir="${src.web.inf}">
                 <include name="*.xml"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${dest.web.dir}">
+            <fileset dir="${src.web.dir}">
+                <include name="*.css"/>
+                <include name="*.html"/>
             </fileset>
         </copy>
 
