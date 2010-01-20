@@ -20,6 +20,8 @@
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui.message;
 
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -62,11 +64,11 @@ public class GWTMessageBox extends DialogBox implements MessageBox
         for(Map.Entry<MessageButtonListener.Button, Button> theButtonMapping: myMessageButtons.entrySet()) {
             final MessageButtonListener.Button theMessageButton = theButtonMapping.getKey();
             final Button theButton = theButtonMapping.getValue();
-            theButton.addClickListener(new ButtonListener(aButtonListener, theMessageButton));
+            theButton.addClickHandler(new ButtonListener(aButtonListener, theMessageButton));
         }
     }
 
-    private class ButtonListener implements ClickListener
+    private class ButtonListener implements ClickHandler
     {
         private MessageButtonListener myMessageButtonListener;
         private MessageButtonListener.Button myButton;
@@ -76,7 +78,7 @@ public class GWTMessageBox extends DialogBox implements MessageBox
             myButton = aButton;
         }
 
-        public void onClick(Widget aSender) {
+        public void onClick(ClickEvent aClickEvent) {
             myMessageButtonListener.onClick(myButton);
         }
     }
