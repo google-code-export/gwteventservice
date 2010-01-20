@@ -20,6 +20,9 @@
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui.login;
 
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui.ConversationLoginPanel;
 
 /**
@@ -41,9 +44,9 @@ public class GWTConversationLoginPanel extends HorizontalPanel implements Conver
         toggle(true);
 
         myNicknameTextBox.setMaxLength(20);
-        myNicknameTextBox.addKeyboardListener(new KeyboardListenerAdapter() {
-            public void onKeyUp(Widget aSender, char aKeyCode, int aModifiers) {
-                if(aKeyCode == 13) {
+        myNicknameTextBox.addKeyUpHandler(new KeyUpHandler() {
+            public void onKeyUp(KeyUpEvent aKeyUpEvent) {
+                if(aKeyUpEvent.getNativeKeyCode() == 13) {
                     myLoginLogoutButton.click();
                 }
             }
@@ -75,7 +78,7 @@ public class GWTConversationLoginPanel extends HorizontalPanel implements Conver
         return myIsLogin;
     }
 
-    public void addLoginButtonListener(ClickListener aLoginButtonListener) {
-        myLoginLogoutButton.addClickListener(aLoginButtonListener);
+    public void addLoginButtonListener(ClickHandler aLoginButtonListener) {
+        myLoginLogoutButton.addClickHandler(aLoginButtonListener);
     }
 }

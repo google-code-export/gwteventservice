@@ -20,6 +20,10 @@
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui;
 
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 
 import java.util.*;
 
@@ -32,15 +36,13 @@ public class GWTConversationChannelPanel extends VerticalPanel implements Conver
 {
     private Tree myChannelTree;
     private Button myAddChannelButton;
-    private Collection<ClickListener> myAddChannelButtonClickListeners;
-    private Collection<TreeListener> myChannelTreeSelectListeners;
+    private Collection<HandlerRegistration> myHandlerRegistrations;
 
     public GWTConversationChannelPanel() {
         setTitle("Channels");
         setStyleName("styledPanel");
 
-        myAddChannelButtonClickListeners = new ArrayList<ClickListener>();
-        myChannelTreeSelectListeners = new ArrayList<TreeListener>();
+        myHandlerRegistrations = new ArrayList<HandlerRegistration>();
 
         myChannelTree = new Tree();
         myChannelTree.setAnimationEnabled(true);
@@ -131,11 +133,11 @@ public class GWTConversationChannelPanel extends VerticalPanel implements Conver
 
     public void reset() {
         myChannelTree.clear();
-        for(ClickListener theClickListener: new ArrayList<ClickListener>(myAddChannelButtonClickListeners)) {
-            removeAddChannelButtonListener(theClickListener);
-        }
-        for(TreeListener theTreeListener: new ArrayList<TreeListener>(myChannelTreeSelectListeners)) {
-            removeChannelSelectListener(theTreeListener);
+        Iterator<HandlerRegistration> theHandlerRegistrationIterator = myHandlerRegistrations.iterator();
+        while(theHandlerRegistrationIterator.hasNext()) {
+            HandlerRegistration theHandlerRegistration = theHandlerRegistrationIterator.next();
+            theHandlerRegistration.removeHandler();
+            theHandlerRegistrationIterator.remove();
         }
     }
 
@@ -143,35 +145,26 @@ public class GWTConversationChannelPanel extends VerticalPanel implements Conver
         myAddChannelButton.setEnabled(isEnable);
     }
 
-    public void addAddChannelButtonListener(ClickListener aClickListener) {
-        myAddChannelButtonClickListeners.add(aClickListener);
-        myAddChannelButton.addClickListener(aClickListener);
+    public HandlerRegistration addAddChannelButtonListener(ClickHandler aClickHandler) {
+        final HandlerRegistration theClickHandlerRegistration = myAddChannelButton.addClickHandler(aClickHandler);
+        myHandlerRegistrations.add(theClickHandlerRegistration);
+        return theClickHandlerRegistration;
     }
 
-    public void removeAddChannelButtonListener(ClickListener aClickListener) {
-        myAddChannelButtonClickListeners.remove(aClickListener);
-        myAddChannelButton.removeClickListener(aClickListener);
-    }
-
-    public void addChannelSelectListener(final ChannelSelectListener aChannelSelectListener) {
-        final TreeListener theTreeListener = new TreeListener() {
-            public void onTreeItemSelected(TreeItem anItem) {
-                if(isChannelItem(anItem)) {
-                    final String theChannelName = anItem.getText();
+    public HandlerRegistration addChannelSelectListener(final ChannelSelectListener aChannelSelectListener) {
+        final SelectionHandler<TreeItem> theTreeSelectionHandler = new SelectionHandler<TreeItem>() {
+            public void onSelection(SelectionEvent<TreeItem> aSelectionEvent) {
+                final TreeItem theSelectedItem = aSelectionEvent.getSelectedItem();
+                if(isChannelItem(theSelectedItem)) {
+                    final String theChannelName = theSelectedItem.getText();
                     aChannelSelectListener.onSelect(theChannelName);
                 }
             }
-
-            public void onTreeItemStateChanged(TreeItem anItem) {
-            }
         };
-        myChannelTreeSelectListeners.add(theTreeListener);
-        myChannelTree.addTreeListener(theTreeListener);
-    }
 
-    private void removeChannelSelectListener(TreeListener aTreeListener) {
-        myChannelTreeSelectListeners.remove(aTreeListener);
-        myChannelTree.removeTreeListener(aTreeListener);
+        final HandlerRegistration theSelectionHandlerRegistration = myChannelTree.addSelectionHandler(theTreeSelectionHandler);
+        myHandlerRegistrations.add(theSelectionHandlerRegistration);
+        return theSelectionHandlerRegistration;
     }
 
     private boolean isChannelItem(TreeItem aTreeItem) {

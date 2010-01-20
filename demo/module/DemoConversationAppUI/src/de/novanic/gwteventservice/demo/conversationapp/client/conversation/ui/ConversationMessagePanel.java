@@ -19,7 +19,8 @@
  */
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui;
 
-import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * @author sstrohschein
@@ -38,7 +39,5 @@ public interface ConversationMessagePanel
 
     void setFocus(boolean isFocus);
 
-    void addSendButtonListener(ClickListener aClickListener);
-
-    void removeSendButtonListener(ClickListener aClickListener);
+    HandlerRegistration addSendButtonListener(ClickHandler aClickHandler);
 }
