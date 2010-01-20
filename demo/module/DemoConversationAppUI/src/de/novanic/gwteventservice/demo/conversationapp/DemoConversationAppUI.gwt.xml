@@ -8,6 +8,4 @@
     <entry-point class='de.novanic.gwteventservice.demo.conversationapp.client.DemoConversationAppUI'/>
     <servlet path="/conversationport" class='de.novanic.gwteventservice.demo.conversationapp.service.ConversationServiceImpl'/>
 
-    <stylesheet src="DemoConversationAppUI.css"/>
-                  
 </module>
