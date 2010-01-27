@@ -76,7 +76,7 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
     }
 
     protected void executeActions() {
-        executeActions(20000);
+        executeActions(120000);
     }
 
     protected void executeActions(int aTimeoutMilliseconds) {

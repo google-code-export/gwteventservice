@@ -2,17 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.6.0_07"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="var" path="GWT_HOME/gwt-user.jar"/>
-	<classpathentry kind="var" path="GWT_HOME/gwt-servlet.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/EventServiceRPC"/>
-	<classpathentry kind="lib" path="D:/developer/GWTEventService/lib/junit.jar"/>
-	<classpathentry kind="lib" path="D:/developer/GWTEventService/lib/easymock.jar"/>
+	<classpathentry kind="lib" path="C:/developer/GWTEventService/branch1.0.3/lib/easymock.jar"/>
+	<classpathentry kind="lib" path="C:/developer/GWTEventService/branch1.0.3/lib/junit.jar"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT (1)"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -3,14 +3,9 @@
   <component name="FacetManager">
     <facet type="gwt" name="GWT">
       <configuration>
-        <setting name="additionalCompilerParameters" value="" />
         <setting name="compilerMaxHeapSize" value="128" />
         <setting name="gwtScriptOutputStyle" value="DETAILED" />
-        <setting name="gwtSdkUrl" value="file://$MODULE_DIR$/../../../lib/gwt-windows-1.5.3" />
-        <setting name="runGwtCompilerOnMake" value="true" />
-        <packaging>
-          <module name="de.novanic.eventservice.EventServiceRPC" path="/de.novanic.eventservice.EventServiceRPC" />
-        </packaging>
+        <setting name="gwtSdkUrl" value="file://$GWT_SDK_HOME$" />
       </configuration>
     </facet>
   </component>
