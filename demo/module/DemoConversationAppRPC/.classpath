@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/developer/lib/gwt-windows-1.5.3/gwt-user.jar"/>
-	<classpathentry kind="lib" path="D:/developer/GWTEventService/release/gwt-eventservice.jar"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT (1)"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EventServiceRPC"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
