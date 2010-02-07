@@ -382,6 +382,143 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theDomains.contains(TEST_DOMAIN_2));
     }
 
+    public void testGetRegisteredUsers() {
+        Set<String> theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertNotNull(theUserIds);
+        assertTrue(theUserIds.isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertEquals(1, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertEquals(2, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertEquals(2, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+    }
+
+    public void testGetRegisteredUsers_2() {
+        Set<String> theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertNotNull(theUserIds);
+        assertTrue(theUserIds.isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertEquals(2, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertEquals(1, theUserIds.size());
+        assertFalse(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertEquals(1, theUserIds.size());
+        assertFalse(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID_2);
+        theUserIds = myEventRegistry.getRegisteredUserIds();
+        assertNotNull(theUserIds);
+        assertEquals(0, theUserIds.size());
+        assertFalse(theUserIds.contains(TEST_USER_ID));
+        assertFalse(theUserIds.contains(TEST_USER_ID_2));
+    }
+
+    public void testGetRegisteredUsers_2_1() {
+        Set<String> theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertNotNull(theUserIds);
+        assertTrue(theUserIds.isEmpty());
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN_2);
+        assertNotNull(theUserIds);
+        assertTrue(theUserIds.isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertEquals(1, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN_2);
+        assertEquals(0, theUserIds.size());
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertEquals(1, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN_2);
+        assertEquals(1, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertEquals(2, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN_2);
+        assertEquals(1, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+    }
+
+    public void testGetRegisteredUsers_2_2() {
+        Set<String> theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertNotNull(theUserIds);
+        assertTrue(theUserIds.isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertEquals(2, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN_2);
+        assertEquals(1, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertEquals(1, theUserIds.size());
+        assertFalse(theUserIds.contains(TEST_USER_ID));
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN_2);
+        assertEquals(1, theUserIds.size());
+        assertTrue(theUserIds.contains(TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID_2);
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
+        assertNotNull(theUserIds);
+        assertEquals(0, theUserIds.size());
+
+        theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN_2);
+        assertNotNull(theUserIds);
+        assertEquals(0, theUserIds.size());
+    }
+
+    public void testGetRegisteredUsers_2_Error() {
+        Set<String> theUserIds = myEventRegistry.getRegisteredUserIds(null);
+        assertNotNull(theUserIds);
+        assertEquals(0, theUserIds.size());
+    }
+
     public void testUnlisten() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -450,7 +587,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
-        
+
         theListenDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
         assertFalse(theListenDomains.isEmpty());
         assertEquals(1, theListenDomains.size());
@@ -628,7 +765,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testListen() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
-        
+
         startAddEvent(TEST_DOMAIN, 200);
         assertEquals(1, myEventRegistry.listen(TEST_USER_ID).size());
         assertEquals(0, myEventRegistry.listen(TEST_USER_ID).size());
@@ -701,7 +838,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         startAddEvent(TEST_DOMAIN, 500);
         startAddEvent(TEST_DOMAIN, 600);
         Thread.sleep(500);
-        
+
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).contains(TEST_DOMAIN));
         int theResult = myEventRegistry.listen(TEST_USER_ID).size();
         //The 6th event can not received, because it is added after the max waiting time.
@@ -989,7 +1126,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testAddUserSpecificEvent() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
-        
+
         myEventRegistry.addEventUserSpecific(TEST_USER_ID, new DummyEvent());
         checkLog(4, "Server: User specific event \"DummyEvent (id 1)\" added to client id \"test_user_id\".",
                 "Server: DummyEvent (id 1) for user \"test_user_id\".");
@@ -1089,7 +1226,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         //wait for the UserActivityScheduler-Thread
         Thread.yield();
         Thread.sleep(theNewEventServiceConfiguration.getTimeoutTime() + 100);
-        
+
         assertNotNull(theEvents);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
@@ -1261,7 +1398,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
         checkLog(2, "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
         assertNotNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
-        
+
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, null);
         checkLog(3, "Server: test_user_id: EventFilter removed from domain \"test_domain\".");
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));

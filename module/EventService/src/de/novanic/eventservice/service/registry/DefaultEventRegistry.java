@@ -342,6 +342,28 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     }
 
     /**
+     * Returns all registered users/clients.
+     * To get only the registered users/client of a specific {@link de.novanic.eventservice.client.event.domain.Domain},
+     * the method {@link de.novanic.eventservice.service.registry.EventRegistry#getRegisteredUserIds(de.novanic.eventservice.client.event.domain.Domain)}
+     * can be used instead.
+     * @return registered users/clients
+     */
+    public Set<String> getRegisteredUserIds() {
+        return getUserIds(myUserManager.getUsers());
+    }
+
+    /**
+     * Returns all registered users/client of a specific {@link de.novanic.eventservice.client.event.domain.Domain}.
+     * To get all the registered users/client (of all domains), the method {@link EventRegistry#getRegisteredUserIds()}
+     * can be used instead.
+     * @param aDomain domain
+     * @return registered users/client of the specific domain
+     */
+    public Set<String> getRegisteredUserIds(Domain aDomain) {
+        return getUserIds(myDomainUserMapping.getUsers(aDomain));
+    }
+
+    /**
      * Adds an event to a domain.
      * @param aDomain domain for the event
      * @param anEvent event to add
@@ -439,10 +461,10 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     /**
      * Initializes an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} with required information
      * like the unlistened domain, user id of the unlistened user/client and the reason for the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}.
-     * @param aUserInfo
-     * @param aDomain
-     * @param isTimeout
-     * @return
+     * @param aUserInfo user
+     * @param aDomain domain
+     * @param isTimeout true when the unlisten event is caused by a timeout, false when the unlisten event is caused by a regular unlisten call
+     * @return produced {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
      */
     private UnlistenEvent produceUnlistenEvent(UserInfo aUserInfo, Domain aDomain, boolean isTimeout) {
         final UnlistenEvent theUnlistenEvent = aUserInfo.getUnlistenEvent();
@@ -450,6 +472,23 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
         theUnlistenEvent.setDomain(aDomain);
         theUnlistenEvent.setTimeout(isTimeout);
         return theUnlistenEvent;
+    }
+
+    /**
+     * Generates a set of user ids on the basis of {@link de.novanic.eventservice.service.registry.user.UserInfo} objects
+     * @param aUserInfoSet set of users ({@link de.novanic.eventservice.service.registry.user.UserInfo})
+     * @return set of user ids
+     */
+    private Set<String> getUserIds(Collection<UserInfo> aUserInfoSet) {
+        if(aUserInfoSet == null) {
+            return new HashSet<String>(0);
+        }
+        
+        Set<String> theUserIdSet = new HashSet<String>(aUserInfoSet.size());
+        for(UserInfo theUserInfo: aUserInfoSet) {
+            theUserIdSet.add(theUserInfo.getUserId());
+        }
+        return theUserIdSet;
     }
 
     /**
