@@ -133,6 +133,24 @@ public interface EventRegistry
     Set<Domain> getListenDomains();
 
     /**
+     * Returns all registered users/clients.
+     * To get only the registered users/client of a specific {@link de.novanic.eventservice.client.event.domain.Domain},
+     * the method {@link de.novanic.eventservice.service.registry.EventRegistry#getRegisteredUserIds(de.novanic.eventservice.client.event.domain.Domain)}
+     * can be used instead.
+     * @return registered users/clients
+     */
+    Set<String> getRegisteredUserIds();
+
+    /**
+     * Returns all registered users/client of a specific {@link de.novanic.eventservice.client.event.domain.Domain}.
+     * To get all the registered users/client (of all domains), the method {@link EventRegistry#getRegisteredUserIds()}
+     * can be used instead.
+     * @param aDomain domain
+     * @return registered users/client of the specific domain
+     */
+    Set<String> getRegisteredUserIds(Domain aDomain);
+
+    /**
      * Adds an event to a domain.
      * @param aDomain domain for the event
      * @param anEvent event to add
