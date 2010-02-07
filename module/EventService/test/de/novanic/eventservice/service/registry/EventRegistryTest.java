@@ -53,6 +53,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 {
     private static final String TEST_USER_ID = "test_user_id";
     private static final String TEST_USER_ID_2 = "test_user_id_2";
+    private static final String TEST_USER_ID_3 = "test_user_id_3";
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
     private static final Domain TEST_DOMAIN_2 = DomainFactory.getDomain("test_domain_2");
 
@@ -62,7 +63,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     private Logger myLogger;
 
     public void setUp() throws Exception {
-        setUp(createConfiguration(0, 500, 2500));
+        setUp(createConfiguration(0, 500, 99999999));
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         setUp(myEventRegistry);
         setUpLoggingTest();
@@ -159,7 +160,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(theListenDomains.isEmpty());
         assertEquals(1, theListenDomains.size());
         assertEquals(TEST_DOMAIN, theListenDomains.get(0));
-        
+
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
         checkLog(3, "Server: User \"test_user_id\" registered for domain \"test_domain_2\".");
 
@@ -665,6 +666,279 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(theListenDomains.isEmpty());
         assertEquals(1, theListenDomains.size());
         assertTrue(theListenDomains.contains(TEST_DOMAIN_2));
+    }
+
+    public void testUnlisten_ImportantDomain() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+        
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+    }
+
+    public void testUnlisten_ImportantDomain_2() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_2));
+
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
+        myEventRegistry.unlisten(TEST_DOMAIN_2, TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
+
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(2, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()) .getDomain());
+        assertTrue(theEvents.get(1).getEvent() instanceof UnlistenEvent);
+        assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(1).getEvent()) .getDomain());
+    }
+
+    public void testUnlisten_ImportantDomain_3() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_2));
+
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()) .getDomain());
+        
+        myEventRegistry.unlisten(TEST_DOMAIN_2, TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
+
+        theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(0).getEvent()) .getDomain());
+    }
+
+    public void testUnlisten_UnimportantDomain() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_2));
+
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(0, theEvents.size());
+    }
+
+    public void testUnlisten_UnimportantDomain_2() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_3));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_2));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_3, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_3));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_3, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_3));
+
+        //all three users have an unlisten listener registered
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN, null);
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_3, UnlistenEventListener.Scope.UNLISTEN, null);
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_3));
+
+        //the removed user itself, gets the own unlisten event on next listen call, because the unlisten listener isn't removed
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
+
+        //user 1 wasn't registered to the same domain of user 2
+        theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(0, theEvents.size());
+
+        //user 1 was registered to the same domain of user 3
+        theEvents = myEventRegistry.listen(TEST_USER_ID_3);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
+    }
+
+    public void testUnlisten_Global() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+    }
+
+    public void testUnlisten_Global_2() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_2));
+
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
+
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+    }
+
+    public void testUnlisten_UnimportantDomain_Global() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_2));
+
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        //an unlisten event is generated, because it is a global unlisten,
+        // independent if the user was registered to the same domain like the listening user 
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+    }
+
+    public void testUnlisten_UnimportantDomain_Global_2() {
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_3));
+        assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_2));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_3, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_3));
+
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_3, null);
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID_3));
+
+        //all three users have an unlisten listener registered
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID, UnlistenEventListener.Scope.UNLISTEN, null);
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_3, UnlistenEventListener.Scope.UNLISTEN, null);
+        myEventRegistry.registerUnlistenEvent(TEST_USER_ID_2, UnlistenEventListener.Scope.UNLISTEN, null);
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_3));
+
+        //the removed user itself, can't get the own unlisten event, because the user is completely removed (the unlisten listener is also removed)
+        List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID);
+        assertNull(theEvents);
+
+        //user 2 gets the unlisten event, because it is a global unlisten event (no domain information)
+        theEvents = myEventRegistry.listen(TEST_USER_ID_2);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
+
+        //user 1 was registered to the same domain of user 3
+        theEvents = myEventRegistry.listen(TEST_USER_ID_3);
+        assertEquals(1, theEvents.size());
+        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
     }
 
     public void testUnlisten_Error() {
@@ -1372,7 +1646,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNotNull(theEvents);
         assertEquals(1, theEvents.size());
         assertFalse(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        
+
         theEvents = theEventRegistry.listen(TEST_USER_ID);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
