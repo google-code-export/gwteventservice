@@ -23,6 +23,10 @@ import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author sstrohschein
  * Date: 28.07.2008
@@ -31,18 +35,21 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 public class UnlistenEventTest extends TestCase
 {
     private Domain myTestDomain;
+    private Domain myTestDomain_2;
 
     public void setUp() {
         myTestDomain = DomainFactory.getDomain("testDomain");
+        myTestDomain_2 = DomainFactory.getDomain("testDomain_2");
     }
 
     public void testInit() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
-        theUnlistenEvent.setDomain(myTestDomain);
+        theUnlistenEvent.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
         theUnlistenEvent.setUserId("XY");
         theUnlistenEvent.setTimeout(true);
         theUnlistenEvent.setLocal(true);
-        assertEquals(myTestDomain, theUnlistenEvent.getDomain());
+        assertEquals(1, theUnlistenEvent.getDomains().size());
+        assertEquals(myTestDomain, theUnlistenEvent.getDomains().iterator().next());
         assertEquals("XY", theUnlistenEvent.getUserId());
         assertTrue(theUnlistenEvent.isTimeout());
         assertTrue(theUnlistenEvent.isLocal());
@@ -54,8 +61,9 @@ public class UnlistenEventTest extends TestCase
     }
 
     public void testInit_2() {
-        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(myTestDomain, "XY", true);
-        assertEquals(myTestDomain, theUnlistenEvent.getDomain());
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(myTestDomain)), "XY", true);
+        assertEquals(1, theUnlistenEvent.getDomains().size());
+        assertEquals(myTestDomain, theUnlistenEvent.getDomains().iterator().next());
         assertEquals("XY", theUnlistenEvent.getUserId());
         assertTrue(theUnlistenEvent.isTimeout());
         assertFalse(theUnlistenEvent.isLocal());
@@ -67,8 +75,9 @@ public class UnlistenEventTest extends TestCase
     }
 
     public void testInit_3() {
-        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(myTestDomain, "XY", true, true);
-        assertEquals(myTestDomain, theUnlistenEvent.getDomain());
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(myTestDomain)), "XY", true, true);
+        assertEquals(1, theUnlistenEvent.getDomains().size());
+        assertEquals(myTestDomain, theUnlistenEvent.getDomains().iterator().next());
         assertEquals("XY", theUnlistenEvent.getUserId());
         assertTrue(theUnlistenEvent.isTimeout());
         assertTrue(theUnlistenEvent.isLocal());
@@ -81,7 +90,7 @@ public class UnlistenEventTest extends TestCase
 
     public void testInit_4() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
-        assertNull(theUnlistenEvent.getDomain());
+        assertNull(theUnlistenEvent.getDomains());
         assertNull(theUnlistenEvent.getUserId());
         assertFalse(theUnlistenEvent.isTimeout());
         assertFalse(theUnlistenEvent.isLocal());
@@ -99,7 +108,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals(theUnlistenEvent.hashCode(), theUnlistenEvent_2.hashCode());
         
         UnlistenEvent theUnlistenEvent_3 = new DefaultUnlistenEvent();
-        theUnlistenEvent_3.setDomain(myTestDomain);
+        theUnlistenEvent_3.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
         theUnlistenEvent_3.setUserId("XY");
         assertFalse(theUnlistenEvent.equals(theUnlistenEvent_3));
         assertFalse(theUnlistenEvent.toString().equals(theUnlistenEvent_3.toString()));
@@ -115,12 +124,12 @@ public class UnlistenEventTest extends TestCase
         assertEquals(theUnlistenEvent, theUnlistenEvent_2);
         assertEquals(theUnlistenEvent.hashCode(), theUnlistenEvent_2.hashCode());
 
-        theUnlistenEvent.setDomain(myTestDomain);
+        theUnlistenEvent.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
         theUnlistenEvent.setUserId("XY");
         theUnlistenEvent.setTimeout(true);
         assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
 
-        theUnlistenEvent_2.setDomain(myTestDomain);
+        theUnlistenEvent_2.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
         assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
 
         theUnlistenEvent_2.setUserId("XY");
@@ -136,14 +145,77 @@ public class UnlistenEventTest extends TestCase
         assertEquals(theUnlistenEvent, theUnlistenEvent_2);
         assertEquals(theUnlistenEvent.hashCode(), theUnlistenEvent_2.hashCode());
 
-        theUnlistenEvent.setDomain(myTestDomain);
+        theUnlistenEvent.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
+        theUnlistenEvent.setUserId("XY");
+        theUnlistenEvent.setTimeout(true);
+        theUnlistenEvent.setLocal(true);
+        assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
+
+        theUnlistenEvent_2.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
+        assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
+
+        theUnlistenEvent_2.setUserId("XY");
+        assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
+
+        theUnlistenEvent_2.setTimeout(true);
+        assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
+
+        theUnlistenEvent_2.setLocal(true);
+        assertEquals(theUnlistenEvent, theUnlistenEvent_2);
+    }
+
+    public void testEquals_4() {
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
+        UnlistenEvent theUnlistenEvent_2 = new DefaultUnlistenEvent();
+        assertEquals(theUnlistenEvent, theUnlistenEvent_2);
+        assertEquals(theUnlistenEvent.hashCode(), theUnlistenEvent_2.hashCode());
+
+        theUnlistenEvent.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
         theUnlistenEvent.setUserId("XY");
         assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
 
-        theUnlistenEvent_2.setDomain(myTestDomain);
+        theUnlistenEvent_2.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
         assertFalse(theUnlistenEvent.equals(theUnlistenEvent_2));
 
         theUnlistenEvent_2.setUserId("XY");
         assertEquals(theUnlistenEvent, theUnlistenEvent_2);
+    }
+
+    public void testToString() {
+        Set<Domain> theDomains = new HashSet<Domain>(1);
+        theDomains.add(myTestDomain);
+
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(theDomains, "XY", false);
+        assertEquals("Event: Unlisten (user \"XY\" for domain \"testDomain\")", theUnlistenEvent.toString());
+    }
+
+    public void testToString_MultiDomain() {
+        Set<Domain> theDomains = new HashSet<Domain>(2);
+        theDomains.add(myTestDomain);
+        theDomains.add(myTestDomain_2);
+
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(theDomains, "XY", false);
+        assertEquals("Event: Unlisten (user \"XY\" for 2 domains)", theUnlistenEvent.toString());
+    }
+
+    public void testToString_Timeout() {
+        Set<Domain> theDomains = new HashSet<Domain>(1);
+        theDomains.add(myTestDomain);
+
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(theDomains, "XY", true);
+        assertEquals("Event: Unlisten(timeout) (user \"XY\" for domain \"testDomain\")", theUnlistenEvent.toString());
+    }
+
+    public void testToString_Local() {
+        Set<Domain> theDomains = new HashSet<Domain>(1);
+        theDomains.add(myTestDomain);
+
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(theDomains, "XY", false, true);
+        assertEquals("Event: Unlisten(local) (user \"XY\" for domain \"testDomain\")", theUnlistenEvent.toString());
+    }
+
+    public void testToString_DomainLess() {
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(null, "XY", false);
+        assertEquals("Event: Unlisten (user \"XY\")", theUnlistenEvent.toString());
     }
 }

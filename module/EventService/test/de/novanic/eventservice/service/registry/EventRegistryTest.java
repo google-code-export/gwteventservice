@@ -56,6 +56,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     private static final String TEST_USER_ID_3 = "test_user_id_3";
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
     private static final Domain TEST_DOMAIN_2 = DomainFactory.getDomain("test_domain_2");
+    private static final Domain TEST_DOMAIN_3 = DomainFactory.getDomain("test_domain_3");
 
     private EventRegistry myEventRegistry;
     private TestLoggingHandler myTestLoggingHandler;
@@ -261,7 +262,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
         checkLog(6, "Server: test_user_id: unlisten (domain \"test_domain\").",
                 "Server: User \"test_user_id\" removed from domain \"test_domain\".",
-                "Server: Event \"Event: Unlisten (Domain \"test_domain\")\" added to domain \"service_unlisten_domain\".");
+                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".");
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
@@ -546,8 +547,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.unlisten(TEST_USER_ID);
         checkLog(8, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten\" added to domain \"service_unlisten_domain\".",
-                "Server: Event: Unlisten for user \"test_user_id\".",
+                "Server: Event \"Event: Unlisten (user \"test_user_id\" for 2 domains)\" added to domain \"service_unlisten_domain\".",
+                "Server: Event: Unlisten (user \"test_user_id\" for 2 domains) for user \"test_user_id\".",
                 "Server: User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -582,7 +583,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
         checkLog(5, "Server: test_user_id: unlisten (domain \"test_domain\").",
-                "Server: Event \"Event: Unlisten (Domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
+                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
                 "Server: User \"test_user_id\" removed from domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -602,7 +603,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.unlisten(TEST_DOMAIN_2, TEST_USER_ID);
         checkLog(8, "Server: test_user_id: unlisten (domain \"test_domain_2\").",
-                "Server: Event \"Event: Unlisten (Domain \"test_domain_2\")\" added to domain \"service_unlisten_domain\".",
+                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain_2\")\" added to domain \"service_unlisten_domain\".",
                 "Server: User \"test_user_id\" removed from domain \"test_domain_2\".");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -637,7 +638,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
         checkLog(5, "Server: test_user_id: unlisten (domain \"test_domain\").",
-                "Server: Event \"Event: Unlisten (Domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
+                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
                 "Server: User \"test_user_id\" removed from domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -687,7 +688,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
     }
 
     public void testUnlisten_ImportantDomain_2() {
@@ -715,9 +717,11 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
         assertEquals(2, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()) .getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
         assertTrue(theEvents.get(1).getEvent() instanceof UnlistenEvent);
-        assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(1).getEvent()) .getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(1).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(1).getEvent()).getDomains().iterator().next());
     }
 
     public void testUnlisten_ImportantDomain_3() {
@@ -743,7 +747,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()) .getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
         
         myEventRegistry.unlisten(TEST_DOMAIN_2, TEST_USER_ID);
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
@@ -751,7 +756,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         theEvents = myEventRegistry.listen(TEST_USER_ID_2);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(0).getEvent()) .getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
     }
 
     public void testUnlisten_UnimportantDomain() {
@@ -806,7 +812,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
         assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
 
         //user 1 wasn't registered to the same domain of user 2
@@ -817,7 +824,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         theEvents = myEventRegistry.listen(TEST_USER_ID_3);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
         assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
     }
 
@@ -840,7 +848,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(1, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().size());
+        assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
     }
 
     public void testUnlisten_Global_2() {
@@ -867,7 +876,11 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        final Set<Domain> theUnlistenedDomains = ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains();
+        assertEquals(2, theUnlistenedDomains.size());
+        assertTrue(theUnlistenedDomains.contains(TEST_DOMAIN));
+        assertTrue(theUnlistenedDomains.contains(TEST_DOMAIN_2));
+        assertFalse(theUnlistenedDomains.contains(TEST_DOMAIN_3));
     }
 
     public void testUnlisten_UnimportantDomain_Global() {
@@ -886,12 +899,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myEventRegistry.unlisten(TEST_USER_ID);
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
 
-        //an unlisten event is generated, because it is a global unlisten,
-        // independent if the user was registered to the same domain like the listening user 
         List<DomainEvent> theEvents = myEventRegistry.listen(TEST_USER_ID_2);
-        assertEquals(1, theEvents.size());
-        assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        assertEquals(0, theEvents.size());
     }
 
     public void testUnlisten_UnimportantDomain_Global_2() {
@@ -930,14 +939,24 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         theEvents = myEventRegistry.listen(TEST_USER_ID_2);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+        
+        Set<Domain> theUnlistenedDomains = ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains();
+        assertEquals(2, theUnlistenedDomains.size());
+        assertTrue(theUnlistenedDomains.contains(DomainFactory.UNLISTEN_DOMAIN));
+        assertTrue(theUnlistenedDomains.contains(TEST_DOMAIN));
+        assertFalse(theUnlistenedDomains.contains(TEST_DOMAIN_2));
         assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
 
         //user 1 was registered to the same domain of user 3
         theEvents = myEventRegistry.listen(TEST_USER_ID_3);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
-        assertNull(((UnlistenEvent)theEvents.get(0).getEvent()).getDomain());
+
+        theUnlistenedDomains = ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains();
+        assertEquals(2, theUnlistenedDomains.size());
+        assertTrue(theUnlistenedDomains.contains(DomainFactory.UNLISTEN_DOMAIN));
+        assertTrue(theUnlistenedDomains.contains(TEST_DOMAIN));
+        assertFalse(theUnlistenedDomains.contains(TEST_DOMAIN_2));
         assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
     }
 
@@ -1003,7 +1022,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.unlisten(TEST_USER_ID);
         checkLog(4, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten\" added to domain \"service_unlisten_domain\".",
+                "Server: Event \"Event: Unlisten (user \"test_user_id\" added to domain \"service_unlisten_domain\".",
                 "Server: User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -1027,7 +1046,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         myEventRegistry.unlisten(null, TEST_USER_ID);
         checkLog(4, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten\" added to domain \"service_unlisten_domain\".",
+                "Server: Event \"Event: Unlisten (user \"test_user_id\" added to domain \"service_unlisten_domain\".",
                 "Server: User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -1510,7 +1529,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theUnlistenEvent instanceof DefaultUnlistenEvent);
         assertEquals(TEST_USER_ID, theUnlistenEvent.getUserId());
         assertTrue(theUnlistenEvent.isTimeout());
-        assertNull(theUnlistenEvent.getDomain()); //a timeout is for all domains
+        assertEquals(2, theUnlistenEvent.getDomains().size()); //a timeout is for all domains
+        assertTrue(theUnlistenEvent.getDomains().contains(TEST_DOMAIN));
+        assertTrue(theUnlistenEvent.getDomains().contains(DomainFactory.UNLISTEN_DOMAIN));
 
         theEvents = theEventRegistry.listen(TEST_USER_ID);
         assertNull(theEvents);
@@ -1564,7 +1585,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         TestUnlistenEvent theUnlistenEvent = (TestUnlistenEvent)theEvents.get(0).getEvent();
         assertEquals(TEST_USER_ID, theUnlistenEvent.getUserId());
         assertTrue(theUnlistenEvent.isTimeout());
-        assertNull(theUnlistenEvent.getDomain()); //a timeout is for all domains
+        assertEquals(2, theUnlistenEvent.getDomains().size()); //a timeout is for all domains
+        assertTrue(theUnlistenEvent.getDomains().contains(TEST_DOMAIN));
+        assertTrue(theUnlistenEvent.getDomains().contains(DomainFactory.UNLISTEN_DOMAIN));
         //custom data which is send to all users with a registered unlisten listener
         assertEquals("testuser", theUnlistenEvent.getUserName());
         assertEquals("123", theUnlistenEvent.getTelephoneNumber());
@@ -1618,6 +1641,12 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNotNull(theEvents);
         assertEquals(1, theEvents.size());
         assertTrue(theEvents.get(0).getEvent() instanceof UnlistenEvent);
+
+        Set<Domain> theUnlistenedDomains = ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains();
+        assertEquals(1, theUnlistenedDomains.size());
+        assertTrue(theUnlistenedDomains.contains(TEST_DOMAIN));
+        assertFalse(theUnlistenedDomains.contains(TEST_DOMAIN_2));
+        assertEquals(TEST_USER_ID_2, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
     }
 
     public void testTimeOut_UnimportantDomain() throws Exception {

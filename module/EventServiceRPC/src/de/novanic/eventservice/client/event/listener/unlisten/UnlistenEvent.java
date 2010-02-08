@@ -22,6 +22,8 @@ package de.novanic.eventservice.client.event.listener.unlisten;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
 
+import java.util.Set;
+
 /**
  * An UnlistenEvent will be triggered when a timeout or a domain specific unlisten/deregistration occurs. The UnlistenEvent is created by
  * {@link de.novanic.eventservice.client.event.service.EventService} when unlisten is called for a user. It will also be returned as an
@@ -39,16 +41,16 @@ public interface UnlistenEvent extends Event
     /**
      * A {@link de.novanic.eventservice.client.event.domain.Domain} can be set to the UnlistenEvent when the unlisten event
      * is domain specific.
-     * @param aDomain domain for unlistening
+     * @param aDomains unlistened domains
      */
-    void setDomain(Domain aDomain);
+    void setDomains(Set<Domain> aDomains);
 
     /**
      * Returns the domain for which isn't listening anymore. If the UnlistenEvent is global (for example a timeout),
      * this method returns NULL.
-     * @return domain for unlistening
+     * @return unlistened domains
      */
-    Domain getDomain();
+    Set<Domain> getDomains();
 
     /**
      * Sets the unlistened user id for the UnlistenEvent.

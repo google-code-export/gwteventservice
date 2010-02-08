@@ -249,7 +249,9 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
             if(theUserInfo != null) {
                 LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
                 if(isUserRegistered(aDomain, theUserInfo)) {
-                    addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(theUserInfo, aDomain, false));
+                    Set<Domain> theDomains = new HashSet<Domain>(1);
+                    theDomains.add(aDomain);
+                    addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(theUserInfo, theDomains, false));
                 }
                 removeUser(aDomain, theUserInfo);
             }
@@ -276,7 +278,8 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
         if(aUserInfo != null) {
             final String theUserId = aUserInfo.getUserId();
             LOG.debug(theUserId + ": unlisten.");
-            addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(aUserInfo, null, isTimeout));
+            Set<Domain> theDomains = myDomainUserMapping.getDomains(aUserInfo);
+            addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(aUserInfo, theDomains, isTimeout));
             removeUser(aUserInfo);
         }
     }
@@ -462,14 +465,14 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
      * Initializes an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} with required information
      * like the unlistened domain, user id of the unlistened user/client and the reason for the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}.
      * @param aUserInfo user
-     * @param aDomain domain
+     * @param aDomains unlistened domains
      * @param isTimeout true when the unlisten event is caused by a timeout, false when the unlisten event is caused by a regular unlisten call
      * @return produced {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
      */
-    private UnlistenEvent produceUnlistenEvent(UserInfo aUserInfo, Domain aDomain, boolean isTimeout) {
+    private UnlistenEvent produceUnlistenEvent(UserInfo aUserInfo, Set<Domain> aDomains, boolean isTimeout) {
         final UnlistenEvent theUnlistenEvent = aUserInfo.getUnlistenEvent();
         theUnlistenEvent.setUserId(aUserInfo.getUserId());
-        theUnlistenEvent.setDomain(aDomain);
+        theUnlistenEvent.setDomains(aDomains);
         theUnlistenEvent.setTimeout(isTimeout);
         return theUnlistenEvent;
     }

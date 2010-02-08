@@ -59,14 +59,17 @@ public class UnlistenEventFilter implements EventFilter
             final UnlistenEvent theUnlistenEvent = (UnlistenEvent)anEvent;
             if(UnlistenEventListener.Scope.UNLISTEN == myUnlistenScope ||
                     (UnlistenEventListener.Scope.TIMEOUT == myUnlistenScope && theUnlistenEvent.isTimeout())) {
-                final Domain theUnlistenedDomain = theUnlistenEvent.getDomain();
-                if(theUnlistenedDomain != null) {
+                final Set<Domain> theUnlistenedDomains = theUnlistenEvent.getDomains();
+                if(theUnlistenedDomains != null && !theUnlistenedDomains.isEmpty()) {
                     final Set<Domain> theRegisteredListenDomains = myListenDomainAccessor.getListenDomains(myUserId);
-                    return !theRegisteredListenDomains.contains(theUnlistenedDomain);
+                    for(Domain theUnlistenedDomain: theUnlistenedDomains) {
+                        if(theRegisteredListenDomains.contains(theUnlistenedDomain)) {
+                            return false;
+                        }
+                    }
                 }
-            } else {
-                return true;
             }
+            return true;
         }
         return false;
     }
