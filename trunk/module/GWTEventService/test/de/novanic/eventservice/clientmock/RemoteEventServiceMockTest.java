@@ -27,10 +27,7 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * @author sstrohschein
@@ -284,7 +281,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockRegister(TEST_DOMAIN, true);
 
         //caused by addUnlistenListener
-        final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN, "testUser", true);
+        final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", true);
         mockRegister(DomainFactory.UNLISTEN_DOMAIN, false);
         mockRegisterUnlistenEvent(theUnlistenEvent, false);
 
@@ -345,7 +342,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
             //add UnlistenListener
             assertTrue(myRemoteEventService.isActive());
-            final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(TEST_DOMAIN, "testUser", true);
+            final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", true);
             myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, new TestUnlistenEventListener(), theUnlistenEvent, null);
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();

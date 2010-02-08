@@ -504,7 +504,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(theCustomUnlistenEvent, theEvents.get(0).getEvent());
 
         UnlistenEvent theUnlistenEvent = (UnlistenEvent)theEvents.get(0).getEvent();
-        assertEquals(TEST_DOMAIN, theUnlistenEvent.getDomain());
+        assertEquals(1, theUnlistenEvent.getDomains().size());
+        assertEquals(TEST_DOMAIN, theUnlistenEvent.getDomains().iterator().next());
         assertEquals(TEST_USER_ID, theUnlistenEvent.getUserId());
         assertFalse(theUnlistenEvent.isTimeout());
     }

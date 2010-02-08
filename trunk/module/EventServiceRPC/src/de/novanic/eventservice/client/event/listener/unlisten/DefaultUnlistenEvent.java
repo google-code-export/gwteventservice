@@ -21,6 +21,8 @@ package de.novanic.eventservice.client.event.listener.unlisten;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 
+import java.util.Set;
+
 /**
  * An UnlistenEvent will be triggered when a timeout or a domain specific unlisten/deregistration occurs. The UnlistenEvent is created by
  * {@link de.novanic.eventservice.client.event.service.EventService} when unlisten is called for a user. It will also be returned as an
@@ -35,7 +37,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
  */
 public class DefaultUnlistenEvent implements UnlistenEvent
 {
-    private Domain myDomain;
+    private Set<Domain> myDomains;
     private String myUserId;
     private boolean isTimeout;
     private boolean isLocal;
@@ -48,12 +50,12 @@ public class DefaultUnlistenEvent implements UnlistenEvent
 
     /**
      * Creates an UnlistenEvent for a specific domain. That will be created when a user will be deregistered from a domain.
-     * @param aDomain {@link de.novanic.eventservice.client.event.domain.Domain} which is unlistened (in combination with the user id)
+     * @param aDomains {@link de.novanic.eventservice.client.event.domain.Domain} which are unlistened (in combination with the user id)
      * @param aUserId user id which is unlistened (in combination with the domain)
      * @param isTimeout true when the creation of the UnlistenEvent is caused by a timeout
      */
-    public DefaultUnlistenEvent(Domain aDomain, String aUserId, boolean isTimeout) {
-        myDomain = aDomain;
+    public DefaultUnlistenEvent(Set<Domain> aDomains, String aUserId, boolean isTimeout) {
+        myDomains = aDomains;
         myUserId = aUserId;
         this.isTimeout = isTimeout;
     }
@@ -61,32 +63,32 @@ public class DefaultUnlistenEvent implements UnlistenEvent
     /**
      * Creates an UnlistenEvent for a specific domain. That will be created when a user will be deregistered from a domain or when the
      * UnlistenEvent is triggered from the client side (see {@link UnlistenEvent#isLocal()}).
-     * @param aDomain {@link de.novanic.eventservice.client.event.domain.Domain} which is unlistened (in combination with the user id)
+     * @param aDomains {@link de.novanic.eventservice.client.event.domain.Domain} which are unlistened (in combination with the user id)
      * @param aUserId user id which is unlistened (in combination with the domain)
      * @param isTimeout true when the creation of the UnlistenEvent is caused by a timeout
      * @param isLocal true when the UnlistenEvent was created from the client side (see {@link UnlistenEvent#isLocal()}).
      */
-    public DefaultUnlistenEvent(Domain aDomain, String aUserId, boolean isTimeout, boolean isLocal) {
-        this(aDomain, aUserId, isTimeout);
+    public DefaultUnlistenEvent(Set<Domain> aDomains, String aUserId, boolean isTimeout, boolean isLocal) {
+        this(aDomains, aUserId, isTimeout);
         this.isLocal = isLocal;
     }
 
     /**
      * A {@link de.novanic.eventservice.client.event.domain.Domain} can be set to the UnlistenEvent when the unlisten event
      * is domain specific.
-     * @param aDomain domain for unlistening
+     * @param aDomains unlistened domains
      */
-    public void setDomain(Domain aDomain) {
-        myDomain = aDomain;
+    public void setDomains(Set<Domain> aDomains) {
+        myDomains = aDomains;
     }
 
     /**
      * Returns the domain for which isn't listening anymore. If the UnlistenEvent is global (for example a timeout),
      * this method returns NULL.
-     * @return domain for unlistening
+     * @return unlistened domains
      */
-    public Domain getDomain() {
-        return myDomain;
+    public Set<Domain> getDomains() {
+        return myDomains;
     }
 
     /**
@@ -147,10 +149,13 @@ public class DefaultUnlistenEvent implements UnlistenEvent
         }
 
         UnlistenEvent theOtherObject = (UnlistenEvent)anObject;
+        if(isLocal != theOtherObject.isLocal()) {
+            return false;
+        }
         if(isTimeout != theOtherObject.isTimeout()) {
             return false;
         }
-        if(myDomain != null ? !myDomain.equals(theOtherObject.getDomain()) : theOtherObject.getDomain() != null) {
+        if(myDomains != null ? !myDomains.equals(theOtherObject.getDomains()) : theOtherObject.getDomains() != null) {
             return false;
         }
         if(myUserId != null ? !myUserId.equals(theOtherObject.getUserId()) : theOtherObject.getUserId() != null) {
@@ -160,22 +165,44 @@ public class DefaultUnlistenEvent implements UnlistenEvent
     }
 
     public int hashCode() {
-        int theResult = myDomain != null ? myDomain.hashCode() : 0;
+        int theResult = myDomains != null ? myDomains.hashCode() : 0;
         theResult = 31 * theResult + (myUserId != null ? myUserId.hashCode() : 0);
         theResult = 31 * theResult + (isTimeout ? 1 : 0);
+        theResult = 31 * theResult + (isLocal ? 1 : 0);
         return theResult;
     }
 
     public String toString() {
-        String theString = "Event: Unlisten";
+        final StringBuilder theStringBuilder = new StringBuilder(150);
+        theStringBuilder.append("Event: Unlisten");
         if(isTimeout) {
-            theString += "(timeout)";
+            theStringBuilder.append("(timeout)");
+        } else if(isLocal) {
+            theStringBuilder.append("(local)");
         }
 
-        final Domain theDomain = getDomain();
-        if(theDomain != null) {
-            theString += " (Domain \"" + getDomain() + "\")";
+        if(myUserId != null) {
+            theStringBuilder.append(" (user \"");
+            theStringBuilder.append(myUserId);
+        } else {
+            theStringBuilder.append(" (user ");
+            theStringBuilder.append("not available");
         }
-        return theString;
+
+        if(myDomains != null) {
+            final int theDomainCount = myDomains.size();
+            if(theDomainCount == 1) {
+                theStringBuilder.append("\" for domain \"");
+                theStringBuilder.append(myDomains.iterator().next());
+                theStringBuilder.append("\")");
+            } else if(theDomainCount > 1) {
+                theStringBuilder.append("\" for ");
+                theStringBuilder.append(myDomains.size());
+                theStringBuilder.append(" domains)");
+            }
+        } else if(myUserId != null) {
+            theStringBuilder.append("\")");
+        }
+        return theStringBuilder.toString();
     }
 }
