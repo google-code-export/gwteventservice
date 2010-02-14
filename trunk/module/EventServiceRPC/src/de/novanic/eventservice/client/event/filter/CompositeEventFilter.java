@@ -46,4 +46,11 @@ public interface CompositeEventFilter extends AppendableEventFilter
      * @return true if the EventFilter was removed with that call, otherwise false
      */
     boolean detach(EventFilter anEventFilter);
+
+    /**
+     * Detaches all attached {@link de.novanic.eventservice.client.event.filter.EventFilter} instances.
+     * EventFilter instances can be attached with {@link de.novanic.eventservice.client.event.filter.AppendableEventFilter#attach(EventFilter)}.
+     * @return true if at least one EventFilter was removed with that call, otherwise false
+     */
+    boolean detach();
 }

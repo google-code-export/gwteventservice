@@ -97,6 +97,17 @@ public class DefaultCompositeEventFilter implements CompositeEventFilter
     }
 
     /**
+     * Detaches all attached {@link de.novanic.eventservice.client.event.filter.EventFilter} instances.
+     * EventFilter instances can be attached with {@link de.novanic.eventservice.client.event.filter.AppendableEventFilter#attach(EventFilter)}.
+     * @return true if at least one EventFilter was removed with that call, otherwise false
+     */
+    public boolean detach() {
+        boolean isEmpty = myEventFilters.isEmpty();
+        myEventFilters.clear();
+        return !isEmpty;
+    }
+
+    /**
      * Returns the attached EventFilters.
      * EventFilter instances can be attached with {@link de.novanic.eventservice.client.event.filter.AppendableEventFilter#attach(EventFilter)}.
      * @return the attached {@link de.novanic.eventservice.client.event.filter.EventFilter}

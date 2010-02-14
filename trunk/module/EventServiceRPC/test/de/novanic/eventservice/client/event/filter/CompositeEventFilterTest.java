@@ -143,7 +143,7 @@ public class CompositeEventFilterTest extends TestCase
         assertTrue(theAttachedEventFilters.contains(theEventFilter_2));
         assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
 
-        theCompositeEventFilter.detach(theEventFilter_2);
+        assertTrue(theCompositeEventFilter.detach(theEventFilter_2));
 
         theAttachedEventFilters = theCompositeEventFilter.getAttachedEventFilters();
         assertEquals(1, theAttachedEventFilters.size());
@@ -152,7 +152,7 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
 
         //to remove the same EventFilter shouldn't have an effect
-        theCompositeEventFilter.detach(theEventFilter_2);
+        assertFalse(theCompositeEventFilter.detach(theEventFilter_2));
 
         theAttachedEventFilters = theCompositeEventFilter.getAttachedEventFilters();
         assertEquals(1, theAttachedEventFilters.size());
@@ -160,13 +160,72 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theAttachedEventFilters.contains(theEventFilter_2));
         assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
 
-        theCompositeEventFilter.detach(theEventFilter_1);
+        assertTrue(theCompositeEventFilter.detach(theEventFilter_1));
 
         theAttachedEventFilters = theCompositeEventFilter.getAttachedEventFilters();
         assertEquals(0, theAttachedEventFilters.size());
         assertFalse(theAttachedEventFilters.contains(theEventFilter_1));
         assertFalse(theAttachedEventFilters.contains(theEventFilter_2));
         assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
+    }
+
+    public void testDetach_Empty() {
+        EventFilter theEventFilter_1 = new EventFilter() {
+            public boolean match(Event anEvent) {
+                return true;
+            }
+        };
+
+        CompositeEventFilter theCompositeEventFilter = new DefaultCompositeEventFilter();
+        assertFalse(theCompositeEventFilter.detach(theEventFilter_1));
+    }
+
+    public void testDetach_2() {
+        EventFilter theEventFilter_1 = new EventFilter() {
+            public boolean match(Event anEvent) {
+                return 0 == ((TestEvent)anEvent).getId();
+            }
+        };
+        EventFilter theEventFilter_2 = new EventFilter() {
+            public boolean match(Event anEvent) {
+                return 1 == ((TestEvent)anEvent).getId();
+            }
+        };
+        EventFilter theEventFilter_3 = new EventFilter() {
+            public boolean match(Event anEvent) {
+                return 2 == ((TestEvent)anEvent).getId();
+            }
+        };
+
+        CompositeEventFilter theCompositeEventFilter = new DefaultCompositeEventFilter(theEventFilter_1, theEventFilter_2);
+
+        List<EventFilter> theAttachedEventFilters = theCompositeEventFilter.getAttachedEventFilters();
+        assertEquals(2, theAttachedEventFilters.size());
+        assertTrue(theAttachedEventFilters.contains(theEventFilter_1));
+        assertTrue(theAttachedEventFilters.contains(theEventFilter_2));
+        assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
+
+        assertTrue(theCompositeEventFilter.detach());
+
+        theAttachedEventFilters = theCompositeEventFilter.getAttachedEventFilters();
+        assertEquals(0, theAttachedEventFilters.size());
+        assertFalse(theAttachedEventFilters.contains(theEventFilter_1));
+        assertFalse(theAttachedEventFilters.contains(theEventFilter_2));
+        assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
+        
+        //to remove all EventFilter objects again shouldn't have an effect
+        assertFalse(theCompositeEventFilter.detach());
+
+        theAttachedEventFilters = theCompositeEventFilter.getAttachedEventFilters();
+        assertEquals(0, theAttachedEventFilters.size());
+        assertFalse(theAttachedEventFilters.contains(theEventFilter_1));
+        assertFalse(theAttachedEventFilters.contains(theEventFilter_2));
+        assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
+    }
+
+    public void testDetach_2_Empty() {
+        CompositeEventFilter theCompositeEventFilter = new DefaultCompositeEventFilter();
+        assertFalse(theCompositeEventFilter.detach());
     }
 
     private class TestEvent implements Event
