@@ -1,0 +1,158 @@
+
+<project name="demo-conversation-app" default="dist" basedir=".">
+
+    <property environment="osEnv"/>
+
+    <condition property="gwt.path" value="${osEnv.GWT_HOME}" else="${lib.dir}">
+        <isset property="osEnv.GWT_HOME"/>
+    </condition>
+
+    <property name="gwt.module" value="de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI"/>
+
+    <property name="src.conf.dir" value="conf"/>
+    <property name="src.web.dir" value="module/DemoConversationAppUI/war"/>
+    <property name="src.web.inf" value="${src.web.dir}/WEB-INF"/>
+    <property name="src.gwt.dir" value="module/DemoConversationAppUI/src"/>
+    <property name="src.gwt.rpc.dir" value="module/DemoConversationAppRPC/src"/>
+    <property name="src.server.dir" value="module/DemoConversationApp/src"/>
+    <property name="lib.dir" value="../lib"/>
+    <!-- should contain the gwteventservice.jar, if not the target 'dist-dep' should be called -->
+    <property name="lib.release.dir" value="../release"/>
+
+    <property name="dest.war.file" value="democonversation.war"/>
+    <property name="dest.web.dir" value="webcontent"/>
+    <property name="dest.web.gwt.dir" value="${dest.web.dir}/${gwt.module}"/>
+    <property name="dest.web.inf.dir" value="${dest.web.dir}/WEB-INF"/>
+    <property name="dest.web.classes.dir" value="${dest.web.inf.dir}/classes"/>
+    <property name="dest.web.lib.dir" value="${dest.web.inf.dir}/lib"/>
+
+    <property name="temp.dir" value="temp"/>
+    <property name="temp.gwt.dir" value="${temp.dir}/www"/>
+
+    <path id="classpath">
+        <fileset dir="${gwt.path}">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <pathelement location="${src.gwt.dir}"/>
+        <pathelement location="${src.gwt.rpc.dir}"/>
+        <pathelement location="${src.server.dir}"/>
+
+        <fileset dir="${lib.dir}" erroronmissingdir="false">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <!-- search for gwteventservice.jar in the root and in the release dir -->
+        <fileset dir="${lib.release.dir}" erroronmissingdir="false">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="../">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${dest.web.classes.dir}" failonerror="false"/>
+        <delete dir="${dest.web.lib.dir}" failonerror="false"/>
+        <delete dir="${dest.web.dir}" failonerror="false"/>
+        <delete dir="${temp.dir}" failonerror="false"/>
+        <delete file="${dest.war.file}"/>
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${dest.web.dir}"/>
+        <mkdir dir="${dest.web.classes.dir}"/>
+        <mkdir dir="${dest.web.lib.dir}"/>
+        <mkdir dir="${temp.gwt.dir}"/>
+    </target>
+
+    <target name="compile-gwt" depends="init">
+        <java classname="com.google.gwt.dev.Compiler" fork="yes">
+            <classpath refid="classpath"/>
+            <jvmarg value="-Xmx256M"/>
+            <arg value="-war"/>
+            <arg value="${temp.gwt.dir}"/>
+            <arg value="${gwt.module}"/>
+        </java>
+    </target>
+
+    <target name="compile" depends="compile-gwt">
+        <javac srcdir="${src.gwt.rpc.dir}" destdir="${dest.web.classes.dir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
+            <classpath refid="classpath"/>
+        </javac>
+        <javac srcdir="${src.server.dir}" destdir="${dest.web.classes.dir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
+            <classpath refid="classpath"/>
+        </javac>
+        <javac srcdir="${src.gwt.dir}" destdir="${dest.web.classes.dir}" source="1.5" target="1.5" fork="yes" memorymaximumsize="128M">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+    <target name="deploy" depends="compile">
+        <copy todir="${dest.web.classes.dir}">
+            <fileset dir="${src.gwt.dir}" includes="**/*.gwt.xml"/>
+            <fileset dir="${src.conf.dir}" includes="**/*.*"/>
+        </copy>
+
+        <copy todir="${dest.web.lib.dir}">
+            <fileset dir="${gwt.path}">
+                <include name="**/gwt-servlet.jar"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${dest.web.lib.dir}">
+            <!-- root dir -->
+            <fileset dir="../">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${lib.release.dir}" erroronmissingdir="false">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${dest.web.inf.dir}">
+            <fileset dir="${src.web.inf}">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${dest.web.dir}">
+            <fileset dir="${src.web.dir}">
+                <include name="*.css"/>
+                <include name="*.html"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${dest.web.gwt.dir}">
+            <fileset dir="${temp.gwt.dir}/${gwt.module}"/>
+        </copy>
+
+        <delete dir="${temp.dir}" deleteonexit="true" failonerror="false"/>
+    </target>
+
+    <target name="deploy-appengine" depends="deploy">
+        <copy todir="${dest.web.inf.dir}">
+            <fileset dir="${src.web.inf}/appengine">
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="war" depends="deploy">
+        <war warfile="${dest.war.file}" webxml="${dest.web.inf.dir}/web.xml">
+            <fileset dir="${dest.web.dir}">
+                <include name="**/*"/>
+            </fileset>
+        </war>
+    </target>
+
+    <target name="build-gwteventservice">
+        <ant antfile="build.xml" dir="../" target="package"/>
+    </target>
+
+    <target name="dist" depends="war"/>
+    
+    <target name="dist-dep" depends="build-gwteventservice, dist">
+
+    </target>
+</project>
