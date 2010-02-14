@@ -152,6 +152,7 @@ public class UserActivityScheduler
      * ({@link de.novanic.eventservice.service.registry.user.UserActivityScheduler#start(boolean)}).
      * @param aTimer timer to schedule
      * @param aTimeoutTimerTask TimeoutTimerTask
+     * @param aTimeoutInterval interval to check for timeouts
      */
     private void schedule(Timer aTimer, TimeoutTimerTask aTimeoutTimerTask, long aTimeoutInterval) {
         aTimer.schedule(aTimeoutTimerTask, 0L, aTimeoutInterval);

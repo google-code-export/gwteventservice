@@ -20,7 +20,7 @@
 package de.novanic.eventservice.service.exception;
 
 /**
- * NoSessionAvailableExcpetion is an exception that should be thrown when no session is available, but needed.
+ * NoSessionAvailableException is an exception that should be thrown when no session is available, but needed.
  * For example when user/client information must be available.
  *
  * @author sstrohschein

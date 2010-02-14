@@ -53,6 +53,8 @@ public final class DefaultRemoteEventService implements RemoteEventService
 
     /**
      * Creates a new RemoteEventService.
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.event.RemoteEventConnector} for the connection
+     * between client side and server side
      */
     DefaultRemoteEventService(RemoteEventConnector aRemoteEventConnector) {
         myRemoteEventConnector = aRemoteEventConnector;
@@ -178,7 +180,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
     /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
      * user/client domain deregistrations and timeouts. The custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
-     * will be registered at the server side and transfered to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * will be registered at the server side and transferred to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * registered. That {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can for example contain user information
      * of your specific user-system to recover the user in your user-system on a timeout. The scope for unlisten events to receive is set to
      * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#UNLISTEN} by default.
@@ -196,7 +198,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
     /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} to listen for all
      * user/client domain deregistrations and timeouts. The custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
-     * will be registered at the server side and transfered to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
+     * will be registered at the server side and transferred to all users/clients which have an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener}
      * registered. That {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can for example contain user information
      * of your specific user-system to recover the user in your user-system on a timeout.
      * @param anUnlistenScope scope of the unlisten events to receive

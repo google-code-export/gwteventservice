@@ -28,7 +28,7 @@ import de.novanic.eventservice.util.PlatformUtil;
  * <br>
  * <br>- Min waiting time - Listening should hold at least for min waiting time.
  * <br>- Max waiting time - Listening shouldn't hold longer than max waiting time.
- * <br>- Timeout time - Max time for a listen cycle. If the timeout time is overlapsed, the client will be deregistered.
+ * <br>- Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
  *
  * @author sstrohschein
  * <br>Date: 09.08.2008

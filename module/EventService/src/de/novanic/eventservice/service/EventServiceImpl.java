@@ -120,7 +120,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      * contain custom data. Other users/clients can use the custom data when the event is for example triggered by a timeout.
      * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
-     * be transfered to other users/clients when a timeout occurs or a domain is leaved.
+     * be transferred to other users/clients when a timeout occurs or a domain is leaved.
      */
     public void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent) {
         final String theClientId = getClientId();

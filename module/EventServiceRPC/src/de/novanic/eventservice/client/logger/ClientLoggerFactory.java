@@ -40,7 +40,7 @@ public class ClientLoggerFactory
     }
 
     /**
-     * Creates a new {@link de.novanic.eventservice.client.logger.ClientLogger} and holds it as a sinlgeton (only one
+     * Creates a new {@link de.novanic.eventservice.client.logger.ClientLogger} and holds it as a singleton (only one
      * instance can exist).
      * @return {@link de.novanic.eventservice.client.logger.ClientLogger}
      */

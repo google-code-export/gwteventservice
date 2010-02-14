@@ -21,7 +21,7 @@ package de.novanic.eventservice.config.loader;
 
 /**
  * ConfigurationLoadException is an exception that can be thrown by {@link de.novanic.eventservice.config.loader.ConfigurationLoader},
- * for example when a loading error occures.
+ * for example when a loading error occurs.
  *
  * @author sstrohschein
  *         <br>Date: 23.10.2008

@@ -42,7 +42,7 @@ public interface ConfigParameter
      */
     public static final String MIN_WAITING_TIME_TAG = "time.waiting.min";
     /**
-     * Timeout time - Max time for a listen cycle. If the timeout time is overlapsed, the client will be deregistered.
+     * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
      */
     public static final String TIMEOUT_TIME_TAG = "time.timeout";
 
@@ -55,7 +55,7 @@ public interface ConfigParameter
      */
     public static final String FQ_MIN_WAITING_TIME_TAG = FULLY_QUALIFIED_TAG_PREFIX + MIN_WAITING_TIME_TAG;
     /**
-     * Timeout time - Max time for a listen cycle. If the timeout time is overlapsed, the client will be deregistered.
+     * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
      */
     public static final String FQ_TIMEOUT_TIME_TAG = FULLY_QUALIFIED_TAG_PREFIX + TIMEOUT_TIME_TAG;
 }

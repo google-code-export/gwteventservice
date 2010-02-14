@@ -78,7 +78,7 @@ public interface EventService extends RemoteService
      * contain custom data. Other users/clients can use the custom data when the event is for example triggered by a timeout.
      * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
-     * be transfered to other users/clients when a timeout occurs or a domain is leaved.
+     * be transferred to other users/clients when a timeout occurs or a domain is leaved.
      */
     void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent);
 
@@ -114,7 +114,7 @@ public interface EventService extends RemoteService
     List<DomainEvent> listen();
 
     /**
-     * Unlisten for events (for the current user) in all domains (deregisteres the user from all domains).
+     * Unlisten for events (for the current user) in all domains (deregisters the user from all domains).
      */
     void unlisten();
 
@@ -125,7 +125,7 @@ public interface EventService extends RemoteService
     void unlisten(Domain aDomain);
 
     /**
-     * Unlisten for events (for the current user) in the domains and deregisteres the user from the domains.
+     * Unlisten for events (for the current user) in the domains and deregisters the user from the domains.
      * @param aDomains set of domains to unlisten
      */
     void unlisten(Set<Domain> aDomains);

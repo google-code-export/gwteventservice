@@ -157,7 +157,7 @@ public class UserInfo implements Comparable<UserInfo>
     }
 
     /**
-     * A custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can be set which is transfered
+     * A custom {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} can be set which is transferred
      * to all registered {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} instances when
      * an unlisten occurred (for example by a timeout or when a user/client leaves a domain). When no custom
      * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} is registered, a default/generic

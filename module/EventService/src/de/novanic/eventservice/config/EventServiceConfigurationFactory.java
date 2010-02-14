@@ -109,7 +109,7 @@ public class EventServiceConfigurationFactory
                 }
             }
         }
-        //can not occure, because the DefaultConfigurationLoader is attached and always available
+        //can not occur, because the DefaultConfigurationLoader is attached and always available
         throw new ConfigurationException("No configuration is available!");
     }
 

@@ -46,9 +46,9 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
 
     /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
-     * {@link ConfigurationLoader#load()} shouldn't called. In the case of {@link DefaultConfigurationLoader} it returnes
+     * {@link ConfigurationLoader#load()} shouldn't called. In the case of {@link DefaultConfigurationLoader} it returns
      * always true, because the default configuration is available in any case.
-     * @return true when available, otherwise false. In the case of {@link DefaultConfigurationLoader} it returnes
+     * @return true when available, otherwise false. In the case of {@link DefaultConfigurationLoader} it returns
      * always true, because the default configuration is available in any case.
      */
     public boolean isAvailable() {
