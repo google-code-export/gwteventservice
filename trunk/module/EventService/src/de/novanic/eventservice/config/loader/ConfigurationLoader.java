@@ -45,7 +45,7 @@ public interface ConfigurationLoader
     /**
      * Loads the configuration with the loader.
      * @return {@link de.novanic.eventservice.config.EventServiceConfiguration} the loaded configuration
-     * @throws ConfigurationException occures when the configuration can't be loaded or if it contains unreadable values.
+     * @throws ConfigurationException occurs when the configuration can't be loaded or if it contains unreadable values.
      */
     EventServiceConfiguration load();
 }

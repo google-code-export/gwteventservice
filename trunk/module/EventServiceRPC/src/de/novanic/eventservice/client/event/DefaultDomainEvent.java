@@ -81,7 +81,7 @@ public class DefaultDomainEvent implements DomainEvent, Comparable<DomainEvent>
     }
 
     /**
-     * Returns the domain where the event has occured.
+     * Returns the domain where the event has occurred.
      * @return domain
      */
     public Domain getDomain() {

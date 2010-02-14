@@ -25,7 +25,7 @@ package de.novanic.eventservice.config;
  * <br>
  * <br> - Min waiting time - Listening should hold at least for min waiting time.
  * <br> - Max waiting time - Listening shouldn't hold longer than max waiting time.
- * <br> - Timeout time - Max time for a listen cycle. If the timeout time is overlapsed, the client will be deregistered.
+ * <br> - Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
  *
  * @author sstrohschein
  * <br>Date: 09.08.2008
@@ -52,7 +52,7 @@ public interface EventServiceConfiguration
     int getMaxWaitingTime();
 
     /**
-     * Returns the timeout time. The timeout time is the max time for a listen cycle. If the timeout time is overlapsed,
+     * Returns the timeout time. The timeout time is the max time for a listen cycle. If the timeout time is exceeded,
      * the client will be deregistered.
      * @return timeout time
      */

@@ -39,7 +39,7 @@ import java.util.*;
 /**
  * The EventRegistry handles the users/clients and the events per domain. Users can be registered for a domain/context
  * to receive events for the according domain.
- * User specific events can be handled domainless, when the user is registered.
+ * User specific events can be handled domain-less, when the user is registered.
  * The EventRegistry is used by {@link de.novanic.eventservice.service.EventServiceImpl}.
  *
  * <br>The client id is required, because the connection to every client must be kept open.
@@ -299,7 +299,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
         if(!myDomainUserMapping.isUserContained(aUserInfo)) {
             myUserManager.removeUser(aUserInfo.getUserId());
         } else {
-            //remove the eventfilter if the user isn't removed completely
+            //remove the EventFilter if the user isn't removed completely
             aUserInfo.removeEventFilter(aDomain);
         }
 
@@ -412,7 +412,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
      * @param aUserId user to register the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to
      * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
-     * be transfered to other users/clients when a timeout occurs or a domain is leaved.
+     * be transferred to other users/clients when a timeout occurs or a domain is leaved.
      */
     public void registerUnlistenEvent(String aUserId, UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent) {
         registerUser(DomainFactory.UNLISTEN_DOMAIN, aUserId, new UnlistenEventFilter(this, aUserId, anUnlistenScope));
@@ -502,7 +502,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     {
         /**
          * The method onTimeout is called when a timeout is recognized for the user.
-         * It caueses a unlisten call ({@link de.novanic.eventservice.service.registry.DefaultEventRegistry#unlisten(String)})
+         * It causes a unlisten call ({@link de.novanic.eventservice.service.registry.DefaultEventRegistry#unlisten(String)})
          * to clean up the inactive user/client.
          * @param aUserInfo the inactive user
          */

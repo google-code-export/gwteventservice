@@ -107,6 +107,8 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
 
     /**
      * Creates the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} for local timeouts.
+     * @param anEventNotification {@link de.novanic.eventservice.client.event.EventNotification} for the triggered
+     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
      */
     private void fireUnlistenEvent(EventNotification anEventNotification) {
         if(myUnlistenEvent == null) {

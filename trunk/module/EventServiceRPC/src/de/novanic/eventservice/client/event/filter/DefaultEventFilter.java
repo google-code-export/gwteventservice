@@ -51,7 +51,7 @@ public class DefaultEventFilter implements CascadingEventFilter
     /**
      * Creates a new DefaultEventFilter. The {@link de.novanic.eventservice.client.event.filter.EventFilter} is used by
      * the default implementation of the match method (in DefaultEventFilter) to filter the events.
-     * @param aNextEventFilter
+     * @param aNextEventFilter {@link de.novanic.eventservice.client.event.filter.EventFilter} to attach
      */
     public DefaultEventFilter(EventFilter aNextEventFilter) {
         attach(aNextEventFilter);

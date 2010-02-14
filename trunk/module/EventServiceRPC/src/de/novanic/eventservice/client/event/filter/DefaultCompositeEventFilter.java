@@ -41,7 +41,7 @@ public class DefaultCompositeEventFilter implements CompositeEventFilter
     /**
      * Creates a new DefaultCompositeEventFilter. {@link de.novanic.eventservice.client.event.filter.EventFilter} instances
      * must be attached with {@link de.novanic.eventservice.client.event.filter.AppendableEventFilter#attach(EventFilter)} or
-     * the constructor {@link de.novanic.eventservice.client.event.filter.DefaultCompositeEventFilter#DefaultCompositeEventFilter(EventFilter[])} must
+     * the constructor {@link de.novanic.eventservice.client.event.filter.DefaultCompositeEventFilter#DefaultCompositeEventFilter(EventFilter...)} must
      * be used to register {@link de.novanic.eventservice.client.event.filter.EventFilter} instances for the match method.
      */
     public DefaultCompositeEventFilter() {
@@ -61,7 +61,7 @@ public class DefaultCompositeEventFilter implements CompositeEventFilter
     /**
      * If the match method returns true for an event, the event should be ignored, because the EventFilter recognizes
      * the event to filter it. The DefaultCompositeEventFilter uses the attached {@link de.novanic.eventservice.client.event.filter.EventFilter}
-     * instances to filter the events. See {@link de.novanic.eventservice.client.event.filter.DefaultCompositeEventFilter#DefaultCompositeEventFilter(EventFilter[])}
+     * instances to filter the events. See {@link de.novanic.eventservice.client.event.filter.DefaultCompositeEventFilter#DefaultCompositeEventFilter(EventFilter...)}
      * or {@link de.novanic.eventservice.client.event.filter.AppendableEventFilter#attach(EventFilter)} to append
      * {@link de.novanic.eventservice.client.event.filter.EventFilter} instances.
      * @param anEvent event to check

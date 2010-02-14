@@ -33,7 +33,7 @@ import java.util.Set;
 /**
  * The EventRegistry handles the users/clients and the events per domain. Users can be registered for a domain/context
  * to receive events for the corresponding domain.
- * User specific events can be handled domainless, when the user is registered.
+ * User specific events can be handled domain-less, when the user is registered.
  * The EventRegistry is used by {@link de.novanic.eventservice.service.EventServiceImpl}.
  *
  * <br>The client id is required, because the connection to every client must be kept open.
@@ -172,7 +172,7 @@ public interface EventRegistry
      * @param aUserId user to register the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to
      * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
-     * be transfered to other users/clients when a timeout occurs or a domain is leaved.
+     * be transferred to other users/clients when a timeout occurs or a domain is leaved.
      */
     void registerUnlistenEvent(String aUserId, UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent);
 

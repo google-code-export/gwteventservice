@@ -83,7 +83,7 @@ public interface EventServiceAsync
      *
      * @param anUnlistenScope scope of the unlisten events to receive
      * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which should
-     *                        be transfered to other users/clients when a timeout occurs or a domain is leaved.
+     *                        be transferred to other users/clients when a timeout occurs or a domain is leaved.
      */
     void registerUnlistenEvent(UnlistenEventListener.Scope anUnlistenScope, UnlistenEvent anUnlistenEvent, AsyncCallback<Void> async);
 
@@ -123,7 +123,7 @@ public interface EventServiceAsync
     void listen(AsyncCallback<List<DomainEvent>> async);
 
     /**
-     * Unlisten for events (for the current user) in all domains (deregisteres the user from all domains).
+     * Unlisten for events (for the current user) in all domains (deregisters the user from all domains).
      */
     void unlisten(AsyncCallback<Void> async);
 
@@ -135,7 +135,7 @@ public interface EventServiceAsync
     void unlisten(Domain aDomain, AsyncCallback<Void> async);
 
     /**
-     * Unlisten for events (for the current user) in the domains and deregisteres the user from the domains.
+     * Unlisten for events (for the current user) in the domains and deregisters the user from the domains.
      *
      * @param aDomains set of domains to unlisten
      */

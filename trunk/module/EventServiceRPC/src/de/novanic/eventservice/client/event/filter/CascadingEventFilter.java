@@ -24,7 +24,7 @@ package de.novanic.eventservice.client.event.filter;
  * EventFilter. When the next EventFilter is also a CascadingEventFilter, it can handle another EventFilter...
  * That technique can be used to build filter sequences (cascading).
  * A other solution to build filter sequences is available with {@link de.novanic.eventservice.client.event.filter.CompositeEventFilter}
- * or rather {@link de.novanic.eventservice.client.event.filter.EventFilterFactory#connect(EventFilter[])}.
+ * or rather {@link de.novanic.eventservice.client.event.filter.EventFilterFactory#connect(EventFilter...)}.
  *
  * @author sstrohschein
  *         <br>Date: 05.03.2009

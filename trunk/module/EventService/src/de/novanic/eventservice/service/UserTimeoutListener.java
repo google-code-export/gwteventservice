@@ -24,7 +24,7 @@ import de.novanic.eventservice.service.registry.user.UserInfo;
 /**
  * UserTimeoutListener can be used to recognize the timeouts of registered users.
  * The {@link de.novanic.eventservice.service.UserTimeoutListener#onTimeout(UserInfo)}) method is called when a timeout
- * occurres.
+ * occurs.
  *
  * @author sstrohschein
  *         <br>Date: 20.01.2009

@@ -47,7 +47,7 @@ public interface DomainEvent extends Serializable
     Event getEvent();
 
     /**
-     * Returns the domain where the event has occured.
+     * Returns the domain where the event has occurred.
      * @return domain
      */
     Domain getDomain();

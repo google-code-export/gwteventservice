@@ -26,7 +26,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Activates the listen cycle for event listening and registrates the client/user for a domain (server side).
+ * Activates the listen cycle for event listening and registers the client/user for a domain (server side).
  *
  * @author sstrohschein
  *         <br>Date: 27.03.2009

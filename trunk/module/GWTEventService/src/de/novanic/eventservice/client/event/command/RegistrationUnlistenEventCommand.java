@@ -27,7 +27,7 @@ import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which will be transfered to
+ * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} which will be transferred to
  * other clients/users when that user/client gets a timeout or deregisters a {@link de.novanic.eventservice.client.event.listener.RemoteEventListener}.
  *
  * @author sstrohschein
@@ -45,7 +45,7 @@ public class RegistrationUnlistenEventCommand extends ServerCallCommand<Void>
      * Creates an ServerCallCommand to execute and handle server calls.
      * @param anUnlistenScope scope of the unlisten events to receive
      * @param aRemoteEventConnector {@link de.novanic.eventservice.client.event.RemoteEventConnector}
-     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} will be transfered to other clients/users when
+     * @param anUnlistenEvent {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} will be transferred to other clients/users when
      * that user/client gets a timeout or deregisters a {@link de.novanic.eventservice.client.event.listener.RemoteEventListener}.
      * @param aVoidAsyncCallback callback of the command
      */
