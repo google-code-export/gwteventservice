@@ -11,9 +11,9 @@
     </condition>
 
     <property name="version.number" value="1.1"/>
-    <property name="version.final" value="false"/>
-    <condition property="version" value="${version.number}" else="${version.number}-dev">
-        <istrue value="${version.final}"/>
+	<property name="version.state" value="beta"/>
+    <condition property="version" value="${version.number}" else="${version.number}-${version.state}">
+        <isset property="${version.state}"/>
     </condition>
 
     <property name="conf.dir" value="conf"/>
@@ -72,7 +72,7 @@
     </target>
 
     <target name="info">
-        <echo message="Building GWTEventService ${version.number}..."/>
+        <echo message="Building GWTEventService ${version}..."/>
         <echo message="GWT-Home: ${gwt.path}"/>
     </target>
 
