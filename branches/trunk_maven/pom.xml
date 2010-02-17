@@ -15,7 +15,9 @@
       <maven.compiler.source>1.5</maven.compiler.source>
       <maven.compiler.target>1.5</maven.compiler.target>
       <!--  tests are broken at the moment TODO fix this -->
+<!--
       <maven.test.skip>true</maven.test.skip>
+-->
   </properties>
 
   <dependencyManagement>
