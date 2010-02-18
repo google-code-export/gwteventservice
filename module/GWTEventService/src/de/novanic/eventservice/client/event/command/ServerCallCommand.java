@@ -39,7 +39,7 @@ public abstract class ServerCallCommand<R> implements ClientCommand<R>
      * @param aRemoteEventConnector {@link de.novanic.eventservice.client.event.RemoteEventConnector}
      * @param aCallback callback of the command
      */
-    public ServerCallCommand(RemoteEventConnector aRemoteEventConnector, AsyncCallback<R> aCallback) {
+    protected ServerCallCommand(RemoteEventConnector aRemoteEventConnector, AsyncCallback<R> aCallback) {
         myRemoteEventConnector = aRemoteEventConnector;
         myCallback = aCallback;
     }

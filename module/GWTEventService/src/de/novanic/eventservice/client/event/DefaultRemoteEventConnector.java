@@ -167,7 +167,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     {
         private EventNotification myEventNotification;
 
-        public ListenEventCallback(EventNotification anEventNotification) {
+        private ListenEventCallback(EventNotification anEventNotification) {
             myEventNotification = anEventNotification;
         }
 
