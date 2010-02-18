@@ -38,7 +38,7 @@ import javax.servlet.ServletConfig;
  */
 public class WebDescriptorConfigurationLoader implements ConfigurationLoader
 {
-    private ServletConfig myServletConfig;
+    private final ServletConfig myServletConfig;
 
     public WebDescriptorConfigurationLoader(ServletConfig aServletConfig) {
         myServletConfig = aServletConfig;
