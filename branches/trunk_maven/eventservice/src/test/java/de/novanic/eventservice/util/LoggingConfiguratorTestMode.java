@@ -30,7 +30,7 @@ import java.io.IOException;
  *         <br>Date: 14.01.2009
  *         <br>Time: 23:38:11
  */
-public final class TestLoggingConfigurator
+public final class LoggingConfiguratorTestMode
 {
     private static final String LOGGING_FILE_PROPERTY = "java.util.logging.config.file";
     private static final String TEST_LOGGING_PROPERTIES = "testlogging.properties";
@@ -40,7 +40,7 @@ public final class TestLoggingConfigurator
     private static String myTestLoggingProperties;
     private static String myEmptyLoggingProperties;
 
-    private TestLoggingConfigurator() {}
+    private LoggingConfiguratorTestMode() {}
 
     public static void configureLogging() throws Exception {
         if(myTestLoggingProperties == null) {

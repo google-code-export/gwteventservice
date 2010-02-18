@@ -563,7 +563,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         myEventRegistry.registerUser(TEST_DOMAIN_3, TEST_USER_ID, null);
         assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
 
-        myEventRegistry.setEventFilter(TEST_DOMAIN_2, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.setEventFilter(TEST_DOMAIN_2, TEST_USER_ID, new EventFilterTestMode());
 
         for(int i = 0; i < 500; i++) {
             startAddEvent(TEST_USER_ID, TEST_DOMAIN, 0, isUserSpecific);
@@ -642,7 +642,7 @@ public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThread
         assertEquals(3, myEventRegistry.getListenDomains(TEST_USER_ID).size());
         assertEquals(1, myEventRegistry.getListenDomains(TEST_USER_ID_2).size());
 
-        myEventRegistry.setEventFilter(TEST_DOMAIN_2, TEST_USER_ID_2, new TestEventFilter());
+        myEventRegistry.setEventFilter(TEST_DOMAIN_2, TEST_USER_ID_2, new EventFilterTestMode());
 
         for(int i = 0; i < 500; i++) {
             startAddEvent(TEST_USER_ID, TEST_DOMAIN, 0, isUserSpecific);

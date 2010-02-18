@@ -8,7 +8,7 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
  *         <br>Date: 24.10.2009
  *         <br>Time: 19:25:14
  */
-public class TestUnlistenEventListener extends TestEventListener implements UnlistenEventListener
+public class UnlistenEventListenerTestMode extends EventListenerTestMode implements UnlistenEventListener
 {
     public void onUnlisten(UnlistenEvent anUnlistenEvent) {
         addEvent(anUnlistenEvent);

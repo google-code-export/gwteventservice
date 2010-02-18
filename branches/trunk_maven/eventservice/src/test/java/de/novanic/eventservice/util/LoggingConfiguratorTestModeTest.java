@@ -28,7 +28,7 @@ import java.util.logging.LogManager;
  *         <br>Date: 14.01.2009
  *         <br>Time: 23:42:36
  */
-public class TestLoggingConfiguratorTest extends EventServiceTestCase
+public class LoggingConfiguratorTestModeTest extends EventServiceTestCase
 {
     private static final String LOGGING_FILE_PROPERTY = "java.util.logging.config.file";
 
@@ -45,30 +45,30 @@ public class TestLoggingConfiguratorTest extends EventServiceTestCase
             System.clearProperty(LOGGING_FILE_PROPERTY);
         }
         LogManager.getLogManager().readConfiguration();
-        TestLoggingConfigurator.reset();
+        LoggingConfiguratorTestMode.reset();
     }
 
     public void testConfigureLogging() throws Exception {
-        TestLoggingConfigurator.configureLogging();
+        LoggingConfiguratorTestMode.configureLogging();
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("testlogging.properties"));
 
-        TestLoggingConfigurator.configureLogging();
+        LoggingConfiguratorTestMode.configureLogging();
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("testlogging.properties"));
     }
 
     public void testLogOff() throws Exception {
-        TestLoggingConfigurator.logOff();
+        LoggingConfiguratorTestMode.logOff();
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("empty.properties"));
 
-        TestLoggingConfigurator.logOff();
+        LoggingConfiguratorTestMode.logOff();
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("empty.properties"));
     }
 
     public void testLogOn() throws Exception {
-        TestLoggingConfigurator.logOn();
+        LoggingConfiguratorTestMode.logOn();
         assertEquals(myLoggingFilePropertyBackup, System.getProperty(LOGGING_FILE_PROPERTY));
 
-        TestLoggingConfigurator.logOn();
+        LoggingConfiguratorTestMode.logOn();
         assertEquals(myLoggingFilePropertyBackup, System.getProperty(LOGGING_FILE_PROPERTY));
     }    
 }
