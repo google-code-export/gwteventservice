@@ -21,7 +21,7 @@ package de.novanic.eventservice.clientmock.event.command;
 
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
-import de.novanic.eventservice.client.event.TestTypeEventFilter;
+import de.novanic.eventservice.client.event.TypeEventFilterTestMode;
 import de.novanic.eventservice.client.event.EventNotification;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.command.ActivationCommand;
@@ -38,7 +38,7 @@ public class ActivationCommandTest extends ClientCommandTestCase
 {
     public void testExecute() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
-        final EventFilter theEventFilter = new TestTypeEventFilter();
+        final EventFilter theEventFilter = new TypeEventFilterTestMode();
         final TestEventNotification theTestEventNotification = new TestEventNotification();
 
         getRemoteEventConnectorMock().activate(theTestDomain, theEventFilter, theTestEventNotification, getCommandCallback());

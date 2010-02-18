@@ -21,7 +21,7 @@ package de.novanic.eventservice.clientmock.event.command;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.client.event.TestTypeEventFilter;
+import de.novanic.eventservice.client.event.TypeEventFilterTestMode;
 import de.novanic.eventservice.client.event.command.RegistrationEventFilterCommand;
 
 /**
@@ -33,7 +33,7 @@ public class RegistrationEventFilterCommandTest extends ClientCommandTestCase
 {
     public void testExecute() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
-        final TestTypeEventFilter theTestEventFilter = new TestTypeEventFilter();
+        final TypeEventFilterTestMode theTestEventFilter = new TypeEventFilterTestMode();
 
         getRemoteEventConnectorMock().registerEventFilter(theTestDomain, theTestEventFilter, getCommandCallback());
         getRemoteEventConnectorMockControl().setVoidCallable();

@@ -22,7 +22,7 @@ package de.novanic.eventservice;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.junit.tools.GWTTestSuite;
 
-import de.novanic.eventservice.client.event.RemoteEventServiceTest;
+import de.novanic.eventservice.client.event.GwtTestRemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
 import de.novanic.eventservice.clientmock.GWTRemoteEventConnectorTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceMockTest;
@@ -63,7 +63,7 @@ public class GWTEventServiceTestSuite extends GWTTestCase
         //GWT-Tests
 
         //Event
-        theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(GwtTestRemoteEventService.class);
 
         return theGWTEventServiceTestSuite;
     }

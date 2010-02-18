@@ -227,7 +227,7 @@ public abstract class RemoteEventServiceLiveTest extends GWTTestCase
         }
 
         public EventFilter getEventFilter(Class anIgnoredEventClass) {
-            return new TestTypeEventFilter(anIgnoredEventClass);
+            return new TypeEventFilterTestMode(anIgnoredEventClass);
         }
 
         protected void autoExecute() {

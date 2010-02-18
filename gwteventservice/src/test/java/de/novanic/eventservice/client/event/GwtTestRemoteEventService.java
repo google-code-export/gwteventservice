@@ -27,7 +27,7 @@ import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEve
  * Date: 20.07.2008
  * Time: 13:53:49
  */
-public class RemoteEventServiceTest extends RemoteEventServiceLiveTest
+public class GwtTestRemoteEventService extends RemoteEventServiceLiveTest
 {
     public void testAddListener() {
         assertFalse(myRemoteEventService.isActive());

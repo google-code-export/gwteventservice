@@ -31,11 +31,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * Filters every second event.
  */
-public class TestEventFilter implements EventFilter
+public class EventFilterTestMode implements EventFilter
 {
     private AtomicBoolean isExcluded;
 
-    public TestEventFilter() {
+    public EventFilterTestMode() {
         isExcluded = new AtomicBoolean(true);
     }
 
