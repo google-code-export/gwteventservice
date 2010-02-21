@@ -310,6 +310,23 @@ public final class DefaultRemoteEventService implements RemoteEventService
     }
 
     /**
+     * Returns all active domains (all domains where the client has listeners registered).
+     * @return all active domains
+     */
+    public Set<Domain> getActiveDomains() {
+        return myDomainListenerMapping.keySet();
+    }
+
+    /**
+     * Returns all registered listeners of a domain.
+     * @param aDomain domain
+     * @return all registered listeners of the domain
+     */
+    public List<RemoteEventListener> getRegisteredListeners(Domain aDomain) {
+        return myDomainListenerMapping.get(aDomain);
+    }
+
+    /**
      * Removes all RemoteEventListeners and deactivates the RemoteEventService (stop listening).
      */
     public void removeListeners() {

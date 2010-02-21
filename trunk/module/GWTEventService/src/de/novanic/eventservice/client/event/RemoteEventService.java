@@ -25,6 +25,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 
+import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -185,6 +186,19 @@ public interface RemoteEventService
      * @return true when active/listening, otherwise false
      */
     boolean isActive();
+
+    /**
+     * Returns all active domains (all domains where the client has listeners registered).
+     * @return all active domains
+     */
+    Set<Domain> getActiveDomains();
+
+    /**
+     * Returns all registered listeners of a domain.
+     * @param aDomain domain
+     * @return all registered listeners of the domain
+     */
+    List<RemoteEventListener> getRegisteredListeners(Domain aDomain);
 
     /**
      * Removes all RemoteEventListeners and deactivates the RemoteEventService (stop listening).
