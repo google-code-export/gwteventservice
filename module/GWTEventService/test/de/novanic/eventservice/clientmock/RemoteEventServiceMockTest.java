@@ -23,6 +23,7 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.*;
+import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
@@ -71,6 +72,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 2);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testAddListener_Error() {
@@ -85,6 +90,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testAddListener_Error_2() {
@@ -106,6 +114,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 2);
     }
 
     public void testAddListener_Callback() {
@@ -144,6 +155,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN, TEST_DOMAIN_2);
+        assertContainsListeners(TEST_DOMAIN, 2);
+        assertContainsListeners(TEST_DOMAIN_2, 1);
     }
 
     public void testAddListener_Callback_Failure() {
@@ -161,6 +176,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testAddListener_EventFilter() {
@@ -185,6 +203,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 2);
     }
 
     public void testAddListener_EventFilter_Callback() {
@@ -227,6 +248,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN, TEST_DOMAIN_2);
+        assertContainsListeners(TEST_DOMAIN, 2);
+        assertContainsListeners(TEST_DOMAIN_2, 1);
     }
 
     public void testAddListener_EventFilter_Callback_Failure() {
@@ -245,6 +270,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testAddUnlistenListener() {
@@ -272,6 +300,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN, DomainFactory.UNLISTEN_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
     public void testAddUnlistenListener_2() {
@@ -300,6 +332,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN, DomainFactory.UNLISTEN_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
     public void testAddUnlistenListener_Local() {
@@ -323,6 +359,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN, DomainFactory.UNLISTEN_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
     public void testAddUnlistenListener_Local_2() {
@@ -347,6 +387,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN, DomainFactory.UNLISTEN_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
     public void testRemoveListener() {
@@ -367,7 +411,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
-            //more than one call shouln't affect the mocks, because it is only removed/unlistened on first call
+            //more than one call shouldn't affect the mocks, because it is only removed/unlistened on first call
             myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener);
             myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener);
             myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener);
@@ -375,6 +419,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRemoveListener_2() {
@@ -403,6 +450,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive()); //because there is a listener in TEST_DOMAIN_2
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN_2);
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 1);
     }
 
     public void testRemoveListener_3() {
@@ -437,6 +488,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRemoveListener_4() {
@@ -468,6 +522,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRemoveListener_Callback() {
@@ -507,6 +564,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListener_Callback_Failure() {
@@ -534,6 +595,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRemoveListeners() {
@@ -564,6 +628,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Domain() {
@@ -589,13 +657,25 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
+            assertEqualsActiveDomains(TEST_DOMAIN, TEST_DOMAIN_2);
+            assertContainsListeners(TEST_DOMAIN, 1);
+            assertContainsListeners(TEST_DOMAIN_2, 1);
+
             myRemoteEventService.removeListeners(TEST_DOMAIN);
             assertTrue(myRemoteEventService.isActive());
+
+            assertEqualsActiveDomains(TEST_DOMAIN_2);
+            assertContainsListeners(TEST_DOMAIN, 0);
+            assertContainsListeners(TEST_DOMAIN_2, 1);
 
             myRemoteEventService.removeListeners(TEST_DOMAIN_2);
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Domains() {
@@ -626,6 +706,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Domains_2() {
@@ -655,13 +739,25 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
+            assertEqualsActiveDomains(TEST_DOMAIN, TEST_DOMAIN_2);
+            assertContainsListeners(TEST_DOMAIN, 1);
+            assertContainsListeners(TEST_DOMAIN_2, 1);
+
             myRemoteEventService.removeListeners(theDomains);
             assertTrue(myRemoteEventService.isActive());
+
+            assertEqualsActiveDomains(TEST_DOMAIN);
+            assertContainsListeners(TEST_DOMAIN, 1);
+            assertContainsListeners(TEST_DOMAIN_2, 0);
 
             myRemoteEventService.removeListeners(theDomainsSecondCall);
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Callback() {
@@ -695,6 +791,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Callback_Failure() {
@@ -724,6 +824,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRemoveListeners_Domain_Callback() {
@@ -762,6 +865,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Domain_Callback_2() {
@@ -806,6 +913,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Domain_Callback_Failure() {
@@ -833,6 +944,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRemoveListeners_Domains_Callback() {
@@ -866,6 +980,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Domains_Callback_2() {
@@ -909,6 +1027,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testRemoveListeners_Domains_Callback_Failure() {
@@ -938,6 +1060,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theRecordedCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRemoveUnlistenListener() {
@@ -965,6 +1090,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
     public void testRemoveUnlistenListener_2() {
@@ -1002,6 +1131,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
     public void testRemoveUnlistenListeners() {
@@ -1028,6 +1161,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
     public void testRemoveUnlistenListeners_2() {
@@ -1058,6 +1195,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
     public void testUnlisten() {
@@ -1091,6 +1232,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testUnlisten_2() {
@@ -1124,6 +1269,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
     public void testUnlisten_Error() {
@@ -1148,6 +1297,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testListen() {
@@ -1174,6 +1326,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testListen_Error() {
@@ -1195,6 +1350,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testListen_Error_2() {
@@ -1220,6 +1378,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains();
+        assertContainsListeners(TEST_DOMAIN, 0);
     }
 
     public void testRegisterEventFilter() {
@@ -1257,6 +1418,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+        
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testRegisterEventFilter_Callback() {
@@ -1302,6 +1466,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testRegisterEventFilter_Callback_Failure() {
@@ -1347,6 +1514,9 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testDeregisterEventFilter_Callback_Failure() {
@@ -1394,6 +1564,26 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theDeregisterEventFilterCallback.isOnFailureCalled());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
+    }
+
+    private void assertEqualsActiveDomains(Domain... aDomains) {
+        final Set<Domain> theActiveDomains = myRemoteEventService.getActiveDomains();
+        for(Domain theDomain: aDomains) {
+            assertTrue("The domain \"" + theDomain + "\" isn't active!", theActiveDomains.contains(theDomain));
+        }
+        assertEquals(aDomains.length, theActiveDomains.size());
+    }
+
+    private void assertContainsListeners(Domain aDomain, int anExpectedCountOfListeners) {
+        List<RemoteEventListener> theRegisteredListeners = myRemoteEventService.getRegisteredListeners(aDomain);
+        if(theRegisteredListeners != null) {
+            assertEquals(anExpectedCountOfListeners, theRegisteredListeners.size());
+        } else if(anExpectedCountOfListeners > 0) {
+            fail("There are no listeners registered to the domain \"" + aDomain + "\" and " + anExpectedCountOfListeners + " listeners were expected!");
+        }
     }
 
     private class TestEventFilter implements EventFilter
