@@ -11,9 +11,12 @@
     </condition>
 
     <property name="version.number" value="1.1"/>
-	<property name="version.state" value="beta"/>
+	<property name="version.state" value=""/>
     <condition property="version" value="${version.number}" else="${version.number}-${version.state}">
-        <isset property="${version.state}"/>
+		<or>
+			<isset property="${version.state}"/>
+			<equals arg1="${version.state}" arg2=""/>
+		</or>
     </condition>
 
     <property name="conf.dir" value="conf"/>
@@ -34,6 +37,7 @@
 
     <!-- sample / demo modules -->
     <property name="demo" value="demo"/>
+	<property name="demo.hello" value="${demo}/HelloGWTEventService"/>
     <property name="module.demo" value="${demo}/module"/>
     <property name="module.democonversationapp" value="${module.demo}/DemoConversationApp"/>
     <property name="module.democonversationapp.rpc" value="${module.demo}/DemoConversationAppRPC"/>
@@ -103,7 +107,6 @@
     </target>
 
     <target name="test" depends="compile, compile-test">
-
         <junit fork="yes" printsummary="yes" showoutput="yes" haltonerror="yes" haltonfailure="yes" maxmemory="128M">
             <classpath refid="test.classpath"/>
             <formatter type="brief" usefile="false"/>
@@ -190,10 +193,10 @@
 				<include name="doc/DeveloperGuide.pdf"/>
                 <!-- sample / demo sources -->
                 <include name="${demo}/*.xml"/>
-                <include name="${module.democonversationapp}/${src.dir}/**/*"/>
-                <include name="${module.democonversationapp.rpc}/${src.dir}/**/*"/>
-                <include name="${module.democonversationapp.ui}/${src.dir}/**/*"/>
-                <include name="${module.democonversationapp.ui}/web/**/*"/>
+				<include name="${demo.hello}/**/*"/>
+                <include name="${module.democonversationapp}//**/*"/>
+                <include name="${module.democonversationapp.rpc}/**/*"/>
+                <include name="${module.democonversationapp.ui}/**/*"/>
             </fileset>
             <!-- sources -->
             <fileset dir="${module.eventservice}">
