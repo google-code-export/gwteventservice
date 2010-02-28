@@ -8,6 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/DemoConversationApp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/EventServiceRPC"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GWTEventService"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT (1)"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="build/WEB-INF/classes"/>
 </classpath>
