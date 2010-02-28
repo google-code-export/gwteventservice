@@ -166,15 +166,15 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
         }
 
         //write error message
-        StringBuffer theErrorMessageBuffer = new StringBuffer(200);
-        theErrorMessageBuffer.append("Error on loading configuration: Missing property. At least one of the following properties is required: [");
+        StringBuilder theErrorMessageBuilder = new StringBuilder(200);
+        theErrorMessageBuilder.append("Error on loading configuration: Missing property. At least one of the following properties is required: [");
         for(int i = 0; i < aPropertyNames.length - 1; i++) {
-            theErrorMessageBuffer.append(aPropertyNames[i]);
-            theErrorMessageBuffer.append(" ; ");
+            theErrorMessageBuilder.append(aPropertyNames[i]);
+            theErrorMessageBuilder.append(" ; ");
         }
-        theErrorMessageBuffer.append(aPropertyNames[aPropertyNames.length - 1]);
-        theErrorMessageBuffer.append("].");
-        throw new ConfigurationException(theErrorMessageBuffer.toString());
+        theErrorMessageBuilder.append(aPropertyNames[aPropertyNames.length - 1]);
+        theErrorMessageBuilder.append("].");
+        throw new ConfigurationException(theErrorMessageBuilder.toString());
     }
 
     public boolean equals(Object anObject) {

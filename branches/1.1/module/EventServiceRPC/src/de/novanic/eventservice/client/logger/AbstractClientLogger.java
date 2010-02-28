@@ -29,9 +29,9 @@ import java.util.ArrayList;
  */
 public abstract class AbstractClientLogger implements ClientLogger
 {
-    private Collection<ClientLogger> myAttachedLoggers;
+    private final Collection<ClientLogger> myAttachedLoggers;
 
-    public AbstractClientLogger() {
+    protected AbstractClientLogger() {
         myAttachedLoggers = new ArrayList<ClientLogger>();
     }
 

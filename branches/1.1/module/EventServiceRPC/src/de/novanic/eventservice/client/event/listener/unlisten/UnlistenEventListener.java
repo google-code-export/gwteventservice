@@ -38,9 +38,9 @@ public interface UnlistenEventListener extends RemoteEventListener
 {
     /**
      * Scopes for listening to {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} instances.
-     * See the various scopes ({@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#LOCAL},
-     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#TIMEOUT} and
-     * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener.Scope#UNLISTEN}) for the according description.
+     * See the various scopes ({@link Scope#LOCAL},
+     * {@link Scope#TIMEOUT} and
+     * {@link Scope#UNLISTEN}) for the according description.
      */
     enum Scope implements Serializable {
         /**
