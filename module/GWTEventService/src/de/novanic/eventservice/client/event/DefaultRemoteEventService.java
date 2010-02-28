@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public final class DefaultRemoteEventService implements RemoteEventService
 {
     private RemoteEventConnector myRemoteEventConnector;
-    private Queue<ClientCommand> myClientCommandQueue;
+    private Queue<ClientCommand<?>> myClientCommandQueue;
     private Map<Domain, List<RemoteEventListener>> myDomainListenerMapping;
     private boolean isSessionInitialized;
 
@@ -486,8 +486,8 @@ public final class DefaultRemoteEventService implements RemoteEventService
      */
     private <R> void schedule(final ClientCommand<R> aClientCommand) {
         if(myClientCommandQueue == null) {
-            myClientCommandQueue = new LinkedList<ClientCommand>();
-            ClientCommand theInitCommand = new InitEventServiceCommand(myRemoteEventConnector, new InitCommandCallback());
+            myClientCommandQueue = new LinkedList<ClientCommand<?>>();
+            InitEventServiceCommand theInitCommand = new InitEventServiceCommand(myRemoteEventConnector, new InitCommandCallback());
             theInitCommand.execute();
         }
         myClientCommandQueue.add(aClientCommand);
@@ -500,7 +500,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      */
     private void executeCommands() {
         if(isSessionInitialized) {
-            ClientCommand theClientCommand;
+            ClientCommand<?> theClientCommand;
             while((theClientCommand = myClientCommandQueue.poll()) != null) {
                 theClientCommand.execute();
             }

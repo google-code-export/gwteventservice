@@ -90,7 +90,7 @@ public final class ConfigLevelFactory
          * Creates a {@link de.novanic.eventservice.config.level.ConfigLevel} with the specified level / queue number of the level
          * @param aLevel level / queue number of the level
          */
-        public DefaultConfigLevel(final int aLevel) {
+        private DefaultConfigLevel(final int aLevel) {
             myLevel = aLevel;
         }
 

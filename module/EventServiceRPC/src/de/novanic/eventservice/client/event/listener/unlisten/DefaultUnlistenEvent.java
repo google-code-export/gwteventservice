@@ -197,7 +197,7 @@ public class DefaultUnlistenEvent implements UnlistenEvent
                 theStringBuilder.append("\")");
             } else if(theDomainCount > 1) {
                 theStringBuilder.append("\" for ");
-                theStringBuilder.append(myDomains.size());
+                theStringBuilder.append(theDomainCount);
                 theStringBuilder.append(" domains)");
             }
         } else if(myUserId != null) {

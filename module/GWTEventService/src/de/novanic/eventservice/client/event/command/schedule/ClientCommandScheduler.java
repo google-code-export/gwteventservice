@@ -35,7 +35,7 @@ public interface ClientCommandScheduler
      * Creates a new thread for the execution of the {@link de.novanic.eventservice.client.event.command.ClientCommand}.
      * @param aCommand {@link de.novanic.eventservice.client.event.command.ClientCommand} to schedule
      */
-    void schedule(ClientCommand aCommand);
+    void schedule(ClientCommand<?> aCommand);
 
     /**
      * Creates a new thread for the execution of the {@link de.novanic.eventservice.client.event.command.ClientCommand}.
@@ -43,5 +43,5 @@ public interface ClientCommandScheduler
      * @param aCommand {@link de.novanic.eventservice.client.event.command.ClientCommand} to schedule
      * @param aDelay delay in milliseconds
      */
-    void schedule(ClientCommand aCommand, int aDelay);
+    void schedule(ClientCommand<?> aCommand, int aDelay);
 }

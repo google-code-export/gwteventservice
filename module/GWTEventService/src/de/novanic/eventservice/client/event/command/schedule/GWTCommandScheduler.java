@@ -37,7 +37,7 @@ public class GWTCommandScheduler implements ClientCommandScheduler
      * Creates a new thread for the execution of the {@link de.novanic.eventservice.client.event.command.ClientCommand}.
      * @param aCommand {@link de.novanic.eventservice.client.event.command.ClientCommand} to schedule
      */
-    public void schedule(ClientCommand aCommand) {
+    public void schedule(ClientCommand<?> aCommand) {
         schedule(aCommand, 1);
     }
 
@@ -47,7 +47,7 @@ public class GWTCommandScheduler implements ClientCommandScheduler
      * @param aCommand {@link de.novanic.eventservice.client.event.command.ClientCommand} to schedule
      * @param aDelay delay in milliseconds
      */
-    public void schedule(final ClientCommand aCommand, int aDelay) {
+    public void schedule(final ClientCommand<?> aCommand, int aDelay) {
         Timer theTimer = new Timer() {
             public void run() {
                 aCommand.execute();
