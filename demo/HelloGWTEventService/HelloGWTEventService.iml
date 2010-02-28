@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="JAVA_MODULE" version="4">
+<module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="gwt" name="GWT">
       <configuration>
@@ -8,7 +8,7 @@
         <setting name="gwtSdkUrl" value="file://$GWT_SDK_HOME$" />
         <setting name="webFacet" value="Web" />
         <packaging>
-          <module name="de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI" path="/de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI" />
+          <module name="de.novanic.gwteventservice.demo.hello.HelloGWTEventService" path="/de.novanic.gwteventservice.demo.hello.HelloGWTEventService" />
         </packaging>
       </configuration>
     </facet>
@@ -20,7 +20,7 @@
         <webroots>
           <root url="file://$MODULE_DIR$/war" relative="/" />
         </webroots>
-        <context-artifact name="DemoConversationAppUI:Web exploded" />
+        <context-artifact name="HelloGWTEventService:Web" />
       </configuration>
     </facet>
   </component>
@@ -28,26 +28,18 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/.settings" />
-      <excludeFolder url="file://$MODULE_DIR$/bin" />
-      <excludeFolder url="file://$MODULE_DIR$/build" />
-      <excludeFolder url="file://$MODULE_DIR$/war-ide" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../conf" />
+          <root url="file://$MODULE_DIR$/../conf" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="gwt-user" level="project" />
-    <orderEntry type="module" module-name="DemoConversationAppRPC" />
-    <orderEntry type="module" module-name="DemoConversationApp" />
-    <orderEntry type="library" name="gwt-eventservice" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -58,6 +50,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="gwt-user" level="project" />
+    <orderEntry type="library" name="gwt-eventservice" level="project" />
   </component>
 </module>
 
