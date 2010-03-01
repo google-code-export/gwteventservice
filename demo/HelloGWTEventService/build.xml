@@ -41,7 +41,7 @@
         <fileset dir="${lib.release.dir}" erroronmissingdir="false">
             <include name="**/*.jar"/>
         </fileset>
-        <fileset dir="../">
+        <fileset dir="../../">
             <include name="*.jar"/>
         </fileset>
     </path>
@@ -90,7 +90,7 @@
 
         <copy todir="${dest.web.lib.dir}">
             <!-- root dir -->
-            <fileset dir="../">
+            <fileset dir="../../">
                 <include name="*.jar"/>
             </fileset>
             <fileset dir="${lib.release.dir}" erroronmissingdir="false">
