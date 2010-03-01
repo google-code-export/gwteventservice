@@ -193,8 +193,9 @@
 				<include name="doc/DeveloperGuide.pdf"/>
                 <!-- sample / demo sources -->
                 <include name="${demo}/*.xml"/>
+				<include name="${demo}/conf/**/*"/>
 				<include name="${demo.hello}/**/*"/>
-                <include name="${module.democonversationapp}//**/*"/>
+                <include name="${module.democonversationapp}/**/*"/>
                 <include name="${module.democonversationapp.rpc}/**/*"/>
                 <include name="${module.democonversationapp.ui}/**/*"/>
             </fileset>
