@@ -9,20 +9,18 @@
         <servlet-name>EventService</servlet-name>
         <servlet-class>de.novanic.eventservice.service.EventServiceImpl</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>de.novanic.gwteventservice.demo.hello.HelloGWTEventService ServerMessageGeneratorService
-        </servlet-name>
-        <servlet-class>de.novanic.gwteventservice.demo.hello.server.ServerMessageGeneratorServiceImpl</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>EventService</servlet-name>
         <url-pattern>/de.novanic.gwteventservice.demo.hello.HelloGWTEventService/gwteventservice</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>ServerMessageGeneratorService</servlet-name>
+        <servlet-class>de.novanic.gwteventservice.demo.hello.server.ServerMessageGeneratorServiceImpl</servlet-class>
+    </servlet>
     <servlet-mapping>
-        <servlet-name>de.novanic.gwteventservice.demo.hello.HelloGWTEventService ServerMessageGeneratorService
-        </servlet-name>
-        <url-pattern>/de.novanic.gwteventservice.demo.hello.HelloGWTEventService/ServerMessageGeneratorService
-        </url-pattern>
+        <servlet-name>ServerMessageGeneratorService</servlet-name>
+        <url-pattern>/de.novanic.gwteventservice.demo.hello.HelloGWTEventService/ServerMessageGeneratorService</url-pattern>
     </servlet-mapping>
 
 </web-app>
