@@ -28,7 +28,7 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
-import de.novanic.eventservice.test.testhelper.TestEventFilter;
+import de.novanic.eventservice.test.testhelper.EventFilterTestMode;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.service.DefaultEventExecutorService;
@@ -115,7 +115,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
 
@@ -148,7 +148,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
 
@@ -184,7 +184,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
 
@@ -233,7 +233,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
 
@@ -527,7 +527,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
         assertNotNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
@@ -1279,7 +1279,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testListen_EventFilter() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         startAddEvent(TEST_DOMAIN, 100);
         startAddEvent(TEST_DOMAIN, 200);
         startAddEvent(TEST_DOMAIN, 300);
@@ -1301,7 +1301,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testListen_EventFilter_2() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         startAddEvent(TEST_DOMAIN, 100);
         startAddEvent(TEST_DOMAIN, 200);
         startAddEvent(TEST_DOMAIN, 300);
@@ -1340,7 +1340,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testListen_EventFilter_3() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         startAddEvent(TEST_DOMAIN, 100);
         startAddEvent(TEST_DOMAIN, 200);
         startAddEvent(TEST_DOMAIN, 300);
@@ -1379,7 +1379,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     public void testListen_EventFilter_4() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         startAddEvent(TEST_DOMAIN, 100);
         startAddEvent(TEST_DOMAIN, 200);
         startAddEvent(TEST_DOMAIN, 300);
@@ -1698,7 +1698,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
 
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
-        myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
         assertNotNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
@@ -1708,7 +1708,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     }
 
     public void testChangeEventFilter_2() {
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
 
@@ -1720,17 +1720,17 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
     public void testChangeEventFilter_Error() {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, "noKnownUser"));
-        myEventRegistry.setEventFilter(TEST_DOMAIN, "noKnownUser", new TestEventFilter());
+        myEventRegistry.setEventFilter(TEST_DOMAIN, "noKnownUser", new EventFilterTestMode());
         checkLog(0);
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, "noKnownUser"));
     }
 
     public void testRemoveEventFilter() {
-        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
 
-        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, new TestEventFilter());
+        myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, new EventFilterTestMode());
         checkLog(4, "Server: User \"test_user_id\" registered for domain \"test_domain_2\".",
                 "Server: test_user_id: EventFilter changed for domain \"test_domain_2\".");
 

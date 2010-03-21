@@ -31,13 +31,13 @@ import java.util.ArrayList;
  * Date: 03.08.2008
  * Time: 23:23:43
  */
-public class TestEventListener implements RemoteEventListener
+public class EventListenerTestMode implements RemoteEventListener
 {
     private List<Event> myEvents;
     private Map<Class, Integer> myEventCountMap;
     private RemoteEventListener myListener;
 
-    public TestEventListener() {
+    public EventListenerTestMode() {
         myEvents = new ArrayList<Event>();
         myEventCountMap = new HashMap<Class, Integer>();
     }
