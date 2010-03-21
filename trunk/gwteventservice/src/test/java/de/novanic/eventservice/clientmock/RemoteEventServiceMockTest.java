@@ -44,12 +44,12 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
     public void setUp() {
         super.setUp();
-        myRemoteEventService = TestDefaultRemoteEventServiceFactory.getInstance().getDefaultRemoteEventService(myEventServiceAsyncMock);
+        myRemoteEventService = DefaultRemoteEventServiceFactoryTestMode.getInstance().getDefaultRemoteEventService(myEventServiceAsyncMock);
     }
 
     public void testInit_Error() {
         try {
-            TestDefaultRemoteEventServiceFactory.getInstance().getDefaultRemoteEventService();
+            DefaultRemoteEventServiceFactoryTestMode.getInstance().getDefaultRemoteEventService();
             fail("Exception expected, because the GWTService is instantiated in a non GWT context!");
         } catch(Throwable e) {}
     }
@@ -65,10 +65,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
             //a second time  
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -86,7 +86,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -107,10 +107,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
             //a second time
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -134,14 +134,14 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
             RecordedCallback theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theRecordedCallback);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theRecordedCallback);
             assertTrue(myRemoteEventService.isActive());
             assertTrue(theRecordedCallback.isOnSuccessCalled());
             assertFalse(theRecordedCallback.isOnFailureCalled());
 
             //a second time
             theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theRecordedCallback);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theRecordedCallback);
             assertTrue(myRemoteEventService.isActive());
             //nothing is called on the callback, because the user is already registered to the domain
             assertFalse(theRecordedCallback.isOnSuccessCalled());
@@ -149,7 +149,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
             //a third time for another domain
             theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN_2, new TestEventListener(), theRecordedCallback);
+            myRemoteEventService.addListener(TEST_DOMAIN_2, new EventListenerTestMode(), theRecordedCallback);
             assertTrue(myRemoteEventService.isActive());
             assertTrue(theRecordedCallback.isOnSuccessCalled());
             assertFalse(theRecordedCallback.isOnFailureCalled());
@@ -170,7 +170,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
             RecordedCallback theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theRecordedCallback);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theRecordedCallback);
             assertFalse(myRemoteEventService.isActive());
             assertFalse(theRecordedCallback.isOnSuccessCalled());
             assertTrue(theRecordedCallback.isOnFailureCalled());
@@ -196,10 +196,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theEventFilter);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theEventFilter);
             assertTrue(myRemoteEventService.isActive());
             //a second time
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theEventFilter);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theEventFilter);
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -227,14 +227,14 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
             RecordedCallback theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theEventFilter, theRecordedCallback);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theEventFilter, theRecordedCallback);
             assertTrue(myRemoteEventService.isActive());
             assertTrue(theRecordedCallback.isOnSuccessCalled());
             assertFalse(theRecordedCallback.isOnFailureCalled());
 
             //a second time
             theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theEventFilter);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theEventFilter);
             assertTrue(myRemoteEventService.isActive());
             //nothing is called on the callback, because the user is already registered to the domain
             assertFalse(theRecordedCallback.isOnSuccessCalled());
@@ -242,7 +242,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
             //a third time for another domain
             theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN_2, new TestEventListener(), theEventFilter, theRecordedCallback);
+            myRemoteEventService.addListener(TEST_DOMAIN_2, new EventListenerTestMode(), theEventFilter, theRecordedCallback);
             assertTrue(myRemoteEventService.isActive());
             assertTrue(theRecordedCallback.isOnSuccessCalled());
             assertFalse(theRecordedCallback.isOnFailureCalled());
@@ -264,7 +264,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
             RecordedCallback theRecordedCallback = new RecordedCallback();
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener(), theEventFilter, theRecordedCallback);
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode(), theEventFilter, theRecordedCallback);
             assertFalse(myRemoteEventService.isActive());
             assertFalse(theRecordedCallback.isOnSuccessCalled());
             assertTrue(theRecordedCallback.isOnFailureCalled());
@@ -316,12 +316,12 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             //add Listener
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
 
             //add UnlistenListener
             assertTrue(myRemoteEventService.isActive());
-            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            myRemoteEventService.addUnlistenListener(new UnlistenEventListenerTestMode(), null);
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -348,12 +348,12 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             //add Listener
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
 
             //add UnlistenListener
             assertTrue(myRemoteEventService.isActive());
-            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), theUnlistenEvent, null);
+            myRemoteEventService.addUnlistenListener(new UnlistenEventListenerTestMode(), theUnlistenEvent, null);
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -375,12 +375,12 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             //add Listener
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
 
             //add UnlistenListener
             assertTrue(myRemoteEventService.isActive());
-            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, new TestUnlistenEventListener(), null);
+            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, new UnlistenEventListenerTestMode(), null);
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -402,13 +402,13 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             //add Listener
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new TestEventListener());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
 
             //add UnlistenListener
             assertTrue(myRemoteEventService.isActive());
             final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", true);
-            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, new TestUnlistenEventListener(), theUnlistenEvent, null);
+            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, new UnlistenEventListenerTestMode(), theUnlistenEvent, null);
             assertTrue(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
@@ -432,7 +432,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -465,7 +465,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -501,7 +501,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener);
@@ -532,11 +532,11 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
-            final TestEventListener theRemoteListener_2 = new TestEventListener();
+            final EventListenerTestMode theRemoteListener_2 = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener_2);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.removeListener(TEST_DOMAIN, theRemoteListener_2);
@@ -570,7 +570,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -609,7 +609,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -643,7 +643,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -676,7 +676,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -721,7 +721,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -758,7 +758,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -803,7 +803,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -838,7 +838,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -871,7 +871,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -913,7 +913,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -958,7 +958,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -992,7 +992,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -1033,7 +1033,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN_2, theRemoteListener);
@@ -1074,7 +1074,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -1103,7 +1103,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         //caused by removeUnlistenListener
         mockUnlisten(DomainFactory.UNLISTEN_DOMAIN, true);
 
-        final TestUnlistenEventListener theTestUnlistenEventListener = new TestUnlistenEventListener();
+        final UnlistenEventListenerTestMode theTestUnlistenEventListener = new UnlistenEventListenerTestMode();
         myEventServiceAsyncMockControl.replay();
             //add UnlistenListener
             assertFalse(myRemoteEventService.isActive());
@@ -1134,8 +1134,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         //caused by the second removeUnlistenListener
         mockUnlisten(DomainFactory.UNLISTEN_DOMAIN, true);
 
-        final TestUnlistenEventListener theTestUnlistenEventListener = new TestUnlistenEventListener();
-        final TestUnlistenEventListener theTestUnlistenEventListener_2 = new TestUnlistenEventListener();
+        final UnlistenEventListenerTestMode theTestUnlistenEventListener = new UnlistenEventListenerTestMode();
+        final UnlistenEventListenerTestMode theTestUnlistenEventListener_2 = new UnlistenEventListenerTestMode();
         myEventServiceAsyncMockControl.replay();
             //add UnlistenListener
             assertFalse(myRemoteEventService.isActive());
@@ -1178,7 +1178,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             //add UnlistenListener
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            myRemoteEventService.addUnlistenListener(new UnlistenEventListenerTestMode(), null);
             assertTrue(myRemoteEventService.isActive());
 
             assertTrue(myRemoteEventService.isActive());
@@ -1208,11 +1208,11 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         myEventServiceAsyncMockControl.replay();
             //add UnlistenListener
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            myRemoteEventService.addUnlistenListener(new UnlistenEventListenerTestMode(), null);
             assertTrue(myRemoteEventService.isActive());
 
             assertTrue(myRemoteEventService.isActive());
-            myRemoteEventService.addUnlistenListener(new TestUnlistenEventListener(), null);
+            myRemoteEventService.addUnlistenListener(new UnlistenEventListenerTestMode(), null);
             assertTrue(myRemoteEventService.isActive());
 
             assertTrue(myRemoteEventService.isActive());
@@ -1243,7 +1243,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
@@ -1282,7 +1282,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
@@ -1314,7 +1314,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -1343,7 +1343,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -1396,7 +1396,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -1424,7 +1424,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertFalse(myRemoteEventService.isActive());
 
@@ -1464,7 +1464,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             myRemoteEventService.registerEventFilter(TEST_DOMAIN, theEventFilter);
             myRemoteEventService.deregisterEventFilter(TEST_DOMAIN);
 
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -1512,7 +1512,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theDeregisterEventFilterCallback.isOnSuccessCalled());
             assertFalse(theDeregisterEventFilterCallback.isOnFailureCalled());
 
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -1560,7 +1560,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             assertTrue(theDeregisterEventFilterCallback.isOnSuccessCalled());
             assertFalse(theDeregisterEventFilterCallback.isOnFailureCalled());
 
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
@@ -1599,7 +1599,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             RecordedCallback theRegisterEventFilterCallback = new RecordedCallback();
             RecordedCallback theDeregisterEventFilterCallback = new RecordedCallback();
 
-            final TestEventListener theRemoteListener = new TestEventListener();
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 

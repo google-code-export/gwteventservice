@@ -26,13 +26,13 @@ import de.novanic.eventservice.client.event.service.EventServiceAsync;
  *         <br>Date: 15.03.2009
  *         <br>Time: 16:29:36
  */
-public class TestDefaultRemoteEventServiceFactory
+public class DefaultRemoteEventServiceFactoryTestMode
 {
     private static class TestDefaultRemoteEventServiceFactoryHolder {
-        private static TestDefaultRemoteEventServiceFactory INSTANCE = new TestDefaultRemoteEventServiceFactory();
+        private static DefaultRemoteEventServiceFactoryTestMode INSTANCE = new DefaultRemoteEventServiceFactoryTestMode();
     }
 
-    public static TestDefaultRemoteEventServiceFactory getInstance() {
+    public static DefaultRemoteEventServiceFactoryTestMode getInstance() {
         return TestDefaultRemoteEventServiceFactoryHolder.INSTANCE;
     }
 

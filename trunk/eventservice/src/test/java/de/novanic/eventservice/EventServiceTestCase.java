@@ -24,11 +24,11 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
-import de.novanic.eventservice.config.loader.TestCustomConfigurationLoader;
+import de.novanic.eventservice.config.loader.CustomConfigurationLoaderTestMode;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.service.DefaultEventExecutorService;
-import de.novanic.eventservice.util.TestLoggingConfigurator;
+import de.novanic.eventservice.util.LoggingConfiguratorTestMode;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ import java.io.IOException;
 public abstract class EventServiceTestCase extends TestCase
 {
     public void setUp(EventServiceConfiguration anEventServiceConfiguration) {
-        ConfigurationLoader theConfigurationLoader = new TestCustomConfigurationLoader(anEventServiceConfiguration);
+        ConfigurationLoader theConfigurationLoader = new CustomConfigurationLoaderTestMode(anEventServiceConfiguration);
         EventServiceConfigurationFactory.getInstance().addCustomConfigurationLoader(theConfigurationLoader);
         FactoryResetService.resetFactory(EventRegistryFactory.class);
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
@@ -60,11 +60,11 @@ public abstract class EventServiceTestCase extends TestCase
     }
 
     public void logOn() throws IOException {
-        TestLoggingConfigurator.logOn();
+        LoggingConfiguratorTestMode.logOn();
     }
 
     public void logOff() throws IOException {
-        TestLoggingConfigurator.logOff();
+        LoggingConfiguratorTestMode.logOff();
     }
 
     protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime) {

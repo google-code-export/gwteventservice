@@ -24,7 +24,7 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
-import de.novanic.eventservice.test.testhelper.TestEventFilter;
+import de.novanic.eventservice.test.testhelper.EventFilterTestMode;
 import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.List;
@@ -132,7 +132,7 @@ public class UserInfoTest extends TestCase
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertNull(myUserInfo.getEventFilter(DomainFactory.getDomain("otherDomain")));
 
-        final TestEventFilter theTestEventFilter = new TestEventFilter();
+        final EventFilterTestMode theTestEventFilter = new EventFilterTestMode();
         myUserInfo.setEventFilter(TEST_DOMAIN, theTestEventFilter);
         assertNotNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertEquals(theTestEventFilter, myUserInfo.getEventFilter(TEST_DOMAIN));
@@ -144,12 +144,12 @@ public class UserInfoTest extends TestCase
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertNull(myUserInfo.getEventFilter(DomainFactory.getDomain("otherDomain")));
 
-        final TestEventFilter theTestEventFilter = new TestEventFilter();
+        final EventFilterTestMode theTestEventFilter = new EventFilterTestMode();
         myUserInfo.setEventFilter(TEST_DOMAIN, theTestEventFilter);
         assertNotNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertEquals(theTestEventFilter, myUserInfo.getEventFilter(TEST_DOMAIN));
 
-        final TestEventFilter theTestEventFilter_2 = new TestEventFilter();
+        final EventFilterTestMode theTestEventFilter_2 = new EventFilterTestMode();
         myUserInfo.setEventFilter(TEST_DOMAIN, theTestEventFilter_2);
         assertNotNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertEquals(theTestEventFilter_2, myUserInfo.getEventFilter(TEST_DOMAIN));
@@ -172,7 +172,7 @@ public class UserInfoTest extends TestCase
     public void testRemoveEventFilter() {
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
 
-        final TestEventFilter theTestEventFilter = new TestEventFilter();
+        final EventFilterTestMode theTestEventFilter = new EventFilterTestMode();
         myUserInfo.setEventFilter(TEST_DOMAIN, theTestEventFilter);
         assertNotNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertEquals(theTestEventFilter, myUserInfo.getEventFilter(TEST_DOMAIN));

@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2008, GWTEventService Committers
+ * Copyright (c) 2009, GWTEventService Committers
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,28 +17,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.config.loader;
+package de.novanic.eventservice.client.event;
 
-import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.client.event.filter.EventFilter;
 
 /**
  * @author sstrohschein
- *         <br>Date: 23.10.2008
- *         <br>Time: 20:55:14
+ *         <br>Date: 03.03.2009
+ *         <br>Time: 18:40:12
  */
-public class TestCustomConfigurationLoader implements ConfigurationLoader
+public class TypeEventFilterTestMode implements EventFilter
 {
-    private EventServiceConfiguration myEventServiceConfiguration;
+    private String myIgnoredEventClass;
 
-    public TestCustomConfigurationLoader(EventServiceConfiguration anEventServiceConfiguration) {
-        myEventServiceConfiguration = anEventServiceConfiguration;
+    public TypeEventFilterTestMode() {}
+
+    public TypeEventFilterTestMode(Class anIgnoredEventClass) {
+        myIgnoredEventClass = anIgnoredEventClass.getName();
     }
 
-    public boolean isAvailable() {
-        return myEventServiceConfiguration != null;
-    }
-
-    public EventServiceConfiguration load() {
-        return myEventServiceConfiguration;
+    public boolean match(Event anEvent) {
+        return anEvent.getClass().getName().equals(myIgnoredEventClass);
     }
 }

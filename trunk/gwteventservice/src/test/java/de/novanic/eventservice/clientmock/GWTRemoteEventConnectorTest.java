@@ -46,7 +46,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         myClientLogger = new DummyClientLogger();
         ClientLoggerFactory.getClientLogger().attach(myClientLogger);
 
-        myRemoteEventConnector = TestDefaultRemoteEventServiceFactory.getInstance().getGWTRemoteEventConnector(myEventServiceAsyncMock);
+        myRemoteEventConnector = DefaultRemoteEventServiceFactoryTestMode.getInstance().getGWTRemoteEventConnector(myEventServiceAsyncMock);
     }
 
     public void tearDown() {

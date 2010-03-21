@@ -400,7 +400,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         Set<Domain> theDomains = new HashSet<Domain>();
         theDomains.add(TEST_DOMAIN);
         theDomains.add(TEST_DOMAIN_3);
-        myEventService.register(theDomains, new TestEventFilter());
+        myEventService.register(theDomains, new EventFilterTestMode());
 
         final List<Domain> theActiveDomains = new ArrayList<Domain>(myEventService.getActiveListenDomains());
         Collections.sort(theActiveDomains);
@@ -571,7 +571,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertNull(myEventService.getEventFilter(TEST_DOMAIN_2));
         assertNull(myEventService.getEventFilter(TEST_DOMAIN_3));
 
-        myEventService.registerEventFilter(TEST_DOMAIN_2, new TestEventFilter());
+        myEventService.registerEventFilter(TEST_DOMAIN_2, new EventFilterTestMode());
 
         assertNull(myEventService.getEventFilter(TEST_DOMAIN));
         assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
@@ -589,7 +589,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         Thread.sleep(400);
         assertEquals(0, myEventService.listen().size());
 
-        myEventService.registerEventFilter(TEST_DOMAIN, new TestEventFilter());
+        myEventService.registerEventFilter(TEST_DOMAIN, new EventFilterTestMode());
 
         assertNotNull(myEventService.getEventFilter(TEST_DOMAIN));
         assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_2));
