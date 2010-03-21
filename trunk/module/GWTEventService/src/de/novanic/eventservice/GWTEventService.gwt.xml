@@ -1,0 +1,7 @@
+<module>
+
+    <inherits name='com.google.gwt.user.User'/>
+
+    <servlet path="/gwteventservice" class='de.novanic.eventservice.service.EventServiceImpl'/>
+
+</module>
