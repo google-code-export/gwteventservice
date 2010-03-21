@@ -2,7 +2,7 @@
 GWTEventService
 
 
-Library:		GWTEventService 1.1
+Library:		GWTEventService 1.2
 Project home:	http://gwteventservice.googlecode.com/
 Contact:		novanic@gmx.de
 
