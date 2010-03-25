@@ -73,7 +73,7 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
      * @return true when it is available and numeric, otherwise false
      */
     private boolean isAvailable(String aParameterValue) {
-        return aParameterValue != null && !aParameterValue.trim().isEmpty() && StringUtil.isNumeric(aParameterValue);
+        return aParameterValue != null && !aParameterValue.trim().equals("") && StringUtil.isNumeric(aParameterValue);
     }
 
     /**
