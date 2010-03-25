@@ -21,12 +21,10 @@ package de.novanic.eventservice.service.registry.user;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * DomainUserMapping manages the allocation of users ({@link de.novanic.eventservice.service.registry.user.UserInfo}) to domains
@@ -38,13 +36,13 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class DomainUserMapping
 {
-    private final ConcurrentMap<Domain, Set<UserInfo>> myDomainUserInfoMap;
+    private final ConcurrentMap<Domain, Collection<UserInfo>> myDomainUserInfoMap;
 
     /**
      * Creates a new, empty DomainUserMapping.
      */
     public DomainUserMapping() {
-        myDomainUserInfoMap = new ConcurrentHashMap<Domain, Set<UserInfo>>();
+        myDomainUserInfoMap = new ConcurrentHashMap<Domain, Collection<UserInfo>>();
     }
 
     /**
@@ -53,9 +51,11 @@ public class DomainUserMapping
      * @param aUserInfo user
      */
     public void addUser(Domain aDomain, UserInfo aUserInfo) {
-        myDomainUserInfoMap.putIfAbsent(aDomain, new ConcurrentSkipListSet<UserInfo>());
-        Set<UserInfo> theUsers = myDomainUserInfoMap.get(aDomain);
-        theUsers.add(aUserInfo);
+        myDomainUserInfoMap.putIfAbsent(aDomain, new ConcurrentLinkedQueue<UserInfo>());
+        Collection<UserInfo> theUsers = myDomainUserInfoMap.get(aDomain);
+        if(!theUsers.contains(aUserInfo)) {
+            theUsers.add(aUserInfo);
+        }
     }
 
     /**
@@ -63,9 +63,9 @@ public class DomainUserMapping
      * @param aUserInfo user
      */
     public void removeUser(UserInfo aUserInfo) {
-        for(Map.Entry<Domain, Set<UserInfo>> theDomainUsersEntry: myDomainUserInfoMap.entrySet()) {
+        for(Map.Entry<Domain, Collection<UserInfo>> theDomainUsersEntry: myDomainUserInfoMap.entrySet()) {
             Domain theDomain = theDomainUsersEntry.getKey();
-            Set<UserInfo> theDomainUsers = theDomainUsersEntry.getValue();
+            Collection<UserInfo> theDomainUsers = theDomainUsersEntry.getValue();
             removeUser(theDomain, theDomainUsers, aUserInfo);
         }
     }
@@ -79,9 +79,11 @@ public class DomainUserMapping
     public boolean removeUser(Domain aDomain, UserInfo aUserInfo) {
         boolean isUserRemoved = false;
 
-        Set<UserInfo> theDomainUsers = getUsers(aDomain);
-        if(theDomainUsers != null) {
-            isUserRemoved = removeUser(aDomain, theDomainUsers, aUserInfo);
+        if(aDomain != null && aUserInfo != null) {
+            Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+            if(theDomainUsers != null) {
+                isUserRemoved = removeUser(aDomain, theDomainUsers, aUserInfo);
+            }
         }
         return isUserRemoved;
     }
@@ -93,13 +95,13 @@ public class DomainUserMapping
      * @param aUser user
      * @return true when the user is removed from the domain, otherwise false
      */
-    private boolean removeUser(Domain aDomain, Set<UserInfo> aDomainUsers, UserInfo aUser) {
+    private boolean removeUser(Domain aDomain, Collection<UserInfo> aDomainUsers, UserInfo aUser) {
         boolean isUserRemoved = aDomainUsers.remove(aUser);
         if(isUserRemoved) {
             if(aDomainUsers.isEmpty()) {
                 //Atomic operation to remove only when the collection is empty. Otherwise another thread could add a user between the check of is empty and remove.
                 //isEmpty is checked before for more performance for the most cases.
-                myDomainUserInfoMap.remove(aDomain, new ConcurrentSkipListSet<UserInfo>());
+                myDomainUserInfoMap.remove(aDomain, aDomainUsers);
             }
         }
         return isUserRemoved;
@@ -122,8 +124,8 @@ public class DomainUserMapping
         if(aUserInfo != null) {
             Set<Domain> theDomains = new HashSet<Domain>(myDomainUserInfoMap.size());
 
-            for(Map.Entry<Domain, Set<UserInfo>> theDomainUserEntry : myDomainUserInfoMap.entrySet()) {
-                Set<UserInfo> theDomainUsers = theDomainUserEntry.getValue();
+            for(Map.Entry<Domain, Collection<UserInfo>> theDomainUserEntry : myDomainUserInfoMap.entrySet()) {
+                Collection<UserInfo> theDomainUsers = theDomainUserEntry.getValue();
                 if(theDomainUsers.contains(aUserInfo)) {
                     theDomains.add(theDomainUserEntry.getKey());
                 }
@@ -140,7 +142,11 @@ public class DomainUserMapping
      */
     public Set<UserInfo> getUsers(Domain aDomain) {
         if(aDomain != null) {
-            return myDomainUserInfoMap.get(aDomain);
+            final Collection<UserInfo> theUserInfoCollection = myDomainUserInfoMap.get(aDomain);
+            if(theUserInfoCollection != null) {
+                return new HashSet<UserInfo>(theUserInfoCollection);
+            }
+            return new HashSet<UserInfo>(0);
         }
         return null;
     }
@@ -151,7 +157,7 @@ public class DomainUserMapping
      * @return true when the user is added to a domain, otherwise false
      */
     public boolean isUserContained(UserInfo aUserInfo) {
-        for(Set<UserInfo> theDomainUsers: myDomainUserInfoMap.values()) {
+        for(Collection<UserInfo> theDomainUsers: myDomainUserInfoMap.values()) {
             if(theDomainUsers.contains(aUserInfo)) {
                 return true;
             }
@@ -166,7 +172,7 @@ public class DomainUserMapping
      * @return true when the user is added to the domain, otherwise false
      */
     public boolean isUserContained(Domain aDomain, UserInfo aUserInfo) {
-        Set<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
+        Collection<UserInfo> theDomainUsers = myDomainUserInfoMap.get(aDomain);
         return theDomainUsers != null && theDomainUsers.contains(aUserInfo);
     }
 }

@@ -156,6 +156,50 @@ public class DomainUserMappingTest extends TestCase
         assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO_2));
     }
 
+	public void testAddUser_4() {
+        assertEquals(0, myDomainUserMapping.getDomains().size());
+        assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
+        assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO_2).size());
+        assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO_2));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN, TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO));
+
+        myDomainUserMapping.addUser(TEST_DOMAIN, TEST_USER_INFO);
+
+        assertEquals(1, myDomainUserMapping.getDomains().size());
+        assertEquals(1, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
+        assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO_2).size());
+        assertEquals(1, myDomainUserMapping.getUsers(TEST_DOMAIN).size());
+        assertTrue(myDomainUserMapping.isUserContained(TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO_2));
+        assertTrue(myDomainUserMapping.isUserContained(TEST_DOMAIN, TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO));
+
+        //no effect, when the user is added again
+        myDomainUserMapping.addUser(TEST_DOMAIN, TEST_USER_INFO);
+
+        assertEquals(1, myDomainUserMapping.getDomains().size());
+        assertEquals(1, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
+        assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO_2).size());
+        assertEquals(1, myDomainUserMapping.getUsers(TEST_DOMAIN).size());
+        assertTrue(myDomainUserMapping.isUserContained(TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO_2));
+        assertTrue(myDomainUserMapping.isUserContained(TEST_DOMAIN, TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO));
+
+        //check if the second add had really no effect to the internal data structure
+        myDomainUserMapping.removeUser(TEST_USER_INFO);
+
+        assertEquals(0, myDomainUserMapping.getDomains().size());
+        assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
+        assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO_2).size());
+        assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO_2));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN, TEST_USER_INFO));
+        assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO));
+    }
+	
     public void testRemoveUser() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO));
