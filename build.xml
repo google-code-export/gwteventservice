@@ -10,8 +10,8 @@
         <isset property="osEnv.GWT_HOME"/>
     </condition>
 
-    <property name="version.number" value="1.1"/>
-	<property name="version.state" value=""/>
+    <property name="version.number" value="1.1.1"/>
+	<property name="version.state" value="pre"/>
     <condition property="version" value="${version.number}" else="${version.number}-${version.state}">
 		<or>
 			<isset property="${version.state}"/>
