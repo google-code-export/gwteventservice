@@ -7,15 +7,22 @@
 	<packaging>pom</packaging>
 	<version>1.2.0-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
+	<description></description>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+		</license>
+	</licenses>
 	<properties>
 		<gwt.version>2.0.3</gwt.version>
 		<maven.compiler.source>1.5</maven.compiler.source>
 		<maven.compiler.target>1.5</maven.compiler.target>
 	</properties>
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/gwteventservice/issues/list</url>
-    </issueManagement>	
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/gwteventservice/issues/list</url>
+	</issueManagement>
 	<dependencyManagement>
 		<dependencies>
 			<!--  GWT dependencies (from central repo) -->
@@ -44,16 +51,18 @@
 				<version>2.5.2</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.google.code.gwteventservice</groupId>
+				<artifactId>eventservice-rpc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<!-- 
-	TODO uncomment  when we are back on the trunk, not the maven branch
-    <scm>
-        <connection>scm:svn:http://gwteventservice.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://gwteventservice.googlecode.com/svn/trunk/</url>
-    </scm>	
-     -->
+	<scm>
+		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://gwteventservice.googlecode.com/svn/trunk/</url>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
@@ -67,26 +76,73 @@
 			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.6.1</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<links>
+						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+						<link>http://google-web-toolkit.googlecode.com/svn/javadoc/2.0</link>
+					</links>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 	<modules>
 		<module>eventservice-rpc</module>
 		<module>eventservice</module>
 		<module>gwteventservice</module>
+		<module>demo</module>
 	</modules>
 	<!--
-	TODO when ready to release via maven it needs a repository to
-	deploy too. Use the google code svn repo for this. You may
-	need to manual create ./maven2 in svn first. 
-    <distributionManagement>
-        <repository>
-            <id>gwteventservice</id>
-            <name>gwteventservice</name>
-            <url>svn:https://gwteventservice.googlecode.com/svn/maven2</url>
-        </repository>
-        <snapshotRepository>
-            <id>gwteventservice-SNAPSHOT</id>
-            <name>gwteventservice-SNAPSHOT</name>
-            <url>svn:https://gwteventservice.googlecode.com/svn/maven2</url>
-        </snapshotRepository>
-    </distributionManagement>
-     -->	
+		To use the distributionManagement you will need to add the following
+		to your ~/.m2/settings.xml: See:
+		http://maven.apache.org/settings.html#Servers <servers> <server>
+		<id>gwteventservice</id> <username>yourgooglecodeusername</username>
+		<password>yourgooglecodepassword</password> </server> </servers>
+	-->
+	<distributionManagement>
+		<repository>
+			<id>gwteventservice</id>
+			<name>gwteventservice</name>
+			<url>svn:https://gwteventservice.googlecode.com/svn/maven/repository</url>
+		</repository>
+		<snapshotRepository>
+			<id>gwteventservice</id>
+			<name>gwteventservice</name>
+			<url>svn:https://gwteventservice.googlecode.com/svn/maven/repository-snapshot</url>
+		</snapshotRepository>
+		<site>
+			<id>gwteventservice</id>
+			<name>gwteventservice</name>
+			<url>svn:https://gwteventservice.googlecode.com/svn/maven/site</url>
+		</site>
+	</distributionManagement>
+	<mailingLists>
+		<mailingList>
+			<name>GWTEventService - Developer Group</name>
+			<archive>http://groups.google.com/group/gwteventservice</archive>
+		</mailingList>
+	</mailingLists>
+	<developers>
+		<developer>
+			<id>sven.strohschein</id>
+			<name>Sven Strohschein</name>
+			<roles>
+				<role>architect</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Andrew Hughes</name>
+			<roles>
+				<role>mavenizer</role>
+			</roles>
+		</contributor>
+	</contributors>
 </project>
