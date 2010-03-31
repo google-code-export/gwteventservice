@@ -44,9 +44,9 @@ public class GWTEventServiceTestSuite extends GWTTestCase
     public static GWTTestSuite suite() {
         GWTTestSuite theGWTEventServiceTestSuite = new GWTTestSuite("GWTEventService - GWT-Tests");
 
-        //Mock-Tests
+        // --- Mock-Tests ---
 
-        //Command
+        // Command
         theGWTEventServiceTestSuite.addTestSuite(ClientCommandSchedulerFactoryTest.class);
         theGWTEventServiceTestSuite.addTestSuite(InitEventServiceCommandTest.class);
         theGWTEventServiceTestSuite.addTestSuite(ActivationCommandTest.class);
@@ -54,15 +54,15 @@ public class GWTEventServiceTestSuite extends GWTTestCase
         theGWTEventServiceTestSuite.addTestSuite(DeregistrationEventFilterCommandTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RegistrationEventFilterCommandTest.class);
 
-        //Event
+        // Event
         theGWTEventServiceTestSuite.addTestSuite(GWTRemoteEventConnectorTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceFactoryTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceMockTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceUnlistenerMockTest.class);
 
-        //GWT-Tests
+        // --- GWT-Tests ---
 
-        //Event
+        // Event
         theGWTEventServiceTestSuite.addTestSuite(GwtTestRemoteEventService.class);
 
         return theGWTEventServiceTestSuite;

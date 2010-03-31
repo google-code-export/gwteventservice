@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.clientmock.event.command;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import de.novanic.eventservice.client.event.RemoteEventConnector;
@@ -60,7 +61,7 @@ public abstract class ClientCommandTestCase extends TestCase
     private void checkInit(ClientCommand aClientCommand) {
         if(myTestAsyncCallback != null) {
             assertNotNull(aClientCommand.getCommandCallback());
-            assertEquals(myTestAsyncCallback, getCommandCallback());
+            assertEquals(myTestAsyncCallback, getCommandCallback(EventServiceConfigurationTransferable.class));
         }
     }
 
@@ -72,17 +73,24 @@ public abstract class ClientCommandTestCase extends TestCase
         return myRemoteEventConnectorMockControl;
     }
 
-    public TestAsyncCallback getCommandCallback() {
+    public TestAsyncCallback<Void> getCommandCallback() {
         if(myTestAsyncCallback == null) {
-            myTestAsyncCallback = new TestAsyncCallback();
+            myTestAsyncCallback = new TestAsyncCallback<Void>();
         }
         return myTestAsyncCallback;
     }
 
-    private static class TestAsyncCallback implements AsyncCallback<Void>
+    public <C> TestAsyncCallback<C> getCommandCallback(Class<C> aReturnType) {
+        if(myTestAsyncCallback == null) {
+            myTestAsyncCallback = new TestAsyncCallback<C>();
+        }
+        return myTestAsyncCallback;
+    }
+
+    private static class TestAsyncCallback<C> implements AsyncCallback<C>
     {
         public void onFailure(Throwable aThrowable) {}
 
-        public void onSuccess(Void aResult) {}
+        public void onSuccess(C aResult) {}
     }
 }

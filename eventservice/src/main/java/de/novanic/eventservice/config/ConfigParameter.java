@@ -26,36 +26,78 @@ package de.novanic.eventservice.config;
  *         <br>Date: 06.03.2009
  *         <br>Time: 00:13:13
  */
-public interface ConfigParameter
+public enum ConfigParameter
 {
+    /**
+     * Max waiting time - Listening shouldn't hold longer than max waiting time.
+     */
+    MAX_WAITING_TIME_TAG("time.waiting.max", false),
+
+    /**
+     * Min waiting time - Listening should hold at least for min waiting time.
+     */
+    MIN_WAITING_TIME_TAG("time.waiting.min", false),
+
+    /**
+     * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
+     */
+    TIMEOUT_TIME_TAG("time.timeout", false),
+
+    /**
+     * Connection id generator - Generates unique ids to identify the clients.
+     */
+    CONNECTION_ID_GENERATOR("connection.id.generator", false),
+
+    // --- Full-qualified declarations ---
+
+    /**
+     * Max waiting time - Listening shouldn't hold longer than max waiting time.
+     */
+    FQ_MAX_WAITING_TIME_TAG("time.waiting.max", true),
+
+    /**
+     * Min waiting time - Listening should hold at least for min waiting time.
+     */
+    FQ_MIN_WAITING_TIME_TAG("time.waiting.min", true),
+
+    /**
+     * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
+     */
+    FQ_TIMEOUT_TIME_TAG("time.timeout", true),
+
+    /**
+     * Connection id generator - Generates unique ids to identify the clients.
+     */
+    FQ_CONNECTION_ID_GENERATOR("connection.id.generator", true);
+
+    // --- Constants ---
+
     /**
      * Full qualified prefix
      */
     public static final String FULLY_QUALIFIED_TAG_PREFIX = "eventservice.";
 
-    /**
-     * Max waiting time - Listening shouldn't hold longer than max waiting time.
-     */
-    public static final String MAX_WAITING_TIME_TAG = "time.waiting.max";
-    /**
-     * Min waiting time - Listening should hold at least for min waiting time.
-     */
-    public static final String MIN_WAITING_TIME_TAG = "time.waiting.min";
-    /**
-     * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
-     */
-    public static final String TIMEOUT_TIME_TAG = "time.timeout";
+    private String myDeclaration;
 
     /**
-     * Max waiting time - Listening shouldn't hold longer than max waiting time.
+     * Creates a new {@link de.novanic.eventservice.config.ConfigParameter} with a declaration.
+     * When the flag isFQ / isFullQualified is set, the full-qualified prefix is attached to the declaration.
+     * @param aDeclaration declaration of the configuration parameter (name of the configuration entry)
+     * @param isFQ When the flag isFQ / isFullQualified is set, the full-qualified prefix is attached to the declaration.
      */
-    public static final String FQ_MAX_WAITING_TIME_TAG = FULLY_QUALIFIED_TAG_PREFIX + MAX_WAITING_TIME_TAG;
+    private ConfigParameter(String aDeclaration, boolean isFQ) {
+        if(isFQ) {
+            myDeclaration = FULLY_QUALIFIED_TAG_PREFIX + aDeclaration;
+        } else {
+            myDeclaration = aDeclaration;
+        }
+    }
+
     /**
-     * Min waiting time - Listening should hold at least for min waiting time.
+     * Returns the declaration (name of the configuration entry) of the {@link de.novanic.eventservice.config.ConfigParameter}. 
+     * @return declaration (name of the configuration entry) of the {@link de.novanic.eventservice.config.ConfigParameter}
      */
-    public static final String FQ_MIN_WAITING_TIME_TAG = FULLY_QUALIFIED_TAG_PREFIX + MIN_WAITING_TIME_TAG;
-    /**
-     * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
-     */
-    public static final String FQ_TIMEOUT_TIME_TAG = FULLY_QUALIFIED_TAG_PREFIX + TIMEOUT_TIME_TAG;
+    public String declaration() {
+        return myDeclaration;
+    }
 }

@@ -24,6 +24,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.util.List;
 import java.util.Set;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
@@ -68,10 +69,12 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
 
     /**
      * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
+     * @return EventServiceConfigurationTransferable a transferable configuration for the client side
      */
-    public void initEventService() {
+    public EventServiceConfigurationTransferable initEventService() {
         final String theClientId = getClientId(true);
-        LOG.debug("Client \"" + theClientId + "\" initialized.");
+        LOG.info("Client \"" + theClientId + "\" initialized.");
+        return null;//TODO
     }
 
     /**

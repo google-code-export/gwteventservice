@@ -20,7 +20,6 @@
 package de.novanic.eventservice.config;
 
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
-import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoader;
 import de.novanic.eventservice.config.loader.DefaultConfigurationLoader;
 import de.novanic.eventservice.config.level.ConfigLevel;
@@ -86,8 +85,9 @@ public class EventServiceConfigurationFactory
      * {@link de.novanic.eventservice.config.loader.ConfigurationLoader} strategies.
      * @param aPropertyName properties file if another properties file is preferred as the default properties file"
      * (see description of {@link de.novanic.eventservice.config.loader.PropertyConfigurationLoader}).
+     * The returned configurations get enriched with default values when the parameters / options aren't configured.
      * @return the configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration})
-     * @throws de.novanic.eventservice.config.loader.ConfigurationException thrown when a configuration is available, but can't be loaded
+     * @throws ConfigurationException thrown when a configuration is available, but can't be loaded
      */
     public EventServiceConfiguration loadEventServiceConfiguration(String aPropertyName) {
         replaceConfigurationLoader(ConfigLevelFactory.DEFAULT, new PropertyConfigurationLoader(aPropertyName));
@@ -97,15 +97,16 @@ public class EventServiceConfigurationFactory
 
     /**
      * Loads the {@link de.novanic.eventservice.config.EventServiceConfiguration} with various
-     * {@link de.novanic.eventservice.config.loader.ConfigurationLoader} strategies.
+     * {@link de.novanic.eventservice.config.loader.ConfigurationLoader} strategies. The returned configurations
+     * get enriched with default values when the parameters / options aren't configured.
      * @return the configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration})
-     * @throws de.novanic.eventservice.config.loader.ConfigurationException thrown when a configuration is available, but can't be loaded
+     * @throws ConfigurationException thrown when a configuration is available, but can't be loaded
      */
     public EventServiceConfiguration loadEventServiceConfiguration() {
         for(List<ConfigurationLoader> theConfigLoaders: myConfigurationLoaders.values()) {
             for(ConfigurationLoader theConfigLoader: theConfigLoaders) {
                 if(theConfigLoader.isAvailable()) {
-                    return theConfigLoader.load();
+                    return enrich(theConfigLoader.load());
                 }
             }
         }
@@ -164,5 +165,24 @@ public class EventServiceConfigurationFactory
     private void initConfigurationLoaders() {
         replaceConfigurationLoader(ConfigLevelFactory.DEFAULT, new PropertyConfigurationLoader());
         replaceConfigurationLoader(ConfigLevelFactory.HIGHEST, new DefaultConfigurationLoader());
+    }
+
+    /**
+     * The configuration will be enriched with default values, when no values are contained for the parameters.
+     * @param aConfiguration configuration to enrich
+     * @return the enriched configuration
+     */
+    private EventServiceConfiguration enrich(EventServiceConfiguration aConfiguration) {
+        final EventServiceConfiguration theDefaultConfiguration =  new DefaultConfigurationLoader().load();
+        final Map<ConfigParameter, Object> theDefaultConfigMap = theDefaultConfiguration.getConfigMap();
+
+        for(Map.Entry<ConfigParameter, Object> theConfigEntry: aConfiguration.getConfigMap().entrySet()) {
+            Object theValue = theConfigEntry.getValue();
+            if(theValue == null) {
+                theConfigEntry.setValue(theDefaultConfigMap.get(theConfigEntry.getKey()));
+            }
+        }
+        
+        return aConfiguration;
     }
 }

@@ -21,6 +21,7 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
+import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 
 /**
  * DefaultConfigurationLoader is used by {@link de.novanic.eventservice.config.EventServiceConfigurationFactory} if no
@@ -43,6 +44,7 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
     private static final int DEFAULT_MIN_WAITING_TIME = 0;
     private static final int DEFAULT_MAX_WAITING_TIME = 20000;
     private static final int DEFAULT_TIME_OUT = 90000;
+    private static final String DEFAULT_CLIENT_ID_GENERATOR_CLASS_NAME = SessionConnectionIdGenerator.class.getName();
 
     /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
@@ -60,7 +62,8 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
      * @return the loaded configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration})
      */
     public EventServiceConfiguration load() {
-        return new RemoteEventServiceConfiguration(DEFAULT_CONFIG_DESCRIPTION, DEFAULT_MIN_WAITING_TIME, DEFAULT_MAX_WAITING_TIME, DEFAULT_TIME_OUT);
+        return new RemoteEventServiceConfiguration(DEFAULT_CONFIG_DESCRIPTION, DEFAULT_MIN_WAITING_TIME, DEFAULT_MAX_WAITING_TIME, DEFAULT_TIME_OUT,
+                                                   DEFAULT_CLIENT_ID_GENERATOR_CLASS_NAME);
     }
 
     public boolean equals(Object anObject) {

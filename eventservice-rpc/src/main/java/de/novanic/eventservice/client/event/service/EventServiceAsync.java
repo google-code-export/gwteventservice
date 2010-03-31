@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event.service;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -43,7 +44,7 @@ public interface EventServiceAsync
     /**
      * Initializes the {@link EventService}.
      */
-    void initEventService(AsyncCallback<Void> async);
+    void initEventService(AsyncCallback<EventServiceConfigurationTransferable> async);
 
     /**
      * Register listen for a domain.

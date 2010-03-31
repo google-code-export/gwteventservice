@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
@@ -65,7 +66,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * That method is called to execute the first server call (for initialization).
      * @param aCallback callback
      */
-    public void init(AsyncCallback<Void> aCallback) {
+    public void init(AsyncCallback<EventServiceConfigurationTransferable> aCallback) {
         myEventService.initEventService(aCallback);
     }
 

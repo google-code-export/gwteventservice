@@ -19,8 +19,10 @@
  */
 package de.novanic.eventservice.config;
 
-import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.util.PlatformUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An EventServiceConfiguration holds the configuration for {@link de.novanic.eventservice.client.event.service.EventService}.
@@ -36,9 +38,8 @@ import de.novanic.eventservice.util.PlatformUtil;
  */
 public class RemoteEventServiceConfiguration implements EventServiceConfiguration
 {
-    private final int myMinWaitingTime;
-    private final int myMaxWaitingTime;
-    private final int myTimeoutTime;
+    private Map<ConfigParameter, Object> myConfigMap;
+
     private final String myConfigDescription;
 
     /**
@@ -48,14 +49,29 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
      * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
      */
-    public RemoteEventServiceConfiguration(String aConfigDescription, int aMinWaitingTime, int aMaxWaitingTime, int aTimeoutTime) {
+    public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime) {
         if(aConfigDescription == null) {
             throw new ConfigurationException("The configuration description must be defined!");
         }
         myConfigDescription = aConfigDescription;
-        myMinWaitingTime = aMinWaitingTime;
-        myMaxWaitingTime = aMaxWaitingTime;
-        myTimeoutTime = aTimeoutTime;
+        myConfigMap = new HashMap<ConfigParameter, Object>();
+        myConfigMap.put(ConfigParameter.MIN_WAITING_TIME_TAG, aMinWaitingTime);
+        myConfigMap.put(ConfigParameter.MAX_WAITING_TIME_TAG, aMaxWaitingTime);
+        myConfigMap.put(ConfigParameter.TIMEOUT_TIME_TAG, aTimeoutTime);
+    }
+
+    /**
+     * Creates a new RemoteEventServiceConfiguration.
+     * @param aConfigDescription description of the configuration (for example the location)
+     * @param aMinWaitingTime min waiting time before listen returns (in milliseconds)
+     * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
+     * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
+     * @param aConnectionIdGeneratorClassName class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} to generate unique client ids
+     */
+    public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime,
+                                           String aConnectionIdGeneratorClassName) {
+        this(aConfigDescription, aMinWaitingTime, aMaxWaitingTime, aTimeoutTime);
+        myConfigMap.put(ConfigParameter.CONNECTION_ID_GENERATOR, aConnectionIdGeneratorClassName);
     }
 
     /**
@@ -70,24 +86,43 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      * Returns the min waiting time. Listening should hold at least for min waiting time.
      * @return min waiting time
      */
-    public int getMinWaitingTime() {
-        return myMinWaitingTime;
+    public Integer getMinWaitingTime() {
+        return (Integer)myConfigMap.get(ConfigParameter.MIN_WAITING_TIME_TAG);
     }
 
     /**
      * Returns the max waiting time. Listening shouldn't hold longer than max waiting time.
      * @return max waiting time
      */
-    public int getMaxWaitingTime() {
-        return myMaxWaitingTime;
+    public Integer getMaxWaitingTime() {
+        return (Integer)myConfigMap.get(ConfigParameter.MAX_WAITING_TIME_TAG);
     }
 
     /**
      * Returns the timeout time (max time for a listen cycle).
      * @return timeout time
      */
-    public int getTimeoutTime() {
-        return myTimeoutTime;
+    public Integer getTimeoutTime() {
+        return (Integer)myConfigMap.get(ConfigParameter.TIMEOUT_TIME_TAG);
+    }
+
+    /**
+     * Returns the class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}.
+     * The {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} generates unique ids to identify the clients.
+     * @return class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}
+     */
+    public String getConnectionIdGeneratorClassName() {
+        return (String)myConfigMap.get(ConfigParameter.CONNECTION_ID_GENERATOR);
+    }
+
+    /**
+     * Returns the configurations as a {@link java.util.Map} with {@link de.novanic.eventservice.config.ConfigParameter}
+     * instances as the key.
+     * @return {@link java.util.Map} with the configurations with {@link de.novanic.eventservice.config.ConfigParameter}
+     * instances as the key
+     */
+    public Map<ConfigParameter, Object> getConfigMap() {
+        return myConfigMap;
     }
 
     public boolean equals(Object anObject) {
@@ -100,22 +135,23 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
 
         EventServiceConfiguration theConfiguration = (EventServiceConfiguration)anObject;
 
-        return (myMaxWaitingTime == theConfiguration.getMaxWaitingTime()
-                && myMinWaitingTime == theConfiguration.getMinWaitingTime()
-                && myTimeoutTime == theConfiguration.getTimeoutTime()
+        return (getConfigMap().equals(theConfiguration.getConfigMap())
                 && myConfigDescription.equals(theConfiguration.getConfigDescription()));
 
     }
 
     public int hashCode() {
-        int theResult = myMinWaitingTime;
-        theResult = 31 * theResult + myMaxWaitingTime;
-        theResult = 31 * theResult + myTimeoutTime;
+        int theResult = getConfigMap().hashCode();
         theResult = 31 * theResult + myConfigDescription.hashCode();
         return theResult;
     }
 
     public String toString() {
+        final String UNDEFINED = "<undefined>";
+        final Integer theMinWaitingTime = getMinWaitingTime();
+        final Integer theMaxWaitingTime = getMaxWaitingTime();
+        final Integer theTimeoutTime = getTimeoutTime();
+
         StringBuilder theConfigStringBuilder = new StringBuilder(120);
         theConfigStringBuilder.append("EventServiceConfiguration (");
         theConfigStringBuilder.append(getConfigDescription());
@@ -123,11 +159,23 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
         theConfigStringBuilder.append(PlatformUtil.getNewLine());
         theConfigStringBuilder.append("  ");
         theConfigStringBuilder.append("Min.: ");
-        theConfigStringBuilder.append(getMinWaitingTime());
+        if(theMinWaitingTime != null) {
+            theConfigStringBuilder.append(theMinWaitingTime);
+        } else {
+            theConfigStringBuilder.append(UNDEFINED);
+        }
         theConfigStringBuilder.append("ms; Max.: ");
-        theConfigStringBuilder.append(getMaxWaitingTime());
+        if(theMaxWaitingTime != null) {
+            theConfigStringBuilder.append(theMaxWaitingTime);
+        } else {
+            theConfigStringBuilder.append(UNDEFINED);
+        }
         theConfigStringBuilder.append("ms; Timeout: ");
-        theConfigStringBuilder.append(getTimeoutTime());
+        if(theTimeoutTime != null) {
+            theConfigStringBuilder.append(theTimeoutTime);
+        } else {
+            theConfigStringBuilder.append(UNDEFINED);
+        }
         theConfigStringBuilder.append("ms");
         return theConfigStringBuilder.toString();
     }

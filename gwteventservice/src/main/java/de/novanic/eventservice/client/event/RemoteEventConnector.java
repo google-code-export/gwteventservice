@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
@@ -40,7 +41,7 @@ public interface RemoteEventConnector
      * That method is called to execute the first server call (for initialization).
      * @param aCallback callback
      */
-    void init(AsyncCallback<Void> aCallback);
+    void init(AsyncCallback<EventServiceConfigurationTransferable> aCallback);
 
     /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}

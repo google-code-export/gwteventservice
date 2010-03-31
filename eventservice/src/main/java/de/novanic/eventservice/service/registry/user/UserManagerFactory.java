@@ -20,7 +20,7 @@
 package de.novanic.eventservice.service.registry.user;
 
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.config.loader.ConfigurationException;
+import de.novanic.eventservice.config.ConfigurationException;
 
 /**
  * The UserManagerFactory is used to create the UserManager and to ensure that only one instance of
@@ -60,7 +60,7 @@ public class UserManagerFactory
      * {@link de.novanic.eventservice.service.registry.user.UserManagerFactory#getUserManager(de.novanic.eventservice.config.EventServiceConfiguration)}
      * or {@link de.novanic.eventservice.service.registry.user.UserManagerFactory#getUserManager(long)}. When the
      * {@link de.novanic.eventservice.service.registry.user.UserManager} isn't initiated the method throws a
-     * {@link de.novanic.eventservice.config.loader.ConfigurationException}.
+     * {@link de.novanic.eventservice.config.ConfigurationException}.
      * @return {@link de.novanic.eventservice.service.registry.user.UserManager} (singleton)
      * @throws ConfigurationException thrown when the {@link de.novanic.eventservice.service.registry.user.UserManager} isn't
      * initiated first with {@link de.novanic.eventservice.service.registry.user.UserManagerFactory#getUserManager(de.novanic.eventservice.config.EventServiceConfiguration)}

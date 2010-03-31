@@ -91,9 +91,9 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         //Configuration of WebDescriptorConfigurationLoader (see DummyServletConfig). That configuration and ConfigurationLoader
         //was initialized with the init-method of EventServiceImpl. 
         EventServiceConfiguration theConfiguration = theEventServiceConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(40000, theConfiguration.getMaxWaitingTime());
-        assertEquals(5000, theConfiguration.getMinWaitingTime());
-        assertEquals(120000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(40000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
     }
 
     public void testListen() throws Exception {
@@ -731,9 +731,9 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
         public DummyServletConfig() {
             myParameterMap = new ConcurrentHashMap<String, Integer>(3);
-            myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG, 40000);
-            myParameterMap.put(ConfigParameter.MIN_WAITING_TIME_TAG, 5000);
-            myParameterMap.put(ConfigParameter.TIMEOUT_TIME_TAG, 120000);
+            myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), 40000);
+            myParameterMap.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), 5000);
+            myParameterMap.put(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), 120000);
         }
 
         public String getServletName() {

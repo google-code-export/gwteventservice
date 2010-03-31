@@ -51,27 +51,27 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         //loads eventservice.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         EventServiceConfiguration theConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theConfiguration.getMinWaitingTime());
-        assertEquals(20000, theConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoadEventServiceConfiguration_2() {
         //loads eventservice.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         EventServiceConfiguration theConfiguration = theConfigurationFactory.loadEventServiceConfiguration(null);
-        assertEquals(0, theConfiguration.getMinWaitingTime());
-        assertEquals(20000, theConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoadEventServiceConfiguration_3() {
         //loads eventservice.bak.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         EventServiceConfiguration theConfiguration = theConfigurationFactory.loadEventServiceConfiguration("eventservice.bak.properties");
-        assertEquals(2000, theConfiguration.getMinWaitingTime());
-        assertEquals(5000, theConfiguration.getMaxWaitingTime());
-        assertEquals(50000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(2000), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoadEventServiceConfiguration_Multiple() {
@@ -79,33 +79,33 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
 
         EventServiceConfiguration theConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theConfiguration.getMinWaitingTime());
-        assertEquals(20000, theConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
 
         theConfiguration = theConfigurationFactory.loadEventServiceConfiguration("eventservice.bak.properties");
-        assertEquals(2000, theConfiguration.getMinWaitingTime());
-        assertEquals(5000, theConfiguration.getMaxWaitingTime());
-        assertEquals(50000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(2000), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
 
         theConfiguration = theConfigurationFactory.loadEventServiceConfiguration("eventservice.bak.properties");
-        assertEquals(2000, theConfiguration.getMinWaitingTime());
-        assertEquals(5000, theConfiguration.getMaxWaitingTime());
-        assertEquals(50000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(2000), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
 
         theConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(2000, theConfiguration.getMinWaitingTime());
-        assertEquals(5000, theConfiguration.getMaxWaitingTime());
-        assertEquals(50000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(2000), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoadEventServiceConfiguration_Default() {
         //uses DefaultConfigurationLoader
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         EventServiceConfiguration theConfiguration = theConfigurationFactory.loadEventServiceConfiguration("notAnExistingFile");
-        assertEquals(0, theConfiguration.getMinWaitingTime());
-        assertEquals(20000, theConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoadEventServiceConfiguration_Failure() {
@@ -137,17 +137,17 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         theConfigurationFactory.addCustomConfigurationLoader(theCustomConfigurationLoader);
 
         EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(3000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(3000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(70000), theLoadedConfiguration.getTimeoutTime());
 
         //remove custom ConfigurationLoader
         theConfigurationFactory.removeConfigurationLoader(theCustomConfigurationLoader);
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(20000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theLoadedConfiguration.getTimeoutTime());
     }
 
     public void testAddCustomConfigurationLoader_2() {
@@ -162,16 +162,16 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.HIGH, theCustomConfigurationLoader);
 
         EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(30000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(120000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(30000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(120000), theLoadedConfiguration.getTimeoutTime());
 
         theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOWEST, theCustomConfigurationLoader);
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(3000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(3000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(70000), theLoadedConfiguration.getTimeoutTime());
     }
 
     public void testResetCustomConfigurationLoaders() {
@@ -183,18 +183,18 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         theConfigurationFactory.addCustomConfigurationLoader(theCustomConfigurationLoader);
 
         EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(3000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(3000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(70000), theLoadedConfiguration.getTimeoutTime());
 
         //reset
         FactoryResetService.resetFactory(EventServiceConfigurationFactory.class);
         theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(20000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theLoadedConfiguration.getTimeoutTime());
     }
 
     public void testResetCustomConfigurationLoaders_2() {
@@ -206,18 +206,18 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         theConfigurationFactory.addCustomConfigurationLoader(theCustomConfigurationLoader);
 
         EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(3000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(70000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(3000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(70000), theLoadedConfiguration.getTimeoutTime());
 
         //reset and re-init
         FactoryResetService.resetFactory(EventServiceConfigurationFactory.class);
         theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
 
         theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
-        assertEquals(0, theLoadedConfiguration.getMinWaitingTime());
-        assertEquals(20000, theLoadedConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theLoadedConfiguration.getTimeoutTime());
     }
 
     private class DummyConfigurationLoader implements ConfigurationLoader

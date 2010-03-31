@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -552,13 +553,13 @@ public final class DefaultRemoteEventService implements RemoteEventService
     /**
      * Callback for the init command.
      */
-    private class InitCommandCallback implements AsyncCallback<Void>
+    private class InitCommandCallback implements AsyncCallback<EventServiceConfigurationTransferable>
     {
         /**
          * Executes the scheduled commands on success.
-         * @param aResult no result (void)
+         * @param aConfiguration configuration for the client side
          */
-        public void onSuccess(Void aResult) {
+        public void onSuccess(EventServiceConfigurationTransferable aConfiguration) {
             finishFirstCall();
         }
 

@@ -19,6 +19,8 @@
  */
 package de.novanic.eventservice.config;
 
+import java.util.Map;
+
 /**
  * An EventServiceConfiguration holds the configuration for {@link de.novanic.eventservice.client.event.service.EventService}.
  * The time for a timeout and the min- and max-waiting-time can be configured.
@@ -43,18 +45,33 @@ public interface EventServiceConfiguration
      * Returns the min waiting time. Listening should hold at least for min waiting time.
      * @return min waiting time
      */
-    int getMinWaitingTime();
+    Integer getMinWaitingTime();
 
     /**
      * Returns the max waiting time. Listening shouldn't hold longer than max waiting time.
      * @return max waiting time
      */
-    int getMaxWaitingTime();
+    Integer getMaxWaitingTime();
 
     /**
      * Returns the timeout time. The timeout time is the max time for a listen cycle. If the timeout time is exceeded,
      * the client will be deregistered.
      * @return timeout time
      */
-    int getTimeoutTime();
+    Integer getTimeoutTime();
+
+    /**
+     * Returns the class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}.
+     * The {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} generates unique ids to identify the clients.
+     * @return class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}
+     */
+    String getConnectionIdGeneratorClassName();
+
+    /**
+     * Returns the configurations as a {@link java.util.Map} with {@link de.novanic.eventservice.config.ConfigParameter}
+     * instances as the key.
+     * @return {@link java.util.Map} with the configurations with {@link de.novanic.eventservice.config.ConfigParameter}
+     * instances as the key
+     */
+    Map<ConfigParameter, Object> getConfigMap();
 }
