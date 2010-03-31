@@ -32,7 +32,7 @@ import de.novanic.eventservice.EventServiceServerThreadingTest;
  * <br>Date: 17.08.2008
  * <br>Time: 21:35:19
  */
-public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThreadingTest
+public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceServerThreadingTest
 {
     private static final String TEST_USER_ID = "test_user_id";
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
