@@ -19,10 +19,10 @@
  */
 package de.novanic.eventservice;
 
+import de.novanic.eventservice.service.EventServiceImpl_ExtremeThreadingTestStress;
+import de.novanic.eventservice.service.registry.EventRegistry_ExtremeThreadingTestStress;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import de.novanic.eventservice.service.registry.EventRegistry_ExtremeThreadingTest;
-import de.novanic.eventservice.service.EventServiceImpl_ExtremeThreadingTest;
 import de.novanic.eventservice.util.LoggingConfiguratorTestMode;
 
 /**
@@ -30,17 +30,17 @@ import de.novanic.eventservice.util.LoggingConfiguratorTestMode;
  * <br>Date: 23.08.2008
  * <br>Time: 10:21:30
  */
-public class EventService_ExtremeThreadingTestSuite
+public class EventService_ExtremeThreadingTestSuiteStress
 {
-    private EventService_ExtremeThreadingTestSuite() {}
+    private EventService_ExtremeThreadingTestSuiteStress() {}
 
     public static Test suite() throws Exception {
         TestSuite theSuite = new TestSuite("EventService - ExtremeThreading-Tests");
 
         LoggingConfiguratorTestMode.configureLogging();
 
-        theSuite.addTestSuite(EventRegistry_ExtremeThreadingTest.class);
-        theSuite.addTestSuite(EventServiceImpl_ExtremeThreadingTest.class);
+        theSuite.addTestSuite(EventRegistry_ExtremeThreadingTestStress.class);
+        theSuite.addTestSuite(EventServiceImpl_ExtremeThreadingTestStress.class);
 
         return theSuite;
     }

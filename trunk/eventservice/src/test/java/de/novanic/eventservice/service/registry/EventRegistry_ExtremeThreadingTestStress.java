@@ -38,7 +38,7 @@ import java.util.HashMap;
  * <br>Date: 23.08.2008
  * <br>Time: 00:35:00
  */
-public class EventRegistry_ExtremeThreadingTest extends EventServiceServerThreadingTest
+public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServerThreadingTest
 {
     private static final String TEST_USER_ID = "test_user_id";
     private static final String TEST_USER_ID_2 = "test_user_id_2";
