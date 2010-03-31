@@ -55,7 +55,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
 
         myEventService.unlisten();
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
-        //clean up ressources
+        //clean up resources
         System.gc();
     }
 
@@ -115,7 +115,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
     }
 
     /**
-     * Adding 4500 events with multithreading and a single listen at the end.
+     * Adding 4500 events with multi-threading and a single listen at the end.
      * @throws Exception
      */
     public void testListen_ExtremeThreading() throws Exception {
@@ -153,7 +153,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
     }
 
     /**
-     * Adding 2100 events (without multithreading) and a listen thread at every third event.
+     * Adding 2100 events (without multi-threading) and a listen thread at every third event.
      * @throws Exception
      */
     public void testListen_ExtremeThreading_2() throws Exception {
@@ -197,7 +197,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
     }
 
     /**
-     * Adding 2100 events with multithreading and a listen thread at every third event.
+     * Adding 2100 events with multi-threading and a listen thread at every third event.
      * @throws Exception
      */
     public void testListen_ExtremeThreading_3() throws Exception {
@@ -242,7 +242,7 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
     }
 
     /**
-     * Adding 5000 events with multithreading (one event per millisecond) and a single listen at the end.
+     * Adding 4500 events with multi-threading (one event per millisecond) and a single listen at the end.
      * @throws Exception
      */
     public void testListen_ExtremeThreading_4() throws Exception {
@@ -257,21 +257,21 @@ public class EventServiceImpl_ExtremeThreadingTest extends EventServiceServerThr
         myEventService.register(TEST_DOMAIN_3);
         assertEquals(3, myEventService.getActiveListenDomains().size());
 
-        for(int i = 5000; i > 0; i--) {
+        for(int i = 4500; i > 0; i--) {
             startAddEvent(TEST_DOMAIN, i);
             assertEquals(3, myEventService.getActiveListenDomains().size());
         }
 
         joinThreads();
         listen();
-        assertEquals(5000, getEventCount());
-        assertEquals(5000, getEventCount(TEST_DOMAIN));
+        assertEquals(4500, getEventCount());
+        assertEquals(4500, getEventCount(TEST_DOMAIN));
         assertEquals(0, getEventCount(TEST_DOMAIN_2));
         assertEquals(0, getEventCount(TEST_DOMAIN_3));
     }
 
     /**
-     * Adding 2000 events with multithreading (one event per millisecond) and a listen thread after every event.
+     * Adding 2000 events with multi-threading (one event per millisecond) and a listen thread after every event.
      * @throws Exception
      */
     public void testListen_ExtremeThreading_5() throws Exception {
