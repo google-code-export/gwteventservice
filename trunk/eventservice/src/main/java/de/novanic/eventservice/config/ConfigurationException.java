@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.config.loader;
+package de.novanic.eventservice.config;
 
 /**
  * ConfigurationLoadException is an exception that can be thrown by {@link de.novanic.eventservice.config.loader.ConfigurationLoader},
@@ -29,10 +29,19 @@ package de.novanic.eventservice.config.loader;
  */
 public class ConfigurationException extends RuntimeException
 {
+    /**
+     * Creates a new {@link de.novanic.eventservice.config.ConfigurationException} with a message.
+     * @param aMessage message
+     */
     public ConfigurationException(String aMessage) {
         super(aMessage);
     }
 
+    /**
+     * Creates a new {@link de.novanic.eventservice.config.ConfigurationException} with a message and a cause throwable.
+     * @param aMessage message
+     * @param aThrowable throwable
+     */
     public ConfigurationException(String aMessage, Throwable aThrowable) {
         super(aMessage, aThrowable);
     }

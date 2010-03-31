@@ -19,10 +19,10 @@
  */
 package de.novanic.eventservice.service.registry;
 
+import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
-import de.novanic.eventservice.config.loader.ConfigurationException;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.util.PlatformUtil;

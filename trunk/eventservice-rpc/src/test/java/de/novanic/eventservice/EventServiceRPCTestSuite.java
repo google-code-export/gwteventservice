@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice;
 
+import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferableTest;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 import de.novanic.eventservice.client.logger.ClientLoggerFactoryTest;
@@ -46,19 +47,22 @@ public class EventServiceRPCTestSuite
 
         theSuite.setName("EventServiceRPC - Tests");
 
-        //Logging
+        // Logging
         theSuite.addTestSuite(ClientLoggerFactoryTest.class);
         theSuite.addTestSuite(GWTClientLoggerTest.class);
 
-        //Domain
+        // Configuration
+        theSuite.addTestSuite(RemoteEventServiceConfigurationTransferableTest.class);
+
+        // Domain
         theSuite.addTestSuite(DomainFactoryTest.class);
         theSuite.addTestSuite(DefaultDomainTest.class);
 
-        //Command
+        // Command
         theSuite.addTestSuite(DefaultRemoteCommandTest.class);
         theSuite.addTestSuite(RemoteListenCommandTest.class);
 
-        //Event
+        // Event
         theSuite.addTestSuite(UnlistenEventTest.class);
         theSuite.addTestSuite(UnlistenEventListenerAdapterTest.class);
         theSuite.addTestSuite(DomainEventTest.class);

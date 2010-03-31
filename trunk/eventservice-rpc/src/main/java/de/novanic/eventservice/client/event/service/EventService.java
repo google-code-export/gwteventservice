@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event.service;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.DomainEvent;
@@ -42,8 +43,9 @@ public interface EventService extends RemoteService
 {
     /**
      * Initializes the {@link de.novanic.eventservice.client.event.service.EventService}.
+     * @return EventServiceConfigurationTransferable a transferable configuration for the client side
      */
-    void initEventService();
+    EventServiceConfigurationTransferable initEventService();
 
     /**
      * Register listen for a domain.

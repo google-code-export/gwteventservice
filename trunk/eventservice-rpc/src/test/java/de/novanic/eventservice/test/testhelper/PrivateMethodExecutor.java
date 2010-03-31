@@ -52,13 +52,13 @@ public final class PrivateMethodExecutor<T>
             theConstructor.setAccessible(true);
             return theConstructor.newInstance();
         } catch(NoSuchMethodException e) {
-            throw new AssertionError("The no-arg constructor of \"" + myClass.getName() + "\" could not be found (" + e.getMessage() + "\"!");
+            throw new AssertionError("The no-arg constructor of \"" + myClass.getName() + "\" could not be found (" + e.getMessage() + ")!");
         } catch(InvocationTargetException e) {
-            throw new AssertionError("The no-arg constructor of \"" + myClass.getName() + "\" could not be invoked (" + e.getMessage() + "\"!");
+            throw new AssertionError("The no-arg constructor of \"" + myClass.getName() + "\" could not be invoked (" + e.getMessage() + ")!");
         } catch(IllegalAccessException e) {
-            throw new AssertionError("The no-arg constructor of \"" + myClass.getName() + "\" could not be accessed (" + e.getMessage() + "\"!");
+            throw new AssertionError("The no-arg constructor of \"" + myClass.getName() + "\" could not be accessed (" + e.getMessage() + ")!");
         } catch(InstantiationException e) {
-            throw new AssertionError("The object could not be instatiated with the no-arg constructor of \"" + myClass.getName() + "\" (" + e.getMessage() + "\"!");
+            throw new AssertionError("The object could not be instatiated with the no-arg constructor of \"" + myClass.getName() + "\" (" + e.getMessage() + ")!");
         }
     }
 

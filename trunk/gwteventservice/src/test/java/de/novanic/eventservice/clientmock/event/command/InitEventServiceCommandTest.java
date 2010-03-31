@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.clientmock.event.command;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.command.InitEventServiceCommand;
 
 /**
@@ -29,9 +30,9 @@ import de.novanic.eventservice.client.event.command.InitEventServiceCommand;
 public class InitEventServiceCommandTest extends ClientCommandTestCase
 {
     public void testExecute() {
-        getRemoteEventConnectorMock().init(getCommandCallback());
+        getRemoteEventConnectorMock().init(getCommandCallback(EventServiceConfigurationTransferable.class));
         getRemoteEventConnectorMockControl().setVoidCallable();
 
-        testExecute(new InitEventServiceCommand(getRemoteEventConnectorMock(), getCommandCallback()));
+        testExecute(new InitEventServiceCommand(getRemoteEventConnectorMock(), getCommandCallback(EventServiceConfigurationTransferable.class)));
     }
 }

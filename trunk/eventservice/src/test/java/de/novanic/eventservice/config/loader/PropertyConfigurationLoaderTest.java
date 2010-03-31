@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.EventServiceTestCase;
 
@@ -54,9 +55,9 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
 
         EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
         assertEquals("Properties \"eventservice.properties\"", theConfiguration.getConfigDescription());
-        assertEquals(0, theConfiguration.getMinWaitingTime());
-        assertEquals(20000, theConfiguration.getMaxWaitingTime());
-        assertEquals(90000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoad_2() {
@@ -65,21 +66,23 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
 
         EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
         assertEquals("Properties \"eventservice.bak.properties\"", theConfiguration.getConfigDescription());
-        assertEquals(2000, theConfiguration.getMinWaitingTime());
-        assertEquals(5000, theConfiguration.getMaxWaitingTime());
-        assertEquals(50000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(2000), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoad_3() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("empty.properties");
         assertTrue(theConfigurationLoader.isAvailable());
 
-        try {
-            theConfigurationLoader.load();
-            fail(ConfigurationException.class.getName() + " expected!");
-        } catch(ConfigurationException e) {
-            assertTrue(e.getMessage().contains("[eventservice.time.waiting.max ; time.waiting.max]"));
-        }
+        EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
+
+        assertNotNull(theConfiguration.getConfigDescription());
+        assertEquals("Properties \"empty.properties\"", theConfiguration.getConfigDescription());
+
+        assertNull(theConfiguration.getMinWaitingTime());
+        assertNull(theConfiguration.getMaxWaitingTime());
+        assertNull(theConfiguration.getTimeoutTime());
     }
 
     public void testLoad_Failure() {

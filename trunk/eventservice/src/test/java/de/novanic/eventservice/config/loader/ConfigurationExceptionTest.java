@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import de.novanic.eventservice.config.ConfigurationException;
 import junit.framework.TestCase;
 
 /**

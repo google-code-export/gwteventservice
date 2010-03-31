@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.ConfigParameter;
@@ -116,27 +117,31 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
      * @throws ConfigurationException thrown when the values aren't parsable to an integer
      */
     private EventServiceConfiguration load(Properties aProperties) {
-        final int theMaxWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MAX_WAITING_TIME_TAG, ConfigParameter.MAX_WAITING_TIME_TAG));
-        final int theMinWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MIN_WAITING_TIME_TAG, ConfigParameter.MIN_WAITING_TIME_TAG));
-        final int theTimeoutTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_TIMEOUT_TIME_TAG, ConfigParameter.TIMEOUT_TIME_TAG));
+        final Integer theMaxWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MAX_WAITING_TIME_TAG, ConfigParameter.MAX_WAITING_TIME_TAG));
+        final Integer theMinWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MIN_WAITING_TIME_TAG, ConfigParameter.MIN_WAITING_TIME_TAG));
+        final Integer theTimeoutTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_TIMEOUT_TIME_TAG, ConfigParameter.TIMEOUT_TIME_TAG));
+        final String theConnectionIdGenerator = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_ID_GENERATOR, ConfigParameter.CONNECTION_ID_GENERATOR);
 
-        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime);
+        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime, theConnectionIdGenerator);
     }
 
     /**
      * Parses the integer value from a {@link String}.
      * @param aString {@link String} to parse the integer values
      * @return integer value which is contained in the {@link String}
-     * @throws ConfigurationException thrown when the {@link String} values isn't parsable to an integer value
+     * @throws de.novanic.eventservice.config.ConfigurationException thrown when the {@link String} values isn't parsable to an integer value
      */
-    private int getIntValue(String aString) {
-        Scanner theScanner = new Scanner(aString);
-        if(theScanner.hasNextInt()) {
-            return theScanner.nextInt();
-        } else {
-            throw new ConfigurationException("Error on processing configuration \"" + myPropertyName + "\"! " +
-                    "The value \"" + aString + "\" couldn't parsed to an integer!");
+    private Integer getIntValue(String aString) {
+        if(aString != null) {
+            Scanner theScanner = new Scanner(aString);
+            if(theScanner.hasNextInt()) {
+                return theScanner.nextInt();
+            } else {
+                throw new ConfigurationException("Error on processing configuration \"" + myPropertyName + "\"! " +
+                        "The value \"" + aString + "\" couldn't parsed to an integer!");
+            }
         }
+        return null;
     }
 
     /**
@@ -154,27 +159,17 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
     /**
      * Returns the best property value. The specified properties are checked in sequence and the value of the first available property is returned.
      * @param aProperties properties
-     * @param aPropertyNames properties in sequence to check
+     * @param aConfigParameters properties in sequence to check
      * @return return the value of the best / first available property
      */
-    private String getPropertyValue(Properties aProperties, String... aPropertyNames) {
-        for(String thePropertyName: aPropertyNames) {
-            String theValue = aProperties.getProperty(thePropertyName);
+    private String getPropertyValue(Properties aProperties, ConfigParameter... aConfigParameters) {
+        for(ConfigParameter theConfigParameter: aConfigParameters) {
+            String theValue = aProperties.getProperty(theConfigParameter.declaration());
             if(theValue != null) {
                 return theValue;
             }
         }
-
-        //write error message
-        StringBuilder theErrorMessageBuilder = new StringBuilder(200);
-        theErrorMessageBuilder.append("Error on loading configuration: Missing property. At least one of the following properties is required: [");
-        for(int i = 0; i < aPropertyNames.length - 1; i++) {
-            theErrorMessageBuilder.append(aPropertyNames[i]);
-            theErrorMessageBuilder.append(" ; ");
-        }
-        theErrorMessageBuilder.append(aPropertyNames[aPropertyNames.length - 1]);
-        theErrorMessageBuilder.append("].");
-        throw new ConfigurationException(theErrorMessageBuilder.toString());
+        return null;
     }
 
     public boolean equals(Object anObject) {

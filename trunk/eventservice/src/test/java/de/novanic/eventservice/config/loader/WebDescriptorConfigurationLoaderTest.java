@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import de.novanic.eventservice.config.ConfigurationException;
 import junit.framework.TestCase;
 
 import javax.servlet.ServletConfig;
@@ -39,9 +40,9 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertTrue(theConfigurationLoader.isAvailable());
 
         EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
-        assertEquals(30000, theConfiguration.getMaxWaitingTime());
-        assertEquals(0, theConfiguration.getMinWaitingTime());
-        assertEquals(120000, theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(30000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
     }
 
     public void testLoad_Error() {

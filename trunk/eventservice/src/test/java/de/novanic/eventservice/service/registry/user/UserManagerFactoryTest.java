@@ -19,12 +19,16 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
+import de.novanic.eventservice.config.ConfigParameter;
+import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
 import junit.framework.TestCase;
-import de.novanic.eventservice.config.loader.ConfigurationException;
+import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author sstrohschein
@@ -108,16 +112,24 @@ public class UserManagerFactoryTest extends TestCase
             return TestEventServiceConfiguration.class.getName();
         }
 
-        public int getMinWaitingTime() {
+        public Integer getMinWaitingTime() {
             return 0;
         }
 
-        public int getMaxWaitingTime() {
+        public Integer getMaxWaitingTime() {
             return 0;
         }
 
-        public int getTimeoutTime() {
+        public Integer getTimeoutTime() {
             return myTimeoutTime;
+        }
+
+        public String getConnectionIdGeneratorClassName() {
+            return SessionConnectionIdGeneratorTest.class.getName();
+        }
+
+        public Map<ConfigParameter, Object> getConfigMap() {
+            return new HashMap<ConfigParameter, Object>();
         }
     }
 }

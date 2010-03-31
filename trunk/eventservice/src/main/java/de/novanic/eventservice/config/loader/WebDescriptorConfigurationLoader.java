@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.ConfigParameter;
@@ -40,6 +41,11 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
 {
     private final ServletConfig myServletConfig;
 
+    /**
+     * Creates a {@link de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader} with a servlet config
+     * ({@link javax.servlet.ServletConfig}).
+     * @param aServletConfig servlet config
+     */
     public WebDescriptorConfigurationLoader(ServletConfig aServletConfig) {
         myServletConfig = aServletConfig;
     }
@@ -52,9 +58,12 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
      */
     public boolean isAvailable() {
         return  myServletConfig != null &&
-                (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_MAX_WAITING_TIME_TAG)) || isAvailable(myServletConfig.getInitParameter(ConfigParameter.MAX_WAITING_TIME_TAG)))
-                && (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_MIN_WAITING_TIME_TAG)) || isAvailable(myServletConfig.getInitParameter(ConfigParameter.MIN_WAITING_TIME_TAG)))
-                && (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_TIMEOUT_TIME_TAG)) || isAvailable(myServletConfig.getInitParameter(ConfigParameter.TIMEOUT_TIME_TAG)));
+                (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration()))
+                        || isAvailable(myServletConfig.getInitParameter(ConfigParameter.MAX_WAITING_TIME_TAG.declaration())))
+                && (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration()))
+                        || isAvailable(myServletConfig.getInitParameter(ConfigParameter.MIN_WAITING_TIME_TAG.declaration())))
+                && (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration()))
+                        || isAvailable(myServletConfig.getInitParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration())));
     }
 
     /**
@@ -63,8 +72,9 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
      * @throws ConfigurationException occurs when the configuration can't be loaded or if it contains unreadable values.
      */
     public EventServiceConfiguration load() {
-        return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration", readParameter(ConfigParameter.MIN_WAITING_TIME_TAG),
-                readParameter(ConfigParameter.MAX_WAITING_TIME_TAG), readParameter(ConfigParameter.TIMEOUT_TIME_TAG));
+        return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration", readIntParameter(ConfigParameter.MIN_WAITING_TIME_TAG.declaration()),
+                readIntParameter(ConfigParameter.MAX_WAITING_TIME_TAG.declaration()), readIntParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration()),
+                readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration()));
     }
 
     /**
@@ -77,17 +87,26 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
     }
 
     /**
-     * Reads the numeric value of the parameter. When the value isn't numeric, an {@link ConfigurationException} is thrown.
+     * Reads the numeric value of the parameter. When the value isn't numeric, an {@link de.novanic.eventservice.config.ConfigurationException} is thrown.
      * @param aParameterName parameter
      * @return numeric parameter value
      */
-    private int readParameter(String aParameterName) {
-        final String theParameterValue = myServletConfig.getInitParameter(aParameterName);
+    private int readIntParameter(String aParameterName) {
+        final String theParameterValue = readParameter(aParameterName);
         try {
             return StringUtil.readIntegerChecked(theParameterValue);
         } catch(ServiceUtilException e) {
             throw new ConfigurationException("The value of the parameter \"" + aParameterName
                     + "\" was expected to be numeric, but was \"" + theParameterValue + "\"!", e);
         }
+    }
+
+    /**
+     * Reads the value of a servlet parameter.
+     * @param aParameterName servlet parameter
+     * @return value of the servlet parameter
+     */
+    private String readParameter(String aParameterName) {
+        return myServletConfig.getInitParameter(aParameterName);
     }
 }
