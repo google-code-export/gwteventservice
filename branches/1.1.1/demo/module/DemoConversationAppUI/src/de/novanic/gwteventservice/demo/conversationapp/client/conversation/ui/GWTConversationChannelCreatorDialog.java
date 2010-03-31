@@ -93,7 +93,7 @@ public class GWTConversationChannelCreatorDialog extends DialogBox implements Co
     }
 
     public boolean isCanceled() {
-        return myChannelName == null || myChannelName.trim().isEmpty();
+        return myChannelName == null || myChannelName.trim().length() <= 0;
     }
 
     public String getChannelName() {
