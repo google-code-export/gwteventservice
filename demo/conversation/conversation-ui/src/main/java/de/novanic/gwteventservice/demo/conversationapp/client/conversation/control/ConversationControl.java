@@ -135,7 +135,7 @@ public class ConversationControl
         aConversationMessagePanel.addSendButtonListener(new ClickHandler() {
             public void onClick(ClickEvent aClickEvent) {
                 final String theMessage = aConversationMessagePanel.getMessageText();
-                if(!theMessage.trim().equals("")) {
+                if(theMessage.trim().length() > 0) {
                     myConversationService.sendMessage(myUser, theMessage, new VoidAsyncCallback<Void>());
                     aConversationMessagePanel.resetMessageText();
                 }
@@ -184,7 +184,7 @@ public class ConversationControl
 
     private boolean login() {
         myUser = myConversationMainPanel.getConversationLoginPanel().getNicknameText();
-        if(myUser == null || myUser.trim().equals("")) {
+        if(myUser == null || myUser.trim().length() <= 0) {
             MessageBoxCreator.createOkMessage("The username is empty. Please choose a username.");
             return false;
         } else if(myConversationMainPanel.getConversationChannelPanel().getContacts().contains(myUser)) {
