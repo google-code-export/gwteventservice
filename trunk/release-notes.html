@@ -1,27 +1,21 @@
 <html>
 	<head>
 		<title>GWTEventService - Release-Notes</title>
-		<style>
-			body {
-				background-color: white;
-				color: #333333;
-				font-family: arial,helvetica,sans-serif;
-				font-size: 12px;
-				margin: 20px;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="./doc/style.css">
 	</head>
 	<body>
-		<center><h1>GWTEventService - Release Notes</h1></center>
-		<hr>
-		
-		<table>
+		<table width="99%">
 			<tr>
-				<td>
-					<h3>< GWTEventService 1.1 ></h3>
+				<td width="33%">
+					<a href="http://gwteventservice.googlecode.com"><img src="./doc/logo.png"/></a>
 				</td>
+				<td width="33%">
+					<center><h3>GWTEventService - Release Notes</h3></center>
+				</td>
+				<td width="33%"></td>
 			</tr>
 		</table>
+		<hr>
 		<h3>Features / Advantages</h3>
 		<ul>
 			<li>Encapsulation of the client-server communication</li>
@@ -35,45 +29,96 @@
 			<li>Based on the GWT-RPC mechanism</li>
 			<li>Automatic timeout recognition and handling</li>
 			<li>Extensible architecture</li>
-		</ul><br>
-		<h3>GWTEventService 1.1</h3>
-		<ul>
-			<li>Support for unlisten and timeout listening (new UnlistenEventListener) added</li>
-			<li>Support for web deployment descriptor configurations added</li>
-			<li>EventFilter enhancements</li>
-			<li>Support for GWT 2.0 added (for the demo projects, the core is compatible with GWT 2.0 since version 1.0)</li>
-			<li>Revised configuration loading</li>
-			<li>Concurrency optimizations</li>
-			<li>Multi-threading improvements</li>
-			<li>Platform refactoring</li>
-			<li>Logging improvements</li>
-			<li>New demo application "HelloGWTEventService"</li>
 		</ul>
-		<h3>GWTEventService 1.0.2</h3>
-		<ul>
-			<li>Bugfix (Ticket 6): The callback wasn't used when a listener is removed without a domain (domain-less listener)</li>
-			<li>Bugfix (Ticket 7): Empty domains weren't removed automatically</li>
-			<li>Bugfix (Ticket 8): Possible dead-lock when a user is registered and another user is concurrent deregistered</li>
-			<li>Improvements for domain-less usage</li>
-			<li>Concurrency optimizations</li>
-		</ul>
-		<h3>GWTEventService 1.0.1</h3>
-		<ul>
-			<li>Bugfix: Work-around to avoid multiple session creation (GWT issue 1826) when GWTEventService had to execute the first server call of the application</li>
-			<li>Bugfix (Ticket 3): Chrome appeared as if the page never finishes loading when GWTEventService had to execute the first server call of the application</li>
-			<li>Bugfix: Client side multi-threading bug fixed, which could occur when a listener is removed while processing listen results</li>
-			<li>Client commands introduced to solve the problems described above (new interfaces ClientCommand and ClientCommandScheduler)</li>
-			<li>Some client side optimizations</li>
-		</ul>
-		<h3>Changes from GWTEventService 0.9 to 1.0</h3>
-		<ul>
-			<li>Logging improved</li>
-			<li>Bug fixes</li>
-			<li>Some small improvements</li>
-			<li>No API changes compared to GWTEventService 0.9</li>
-			<li>Documentation completed</li>
-			<li>Build scripts updated</li>
-		</ul>
+		
+		<table width="99%">
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.1</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Support for unlisten and timeout listening (new UnlistenEventListener) added</li>
+							<li>Support for web deployment descriptor configurations added</li>
+							<li>EventFilter enhancements</li>
+							<li>Support for GWT 2.0 added (for the demo projects, the core is compatible with GWT 2.0 since version 1.0)</li>
+							<li>Revised configuration loading</li>
+							<li>Concurrency optimizations</li>
+							<li>Multi-threading improvements</li>
+							<li>Platform refactoring</li>
+							<li>Logging improvements</li>
+							<li>New demo application "HelloGWTEventService"</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.0.2</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Bugfix (Ticket 6): The callback wasn't used when a listener is removed without a domain (domain-less listener)</li>
+							<li>Bugfix (Ticket 7): Empty domains weren't removed automatically</li>
+							<li>Bugfix (Ticket 8): Possible dead-lock when a user is registered and another user is concurrent deregistered</li>
+							<li>Improvements for domain-less usage</li>
+							<li>Concurrency optimizations</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.0.1</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Bugfix: Work-around to avoid multiple session creation (GWT issue 1826) when GWTEventService had to execute the first server call of the application</li>
+							<li>Bugfix (Ticket 3): Chrome appeared as if the page never finishes loading when GWTEventService had to execute the first server call of the application</li>
+							<li>Bugfix: Client side multi-threading bug fixed, which could occur when a listener is removed while processing listen results</li>
+							<li>Client commands introduced to solve the problems described above (new interfaces ClientCommand and ClientCommandScheduler)</li>
+							<li>Some client side optimizations</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.0 (Changes from 0.9 to 1.0)</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Logging improved</li>
+							<li>Bug fixes</li>
+							<li>Some small improvements</li>
+							<li>No API changes compared to GWTEventService 0.9</li>
+							<li>Documentation completed</li>
+							<li>Build scripts updated</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+		</table>
 		
 		<hr>
 		<a href="http://gwteventservice.googlecode.com/">Project home (online)</a>
