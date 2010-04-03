@@ -72,9 +72,11 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
      * @throws ConfigurationException occurs when the configuration can't be loaded or if it contains unreadable values.
      */
     public EventServiceConfiguration load() {
-        return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration", readIntParameter(ConfigParameter.MIN_WAITING_TIME_TAG.declaration()),
-                readIntParameter(ConfigParameter.MAX_WAITING_TIME_TAG.declaration()), readIntParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration()),
-                readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration()));
+        return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration",
+                readIntParameter(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration()),
+                readIntParameter(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration()),
+                readIntParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration()),
+				readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration()));
     }
 
     /**
@@ -88,11 +90,12 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
 
     /**
      * Reads the numeric value of the parameter. When the value isn't numeric, an {@link de.novanic.eventservice.config.ConfigurationException} is thrown.
-     * @param aParameterName parameter
+	 * @param aParameterName parameter
+	 * @param aParameterNameFQ parameter (full-qualified variant)
      * @return numeric parameter value
      */
-    private int readIntParameter(String aParameterName) {
-        final String theParameterValue = readParameter(aParameterName);
+    private int readIntParameter(String aParameterName, String aParameterNameFQ) {
+        final String theParameterValue = readParameter(aParameterName, aParameterNameFQ);
         try {
             return StringUtil.readIntegerChecked(theParameterValue);
         } catch(ServiceUtilException e) {
@@ -104,9 +107,13 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
     /**
      * Reads the value of a servlet parameter.
      * @param aParameterName servlet parameter
+	 * @param aParameterNameFQ parameter (full-qualified variant)
      * @return value of the servlet parameter
      */
-    private String readParameter(String aParameterName) {
+    private String readParameter(String aParameterName, String aParameterNameFQ) {
+        if(isAvailable(myServletConfig.getInitParameter(aParameterNameFQ))) {
+            return myServletConfig.getInitParameter(aParameterNameFQ);
+		}
         return myServletConfig.getInitParameter(aParameterName);
     }
 }
