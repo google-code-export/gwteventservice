@@ -156,7 +156,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
 
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
 
-        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOW, new WebDescriptorConfigurationLoader(new ServletConfigDummy(true)));
+        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOW, new WebDescriptorConfigurationLoader(new ServletConfigDummy(true, false)));
 
         final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration);
         theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.HIGH, theCustomConfigurationLoader);

@@ -34,7 +34,7 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 public class WebDescriptorConfigurationLoaderTest extends TestCase
 {
     public void testLoad() {
-        ServletConfig theServletConfig = new ServletConfigDummy(true);
+        ServletConfig theServletConfig = new ServletConfigDummy(true, false);
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
 
         assertTrue(theConfigurationLoader.isAvailable());
@@ -45,6 +45,18 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
     }
 
+	public void testLoad_FQ() {
+        ServletConfig theServletConfig = new ServletConfigDummy(true, true);
+        ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
+
+        assertTrue(theConfigurationLoader.isAvailable());
+
+        EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
+        assertEquals(Integer.valueOf(40000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(130000), theConfiguration.getTimeoutTime());
+    }
+	
     public void testLoad_Error() {
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(null);
 
@@ -52,7 +64,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
     }
 
     public void testLoad_Error_2() {
-        ServletConfig theServletConfig = new ServletConfigDummy(false);
+        ServletConfig theServletConfig = new ServletConfigDummy(false, false);
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
 
         assertFalse(theConfigurationLoader.isAvailable());
