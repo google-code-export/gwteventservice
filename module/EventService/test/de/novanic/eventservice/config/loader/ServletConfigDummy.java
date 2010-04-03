@@ -37,12 +37,18 @@ public class ServletConfigDummy implements ServletConfig
 {
     private Map<String, String> myInitParameters;
 
-    public ServletConfigDummy(boolean isInit) {
+    public ServletConfigDummy(boolean isInit, boolean isFQ) {
         myInitParameters = new HashMap<String, String>();
         if(isInit) {
-            myInitParameters.put(ConfigParameter.MAX_WAITING_TIME_TAG, "30000");
-            myInitParameters.put(ConfigParameter.MIN_WAITING_TIME_TAG, "000");
-            myInitParameters.put(ConfigParameter.TIMEOUT_TIME_TAG, "120000");
+            if(isFQ) {
+                myInitParameters.put(ConfigParameter.FQ_MAX_WAITING_TIME_TAG, "40000");
+                myInitParameters.put(ConfigParameter.FQ_MIN_WAITING_TIME_TAG, "001");
+                myInitParameters.put(ConfigParameter.FQ_TIMEOUT_TIME_TAG, "130000");
+            } else {
+                myInitParameters.put(ConfigParameter.MAX_WAITING_TIME_TAG, "30000");
+                myInitParameters.put(ConfigParameter.MIN_WAITING_TIME_TAG, "000");
+                myInitParameters.put(ConfigParameter.TIMEOUT_TIME_TAG, "120000");
+            }
         }
     }
 

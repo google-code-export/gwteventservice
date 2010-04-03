@@ -63,8 +63,10 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
      * @throws ConfigurationException occurs when the configuration can't be loaded or if it contains unreadable values.
      */
     public EventServiceConfiguration load() {
-        return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration", readParameter(ConfigParameter.MIN_WAITING_TIME_TAG),
-                readParameter(ConfigParameter.MAX_WAITING_TIME_TAG), readParameter(ConfigParameter.TIMEOUT_TIME_TAG));
+        return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration",
+                readParameter(ConfigParameter.MIN_WAITING_TIME_TAG, ConfigParameter.FQ_MIN_WAITING_TIME_TAG),
+                readParameter(ConfigParameter.MAX_WAITING_TIME_TAG, ConfigParameter.FQ_MAX_WAITING_TIME_TAG),
+                readParameter(ConfigParameter.TIMEOUT_TIME_TAG, ConfigParameter.FQ_TIMEOUT_TIME_TAG));
     }
 
     /**
@@ -79,10 +81,16 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
     /**
      * Reads the numeric value of the parameter. When the value isn't numeric, an {@link ConfigurationException} is thrown.
      * @param aParameterName parameter
+     * @param aParameterNameFQ parameter (full-qualified variant)
      * @return numeric parameter value
      */
-    private int readParameter(String aParameterName) {
-        final String theParameterValue = myServletConfig.getInitParameter(aParameterName);
+    private int readParameter(String aParameterName, String aParameterNameFQ) {
+        final String theParameterValue;
+        if(isAvailable(myServletConfig.getInitParameter(aParameterNameFQ))) {
+            theParameterValue = myServletConfig.getInitParameter(aParameterNameFQ);
+        } else {
+            theParameterValue = myServletConfig.getInitParameter(aParameterName);
+        }
         try {
             return StringUtil.readIntegerChecked(theParameterValue);
         } catch(ServiceUtilException e) {
