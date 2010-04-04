@@ -11,7 +11,7 @@
     </condition>
 
     <property name="version.number" value="1.1.1"/>
-	<property name="version.state" value="pre"/>
+	<property name="version.state" value=""/>
     <condition property="version" value="${version.number}" else="${version.number}-${version.state}">
 		<or>
 			<isset property="${version.state}"/>
@@ -164,10 +164,15 @@
                 <!-- licence -->
                 <include name="licence.txt"/>
                 <include name="about.txt"/>
+				<!-- system-requirements -->
+				<include name="system-requirements.html"/>
                 <!-- release-notes -->
                 <include name="release-notes.html"/>
                 <!-- configuration files -->
                 <include name="${conf.dir}/**/*"/>
+				<!-- resources -->
+				<include name="doc/logo.png"/>
+				<include name="doc/style.css"/>
             </fileset>
         </zip>
     </target>
@@ -182,6 +187,8 @@
                 <!-- licence -->
                 <include name="licence.txt"/>
                 <include name="about.txt"/>
+				<!-- system-requirements -->
+				<include name="system-requirements.html"/>
                 <!-- release-notes -->
                 <include name="release-notes.html"/>
                 <!-- roadmap -->
@@ -191,6 +198,9 @@
                 <!-- manual -->
                 <include name="doc/Manual.pdf"/>
 				<include name="doc/DeveloperGuide.pdf"/>
+				<!-- resources -->
+				<include name="doc/logo.png"/>
+				<include name="doc/style.css"/>
                 <!-- sample / demo sources -->
                 <include name="${demo}/*.xml"/>
 				<include name="${demo}/conf/**/*"/>
