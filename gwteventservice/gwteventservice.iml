@@ -5,7 +5,7 @@
       <configuration>
         <setting name="compilerMaxHeapSize" value="128" />
         <setting name="gwtScriptOutputStyle" value="DETAILED" />
-        <setting name="gwtSdkUrl" value="file://$GWT_SDK_HOME$" />
+        <setting name="gwtSdkUrl" value="file://$MODULE_DIR$/../../../lib/gwt-2.0.3" />
         <packaging>
           <module name="de.novanic.eventservice.GWTEventService" path="/de.novanic.eventservice.GWTEventService" />
         </packaging>
