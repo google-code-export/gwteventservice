@@ -19,6 +19,8 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 
@@ -45,5 +47,7 @@ public class DefaultConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(0), theEventServiceConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(20000), theEventServiceConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theEventServiceConfiguration.getTimeoutTime());
+        assertEquals(SessionConnectionIdGenerator.class.getName(), theEventServiceConfiguration.getConnectionIdGeneratorClassName());
+        assertEquals(LongPollingConnectionStrategy.class.getName(), theEventServiceConfiguration.getConnectionStrategyClassName());
     }
 }
