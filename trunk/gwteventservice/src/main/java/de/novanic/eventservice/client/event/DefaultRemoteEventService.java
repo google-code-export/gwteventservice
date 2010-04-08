@@ -20,6 +20,8 @@
 package de.novanic.eventservice.client.event;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.event.listener.EventNotification;
+import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -54,7 +56,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
 
     /**
      * Creates a new RemoteEventService.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.event.RemoteEventConnector} for the connection
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector} for the connection
      * between client side and server side
      */
     DefaultRemoteEventService(RemoteEventConnector aRemoteEventConnector) {
@@ -515,18 +517,16 @@ public final class DefaultRemoteEventService implements RemoteEventService
     private final class ListenerEventNotification implements EventNotification
     {
         /**
-        * All listeners of the according domains will be informed about the incoming events.
-        * @param anEvents incoming events
+        * That method will be called when a new event is arriving.
+        * @param aDomainEvent incoming event
         */
-        public void onNotify(List<DomainEvent> anEvents) {
-            for(DomainEvent theDomainEvent : anEvents) {
-                //all listeners for the domain of the event will be executed
-                List<RemoteEventListener> theListeners = myDomainListenerMapping.get(theDomainEvent.getDomain());
-                if(theListeners != null) {
-                    final Event theEvent = theDomainEvent.getEvent();
-                    for(RemoteEventListener theListener: theListeners) {
-                        theListener.apply(theEvent);
-                    }
+        public void onNotify(DomainEvent aDomainEvent) {
+            //all listeners for the domain of the event will be executed
+            List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomainEvent.getDomain());
+            if(theListeners != null) {
+                final Event theEvent = aDomainEvent.getEvent();
+                for(RemoteEventListener theListener: theListeners) {
+                    theListener.apply(theEvent);
                 }
             }
         }

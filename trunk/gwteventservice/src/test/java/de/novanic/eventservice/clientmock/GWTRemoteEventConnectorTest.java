@@ -19,6 +19,8 @@
  */
 package de.novanic.eventservice.clientmock;
 
+import de.novanic.eventservice.client.event.listener.EventNotification;
+import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.*;
@@ -250,8 +252,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
     {
         private boolean myIsAborted;
 
-        public void onNotify(List<DomainEvent> anEvents) {
-        }
+        public void onNotify(DomainEvent aDomainEvent) {}
 
         public void onAbort() {
             myIsAborted = true;

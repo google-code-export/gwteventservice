@@ -19,12 +19,10 @@
  */
 package de.novanic.eventservice;
 
-import de.novanic.eventservice.service.EventServiceImplTest;
-import de.novanic.eventservice.service.EventExecutorServiceFactoryTest;
-import de.novanic.eventservice.service.DefaultEventExecutorServiceTest;
-import de.novanic.eventservice.service.RemoteEventServiceServletTest;
-import de.novanic.eventservice.service.connection.id.ConnectionIdGeneratorFactoryTest;
+import de.novanic.eventservice.config.ConfigurationDependentFactoryTest;
+import de.novanic.eventservice.service.*;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
+import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategyTest;
 import de.novanic.eventservice.service.exception.NoSessionAvailableExceptionTest;
 import de.novanic.eventservice.service.registry.EventRegistryFactoryTest;
 import de.novanic.eventservice.service.registry.EventRegistryTest;
@@ -77,10 +75,11 @@ public class EventServiceTestSuite
         theSuite.addTestSuite(PropertyConfigurationLoaderTest.class);
         theSuite.addTestSuite(WebDescriptorConfigurationLoaderTest.class);
         theSuite.addTestSuite(EventServiceConfigurationFactoryTest.class);
+        theSuite.addTestSuite(ConfigurationDependentFactoryTest.class);
 
         // Connection
         theSuite.addTestSuite(SessionConnectionIdGeneratorTest.class);
-        theSuite.addTestSuite(ConnectionIdGeneratorFactoryTest.class);
+        theSuite.addTestSuite(LongPollingConnectionStrategyTest.class);
 
         // Events
         theSuite.addTestSuite(UnlistenEventFilterTest.class);
@@ -96,6 +95,7 @@ public class EventServiceTestSuite
 
         // EventService
         theSuite.addTestSuite(EventServiceImplTest.class);
+        theSuite.addTestSuite(EventServiceExceptionTest.class);
 
         // EventExecutorService
         theSuite.addTestSuite(EventExecutorServiceFactoryTest.class);

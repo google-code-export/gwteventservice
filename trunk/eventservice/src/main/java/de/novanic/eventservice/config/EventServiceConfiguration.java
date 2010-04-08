@@ -68,6 +68,14 @@ public interface EventServiceConfiguration
     String getConnectionIdGeneratorClassName();
 
     /**
+     * Returns the class name of the configured {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy}.
+     * A {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy} is used to define the communication
+     * between the client and the server side.
+     * @return class name of the configured {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy}
+     */
+    String getConnectionStrategyClassName();
+
+    /**
      * Returns the configurations as a {@link java.util.Map} with {@link de.novanic.eventservice.config.ConfigParameter}
      * instances as the key.
      * @return {@link java.util.Map} with the configurations with {@link de.novanic.eventservice.config.ConfigParameter}

@@ -22,12 +22,10 @@ package de.novanic.eventservice.clientmock.event.command;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.TypeEventFilterTestMode;
-import de.novanic.eventservice.client.event.EventNotification;
+import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.command.ActivationCommand;
 import de.novanic.eventservice.client.event.filter.EventFilter;
-
-import java.util.List;
 
 /**
  * @author sstrohschein
@@ -49,7 +47,7 @@ public class ActivationCommandTest extends ClientCommandTestCase
 
     private static class TestEventNotification implements EventNotification
     {
-        public void onNotify(List<DomainEvent> anEvents) {}
+        public void onNotify(DomainEvent aDomainEvent) {}
 
         public void onAbort() {}
     }
