@@ -745,7 +745,11 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         }
 
         public String getInitParameter(String aParameterName) {
-            return String.valueOf(myParameterMap.get(aParameterName));
+            final Integer theParameterValue = myParameterMap.get(aParameterName);
+            if(theParameterValue != null) {
+                return String.valueOf(theParameterValue);
+            }
+            return null;
         }
 
         public Enumeration getInitParameterNames() {
