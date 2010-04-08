@@ -17,11 +17,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice.client.connection.connector;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
+import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -29,7 +30,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.Set;
 
 /**
- * RemoteEventConnector should handle the connections between client- and the server side.
+ * The RemoteEventConnector should handle the connection between the client and the server side.
  *
  * @author sstrohschein
  *         <br>Date: 12.10.2008

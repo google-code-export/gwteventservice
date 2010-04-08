@@ -22,8 +22,9 @@ package de.novanic.eventservice.client.event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
-import java.util.Arrays;
 
+import de.novanic.eventservice.client.event.listener.EventNotification;
+import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.logger.ClientLogger;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -107,7 +108,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
 
     /**
      * Creates the {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} for local timeouts.
-     * @param anEventNotification {@link de.novanic.eventservice.client.event.EventNotification} for the triggered
+     * @param anEventNotification {@link de.novanic.eventservice.client.event.listener.EventNotification} for the triggered
      * {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}
      */
     private void fireUnlistenEvent(EventNotification anEventNotification) {
@@ -117,7 +118,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
         myUnlistenEvent.setTimeout(false);
         myUnlistenEvent.setLocal(true);
         final DomainEvent theUnlistenDomainEvent = new DefaultDomainEvent(myUnlistenEvent, DomainFactory.UNLISTEN_DOMAIN);
-        anEventNotification.onNotify(Arrays.asList(theUnlistenDomainEvent));
+        anEventNotification.onNotify(theUnlistenDomainEvent);
     }
 
     /**
@@ -184,7 +185,9 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
          */
         public void onSuccess(List<DomainEvent> anEvents) {
             if(anEvents != null) {
-                myEventNotification.onNotify(anEvents);
+                for(DomainEvent theEvent: anEvents) {
+                    myEventNotification.onNotify(theEvent);
+                }
                 callListen();
             } else {
                 //if the remote service doesn't know the client, all listeners will be removed and the connection becomes inactive

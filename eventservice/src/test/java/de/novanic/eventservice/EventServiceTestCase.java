@@ -20,6 +20,7 @@
 package de.novanic.eventservice;
 
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
+import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
@@ -69,6 +70,6 @@ public abstract class EventServiceTestCase extends TestCase
     }
 
     protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime) {
-        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGeneratorTest.class.getName());
+        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName());
     }
 }

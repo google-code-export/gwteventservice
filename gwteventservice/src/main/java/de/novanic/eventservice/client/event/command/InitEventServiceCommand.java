@@ -20,7 +20,7 @@
 package de.novanic.eventservice.client.event.command;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
-import de.novanic.eventservice.client.event.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -34,7 +34,7 @@ public class InitEventServiceCommand extends ServerCallCommand<EventServiceConfi
 {
     /**
      * Creates an InitEventServiceCommand (initializes the server/service connection on first server call).
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.event.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
      * @param aCallback callback of the command
      */
     public InitEventServiceCommand(RemoteEventConnector aRemoteEventConnector, AsyncCallback<EventServiceConfigurationTransferable> aCallback) {

@@ -48,6 +48,11 @@ public enum ConfigParameter
      */
     CONNECTION_ID_GENERATOR("connection.id.generator", false),
 
+    /**
+     * Connection strategy - Connection strategies are used to define the communication between the client and the server side
+     */
+    CONNECTION_STRATEGY("connection.strategy", false),
+
     // --- Full-qualified declarations ---
 
     /**
@@ -68,7 +73,12 @@ public enum ConfigParameter
     /**
      * Connection id generator - Generates unique ids to identify the clients.
      */
-    FQ_CONNECTION_ID_GENERATOR("connection.id.generator", true);
+    FQ_CONNECTION_ID_GENERATOR("connection.id.generator", true),
+
+    /**
+     * Connection strategy - Connection strategies are used to define the communication between the client and the server side
+     */
+    FQ_CONNECTION_STRATEGY("connection.strategy", true);
 
     // --- Constants ---
 

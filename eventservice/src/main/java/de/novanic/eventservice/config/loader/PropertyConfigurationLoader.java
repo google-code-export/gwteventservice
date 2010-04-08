@@ -121,8 +121,9 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
         final Integer theMinWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MIN_WAITING_TIME_TAG, ConfigParameter.MIN_WAITING_TIME_TAG));
         final Integer theTimeoutTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_TIMEOUT_TIME_TAG, ConfigParameter.TIMEOUT_TIME_TAG));
         final String theConnectionIdGenerator = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_ID_GENERATOR, ConfigParameter.CONNECTION_ID_GENERATOR);
+        final String theConnectionStrategy = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY, ConfigParameter.CONNECTION_STRATEGY);
 
-        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime, theConnectionIdGenerator);
+        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime, theConnectionIdGenerator, theConnectionStrategy);
     }
 
     /**

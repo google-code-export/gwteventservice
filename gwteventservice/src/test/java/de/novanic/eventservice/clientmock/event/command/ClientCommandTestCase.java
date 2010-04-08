@@ -20,9 +20,9 @@
 package de.novanic.eventservice.clientmock.event.command;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
 import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.command.ClientCommand;
-import de.novanic.eventservice.client.event.RemoteEventConnector;
 import org.easymock.MockControl;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice.client.event.command;
 
-import de.novanic.eventservice.client.event.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -39,7 +39,7 @@ public class RegistrationEventFilterCommand extends ServerCallCommand<Void>
 
     /**
      * Creates a RegistrationEventFilterCommand to register an {@link de.novanic.eventservice.client.event.filter.EventFilter} to a domain.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.event.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
      * @param aDomain {@link de.novanic.eventservice.client.event.domain.Domain} domain/context to register the {@link de.novanic.eventservice.client.event.filter.EventFilter}
      * @param anEventFilter {@link de.novanic.eventservice.client.event.filter.EventFilter} to register
      * @param aAsyncCallback callback for the command

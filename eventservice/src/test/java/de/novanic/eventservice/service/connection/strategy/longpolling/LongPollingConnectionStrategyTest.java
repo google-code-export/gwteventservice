@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2008, GWTEventService Committers
+ * Copyright (c) 2010, GWTEventService Committers
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,27 +17,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice.service.connection.strategy.longpolling;
 
-import java.util.List;
+import junit.framework.TestCase;
 
 /**
- * EventNotification can be used to get notified about incoming events.
- *
  * @author sstrohschein
- *         <br>Date: 12.10.2008
- *         <br>Time: 11:49:42
+ *         <br>Date: 07.04.2010
+ *         <br>Time: 23:11:00
  */
-public interface EventNotification
+public class LongPollingConnectionStrategyTest extends TestCase
 {
-    /**
-     * That method will be called when new events are arriving.
-     * @param anEvents incoming events
-     */
-    void onNotify(List<DomainEvent> anEvents);
+    public void testGetServerConnector() {
+        assertNull(new LongPollingConnectionStrategy().getServerConnector());
+    }
 
-    /**
-     * That method will be called when the listening for events is aborted (unexpected).
-     */
-    void onAbort();
+    public void testGetClientConnector() {
+        assertNull(new LongPollingConnectionStrategy().getClientConnector());
+    }
 }
