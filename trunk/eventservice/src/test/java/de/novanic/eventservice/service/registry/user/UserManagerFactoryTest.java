@@ -21,7 +21,6 @@ package de.novanic.eventservice.service.registry.user;
 
 import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
-import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 import junit.framework.TestCase;
 import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
@@ -127,10 +126,6 @@ public class UserManagerFactoryTest extends TestCase
 
         public String getConnectionIdGeneratorClassName() {
             return SessionConnectionIdGeneratorTest.class.getName();
-        }
-
-        public String getConnectionStrategyClassName() {
-            return LongPollingConnectionStrategy.class.getName();
         }
 
         public Map<ConfigParameter, Object> getConfigMap() {

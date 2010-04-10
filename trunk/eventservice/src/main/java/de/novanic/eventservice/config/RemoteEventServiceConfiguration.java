@@ -67,13 +67,11 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
      * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
      * @param aConnectionIdGeneratorClassName class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} to generate unique client ids
-     * @param aConnectionStrategyClassName class name of the configured {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy} to define the communication between client and server side
      */
     public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime,
-                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClassName) {
+                                           String aConnectionIdGeneratorClassName) {
         this(aConfigDescription, aMinWaitingTime, aMaxWaitingTime, aTimeoutTime);
         myConfigMap.put(ConfigParameter.CONNECTION_ID_GENERATOR, aConnectionIdGeneratorClassName);
-        myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY, aConnectionStrategyClassName);
     }
 
     /**
@@ -115,16 +113,6 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      */
     public String getConnectionIdGeneratorClassName() {
         return (String)myConfigMap.get(ConfigParameter.CONNECTION_ID_GENERATOR);
-    }
-
-    /**
-     * Returns the class name of the configured {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy}.
-     * A {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy} is used to define the communication
-     * between the client and the server side.
-     * @return class name of the configured {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy}
-     */
-    public String getConnectionStrategyClassName() {
-        return (String)myConfigMap.get(ConfigParameter.CONNECTION_STRATEGY);
     }
 
     /**

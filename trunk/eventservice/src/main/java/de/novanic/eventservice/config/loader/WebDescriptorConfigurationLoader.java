@@ -76,8 +76,7 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
                 readIntParameter(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration()),
                 readIntParameter(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration()),
                 readIntParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration()),
-				readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration()),
-                readParameter(ConfigParameter.CONNECTION_STRATEGY.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY.declaration()));
+				readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration()));
     }
 
     /**
