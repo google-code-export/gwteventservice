@@ -21,7 +21,6 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
-import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 import junit.framework.TestCase;
 
 import javax.servlet.ServletConfig;
@@ -46,7 +45,6 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
-        assertEquals(LongPollingConnectionStrategy.class.getName(), theConfiguration.getConnectionStrategyClassName());
     }
 
 	public void testLoad_FQ() {
@@ -60,7 +58,6 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(130000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
-        assertEquals(LongPollingConnectionStrategy.class.getName(), theConfiguration.getConnectionStrategyClassName());
     }
 	
     public void testLoad_Error() {

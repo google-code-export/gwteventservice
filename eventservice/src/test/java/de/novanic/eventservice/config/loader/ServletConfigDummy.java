@@ -21,7 +21,6 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
-import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -47,13 +46,11 @@ public class ServletConfigDummy implements ServletConfig
                 myInitParameters.put(ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration(), "001");
                 myInitParameters.put(ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration(), "130000");
                 myInitParameters.put(ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration(), SessionConnectionIdGenerator.class.getName());
-                myInitParameters.put(ConfigParameter.FQ_CONNECTION_STRATEGY.declaration(), LongPollingConnectionStrategy.class.getName());
             } else {
                 myInitParameters.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), "30000");
                 myInitParameters.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), "000");
                 myInitParameters.put(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), "120000");
                 myInitParameters.put(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), SessionConnectionIdGenerator.class.getName());
-                myInitParameters.put(ConfigParameter.CONNECTION_STRATEGY.declaration(), LongPollingConnectionStrategy.class.getName());
             }
         }
     }

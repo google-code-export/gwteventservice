@@ -20,12 +20,11 @@
 package de.novanic.eventservice.config;
 
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
-import de.novanic.eventservice.service.connection.strategy.ConnectionStrategy;
 
 /**
  * The {@link de.novanic.eventservice.config.ConfigurationDependentFactory} can create instances from a configuration
- * which can be configured with a class name (for example {@link de.novanic.eventservice.config.ConfigParameter#CONNECTION_ID_GENERATOR}
- * or {@link de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY}. The created instances are hold as a singleton.
+ * which can be configured with a class name (for example {@link de.novanic.eventservice.config.ConfigParameter#CONNECTION_ID_GENERATOR}.
+ * The created instances are hold as a singleton.
  *
  * @author sstrohschein
  *         <br>Date: 05.04.2010
@@ -36,7 +35,6 @@ public final class ConfigurationDependentFactory
     private static EventServiceConfiguration myConfiguration;
 
     private ConnectionIdGenerator myConnectionIdGenerator;
-    private ConnectionStrategy myConnectionStrategy;
 
     /**
      * Initializes the {@link de.novanic.eventservice.config.ConfigurationDependentFactory}. That constructor is only called one time,
@@ -87,7 +85,6 @@ public final class ConfigurationDependentFactory
     private void init() {
         if(myConfiguration != null) {
             myConnectionIdGenerator = createObject(myConfiguration.getConnectionIdGeneratorClassName(), ConnectionIdGenerator.class);
-            myConnectionStrategy = createObject(myConfiguration.getConnectionStrategyClassName(), ConnectionStrategy.class);
         } else {
             throw new ConfigurationException(ConfigurationDependentFactory.class.getName() + " was initialized without a configuration!");
         }
@@ -99,14 +96,6 @@ public final class ConfigurationDependentFactory
      */
     public ConnectionIdGenerator getConnectionIdGenerator() {
         return myConnectionIdGenerator;
-    }
-
-    /**
-     * Returns the configured {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy}.
-     * @return the configured {@link de.novanic.eventservice.service.connection.strategy.ConnectionStrategy}
-     */
-    public ConnectionStrategy getConnectionStrategy() {
-        return myConnectionStrategy;
     }
 
     /**

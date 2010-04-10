@@ -21,8 +21,6 @@ package de.novanic.eventservice.config;
 
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
-import de.novanic.eventservice.service.connection.strategy.ConnectionStrategy;
-import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 import junit.framework.TestCase;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +48,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), LongPollingConnectionStrategy.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName());
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theEventServiceConfiguration);
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance(theEventServiceConfiguration));
@@ -58,7 +56,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_2() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), LongPollingConnectionStrategy.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName());
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theEventServiceConfiguration);
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance());
@@ -66,7 +64,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_3() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), LongPollingConnectionStrategy.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName());
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theEventServiceConfiguration);
         theConfigurationDependentFactory.reset(theEventServiceConfiguration);
@@ -87,7 +85,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_2() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, String.class.getName(), LongPollingConnectionStrategy.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, String.class.getName());
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because no configuration is available!");
@@ -106,7 +104,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_4() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, "NotExistingClassXY", LongPollingConnectionStrategy.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, "NotExistingClassXY");
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the NotExistingClassXY class couldn't be found!");
@@ -119,7 +117,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_5() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator.class.getName(), LongPollingConnectionStrategy.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator.class.getName());
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the private " + DummyConnectionIdGenerator.class.getName() + " couldn't be instantiated!");
@@ -132,7 +130,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_6() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_2.class.getName(), LongPollingConnectionStrategy.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_2.class.getName());
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the " + DummyConnectionIdGenerator_2.class.getName() + " couldn't be instantiated caused by the private constructor!");
@@ -147,7 +145,6 @@ public class ConfigurationDependentFactoryTest extends TestCase
     public void testGetConnectionIdGenerator() {
         final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
         theConfig.setConnectionIdGeneratorClassName(SessionConnectionIdGenerator.class.getName());
-        theConfig.setConnectionStrategyClassName(LongPollingConnectionStrategy.class.getName());
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfig);
         theConfigurationDependentFactory.reset(theConfig);
@@ -169,27 +166,9 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
-    public void testGetConnectionStrategy() {
-        final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
-        theConfig.setConnectionIdGeneratorClassName(SessionConnectionIdGenerator.class.getName());
-        theConfig.setConnectionStrategyClassName(LongPollingConnectionStrategy.class.getName());
-
-        ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfig);
-        theConfigurationDependentFactory.reset(theConfig);
-
-        final ConnectionStrategy theConnectionStrategy = theConfigurationDependentFactory.getConnectionStrategy();
-        assertNotNull(theConnectionStrategy);
-        assertTrue(theConnectionStrategy instanceof LongPollingConnectionStrategy);
-    }
-
     private class TestEventServiceConfiguration implements EventServiceConfiguration
     {
         private String myConnectionIdGeneratorClassName;
-        private String myConnectionStrategyClassName;
-
-        private TestEventServiceConfiguration() {
-            myConnectionIdGeneratorClassName = SessionConnectionIdGenerator.class.getName();
-        }
 
         public String getConfigDescription() {
             return TestEventServiceConfiguration.class.getName();
@@ -213,14 +192,6 @@ public class ConfigurationDependentFactoryTest extends TestCase
 
         public String getConnectionIdGeneratorClassName() {
             return myConnectionIdGeneratorClassName;
-        }
-
-        public void setConnectionStrategyClassName(String aConnectionStrategyClassName) {
-            myConnectionStrategyClassName = aConnectionStrategyClassName;
-        }
-
-        public String getConnectionStrategyClassName() {
-            return myConnectionStrategyClassName;
         }
 
         public Map<ConfigParameter, Object> getConfigMap() {

@@ -23,7 +23,6 @@ import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
-import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -72,7 +71,6 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
-        assertEquals(LongPollingConnectionStrategy.class.getName(), theConfiguration.getConnectionStrategyClassName());
     }
 
     public void testLoad_3() {
@@ -88,7 +86,6 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getMaxWaitingTime());
         assertNull(theConfiguration.getTimeoutTime());
         assertNull(theConfiguration.getConnectionIdGeneratorClassName());
-        assertNull(theConfiguration.getConnectionStrategyClassName());
     }
 
     public void testLoad_Failure() {

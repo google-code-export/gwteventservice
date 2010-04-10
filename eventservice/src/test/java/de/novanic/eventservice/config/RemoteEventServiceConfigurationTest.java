@@ -21,7 +21,6 @@ package de.novanic.eventservice.config;
 
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
-import de.novanic.eventservice.service.connection.strategy.longpolling.LongPollingConnectionStrategy;
 import de.novanic.eventservice.util.PlatformUtil;
 
 /**
@@ -34,7 +33,7 @@ public class RemoteEventServiceConfigurationTest extends EventServiceTestCase
     private static final String TEST_CONFIG_DESCRIPTION = "TestConfig";
 
     public void testInit() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName());
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName());
         assertEquals(TEST_CONFIG_DESCRIPTION, theConfiguration.getConfigDescription());
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(2), theConfiguration.getMaxWaitingTime());
@@ -44,50 +43,50 @@ public class RemoteEventServiceConfigurationTest extends EventServiceTestCase
 
     public void testInit_Error() {
         try {
-            new RemoteEventServiceConfiguration(null, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName());
+            new RemoteEventServiceConfiguration(null, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName());
             fail(ConfigurationException.class.getName() + " expected!");
         } catch(ConfigurationException e) {}
     }
 
     public void testEquals() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName());
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName());
         assertEquals(theConfiguration, theConfiguration);
-        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName()));
-        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName()));
-        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName()).hashCode());
+        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName()));
+        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName()));
+        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, SessionConnectionIdGeneratorTest.class.getName()).hashCode());
 
         EventServiceConfiguration theConfiguration_2 = null;
         assertFalse(theConfiguration.equals(theConfiguration_2));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName())));
-        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName()).hashCode());
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 9, 2, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName())));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 9, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName())));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, SessionConnectionIdGeneratorTest.class.getName())));
+        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, SessionConnectionIdGeneratorTest.class.getName()).hashCode());
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 9, 2, SessionConnectionIdGeneratorTest.class.getName())));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 9, SessionConnectionIdGeneratorTest.class.getName())));
     }
 
     public void testToString() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), LongPollingConnectionStrategy.class.getName());
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName());
         final String theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: 1ms; Max.: 2ms; Timeout: 3ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
     }
 
     public void testToString_2() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, 2, 3, null, null);
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, 2, 3, null);
         String theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: <undefined>ms; Max.: 2ms; Timeout: 3ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
         
-        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, null, 3, null, null);
+        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, null, 3, null);
         theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: 1ms; Max.: <undefined>ms; Timeout: 3ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
 
-        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, null, null, null);
+        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, null, null);
         theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: 1ms; Max.: 2ms; Timeout: <undefined>ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
 
-        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, null, null, null, null);
+        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, null, null, null);
         theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: <undefined>ms; Max.: <undefined>ms; Timeout: <undefined>ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
