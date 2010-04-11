@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.service.registry;
 
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -63,7 +64,7 @@ public interface EventRegistry
 
     /**
      * Registers a user for listening for the corresponding domain. From now all events for the domain are recognized and
-     * will be returned when listen ({@link EventRegistry#listen(String)}) is called. The {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * will be returned when listen ({@link EventRegistry#listen(de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector , String)}) is called. The {@link de.novanic.eventservice.client.event.filter.EventFilter}
      * is optional and can be NULL.
      * @param aDomain the domain to listen
      * @param aUserId the user to register
@@ -101,20 +102,21 @@ public interface EventRegistry
      * interval to receive all events. If the client don't call the method in the interval, the user will be removed
      * from the EventRegistry. The timeout time and the min and max waiting time can be configured by
      * {@link de.novanic.eventservice.config.EventServiceConfiguration}.
+     * @param aServerEventListener {@link de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector} for the listening method
      * @param aUserId user
      * @return list of events
      */
-    List<DomainEvent> listen(String aUserId);
+    List<DomainEvent> listen(ConnectionStrategyServerConnector aServerEventListener, String aUserId);
 
     /**
-     * This method causes a stop of listening for a domain ({@link EventRegistry#listen(String)}).
+     * This method causes a stop of listening for a domain ({@link EventRegistry#listen(de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector , String)}).
      * @param aDomain domain to stop listening
      * @param aUserId user
      */
     void unlisten(Domain aDomain, String aUserId);
 
     /**
-     * This method causes a stop of listening for all domains ({@link EventRegistry#listen(String)}).
+     * This method causes a stop of listening for all domains ({@link EventRegistry#listen(de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector , String)}).
      * @param aUserId user
      */
     void unlisten(String aUserId);

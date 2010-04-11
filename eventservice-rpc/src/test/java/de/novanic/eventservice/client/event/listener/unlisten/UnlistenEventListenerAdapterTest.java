@@ -42,6 +42,17 @@ public class UnlistenEventListenerAdapterTest extends TestCase
         assertTrue(theUnlistenEventListenerAdapter.isOnUnlistenCalled);
     }
 
+    public void testScopes() {
+        assertEquals("LOCAL", UnlistenEventListener.Scope.LOCAL.name());
+        assertEquals("LOCAL", UnlistenEventListener.Scope.LOCAL.toString());
+
+        assertEquals("UNLISTEN", UnlistenEventListener.Scope.UNLISTEN.name());
+        assertEquals("UNLISTEN", UnlistenEventListener.Scope.UNLISTEN.toString());
+
+        assertEquals("TIMEOUT", UnlistenEventListener.Scope.TIMEOUT.name());
+        assertEquals("TIMEOUT", UnlistenEventListener.Scope.TIMEOUT.toString());
+    }
+
     private class DummyUnlistenEventListener extends UnlistenEventListenerAdapter
     {
         private boolean isOnUnlistenCalled;

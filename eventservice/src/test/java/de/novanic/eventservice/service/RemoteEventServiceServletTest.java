@@ -115,7 +115,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         RemoteEventServiceServlet theRemoteEventServiceServlet = new DummyRemoteEventServlet(theDomain, theEvent);
         theRemoteEventServiceServlet.init(null);
 
-        final List<DomainEvent> theEvents = theEventRegistry.listen(theUserId);
+        final List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), theUserId);
         assertNotNull(theEvents);
         assertEquals(1, theEvents.size());
         assertSame(theDomain, theEvents.get(0).getDomain());
@@ -133,7 +133,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         DummyRemoteEventServlet theRemoteEventServiceServlet = new DummyRemoteEventServlet(theDomain, theEvent);
         theRemoteEventServiceServlet.addEventCall();
 
-        final List<DomainEvent> theEvents = theEventRegistry.listen(theUserId);
+        final List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), theUserId);
         assertNotNull(theEvents);
         assertEquals(1, theEvents.size());
         assertSame(theDomain, theEvents.get(0).getDomain());
@@ -154,7 +154,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
             fail("Exception expected, because the HTTPRequest shouldn't be available!");
         } catch(NoSessionAvailableException e) {}
 
-        final List<DomainEvent> theEvents = theEventRegistry.listen(theUserId);
+        final List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), theUserId);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
     }

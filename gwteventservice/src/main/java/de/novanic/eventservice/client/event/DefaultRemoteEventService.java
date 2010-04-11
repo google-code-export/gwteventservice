@@ -511,8 +511,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
     }
 
     /**
-     * The ListenEventCallback is used to produce the listen cycle. It executes a {@link de.novanic.eventservice.client.command.RemoteListenCommand}
-     * and is attached as callback for the listen server call.
+     * The ListenEventCallback is used to produce the listen cycle. It is attached as callback for the listen server call.
      */
     private final class ListenerEventNotification implements EventNotification
     {

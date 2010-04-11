@@ -93,9 +93,10 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
 
     /**
      * Starts listening for events (listen call to the server side).
+     * @param anEventNotification object to notify for currently occurred events
      * @param aCallback callback
      */
-    protected abstract void listen(AsyncCallback<List<DomainEvent>> aCallback);
+    protected abstract void listen(EventNotification anEventNotification, AsyncCallback<List<DomainEvent>> aCallback);
 
     /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}
@@ -161,8 +162,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     }
 
     /**
-     * The ListenEventCallback is used to produce the listen cycle. It executes a {@link de.novanic.eventservice.client.command.RemoteListenCommand}
-     * and is attached as callback for the listen server call.
+     * The ListenEventCallback is used to produce the listen cycle. It is attached as callback for the listen server call.
      */
     private final class ListenEventCallback implements AsyncCallback<List<DomainEvent>>
     {
@@ -202,7 +202,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
         public synchronized void callListen() {
             if(isActive) {
                 //after getting an event, register itself to listen for the next events
-                listen(this);
+                listen(myEventNotification, this);
             }
         }
     }

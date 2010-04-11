@@ -33,7 +33,6 @@ import de.novanic.eventservice.client.event.filter.DefaultEventFilterTest;
 import de.novanic.eventservice.client.event.filter.CompositeEventFilterTest;
 import de.novanic.eventservice.client.event.filter.EventFilterFactoryTest;
 import de.novanic.eventservice.client.command.DefaultRemoteCommandTest;
-import de.novanic.eventservice.client.command.RemoteListenCommandTest;
 
 /**
  * @author sstrohschein
@@ -60,7 +59,6 @@ public class EventServiceRPCTestSuite
 
         // Command
         theSuite.addTestSuite(DefaultRemoteCommandTest.class);
-        theSuite.addTestSuite(RemoteListenCommandTest.class);
 
         // Event
         theSuite.addTestSuite(UnlistenEventTest.class);

@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.service.registry.listener;
+package de.novanic.eventservice.service.connection.strategy.connector;
 
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.service.EventServiceException;
@@ -26,22 +26,22 @@ import de.novanic.eventservice.service.registry.user.UserInfo;
 import java.util.List;
 
 /**
- * The {@link de.novanic.eventservice.service.registry.listener.ServerEventListener} listens for occurring events ({@link de.novanic.eventservice.client.event.Event})
+ * The {@link ConnectionStrategyServerConnector} listens for occurring events ({@link de.novanic.eventservice.client.event.Event})
  * on the server side and has the task to prepare the transfer from the server side to the client side.
  *
- * The reason for the listen and transfer preparation within one single class is, that the {@link de.novanic.eventservice.service.registry.listener.ServerEventListener}
+ * The reason for the listen and transfer preparation within one single class is, that the {@link ConnectionStrategyServerConnector}
  * should have the control about listening and transfer of the occurred events.
  *
  * @author sstrohschein
  *         <br>Date: 15.03.2010
  *         <br>Time: 23:02:32
  */
-public interface ServerEventListener
+public interface ConnectionStrategyServerConnector
 {
     /**
      * Listens for occurring events (can be retrieved from the {@link de.novanic.eventservice.service.registry.user.UserInfo} with
      * {@link de.novanic.eventservice.service.registry.user.UserInfo#retrieveEvents()}) and should prepare or transfer the retrieved events
-     * directly. The reason for the listen and transfer preparation within one single method is, that the {@link de.novanic.eventservice.service.registry.listener.ServerEventListener}
+     * directly. The reason for the listen and transfer preparation within one single method is, that the {@link ConnectionStrategyServerConnector}
      * should have the control about listening and transfer of the occurred events.
      * @param aUserInfo {@link de.novanic.eventservice.service.registry.user.UserInfo} which holds new occurred events
      * @return occurred events

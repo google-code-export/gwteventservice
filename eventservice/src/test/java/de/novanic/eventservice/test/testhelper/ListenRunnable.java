@@ -23,6 +23,7 @@ import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.service.EventService;
+import de.novanic.eventservice.config.ConfigurationDependentFactory;
 import de.novanic.eventservice.service.registry.EventRegistry;
 
 import java.util.*;
@@ -57,7 +58,7 @@ public class ListenRunnable implements Runnable, StartObservable
         if(myEventService != null) {
             theDomainEvents = myEventService.listen();
         } else {
-            theDomainEvents = myEventRegistry.listen(myUserId);
+            theDomainEvents = myEventRegistry.listen(ConfigurationDependentFactory.getInstance(myEventRegistry.getConfiguration()).getConnectionStrategyServerConnector(), myUserId);
         }
 
         Map<String, List<Event>> theUserEventMap = new HashMap<String, List<Event>>();

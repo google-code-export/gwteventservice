@@ -21,9 +21,12 @@ package de.novanic.eventservice.config;
 
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
+import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import junit.framework.TestCase;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +51,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, LongPollingServerConnector.class.getName());
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theEventServiceConfiguration);
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance(theEventServiceConfiguration));
@@ -117,10 +120,10 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_5() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGeneratorAbstract.class.getName(), null, null);
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
-            fail("Exception expected, because the private " + DummyConnectionIdGenerator.class.getName() + " couldn't be instantiated!");
+            fail("Exception expected, because the constructor of " + DummyConnectionIdGeneratorAbstract.class.getName() + " throws an exception!");
         } catch(ConfigurationException e) {
             assertTrue(e.getCause() instanceof InstantiationException);
         } catch(ExceptionInInitializerError e) {
@@ -130,15 +133,41 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_6() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_2.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator.class.getName(), null, null);
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
-            fail("Exception expected, because the " + DummyConnectionIdGenerator_2.class.getName() + " couldn't be instantiated caused by the private constructor!");
+            fail("Exception expected, because the " + DummyConnectionIdGenerator.class.getName() + " couldn't be instantiated caused by the private constructor!");
         } catch(ConfigurationException e) {
             assertTrue(e.getCause() instanceof IllegalAccessException);
         } catch(ExceptionInInitializerError e) {
             assertTrue(e.getCause() instanceof ConfigurationException);
             assertTrue(e.getCause().getCause() instanceof IllegalAccessException);
+        }
+    }
+
+    public void testGetInstance_Error_7() {
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_2.class.getName(), null, null);
+        try {
+            ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
+            fail("Exception expected, because the constructor of " + DummyConnectionIdGenerator_2.class.getName() + " throws an exception!");
+        } catch(ConfigurationException e) {
+            assertTrue(e.getCause() instanceof InvocationTargetException);
+        } catch(ExceptionInInitializerError e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+            assertTrue(e.getCause().getCause() instanceof InvocationTargetException);
+        }
+    }
+
+    public void testGetInstance_Error_9() {
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_3.class.getName(), null, null);
+        try {
+            ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
+            fail("Exception expected, because the constructor of " + DummyConnectionIdGenerator_3.class.getName() + " throws an exception!");
+        } catch(ConfigurationException e) {
+            assertTrue(e.getCause() == null || e.getCause() instanceof ConfigurationException);
+        } catch(ExceptionInInitializerError e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+            assertTrue(e.getCause().getCause() == null || e.getCause().getCause() instanceof ConfigurationException);
         }
     }
 
@@ -166,9 +195,34 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    public void testGetConnectionStrategyServerConnector() {
+        final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
+        theConfig.setConnectionStrategyServerConnectorClassName(LongPollingServerConnector.class.getName());
+
+        ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfig);
+        theConfigurationDependentFactory.reset(theConfig);
+        
+        final ConnectionStrategyServerConnector theConnectionStrategyServerConnector = theConfigurationDependentFactory.getConnectionStrategyServerConnector();
+        assertNotNull(theConnectionStrategyServerConnector);
+        assertTrue(theConnectionStrategyServerConnector instanceof LongPollingServerConnector);
+    }
+
+    public void testGetConnectionStrategyServerConnector_Error() {
+        final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
+        theConfig.setConnectionStrategyServerConnectorClassName(String.class.getName());
+
+        ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfig);
+        try {
+            theConfigurationDependentFactory.reset(theConfig);
+        } catch(ConfigurationException e) {
+            assertTrue(e.getMessage().contains(String.class.getName()));
+        }
+    }
+
     private class TestEventServiceConfiguration implements EventServiceConfiguration
     {
         private String myConnectionIdGeneratorClassName;
+        private String myConnectionStrategyServerConnectorClassName;
 
         public String getConfigDescription() {
             return TestEventServiceConfiguration.class.getName();
@@ -186,10 +240,6 @@ public class ConfigurationDependentFactoryTest extends TestCase
             return 0;
         }
 
-        public void setConnectionIdGeneratorClassName(String aConnectionIdGeneratorClassName) {
-            myConnectionIdGeneratorClassName = aConnectionIdGeneratorClassName;
-        }
-
         public String getConnectionIdGeneratorClassName() {
             return myConnectionIdGeneratorClassName;
         }
@@ -199,7 +249,15 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
 
         public String getConnectionStrategyServerConnectorClassName() {
-            return null;
+            return myConnectionStrategyServerConnectorClassName;
+        }
+
+        public void setConnectionIdGeneratorClassName(String aConnectionIdGeneratorClassName) {
+            myConnectionIdGeneratorClassName = aConnectionIdGeneratorClassName;
+        }
+
+        public void setConnectionStrategyServerConnectorClassName(String aConnectionStrategyServerConnectorClassName) {
+            myConnectionStrategyServerConnectorClassName = aConnectionStrategyServerConnectorClassName;
         }
 
         public Map<ConfigParameter, Object> getConfigMap() {
@@ -207,8 +265,10 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
-    private class DummyConnectionIdGenerator implements ConnectionIdGenerator
+    public static class DummyConnectionIdGenerator implements ConnectionIdGenerator
     {
+        private DummyConnectionIdGenerator() {}
+
         public String generateConnectionId(HttpServletRequest aRequest) {
             return null;
         }
@@ -220,7 +280,9 @@ public class ConfigurationDependentFactoryTest extends TestCase
 
     public static class DummyConnectionIdGenerator_2 implements ConnectionIdGenerator
     {
-        private DummyConnectionIdGenerator_2() {}
+        public DummyConnectionIdGenerator_2(EventServiceConfiguration aConfiguration) {
+            throw new RuntimeException("Test-Exception: The constructor isn't executable (called with configuration \"" + aConfiguration + "\"!");
+        }
 
         public String generateConnectionId(HttpServletRequest aRequest) {
             return null;
@@ -230,4 +292,23 @@ public class ConfigurationDependentFactoryTest extends TestCase
             return null;
         }
     }
+
+    public static class DummyConnectionIdGenerator_3 implements ConnectionIdGenerator
+    {
+        public DummyConnectionIdGenerator_3(String aString) {
+            /* no default constructor available */
+            throw new RuntimeException(DummyConnectionIdGenerator_3.class.getName() + " was constructed with \"" + aString
+                    + "\" which shouldn't happen, because the no-arg constructor or the configuration parameter should be used!");
+        }
+
+        public String generateConnectionId(HttpServletRequest aRequest) {
+            return null;
+        }
+
+        public String getConnectionId(HttpServletRequest aRequest) {
+            return null;
+        }
+    }
+
+    public static abstract class DummyConnectionIdGeneratorAbstract implements ConnectionIdGenerator {}
 }

@@ -22,12 +22,11 @@ package de.novanic.eventservice.client.event;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
+import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
-import de.novanic.eventservice.client.command.RemoteListenCommand;
-import de.novanic.eventservice.client.command.RemoteCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.core.client.GWT;
@@ -43,14 +42,14 @@ import java.util.List;
  *         <br>Date: 12.10.2008
  *         <br>Time: 11:16:23
  */
-public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
+public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
 {
     private EventServiceAsync myEventService;
 
     /**
      * Creates a new RemoteEventConnector with a connection to {@link EventService}.
      */
-    GWTRemoteEventConnector() {
+    protected GWTRemoteEventConnector() {
         this(createEventService());
     }
 
@@ -58,7 +57,7 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * Creates a new RemoteEventConnector with a connection to the corresponding EventService.
      * @param anEventServiceAsync EventService for the connection
      */
-    GWTRemoteEventConnector(EventServiceAsync anEventServiceAsync) {
+    protected GWTRemoteEventConnector(EventServiceAsync anEventServiceAsync) {
         myEventService = anEventServiceAsync;
     }
 
@@ -137,12 +136,11 @@ public final class GWTRemoteEventConnector extends DefaultRemoteEventConnector
 
     /**
      * Starts listening for events (listen call to the server side).
+     * @param anEventNotification object to notify for currently occurred events
      * @param aCallback callback
      */
-    protected void listen(AsyncCallback<List<DomainEvent>> aCallback) {
-        RemoteCommand<List<DomainEvent>> theRemoteListenCommand = new RemoteListenCommand();
-        theRemoteListenCommand.init(aCallback);
-        theRemoteListenCommand.execute(myEventService);
+    protected void listen(EventNotification anEventNotification, AsyncCallback<List<DomainEvent>> aCallback) {
+        myEventService.listen(aCallback);
     }
 
     /**
