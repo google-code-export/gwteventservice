@@ -47,5 +47,7 @@ public class DefaultConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(20000), theEventServiceConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theEventServiceConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theEventServiceConfiguration.getConnectionIdGeneratorClassName());
+        assertNull(theEventServiceConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertNull(theEventServiceConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 }

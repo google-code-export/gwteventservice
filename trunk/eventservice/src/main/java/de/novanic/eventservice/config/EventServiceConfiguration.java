@@ -43,12 +43,14 @@ public interface EventServiceConfiguration
 
     /**
      * Returns the min waiting time. Listening should hold at least for min waiting time.
+     * @see de.novanic.eventservice.config.ConfigParameter#MIN_WAITING_TIME_TAG
      * @return min waiting time
      */
     Integer getMinWaitingTime();
 
     /**
      * Returns the max waiting time. Listening shouldn't hold longer than max waiting time.
+     * @see de.novanic.eventservice.config.ConfigParameter#MAX_WAITING_TIME_TAG
      * @return max waiting time
      */
     Integer getMaxWaitingTime();
@@ -56,6 +58,7 @@ public interface EventServiceConfiguration
     /**
      * Returns the timeout time. The timeout time is the max time for a listen cycle. If the timeout time is exceeded,
      * the client will be deregistered.
+     * @see de.novanic.eventservice.config.ConfigParameter#TIMEOUT_TIME_TAG
      * @return timeout time
      */
     Integer getTimeoutTime();
@@ -63,9 +66,24 @@ public interface EventServiceConfiguration
     /**
      * Returns the class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}.
      * The {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} generates unique ids to identify the clients.
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_ID_GENERATOR
      * @return class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}
      */
     String getConnectionIdGeneratorClassName();
+
+    /**
+     * Returns the class name of the configured connection strategy (client side part).
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_CLIENT_CONNECTOR
+     * @return connection strategy (client side part)
+     */
+    String getConnectionStrategyClientConnectorClassName();
+
+    /**
+     * Returns the class name of the configured connection strategy (server side part).
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_SERVER_CONNECTOR
+     * @return connection strategy (server side part)
+     */
+    String getConnectionStrategyServerConnectorClassName();
 
     /**
      * Returns the configurations as a {@link java.util.Map} with {@link de.novanic.eventservice.config.ConfigParameter}

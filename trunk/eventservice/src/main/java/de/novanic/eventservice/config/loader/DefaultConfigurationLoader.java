@@ -44,7 +44,9 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
     private static final int DEFAULT_MIN_WAITING_TIME = 0;
     private static final int DEFAULT_MAX_WAITING_TIME = 20000;
     private static final int DEFAULT_TIME_OUT = 90000;
-    private static final String DEFAULT_CLIENT_ID_GENERATOR_CLASS_NAME = SessionConnectionIdGenerator.class.getName();
+    private static final String DEFAULT_CONNECTION_ID_GENERATOR_CLASS_NAME = SessionConnectionIdGenerator.class.getName();
+    private static final String DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR = null;
+    private static final String DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR = null;
 
     /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
@@ -63,7 +65,7 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
      */
     public EventServiceConfiguration load() {
         return new RemoteEventServiceConfiguration(DEFAULT_CONFIG_DESCRIPTION, DEFAULT_MIN_WAITING_TIME, DEFAULT_MAX_WAITING_TIME, DEFAULT_TIME_OUT,
-                                                   DEFAULT_CLIENT_ID_GENERATOR_CLASS_NAME);
+                DEFAULT_CONNECTION_ID_GENERATOR_CLASS_NAME, DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR, DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR);
     }
 
     public boolean equals(Object anObject) {

@@ -128,6 +128,14 @@ public class UserManagerFactoryTest extends TestCase
             return SessionConnectionIdGeneratorTest.class.getName();
         }
 
+        public String getConnectionStrategyClientConnectorClassName() {
+            return null;
+        }
+
+        public String getConnectionStrategyServerConnectorClassName() {
+            return null;
+        }
+
         public Map<ConfigParameter, Object> getConfigMap() {
             return new HashMap<ConfigParameter, Object>();
         }

@@ -35,17 +35,28 @@ public class RemoteEventServiceConfigurationTransferable implements EventService
     private Integer myMaxWaitingTime;
     private Integer myTimeoutTime;
     private String myConnectionId;
+    private String myConnectionStrategyClientConnector;
 
     /**
      * This constructor is only required for serialization.
      */
     public RemoteEventServiceConfigurationTransferable() {}
 
-    public RemoteEventServiceConfigurationTransferable(int aMinWaitingTime, int aMaxWaitingTime, int aTimeoutTime, String aConnectionId) {
+    /**
+     * Creates a new RemoteEventServiceConfigurationTransferable.
+     * @param aMinWaitingTime min waiting time before listen returns (in milliseconds)
+     * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
+     * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
+     * @param aConnectionId unique id to identify the client
+     * @param aConnectionStrategyClientConnector class name of the configured connection strategy (client side part)
+     */
+    public RemoteEventServiceConfigurationTransferable(int aMinWaitingTime, int aMaxWaitingTime, int aTimeoutTime, String aConnectionId,
+                                                       String aConnectionStrategyClientConnector) {
         myMinWaitingTime = aMinWaitingTime;
         myMaxWaitingTime = aMaxWaitingTime;
         myTimeoutTime = aTimeoutTime;
         myConnectionId = aConnectionId;
+        myConnectionStrategyClientConnector = aConnectionStrategyClientConnector;
     }
 
     /**
@@ -79,6 +90,14 @@ public class RemoteEventServiceConfigurationTransferable implements EventService
      */
     public String getConnectionId() {
         return myConnectionId;
+    }
+
+    /**
+     * Returns the class name of the configured connection strategy (client side part).
+     * @return connection strategy (client side part)
+     */
+    public String getConnectionStrategyClientConnector() {
+        return myConnectionStrategyClientConnector;
     }
 
     public boolean equals(Object anObject) {

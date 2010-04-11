@@ -45,6 +45,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
+        //TODO test connection strategy when the first implementation is available / committed
     }
 
 	public void testLoad_FQ() {
@@ -58,6 +59,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(130000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
+        //TODO test connection strategy when the first implementation is available / committed
     }
 	
     public void testLoad_Error() {
