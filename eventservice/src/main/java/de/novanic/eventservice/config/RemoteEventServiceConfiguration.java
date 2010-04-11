@@ -67,11 +67,15 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
      * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
      * @param aConnectionIdGeneratorClassName class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} to generate unique client ids
+     * @param aConnectionStrategyClientClassName class name of the configured connection strategy (client side part)
+     * @param aConnectionStrategyServerClassName class name of the configured connection strategy (server side part)
      */
     public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime,
-                                           String aConnectionIdGeneratorClassName) {
+                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClientClassName, String aConnectionStrategyServerClassName) {
         this(aConfigDescription, aMinWaitingTime, aMaxWaitingTime, aTimeoutTime);
         myConfigMap.put(ConfigParameter.CONNECTION_ID_GENERATOR, aConnectionIdGeneratorClassName);
+        myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR, aConnectionStrategyClientClassName);
+        myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR, aConnectionStrategyServerClassName);
     }
 
     /**
@@ -84,6 +88,7 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
 
     /**
      * Returns the min waiting time. Listening should hold at least for min waiting time.
+     * @see de.novanic.eventservice.config.ConfigParameter#MIN_WAITING_TIME_TAG
      * @return min waiting time
      */
     public Integer getMinWaitingTime() {
@@ -92,6 +97,7 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
 
     /**
      * Returns the max waiting time. Listening shouldn't hold longer than max waiting time.
+     * @see de.novanic.eventservice.config.ConfigParameter#MAX_WAITING_TIME_TAG
      * @return max waiting time
      */
     public Integer getMaxWaitingTime() {
@@ -100,6 +106,7 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
 
     /**
      * Returns the timeout time (max time for a listen cycle).
+     * @see de.novanic.eventservice.config.ConfigParameter#TIMEOUT_TIME_TAG
      * @return timeout time
      */
     public Integer getTimeoutTime() {
@@ -109,10 +116,29 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
     /**
      * Returns the class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}.
      * The {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} generates unique ids to identify the clients.
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_ID_GENERATOR
      * @return class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}
      */
     public String getConnectionIdGeneratorClassName() {
         return (String)myConfigMap.get(ConfigParameter.CONNECTION_ID_GENERATOR);
+    }
+
+    /**
+     * Returns the class name of the configured connection strategy (client side part).
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_CLIENT_CONNECTOR
+     * @return connection strategy (client side part)
+     */
+    public String getConnectionStrategyClientConnectorClassName() {
+        return (String)myConfigMap.get(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR);
+    }
+
+    /**
+     * Returns the class name of the configured connection strategy (server side part).
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_SERVER_CONNECTOR
+     * @return connection strategy (server side part)
+     */
+    public String getConnectionStrategyServerConnectorClassName() {
+        return (String)myConfigMap.get(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR);
     }
 
     /**

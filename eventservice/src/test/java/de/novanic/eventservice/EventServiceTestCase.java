@@ -69,6 +69,6 @@ public abstract class EventServiceTestCase extends TestCase
     }
 
     protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime) {
-        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGeneratorTest.class.getName());
+        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGeneratorTest.class.getName(), null, null);
     }
 }

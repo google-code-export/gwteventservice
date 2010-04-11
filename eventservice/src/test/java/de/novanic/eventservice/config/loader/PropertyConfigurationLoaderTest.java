@@ -59,6 +59,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
+        //TODO test connection strategy when the first implementation is available / committed
     }
 
     public void testLoad_2() {

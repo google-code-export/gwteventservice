@@ -57,4 +57,10 @@ public interface EventServiceConfigurationTransferable extends Serializable
      * @return connection / client id
      */
     String getConnectionId();
+
+    /**
+     * Returns the class name of the configured connection strategy (client side part).
+     * @return connection strategy (client side part)
+     */
+    String getConnectionStrategyClientConnector();
 }
