@@ -19,7 +19,10 @@
  */
 package de.novanic.eventservice;
 
-import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
+import de.novanic.eventservice.config.ConfigurationDependentFactory;
+import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
+import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
@@ -47,6 +50,8 @@ public abstract class EventServiceTestCase extends TestCase
         FactoryResetService.resetFactory(EventRegistryFactory.class);
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
         FactoryResetService.resetFactory(UserManagerFactory.class);
+        //TODO reset ConfigurationDependentFactory
+        ConfigurationDependentFactory.getInstance(anEventServiceConfiguration).reset(anEventServiceConfiguration);
     }
 
     public void tearDown() throws Exception {
@@ -69,6 +74,15 @@ public abstract class EventServiceTestCase extends TestCase
     }
 
     protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime) {
-        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGeneratorTest.class.getName(), null, null);
+        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGenerator.class.getName(), null, LongPollingServerConnector.class.getName());
+    }
+
+    protected ConnectionStrategyServerConnector getLongPollingListener() {
+        EventServiceConfiguration theConfiguration = EventServiceConfigurationFactory.getInstance().loadEventServiceConfiguration();
+        return getLongPollingListener(theConfiguration);
+    }
+
+    protected ConnectionStrategyServerConnector getLongPollingListener(EventServiceConfiguration anEventServiceConfiguration) {
+        return ConfigurationDependentFactory.getInstance(anEventServiceConfiguration).getConnectionStrategyServerConnector();
     }
 }

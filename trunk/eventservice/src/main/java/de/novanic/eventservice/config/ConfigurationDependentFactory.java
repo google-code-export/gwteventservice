@@ -20,6 +20,10 @@
 package de.novanic.eventservice.config;
 
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * The {@link de.novanic.eventservice.config.ConfigurationDependentFactory} can create instances from a configuration
@@ -35,6 +39,7 @@ public final class ConfigurationDependentFactory
     private static EventServiceConfiguration myConfiguration;
 
     private ConnectionIdGenerator myConnectionIdGenerator;
+    private ConnectionStrategyServerConnector myConnectionStrategyServerConnector;
 
     /**
      * Initializes the {@link de.novanic.eventservice.config.ConfigurationDependentFactory}. That constructor is only called one time,
@@ -84,7 +89,17 @@ public final class ConfigurationDependentFactory
      */
     private void init() {
         if(myConfiguration != null) {
-            myConnectionIdGenerator = createObject(myConfiguration.getConnectionIdGeneratorClassName(), ConnectionIdGenerator.class);
+            //TODO optimize the class cast handling
+            try {
+                myConnectionIdGenerator = createObject(myConfiguration.getConnectionIdGeneratorClassName());
+            } catch(ClassCastException e) {
+                throw new ConfigurationException(myConfiguration.getConnectionIdGeneratorClassName() + " should have another type!", e);
+            }
+            try {
+                myConnectionStrategyServerConnector = createObject(myConfiguration.getConnectionStrategyServerConnectorClassName());
+            } catch(ClassCastException e) {
+                throw new ConfigurationException(myConfiguration.getConnectionStrategyServerConnectorClassName() + " should have another type!", e);
+            }
         } else {
             throw new ConfigurationException(ConfigurationDependentFactory.class.getName() + " was initialized without a configuration!");
         }
@@ -92,6 +107,7 @@ public final class ConfigurationDependentFactory
 
     /**
      * Returns the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}.
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_ID_GENERATOR
      * @return the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}
      */
     public ConnectionIdGenerator getConnectionIdGenerator() {
@@ -99,20 +115,52 @@ public final class ConfigurationDependentFactory
     }
 
     /**
+     * Returns the server side part / connector of the configured connection strategy.
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_SERVER_CONNECTOR
+     * @return server side part / connector of the configured connection strategy
+     */
+    public ConnectionStrategyServerConnector getConnectionStrategyServerConnector() {
+        return myConnectionStrategyServerConnector;
+    }
+
+    /**
      * Creates and initializes an object of a specific type.
      */
-    private static <T> T createObject(String aClassName, Class<T> anInterfaceClass) {
+    private static <T> T createObject(String aClassName) {
+        //when no class is configured, no object is created
+        if(aClassName == null) {
+            return null;
+        }
+
         try {
             final Class theConnectionIdGeneratorClass = Class.forName(aClassName);
-            return anInterfaceClass.cast(theConnectionIdGeneratorClass.newInstance());
+
+            Constructor<T> theDefaultConstructor = null;
+            for(Constructor<T> theConstructor: theConnectionIdGeneratorClass.getDeclaredConstructors()) {
+                Class<?>[] theParameterTypes = theConstructor.getParameterTypes();
+                switch(theParameterTypes.length) {
+                    case 0:
+                        theDefaultConstructor = theConstructor;
+                        break;
+                    case 1:
+                        if(theParameterTypes[0].equals(EventServiceConfiguration.class)) {
+                            return theConstructor.newInstance(myConfiguration);
+                        }
+                }
+            }
+
+            if(theDefaultConstructor == null) {
+                throw new ConfigurationException("The class \"" + theConnectionIdGeneratorClass + "\" has no default constructor and no constructor which requires a single configuration! At least one of both is needed!");
+            }
+            return theDefaultConstructor.newInstance();
         } catch(ClassNotFoundException e) {
             throw new ConfigurationException(aClassName + " couldn't be instantiated!", e);
         } catch(InstantiationException e) {
             throw new ConfigurationException(aClassName + " couldn't be instantiated!", e);
         } catch(IllegalAccessException e) {
             throw new ConfigurationException(aClassName + " couldn't be instantiated!", e);
-        } catch(ClassCastException e) {
-            throw new ConfigurationException(aClassName + " should have another type!", e);
+        } catch(InvocationTargetException e) {
+            throw new ConfigurationException(aClassName + " couldn't be instantiated!", e);
         }
     }
 

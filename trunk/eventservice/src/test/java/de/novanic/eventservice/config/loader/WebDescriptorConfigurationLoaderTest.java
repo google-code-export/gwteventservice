@@ -21,6 +21,7 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import junit.framework.TestCase;
 
 import javax.servlet.ServletConfig;
@@ -45,7 +46,8 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
-        //TODO test connection strategy when the first implementation is available / committed
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 
 	public void testLoad_FQ() {
@@ -59,7 +61,8 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(130000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
-        //TODO test connection strategy when the first implementation is available / committed
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 	
     public void testLoad_Error() {

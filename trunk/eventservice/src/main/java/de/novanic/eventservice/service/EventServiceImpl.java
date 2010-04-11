@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.config.ConfigurationDependentFactory;
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
@@ -32,6 +34,7 @@ import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.logger.ServerLogger;
@@ -55,6 +58,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
 {
     private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(EventServiceImpl.class.getName());
     private EventRegistry myEventRegistry;
+    private ConfigurationDependentFactory myConfigurationDependentFactory;
 
     /**
      * The init method should be called automatically before the servlet can be used and should called only one time.
@@ -65,6 +69,8 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     public void init(ServletConfig aConfig) throws ServletException {
         super.init(aConfig);
         myEventRegistry = initEventRegistry(aConfig);
+        EventServiceConfiguration theConfiguration = myEventRegistry.getConfiguration();
+        myConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfiguration);
     }
 
     /**
@@ -162,16 +168,35 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     /**
      * The listen method returns all events for the user (events for all domains where the user is registered and user
      * specific events). If no events are available, the method waits a defined time before the events are returned.
-     * The client side calls the method with a defined interval to receive all events. If the client don't call the
-     * method in the interval, the user will be removed from the EventRegistry. The timeout time and the waiting time
+     * The client side calls the method with a defined interval to receive all events. If the client doesn't call the
+     * method in that interval, the user will be removed from the EventRegistry. The timeout time and the waiting time
      * can be configured with {@link de.novanic.eventservice.config.EventServiceConfiguration}.
+     * The default listening method is long-polling, but that can be changed with changing the connection strategy.
+     * The connection strategy can be configured with {@link de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_CLIENT_CONNECTOR}
+     * for the client side part / connector and {@link de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_SERVER_CONNECTOR}.
      * @return list of events
      */
     public List<DomainEvent> listen() {
         final String theClientId = getClientId();
+        ConnectionStrategyServerConnector theServerEventListener = myConfigurationDependentFactory.getConnectionStrategyServerConnector();
         LOG.debug("Listen (client id \"" + theClientId + "\").");
-        return myEventRegistry.listen(theClientId);
+        return listen(theServerEventListener, theClientId);
     }
+
+    /**
+     * The listen method returns all events for the user (events for all domains where the user is registered and user
+     * specific events). If no events are available, the method waits a defined time before the events are returned.
+     * The client side calls the method with a defined interval to receive all events. If the client doesn't call the
+     * method in that interval, the user will be removed from the EventRegistry. The timeout time and the waiting time
+     * can be configured with {@link de.novanic.eventservice.config.EventServiceConfiguration}.
+     * @param aServerEventListener {@link de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector} for the listening method
+     * @param aClientId client / user
+     * @return list of events
+     */
+    private List<DomainEvent> listen(ConnectionStrategyServerConnector aServerEventListener, String aClientId) {
+        LOG.debug("Listen (client id \"" + aClientId + "\").");
+        return myEventRegistry.listen(aServerEventListener, aClientId);
+    }    
 
     /**
      * Unlisten for events (for the current user) in all domains (deregisters the user from all domains).

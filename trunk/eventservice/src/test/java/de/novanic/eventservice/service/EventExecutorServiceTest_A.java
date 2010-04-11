@@ -77,12 +77,12 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
-        List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
+        List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
 
         myEventExecutorService.addEvent(TEST_DOMAIN, new EmptyEvent());
-        theEvents = theEventRegistry.listen(TEST_USER_ID);
+        theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertFalse(theEvents.isEmpty());
         assertEquals(1, theEvents.size());
@@ -92,12 +92,12 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
-        List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
+        List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
 
         myEventExecutorService.addEvent(TEST_DOMAIN_2, new EmptyEvent());
-        theEvents = theEventRegistry.listen(TEST_USER_ID);
+        theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
     }
@@ -106,12 +106,12 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
-        List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
+        List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
 
         myEventExecutorService.addEventUserSpecific(new EmptyEvent());
-        theEvents = theEventRegistry.listen(TEST_USER_ID);
+        theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertFalse(theEvents.isEmpty());
         assertEquals(1, theEvents.size());
@@ -120,11 +120,11 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
     public void testAddEventUserSpecific_2() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
-        List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
+        List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNull(theEvents);
 
         myEventExecutorService.addEventUserSpecific(new EmptyEvent());
-        theEvents = theEventRegistry.listen(TEST_USER_ID); //the user is not registered
+        theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID); //the user is not registered
         assertNull(theEvents);
     }
 
@@ -133,12 +133,12 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
 
-        List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
+        List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
 
         myEventExecutorService.addEventUserSpecific(new EmptyEvent());
-        theEvents = theEventRegistry.listen(TEST_USER_ID_2); //the event was for another user
+        theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2); //the event was for another user
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
     }
@@ -147,12 +147,12 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
-        List<DomainEvent> theEvents = theEventRegistry.listen(TEST_USER_ID);
+        List<DomainEvent> theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID);
         assertNotNull(theEvents);
         assertTrue(theEvents.isEmpty());
 
         myEventExecutorService.addEventUserSpecific(new EmptyEvent());
-        theEvents = theEventRegistry.listen(TEST_USER_ID); //the event is for another domain, but that is unimportant, because the event is user specific.
+        theEvents = theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID); //the event is for another domain, but that is unimportant, because the event is user specific.
         assertNotNull(theEvents);
         assertFalse(theEvents.isEmpty());
         assertEquals(1, theEvents.size());
@@ -163,7 +163,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(1, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
 
         assertNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
@@ -174,7 +174,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(theEventFilter, myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(0, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
     public void testRemoveEventFilter() {
@@ -182,7 +182,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(1, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
 
         assertNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
@@ -193,12 +193,12 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(theEventFilter, myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(0, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
 
         myEventExecutorService.removeEventFilter(TEST_DOMAIN);
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(1, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
     public void testRemoveEventFilter_2() {
@@ -206,7 +206,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(1, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
 
         assertNull(myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
@@ -217,12 +217,12 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(theEventFilter, myEventExecutorService.getEventFilter(TEST_DOMAIN));
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(0, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(0, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
 
         myEventExecutorService.setEventFilter(TEST_DOMAIN, null);
 
         theEventRegistry.addEvent(TEST_DOMAIN, new EmptyEvent());
-        assertEquals(1, theEventRegistry.listen(TEST_USER_ID).size());
+        assertEquals(1, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
     private static class EmptyEvent implements Event {}

@@ -23,6 +23,7 @@ import de.novanic.eventservice.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -59,7 +60,8 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
-        //TODO test connection strategy when the first implementation is available / committed
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 
     public void testLoad_2() {
@@ -72,6 +74,8 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 
     public void testLoad_3() {
@@ -87,6 +91,8 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getMaxWaitingTime());
         assertNull(theConfiguration.getTimeoutTime());
         assertNull(theConfiguration.getConnectionIdGeneratorClassName());
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertNull(theConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 
     public void testLoad_Failure() {

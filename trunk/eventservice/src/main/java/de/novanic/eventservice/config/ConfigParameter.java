@@ -49,12 +49,12 @@ public enum ConfigParameter
     CONNECTION_ID_GENERATOR("connection.id.generator", false),
 
     /**
-     * Connection strategy (client side part) - Connection strategies are used to define the communication between the client and the server side
+     * Connection strategy (client side part / connector) - Connection strategies are used to define the communication between the client and the server side
      */
     CONNECTION_STRATEGY_CLIENT_CONNECTOR("connection.strategy.client.connector", false),
 
     /**
-     * Connection strategy (server side part) - Connection strategies are used to define the communication between the client and the server side
+     * Connection strategy (server side part / connector) - Connection strategies are used to define the communication between the client and the server side
      */
     CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector", false),
 
@@ -81,12 +81,12 @@ public enum ConfigParameter
     FQ_CONNECTION_ID_GENERATOR("connection.id.generator", true),
 
     /**
-     * Connection strategy (client side part) - Connection strategies are used to define the communication between the client and the server side
+     * Connection strategy (client side part / connector) - Connection strategies are used to define the communication between the client and the server side
      */
     FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR("connection.strategy.client.connector", true),
 
     /**
-     * Connection strategy (server side part) - Connection strategies are used to define the communication between the client and the server side
+     * Connection strategy (server side part / connector) - Connection strategies are used to define the communication between the client and the server side
      */
     FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector", true);
 

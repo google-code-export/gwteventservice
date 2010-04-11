@@ -22,6 +22,7 @@ package de.novanic.eventservice.config.loader;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 
 /**
  * DefaultConfigurationLoader is used by {@link de.novanic.eventservice.config.EventServiceConfigurationFactory} if no
@@ -46,7 +47,7 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
     private static final int DEFAULT_TIME_OUT = 90000;
     private static final String DEFAULT_CONNECTION_ID_GENERATOR_CLASS_NAME = SessionConnectionIdGenerator.class.getName();
     private static final String DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR = null;
-    private static final String DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR = null;
+    private static final String DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR = LongPollingServerConnector.class.getName();
 
     /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method

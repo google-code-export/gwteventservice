@@ -29,6 +29,8 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
+import de.novanic.eventservice.service.EventServiceException;
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 import de.novanic.eventservice.service.registry.user.*;
 import de.novanic.eventservice.service.registry.domain.ListenDomainAccessor;
 import de.novanic.eventservice.service.UserTimeoutListener;
@@ -118,7 +120,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
 
     /**
      * Registers a user for listening for the corresponding domain. From now all events for the domain are recognized and
-     * will be returned when listen ({@link DefaultEventRegistry#listen(String)}) is called. The {@link de.novanic.eventservice.client.event.filter.EventFilter}
+     * will be returned when listen ({@link DefaultEventRegistry#listen(de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector , String)}) is called. The {@link de.novanic.eventservice.client.event.filter.EventFilter}
      * is optional and can be NULL.
      * @param aDomain the domain to listen
      * @param aUserId the user to register
@@ -208,38 +210,28 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
      * The listen method is designed for the EventService functionality. The client side calls the method with a defined
      * interval to receive all events. If the client don't call the method in the interval, the user will be removed
      * from the EventRegistry. The timeout time and the min. and max. waiting time can be configured by
-     * {@link de.novanic.eventservice.config.EventServiceConfiguration}.
+     * @param aServerEventListener {@link de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector} for the listening method
      * @param aUserId user
      * @return list of events
      */
-    public List<DomainEvent> listen(String aUserId) {
+    public List<DomainEvent> listen(ConnectionStrategyServerConnector aServerEventListener, String aUserId) {
         UserInfo theUserInfo = getUserInfo(aUserId);
         LOG.debug(aUserId + ": listen (UserInfo " + theUserInfo + ").");
         if(theUserInfo != null) {
+            myUserActivityScheduler.reportUserActivity(theUserInfo);
             try {
-                final int theMinWaitingTime = myConfiguration.getMinWaitingTime();
-                if(theMinWaitingTime > 0) {
-                    Thread.sleep(theMinWaitingTime);
-                }
+                return aServerEventListener.listen(theUserInfo);
+            } catch(EventServiceException e) {
+                LOG.error("Error on listening for user \"" + theUserInfo + "\" with \"" + aServerEventListener.getClass().getName() + "\"!", e);
+            } finally {
                 myUserActivityScheduler.reportUserActivity(theUserInfo);
-                if(theUserInfo.isEventsEmpty()) {
-                    //monitor for event notification and double checked
-                    synchronized(theUserInfo) {
-                        if(theUserInfo.isEventsEmpty()) {
-                            theUserInfo.wait(myConfiguration.getMaxWaitingTime());
-                        }
-                    }
-                }
-                return theUserInfo.retrieveEvents();
-            } catch(InterruptedException e) {
-                LOG.error("Listen was interrupted (client id \"" + aUserId + "\")!", e);
             }
         }
         return null;
     }
 
     /**
-     * This method causes a stop of listening for a domain ({@link DefaultEventRegistry#listen(String)}).
+     * This method causes a stop of listening for a domain ({@link DefaultEventRegistry#listen(de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector , String)}).
      * @param aDomain domain to stop listening
      * @param aUserId user
      */
@@ -261,7 +253,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     }
 
     /**
-     * This method causes a stop of listening for all domains ({@link DefaultEventRegistry#listen(String)}).
+     * This method causes a stop of listening for all domains ({@link DefaultEventRegistry#listen(de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector , String)}).
      * @param aUserId user
      */
     public void unlisten(String aUserId) {
@@ -270,7 +262,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     }
 
     /**
-     * This method causes a stop of listening for all domains ({@link DefaultEventRegistry#listen(String)}).
+     * This method causes a stop of listening for all domains ({@link DefaultEventRegistry#listen(de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector , String)}).
      * @param aUserInfo user
      * @param isTimeout reason for the unlistening (timeout or leave of a specific domain)
      */

@@ -107,10 +107,12 @@ public interface EventService extends RemoteService
     /**
      * The listen method returns all events for the user (events for all domains where the user is registered and user
      * specific events). If no events are available, the method waits a defined time before the events are returned.
-     * The client side calls the method with a defined interval to receive all events. If the client don't call the
-     * method in the interval, the user will be removed from the EventRegistry. The timeout time and the waiting time
+     * The client side calls the method with a defined interval to receive all events. If the client doesn't call the
+     * method in that interval, the user will be removed from the EventRegistry. The timeout time and the waiting time
      * can be configured with EventServiceConfiguration/-Factory (server side) and initialized with the init method of
      * EventRegistryFactory (server side).
+     * The default listening method is long-polling, but that can be changed with changing the connection strategy.
+     * See the configuration parameter description to configure another connection strategy.
      * @return list of events
      */
     List<DomainEvent> listen();
