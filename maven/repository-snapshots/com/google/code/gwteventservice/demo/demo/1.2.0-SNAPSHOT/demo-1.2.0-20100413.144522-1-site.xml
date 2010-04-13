@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <bannerLeft>
+    <name>GWTEventService - demo</name>
+  </bannerLeft>
+  <bannerRight>
+    <src>images/GWTEventServiceLogo211x30.png</src>
+  </bannerRight>
+  <version position="right" />
+  <body>
+    <menu name="Contents">
+      <item name="Welcome" href="index.html" />
+    </menu>
+    <menu ref="parent" />
+    <menu name="Modules" ref="modules">
+      <item name="hellogwteventservice" href="hellogwteventservice/index.html" />
+      <item name="conversation" href="conversation/index.html" />
+    </menu>
+    <menu inherit="bottom" ref="reports" />
+  </body>
+</project>
