@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <bannerLeft>
+    <name>GWTEventService - parent</name>
+  </bannerLeft>
+  <bannerRight>
+    <src>images/GWTEventServiceLogo211x30.png</src>
+  </bannerRight>
+  <version position="right" />
+  <body>
+    <menu name="Contents">
+      <item name="Welcome" href="index.html" />
+    </menu>
+    <menu ref="parent" />
+    <menu name="Modules" ref="modules">
+      <item name="eventservice-rpc" href="eventservice-rpc/index.html" />
+      <item name="eventservice" href="eventservice/index.html" />
+      <item name="gwteventservice" href="gwteventservice/index.html" />
+      <item name="demo" href="demo/index.html" />
+    </menu>
+    <menu inherit="bottom" ref="reports" />
+  </body>
+</project>
