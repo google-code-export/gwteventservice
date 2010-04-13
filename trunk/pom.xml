@@ -76,6 +76,13 @@
 				</configuration>
 			</plugin>
 		</plugins>
+        <extensions>
+            <extension>
+                <groupId>org.jvnet.wagon-svn</groupId>
+                <artifactId>wagon-svn</artifactId>
+                <version>1.9</version>
+            </extension>
+        </extensions>		
 	</build>
 	<reporting>
 		<plugins>
@@ -103,24 +110,24 @@
 		To use the distributionManagement you will need to add the following
 		to your ~/.m2/settings.xml: See:
 		http://maven.apache.org/settings.html#Servers <servers> <server>
-		<id>gwteventservice</id> <username>yourgooglecodeusername</username>
+		<id>googlecode</id> <username>yourgooglecodeusername</username>
 		<password>yourgooglecodepassword</password> </server> </servers>
 	-->
 	<distributionManagement>
 		<repository>
-			<id>gwteventservice</id>
-			<name>gwteventservice</name>
+			<id>googlecode</id>
+			<name>googlecode</name>
 			<url>svn:https://gwteventservice.googlecode.com/svn/maven/repository</url>
 		</repository>
 		<snapshotRepository>
-			<id>gwteventservice</id>
-			<name>gwteventservice</name>
+			<id>googlecode</id>
+			<name>googlecode</name>
 			<url>svn:https://gwteventservice.googlecode.com/svn/maven/repository-snapshots</url>
 		</snapshotRepository>
 		<site>
-			<id>gwteventservice</id>
-			<name>gwteventservice</name>
-			<url>svn:https://gwteventservice.googlecode.com/svn/maven/site</url>
+			<id>googlecode</id>
+			<name>googlecode</name>
+			<url>svn:svn+https://gwteventservice.googlecode.com/svn/maven/site</url>
 		</site>
 	</distributionManagement>
 	<mailingLists>
