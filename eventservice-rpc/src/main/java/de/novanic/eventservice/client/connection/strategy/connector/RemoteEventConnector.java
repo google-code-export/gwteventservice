@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.connection.connector;
+package de.novanic.eventservice.client.connection.strategy.connector;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -43,6 +43,13 @@ public interface RemoteEventConnector
      * @param aCallback callback
      */
     void init(AsyncCallback<EventServiceConfigurationTransferable> aCallback);
+
+    /**
+     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     * That is required to specify the listen / connection strategy.
+     * @param aConnectionStrategyClientConnector {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} which implements the listen method
+     */
+    void initListen(ConnectionStrategyClientConnector aConnectionStrategyClientConnector);
 
     /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}

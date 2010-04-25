@@ -96,22 +96,16 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
     }
 
     public void testAddListener_Error_2() {
-        //should be equal to testAddListener, because the other/following commands are executed normally.
+        //onFailure throws a runtime exception, when the init call to the RemoteEventService fails. No following commands should be executed in that case.
         mockInit(new TestException());
-
-        //caused by first addListener / activate
-        mockRegister(TEST_DOMAIN, true);
-
-        //caused by callback of register
-        mockListen(true);
 
         myEventServiceAsyncMockControl.replay();
             assertFalse(myRemoteEventService.isActive());
             myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
-            assertTrue(myRemoteEventService.isActive());
+            assertFalse(myRemoteEventService.isActive());
             //a second time
             myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
-            assertTrue(myRemoteEventService.isActive());
+            assertFalse(myRemoteEventService.isActive());
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();
 
@@ -550,6 +544,34 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         assertEqualsActiveDomains();
         assertContainsListeners(TEST_DOMAIN, 0);
+    }
+
+    public void testRemoveListener_Error() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN, true);
+
+        //caused by callback of register
+        mockListen(true);
+
+        myEventServiceAsyncMockControl.replay();
+            assertFalse(myRemoteEventService.isActive());
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
+            myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
+            assertTrue(myRemoteEventService.isActive());
+
+            //No listener will be removed, because it isn't the same instance of the added listener.
+            myRemoteEventService.removeListener(TEST_DOMAIN, new EventListenerTestMode());
+            myRemoteEventService.removeListener(TEST_DOMAIN, new EventListenerTestMode());
+            myRemoteEventService.removeListener(TEST_DOMAIN, null);
+
+            assertTrue(myRemoteEventService.isActive());
+        myEventServiceAsyncMockControl.verify();
+        myEventServiceAsyncMockControl.reset();
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testRemoveListener_Callback() {

@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
-import de.novanic.eventservice.config.ConfigurationException;
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.ConfigParameter;
@@ -132,7 +132,7 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
      * Parses the integer value from a {@link String}.
      * @param aString {@link String} to parse the integer values
      * @return integer value which is contained in the {@link String}
-     * @throws de.novanic.eventservice.config.ConfigurationException thrown when the {@link String} values isn't parsable to an integer value
+     * @throws de.novanic.eventservice.client.config.ConfigurationException thrown when the {@link String} values isn't parsable to an integer value
      */
     private Integer getIntValue(String aString) {
         if(aString != null) {

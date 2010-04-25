@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice.client.event.command;
 
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -36,7 +36,7 @@ public abstract class ServerCallCommand<R> implements ClientCommand<R>
 
     /**
      * Creates an ServerCallCommand to execute and handle server calls.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      * @param aCallback callback of the command
      */
     protected ServerCallCommand(RemoteEventConnector aRemoteEventConnector, AsyncCallback<R> aCallback) {
@@ -45,8 +45,8 @@ public abstract class ServerCallCommand<R> implements ClientCommand<R>
     }
 
     /**
-     * Returns the registered {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}.
-     * @return {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
+     * Returns the registered {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}.
+     * @return {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      */
     protected RemoteEventConnector getRemoteEventConnector() {
         return myRemoteEventConnector;

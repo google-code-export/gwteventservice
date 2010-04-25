@@ -19,6 +19,10 @@
  */
 package de.novanic.eventservice.clientmock;
 
+import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import org.easymock.ArgumentsMatcher;
 import org.easymock.MockControl;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,19 +64,23 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     public void tearDown() {
         myEventServiceAsyncMockControl.reset();
         ClientCommandSchedulerFactory.getInstance().reset();
+        ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration()).reset(getDefaultConfiguration());
     }
 
     protected void mockInit() {
-        mockInit(null);
+        mockInit(getDefaultConfiguration());
+    }
+
+    protected void mockInit(EventServiceConfigurationTransferable aConfiguration) {
+        myEventServiceAsyncMock.initEventService(null);
+        myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(aConfiguration));
+        myEventServiceAsyncMockControl.setVoidCallable();
     }
 
     protected void mockInit(TestException aThrowable) {
         myEventServiceAsyncMock.initEventService(null);
-        if(aThrowable != null) {
-            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(aThrowable));
-        } else {
-            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher((Object)null));
-        }
+        final AsyncCallArgumentsMatcher theAsyncCallArgumentsMatcher = new AsyncCallArgumentsMatcher(aThrowable);
+        myEventServiceAsyncMockControl.setMatcher(theAsyncCallArgumentsMatcher);
         myEventServiceAsyncMockControl.setVoidCallable();
     }
 
@@ -235,6 +243,10 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         }
     }
 
+    private EventServiceConfigurationTransferable getDefaultConfiguration() {
+        return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "test_client_1", DefaultClientConnector.class.getName());
+    }
+
     protected class AsyncCallArgumentsMatcher implements ArgumentsMatcher
     {
         protected Object myCallbackResult;
@@ -275,7 +287,9 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
                     try {
                         myCallbackThrowable.throwTestException();
                     } catch(Exception theTestException) {
-                        anAsyncCallback.onFailure(theTestException);
+                        try {
+                            anAsyncCallback.onFailure(theTestException);
+                        } catch(RuntimeException e) { /* do nothing */ }
                     }
                 }
             }

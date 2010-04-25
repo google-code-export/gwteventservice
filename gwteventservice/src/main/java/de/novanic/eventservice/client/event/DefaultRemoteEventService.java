@@ -19,9 +19,11 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -56,7 +58,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
 
     /**
      * Creates a new RemoteEventService.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector} for the connection
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector} for the connection
      * between client side and server side
      */
     DefaultRemoteEventService(RemoteEventConnector aRemoteEventConnector) {
@@ -559,15 +561,18 @@ public final class DefaultRemoteEventService implements RemoteEventService
          * @param aConfiguration configuration for the client side
          */
         public void onSuccess(EventServiceConfigurationTransferable aConfiguration) {
+            ConfigurationTransferableDependentFactory theConfigDependentFactory = ConfigurationTransferableDependentFactory.getInstance(aConfiguration);
+            ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigDependentFactory.getConnectionStrategyClientConnector();
+            myRemoteEventConnector.initListen(theConnectionStrategyClientConnector);
             finishFirstCall();
         }
 
         /**
-         * Executes the scheduled commands on failure.
+         * Throws a runtime exception when the event service couldn't be activated / initialized.
          * @param aThrowable throwable caused by a failed server call
          */
         public void onFailure(Throwable aThrowable) {
-            finishFirstCall();
+            throw new RemoteEventServiceRuntimeException("Error on activating / initializing \"" + RemoteEventService.class.getName() + "\"!", aThrowable);
         }
 
         /**

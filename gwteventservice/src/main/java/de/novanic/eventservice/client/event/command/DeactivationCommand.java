@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice.client.event.command;
 
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.domain.Domain;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -39,7 +39,7 @@ public class DeactivationCommand extends ServerCallCommand<Void>
 
     /**
      * Creates a DeactivationCommand to deactivate the event listening of the client completely.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      */
     public DeactivationCommand(RemoteEventConnector aRemoteEventConnector) {
         super(aRemoteEventConnector, null);
@@ -47,7 +47,7 @@ public class DeactivationCommand extends ServerCallCommand<Void>
 
     /**
      * Creates a DeactivationCommand to deactivate the event listening of the client for a specified domain.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      * @param aDomain domain which should be deactivated for event listening
      * @param aAsyncCallback callback for the command
      */
@@ -58,9 +58,9 @@ public class DeactivationCommand extends ServerCallCommand<Void>
 
     /**
      * Creates a DeactivationCommand to deactivate the event listening of the client for a set of domains. That should be
-     * used instead of {@link de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.connector.RemoteEventConnector , de.novanic.eventservice.client.event.domain.Domain, com.google.gwt.user.client.rpc.AsyncCallback)}
+     * used instead of {@link de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector , de.novanic.eventservice.client.event.domain.Domain, com.google.gwt.user.client.rpc.AsyncCallback)}
      * when more than one domain should be deactivated, to reduce server calls.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      * @param aDomains domains which should be deactivated for event listening
      * @param aAsyncCallback callback for the command
      */
@@ -71,9 +71,9 @@ public class DeactivationCommand extends ServerCallCommand<Void>
 
     /**
      * Deactivates the event listening of the client completely or for a specified domain/context.
-     * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.connector.RemoteEventConnector)
-     * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.connector.RemoteEventConnector , de.novanic.eventservice.client.event.domain.Domain, com.google.gwt.user.client.rpc.AsyncCallback)
-     * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.connector.RemoteEventConnector , java.util.Set, com.google.gwt.user.client.rpc.AsyncCallback)
+     * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector)
+     * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector , de.novanic.eventservice.client.event.domain.Domain, com.google.gwt.user.client.rpc.AsyncCallback)
+     * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector , java.util.Set, com.google.gwt.user.client.rpc.AsyncCallback)
      */
     public void execute() {
         final AsyncCallback<Void> theCallback = getCommandCallback();

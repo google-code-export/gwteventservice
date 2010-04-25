@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config;
 
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
@@ -81,7 +82,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
 
         try {
             ConfigurationDependentFactory.getInstance();
-            fail("Exception expected, because the factory wasn't initialized with aconfiguration!");
+            fail("Exception expected, because the factory wasn't initialized with a configuration!");
         } catch(ExceptionInInitializerError e) {
             assertTrue(e.getCause() instanceof ConfigurationException);
         } catch(ConfigurationException e) {}

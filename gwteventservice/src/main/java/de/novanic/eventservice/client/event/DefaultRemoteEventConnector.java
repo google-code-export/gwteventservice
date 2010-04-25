@@ -23,8 +23,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 
+import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.logger.ClientLogger;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -46,7 +47,21 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     private static final ClientLogger LOG = ClientLoggerFactory.getClientLogger();
 
     private boolean isActive;
+    private ConnectionStrategyClientConnector myConnectionStrategyClientConnector;
     private UnlistenEvent myUnlistenEvent;
+
+    /**
+     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     * That is required to specify the listen / connection strategy. The connection strategy can't be changed, when the listening has already started / an listener was added.
+     * @param aConnectionStrategyClientConnector {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} which implements the listen method
+     */
+    public synchronized void initListen(ConnectionStrategyClientConnector aConnectionStrategyClientConnector) {
+        if(!isActive) {
+            myConnectionStrategyClientConnector = aConnectionStrategyClientConnector;
+        } else {
+            throw new RemoteEventServiceRuntimeException("It was tried to change the connection strategy after listening was started!");
+        }
+    }
 
     /**
      * Deactivates the connector for all domains (no events can be got from the domains).
@@ -92,13 +107,6 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     }
 
     /**
-     * Starts listening for events (listen call to the server side).
-     * @param anEventNotification object to notify for currently occurred events
-     * @param aCallback callback
-     */
-    protected abstract void listen(EventNotification anEventNotification, AsyncCallback<List<DomainEvent>> aCallback);
-
-    /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}
      * to filter events on the server side is optional.
      * @param aDomain domain to activate
@@ -142,10 +150,14 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
          */
         public void onSuccess(T aResult) {
             if(!isActive) {
-                LOG.log("RemoteEventConnector activated.");
-                isActive = true;
-                final ListenEventCallback theListenEventCallback = new ListenEventCallback(myEventNotification);
-                theListenEventCallback.callListen();
+                if(myConnectionStrategyClientConnector != null) {
+                    LOG.log("RemoteEventConnector activated.");
+                    isActive = true;
+                    final ListenEventCallback theListenEventCallback = new ListenEventCallback(myEventNotification);
+                    theListenEventCallback.callListen();
+                } else {
+                    throw new RemoteEventServiceRuntimeException("No connection strategy was set at the start of listening!");
+                }
             }
             if(myCallback != null) {
                 myCallback.onSuccess(aResult);
@@ -202,7 +214,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
         public synchronized void callListen() {
             if(isActive) {
                 //after getting an event, register itself to listen for the next events
-                listen(myEventNotification, this);
+                myConnectionStrategyClientConnector.listen(myEventNotification, this);
             }
         }
     }

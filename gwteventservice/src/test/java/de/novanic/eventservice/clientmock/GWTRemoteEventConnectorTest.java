@@ -19,8 +19,9 @@
  */
 package de.novanic.eventservice.clientmock;
 
+import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.*;
@@ -49,6 +50,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         ClientLoggerFactory.getClientLogger().attach(myClientLogger);
 
         myRemoteEventConnector = DefaultRemoteEventServiceFactoryTestMode.getInstance().getGWTRemoteEventConnector(myEventServiceAsyncMock);
+        myRemoteEventConnector.initListen(new DefaultClientConnector());
     }
 
     public void tearDown() {

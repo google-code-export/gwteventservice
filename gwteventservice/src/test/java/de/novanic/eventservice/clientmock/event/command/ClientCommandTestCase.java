@@ -20,7 +20,7 @@
 package de.novanic.eventservice.clientmock.event.command;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import org.easymock.MockControl;
