@@ -26,6 +26,7 @@ import de.novanic.eventservice.client.event.GwtTestRemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
 import de.novanic.eventservice.clientmock.GWTRemoteEventConnectorTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceMockTest;
+import de.novanic.eventservice.clientmock.RemoteEventServiceRuntimeExceptionTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceUnlistenerMockTest;
 import de.novanic.eventservice.clientmock.event.command.*;
 import de.novanic.eventservice.clientmock.event.command.schedule.ClientCommandSchedulerFactoryTest;
@@ -55,6 +56,7 @@ public class GWTEventServiceTestSuite extends GWTTestCase
         theGWTEventServiceTestSuite.addTestSuite(RegistrationEventFilterCommandTest.class);
 
         // Event
+        theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceRuntimeExceptionTest.class);
         theGWTEventServiceTestSuite.addTestSuite(GWTRemoteEventConnectorTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceFactoryTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceMockTest.class);

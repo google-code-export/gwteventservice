@@ -22,7 +22,7 @@ package de.novanic.eventservice.service.registry.user;
 import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
 import junit.framework.TestCase;
-import de.novanic.eventservice.config.ConfigurationException;
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 

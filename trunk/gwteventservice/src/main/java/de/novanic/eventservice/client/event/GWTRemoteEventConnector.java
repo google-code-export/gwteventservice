@@ -20,9 +20,9 @@
 package de.novanic.eventservice.client.event;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
-import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
@@ -32,7 +32,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.core.client.GWT;
 
 import java.util.Set;
-import java.util.List;
 
 /**
  * RemoteEventConnector should handle the connections between client- and the server side.
@@ -67,6 +66,19 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      */
     public void init(AsyncCallback<EventServiceConfigurationTransferable> aCallback) {
         myEventService.initEventService(aCallback);
+    }
+
+    /**
+     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     * That is required to specify the listen / connection strategy. The connection strategy can't be changed, when the listening has already started / an listener was added.
+     * That implementation initializes the connection strategy with the {@link de.novanic.eventservice.client.event.service.EventService}.
+     * @param aConnectionStrategyClientConnector {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} which implements the listen method
+     */
+    public void initListen(ConnectionStrategyClientConnector aConnectionStrategyClientConnector) {
+        super.initListen(aConnectionStrategyClientConnector);
+        if(!aConnectionStrategyClientConnector.isInitialized()) {
+            aConnectionStrategyClientConnector.init(myEventService);
+        }
     }
 
     /**
@@ -132,15 +144,6 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      */
     public void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback) {
         myEventService.deregisterEventFilter(aDomain, aCallback);
-    }
-
-    /**
-     * Starts listening for events (listen call to the server side).
-     * @param anEventNotification object to notify for currently occurred events
-     * @param aCallback callback
-     */
-    protected void listen(EventNotification anEventNotification, AsyncCallback<List<DomainEvent>> aCallback) {
-        myEventService.listen(aCallback);
     }
 
     /**

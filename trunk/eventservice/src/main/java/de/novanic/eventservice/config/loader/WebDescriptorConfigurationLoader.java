@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
-import de.novanic.eventservice.config.ConfigurationException;
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.config.ConfigParameter;
@@ -91,7 +91,7 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
     }
 
     /**
-     * Reads the numeric value of the parameter. When the value isn't numeric, an {@link de.novanic.eventservice.config.ConfigurationException} is thrown.
+     * Reads the numeric value of the parameter. When the value isn't numeric, an {@link de.novanic.eventservice.client.config.ConfigurationException} is thrown.
 	 * @param aParameterName parameter
 	 * @param aParameterNameFQ parameter (full-qualified variant)
      * @return numeric parameter value

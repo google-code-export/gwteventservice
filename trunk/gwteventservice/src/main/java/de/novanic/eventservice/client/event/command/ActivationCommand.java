@@ -20,7 +20,7 @@
 package de.novanic.eventservice.client.event.command;
 
 import de.novanic.eventservice.client.event.listener.EventNotification;
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,7 +40,7 @@ public class ActivationCommand extends ServerCallCommand<Void>
 
     /**
      * Creates an ActivationCommand (activates the listen cycle for event listening)
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      * @param aDomain {@link de.novanic.eventservice.client.event.domain.Domain} domain/context for event listening
      * @param anEventFilter {@link de.novanic.eventservice.client.event.filter.EventFilter} to filter events
      * @param anEventNotification {@link de.novanic.eventservice.client.event.listener.EventNotification} to get informed about incoming events

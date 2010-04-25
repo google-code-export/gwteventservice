@@ -50,7 +50,6 @@ public abstract class EventServiceTestCase extends TestCase
         FactoryResetService.resetFactory(EventRegistryFactory.class);
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
         FactoryResetService.resetFactory(UserManagerFactory.class);
-        //TODO reset ConfigurationDependentFactory
         ConfigurationDependentFactory.getInstance(anEventServiceConfiguration).reset(anEventServiceConfiguration);
     }
 

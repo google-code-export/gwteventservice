@@ -20,6 +20,7 @@
 package de.novanic.eventservice.config;
 
 import de.novanic.eventservice.EventServiceTestCase;
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
 import de.novanic.eventservice.util.PlatformUtil;
 

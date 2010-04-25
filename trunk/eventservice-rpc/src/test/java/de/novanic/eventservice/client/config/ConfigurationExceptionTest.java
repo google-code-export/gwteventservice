@@ -17,9 +17,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.config.loader;
+package de.novanic.eventservice.client.config;
 
-import de.novanic.eventservice.config.ConfigurationException;
 import junit.framework.TestCase;
 
 /**

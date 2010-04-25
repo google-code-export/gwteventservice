@@ -34,7 +34,6 @@ import de.novanic.eventservice.config.EventServiceConfigurationFactoryTest;
 import de.novanic.eventservice.config.level.ConfigLevelFactoryTest;
 import de.novanic.eventservice.config.loader.DefaultConfigurationLoaderTest;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoaderTest;
-import de.novanic.eventservice.config.loader.ConfigurationExceptionTest;
 import de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoaderTest;
 import de.novanic.eventservice.util.PlatformUtilTest;
 import de.novanic.eventservice.util.LoggingConfiguratorTestMode;
@@ -70,7 +69,6 @@ public class EventServiceTestSuite
         // Configuration
         theSuite.addTestSuite(ConfigLevelFactoryTest.class);
         theSuite.addTestSuite(RemoteEventServiceConfigurationTest.class);
-        theSuite.addTestSuite(ConfigurationExceptionTest.class);
         theSuite.addTestSuite(DefaultConfigurationLoaderTest.class);
         theSuite.addTestSuite(PropertyConfigurationLoaderTest.class);
         theSuite.addTestSuite(WebDescriptorConfigurationLoaderTest.class);

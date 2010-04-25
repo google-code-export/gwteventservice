@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice.client.event.command;
 
-import de.novanic.eventservice.client.connection.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.domain.Domain;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -37,7 +37,7 @@ public class DeregistrationEventFilterCommand extends ServerCallCommand<Void>
 
     /**
      * Creates a DeregistrationEventFilterCommand to deregister {@link de.novanic.eventservice.client.event.filter.EventFilter} instances.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.connector.RemoteEventConnector}
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      * @param aDomain {@link de.novanic.eventservice.client.event.domain.Domain} domain/context where the {@link de.novanic.eventservice.client.event.filter.EventFilter}
      * is registered.
      * @param aAsyncCallback callback for the command

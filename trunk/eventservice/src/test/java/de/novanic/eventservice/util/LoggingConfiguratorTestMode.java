@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice.util;
 
-import de.novanic.eventservice.config.ConfigurationException;
+import de.novanic.eventservice.client.config.ConfigurationException;
 
 import java.net.URL;
 import java.util.logging.LogManager;

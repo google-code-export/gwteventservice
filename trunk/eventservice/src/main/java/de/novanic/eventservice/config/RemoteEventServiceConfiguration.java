@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config;
 
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.HashMap;

@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config;
 
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 
@@ -174,7 +175,7 @@ public final class ConfigurationDependentFactory
     }
 
     /**
-     * Resets the {@link de.novanic.eventservice.config.ConfigurationDependentFactory} and re-initializes it
+     * Resets the {@link de.novanic.eventservice.config.ConfigurationDependentFactory} and re-initialize it
      * with a new configuration.
      * @param aConfiguration new configuration
      */
@@ -183,7 +184,7 @@ public final class ConfigurationDependentFactory
     }
 
     /**
-     * Resets the {@link de.novanic.eventservice.config.ConfigurationDependentFactory} and can automatically re-initializes it
+     * Resets the {@link de.novanic.eventservice.config.ConfigurationDependentFactory} and can automatically re-initialize it
      * with a new configuration.
      * @param aConfiguration new configuration
      * @param isReInit if is the factory should be re-initialized with the new factory

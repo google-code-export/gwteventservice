@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2008, GWTEventService Committers
+ * Copyright (c) 2010, GWTEventService Committers
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -17,32 +17,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.config;
+package de.novanic.eventservice.client.event;
 
 /**
- * ConfigurationLoadException is an exception that can be thrown by {@link de.novanic.eventservice.config.loader.ConfigurationLoader},
- * for example when a loading error occurs.
+ * {@link de.novanic.eventservice.client.event.RemoteEventServiceRuntimeException} is an general exception for GWTEventService
+ * that should primarily be used when there is no way to throw a checked exception for example within a callback.
  *
  * @author sstrohschein
- *         <br>Date: 23.10.2008
- *         <br>Time: 15:13:05
+ *         <br>Date: 16.04.2010
+ *         <br>Time: 23:31:04
  */
-public class ConfigurationException extends RuntimeException
+public class RemoteEventServiceRuntimeException extends RuntimeException
 {
     /**
-     * Creates a new {@link de.novanic.eventservice.config.ConfigurationException} with a message.
+     * Creates a new {@link de.novanic.eventservice.client.event.RemoteEventServiceRuntimeException} with a message.
      * @param aMessage message
      */
-    public ConfigurationException(String aMessage) {
+    public RemoteEventServiceRuntimeException(String aMessage) {
         super(aMessage);
     }
 
     /**
-     * Creates a new {@link de.novanic.eventservice.config.ConfigurationException} with a message and a cause throwable.
+     * Creates a new {@link de.novanic.eventservice.client.event.RemoteEventServiceRuntimeException} with a message and a cause throwable.
      * @param aMessage message
      * @param aThrowable throwable
      */
-    public ConfigurationException(String aMessage, Throwable aThrowable) {
+    public RemoteEventServiceRuntimeException(String aMessage, Throwable aThrowable) {
         super(aMessage, aThrowable);
     }
 }

@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.config;
 
+import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoader;
 import de.novanic.eventservice.config.loader.DefaultConfigurationLoader;
@@ -100,7 +101,7 @@ public class EventServiceConfigurationFactory
      * {@link de.novanic.eventservice.config.loader.ConfigurationLoader} strategies. The returned configurations
      * get enriched with default values when the parameters / options aren't configured.
      * @return the configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration})
-     * @throws ConfigurationException thrown when a configuration is available, but can't be loaded
+     * @throws de.novanic.eventservice.client.config.ConfigurationException thrown when a configuration is available, but can't be loaded
      */
     public EventServiceConfiguration loadEventServiceConfiguration() {
         for(List<ConfigurationLoader> theConfigLoaders: myConfigurationLoaders.values()) {
