@@ -21,11 +21,11 @@ package de.novanic.eventservice.service;
 
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.DomainEvent;
+import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
 import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
@@ -33,10 +33,17 @@ import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoader;
+import org.easymock.MockControl;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,7 +59,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     private static final Domain TEST_DOMAIN_2 = DomainFactory.getDomain("test_domain_2");
     private static final Domain TEST_DOMAIN_3 = DomainFactory.getDomain("test_domain_3");
 
-    private EventService myEventService;
+    private EventServiceImpl myEventService;
 
     public void tearDown() throws Exception {
         super.tearDown();
@@ -81,12 +88,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
         theEventServiceConfigurationFactory.removeConfigurationLoader(new PropertyConfigurationLoader());
 
-        EventServiceImpl theEventService = new DummyEventServiceImpl_2(new DummyServletConfig());
-
-        myEventService = theEventService;
+        myEventService = new DummyEventServiceImpl(new DummyServletConfig());
         super.setUp(myEventService);
 
-        assertEquals(0, theEventService.getActiveListenDomains().size());
+        assertEquals(0, myEventService.getActiveListenDomains().size());
 
         //Configuration of WebDescriptorConfigurationLoader (see DummyServletConfig). That configuration and ConfigurationLoader
         //was initialized with the init-method of EventServiceImpl. 
@@ -696,6 +701,183 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.getActiveListenDomains().size());
     }
 
+    public void testDoGet() throws Exception {
+        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
+        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+
+        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
+        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+
+        ServletOutputStream theOutputStream = new DummyServletOutputStream(new ByteArrayOutputStream());
+
+        theResponseMock.getOutputStream();
+        theResponseMockControl.setDefaultReturnValue(theOutputStream);
+
+        theResponseMock.setContentType(null);
+        theResponseMockControl.setDefaultVoidCallable();
+
+        theResponseMock.setHeader(null, null);
+        theResponseMockControl.setDefaultVoidCallable();
+
+        final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+        //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
+        theEventServiceConfigurationFactory.removeConfigurationLoader(new PropertyConfigurationLoader());
+
+        myEventService = new DummyEventServiceImpl(new DummyServletConfig());
+        super.setUp(myEventService);
+
+        theRequestMockControl.replay();
+        theResponseMockControl.replay();
+            myEventService.doGet(theRequestMock, theResponseMock);
+        theRequestMockControl.verify();
+        theResponseMockControl.verify();
+        theRequestMockControl.reset();
+        theResponseMockControl.reset();
+    }
+
+    public void testDoGet_Streaming() throws Exception {
+        initEventService();
+
+        tearDownEventServiceConfiguration();
+        setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
+        myEventService = new DummyEventServiceImpl();
+
+        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
+        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+
+        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
+        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+
+        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
+        HttpSession theSessionMock = theSessionMockControl.getMock();
+
+        theRequestMock.getSession();
+        theRequestMockControl.setReturnValue(theSessionMock);
+
+        theSessionMock.getId();
+        theSessionMockControl.setReturnValue(TEST_USER_ID);
+
+        final ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
+        ServletOutputStream theOutputStream = new DummyServletOutputStream(theByteArrayOutputStream);
+
+        theResponseMock.getOutputStream();
+        theResponseMockControl.setDefaultReturnValue(theOutputStream);
+
+        theResponseMock.setContentType(null);
+        theResponseMockControl.setDefaultVoidCallable();
+
+        theResponseMock.setHeader(null, null);
+        theResponseMockControl.setDefaultVoidCallable();
+
+        theResponseMock.flushBuffer();
+        theResponseMockControl.setDefaultVoidCallable();
+
+        myEventService.register(TEST_DOMAIN);
+        myEventService.addEvent(TEST_DOMAIN, new DummyEvent());
+
+        theRequestMockControl.replay();
+        theResponseMockControl.replay();
+        theSessionMockControl.replay();
+            myEventService.doGet(theRequestMock, theResponseMock);
+        theRequestMockControl.verify();
+        theResponseMockControl.verify();
+        theSessionMockControl.verify();
+        theRequestMockControl.reset();
+        theResponseMockControl.reset();
+        theSessionMockControl.reset();
+
+        myEventService.unlisten(TEST_DOMAIN);
+
+        final String theStreamedEvents = theByteArrayOutputStream.toString();
+        assertTrue(theStreamedEvents.contains("test_domain"));
+        assertTrue(theStreamedEvents.contains("DummyEvent"));
+    }
+
+    public void testDoGet_Streaming_Error() throws Exception {
+        initEventService();
+
+        tearDownEventServiceConfiguration();
+        setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
+        myEventService = new DummyEventServiceImpl();
+
+        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
+        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+
+        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
+        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+
+        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
+        HttpSession theSessionMock = theSessionMockControl.getMock();
+
+        theRequestMock.getSession();
+        theRequestMockControl.setReturnValue(theSessionMock);
+
+        theSessionMock.getId();
+        theSessionMockControl.setReturnValue(TEST_USER_ID);
+
+        theResponseMock.getOutputStream();
+        theResponseMockControl.setDefaultThrowable(new IOException("Test-Exception"));
+
+        theRequestMockControl.replay();
+        theResponseMockControl.replay();
+        theSessionMockControl.replay();
+            try {
+                myEventService.doGet(theRequestMock, theResponseMock);
+                fail("Exception expected!");
+            } catch(ServletException e) {
+            } catch(IOException e) {}
+        theRequestMockControl.verify();
+        theResponseMockControl.verify();
+        theSessionMockControl.verify();
+        theRequestMockControl.reset();
+        theResponseMockControl.reset();
+        theSessionMockControl.reset();
+    }
+
+    public void testDoGet_Streaming_Error_2() throws Exception {
+        initEventService();
+
+        tearDownEventServiceConfiguration();
+        setUp(createConfiguration(0, 500, 90000, DummyStreamingConnectorNotCloneable.class.getName()));
+        myEventService = new DummyEventServiceImpl();
+
+        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
+        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+
+        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
+        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+
+        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
+        HttpSession theSessionMock = theSessionMockControl.getMock();
+
+        theRequestMock.getSession();
+        theRequestMockControl.setReturnValue(theSessionMock);
+
+        theSessionMock.getId();
+        theSessionMockControl.setReturnValue(TEST_USER_ID);
+
+        theResponseMock.getOutputStream();
+        theResponseMockControl.setDefaultReturnValue(new DummyServletOutputStream(new ByteArrayOutputStream()));
+
+        theRequestMockControl.replay();
+        theResponseMockControl.replay();
+        theSessionMockControl.replay();
+            try {
+                myEventService.doGet(theRequestMock, theResponseMock);
+                fail("Exception expected!");
+            } catch(ServletException e) {
+                assertTrue(e.getCause() instanceof CloneNotSupportedException);
+            } catch(IOException e) {
+                assertTrue(e.getCause() instanceof CloneNotSupportedException);
+            }
+        theRequestMockControl.verify();
+        theResponseMockControl.verify();
+        theSessionMockControl.verify();
+        theRequestMockControl.reset();
+        theResponseMockControl.reset();
+        theSessionMockControl.reset();
+    }
+
     private void initEventService() throws Exception {
         setUp(createConfiguration(0, 30000, 90000));
 
@@ -706,17 +888,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     private class DummyEventServiceImpl extends EventServiceImpl
     {
         private DummyEventServiceImpl() throws ServletException {
-            init(null);
+            this(null);
         }
 
-        protected String getClientId(boolean isInitSession) {
-            return TEST_USER_ID;
-        }
-    }
-
-    private class DummyEventServiceImpl_2 extends EventServiceImpl
-    {
-        private DummyEventServiceImpl_2(ServletConfig aConfig) throws ServletException {
+        private DummyEventServiceImpl(ServletConfig aConfig) throws ServletException {
             init(aConfig);
         }
 
@@ -727,13 +902,18 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     private class DummyServletConfig implements ServletConfig
     {
-        private ConcurrentHashMap<String, Integer> myParameterMap;
+        private ConcurrentHashMap<String, String> myParameterMap;
 
         public DummyServletConfig() {
-            myParameterMap = new ConcurrentHashMap<String, Integer>(3);
-            myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), 40000);
-            myParameterMap.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), 5000);
-            myParameterMap.put(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), 120000);
+            this(40000);
+        }
+
+        public DummyServletConfig(int aMaxWaitingTime) {
+            myParameterMap = new ConcurrentHashMap<String, String>(4);
+            myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), String.valueOf(aMaxWaitingTime));
+            myParameterMap.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), String.valueOf(5000));
+            myParameterMap.put(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), String.valueOf(120000));
+            myParameterMap.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), StreamingServerConnector.class.getName());
         }
 
         public String getServletName() {
@@ -745,15 +925,25 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         }
 
         public String getInitParameter(String aParameterName) {
-            final Integer theParameterValue = myParameterMap.get(aParameterName);
-            if(theParameterValue != null) {
-                return String.valueOf(theParameterValue);
-            }
-            return null;
+            return myParameterMap.get(aParameterName);
         }
 
         public Enumeration getInitParameterNames() {
             return myParameterMap.keys();
+        }
+    }
+
+    public static class DummyStreamingConnectorNotCloneable extends StreamingServerConnector
+    {
+        public DummyStreamingConnectorNotCloneable(EventServiceConfiguration aConfiguration) {
+            super(aConfiguration);
+        }
+
+        public void prepare(HttpServletResponse aResponse) throws EventServiceException {}
+
+        public Object clone() throws CloneNotSupportedException {
+            super.clone();
+            throw new CloneNotSupportedException("Test-Exception");
         }
     }
 }

@@ -23,6 +23,8 @@ import de.novanic.eventservice.config.ConfigurationDependentFactoryTest;
 import de.novanic.eventservice.service.*;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnectorTest;
+import de.novanic.eventservice.service.connection.strategy.connector.streaming.EventSerializationPolicyTest;
+import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnectorTest;
 import de.novanic.eventservice.service.exception.NoSessionAvailableExceptionTest;
 import de.novanic.eventservice.service.registry.EventRegistryFactoryTest;
 import de.novanic.eventservice.service.registry.EventRegistryTest;
@@ -77,12 +79,14 @@ public class EventServiceTestSuite
 
         // Connection
         theSuite.addTestSuite(SessionConnectionIdGeneratorTest.class);
+        theSuite.addTestSuite(EventSerializationPolicyTest.class);
+
+        // Server connectors
+        theSuite.addTestSuite(LongPollingServerConnectorTest.class);
+        theSuite.addTestSuite(StreamingServerConnectorTest.class);
 
         // Events
         theSuite.addTestSuite(UnlistenEventFilterTest.class);
-
-        // ServerEventListener
-        theSuite.addTestSuite(LongPollingServerConnectorTest.class);
 
         // Registry
         theSuite.addTestSuite(UserActivitySchedulerTest.class);

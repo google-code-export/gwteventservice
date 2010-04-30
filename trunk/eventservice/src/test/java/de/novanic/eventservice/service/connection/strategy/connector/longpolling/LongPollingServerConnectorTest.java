@@ -71,7 +71,7 @@ public class LongPollingServerConnectorTest extends ServerEventConnectorTest
 
         ListenResult theListenResult = theListenRunnable.getListenResult();
         assertEquals(1, theListenResult.getEvents().size());
-        assertTrue(theListenResult.getDuration() >= 500);
+        assertTrue(theListenResult.getDuration() > 400); //could be get a little bit lesser than the specified min. waiting time (sleep) caused by accuracies of the OS and JDK implementations. 
     }
 
     public void testListen_Min_Waiting_Interrupted() throws Exception {
@@ -115,6 +115,6 @@ public class LongPollingServerConnectorTest extends ServerEventConnectorTest
 
         ListenResult theListenResult = theListenRunnable.getListenResult();
         assertEquals(0, theListenResult.getEvents().size());
-        assertTrue(theListenResult.getDuration() >= 500);
+        assertTrue(theListenResult.getDuration() >= 400);
     }
 }

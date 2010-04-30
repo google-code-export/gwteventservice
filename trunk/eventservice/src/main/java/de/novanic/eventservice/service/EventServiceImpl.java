@@ -21,6 +21,7 @@ package de.novanic.eventservice.service;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.logger.ServerLogger;
@@ -46,6 +48,9 @@ import de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * {@link de.novanic.eventservice.client.event.service.EventService} is the server side interface to register listen
@@ -72,6 +77,34 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
         myEventRegistry = initEventRegistry(aConfig);
         EventServiceConfiguration theConfiguration = myEventRegistry.getConfiguration();
         myConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfiguration);
+    }
+
+    /**
+     * The GET method is used to stream data to the clients.
+     * @param aRequest request
+     * @param aResponse response (with the stream)
+     * @throws ServletException
+     * @throws IOException
+     */
+    protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
+        ConnectionStrategyServerConnector theConnectionStrategyServerConnector = myConfigurationDependentFactory.getConnectionStrategyServerConnector();
+        if(theConnectionStrategyServerConnector instanceof StreamingServerConnector) {
+            final String theClientId = aRequest.getSession().getId();
+            StreamingServerConnector theStreamingServerConnector = (StreamingServerConnector)theConnectionStrategyServerConnector;
+            try {
+                //The streaming server connector has to be cloned, because it isn't stateless (a prepare method is required).
+                theStreamingServerConnector = (StreamingServerConnector)theStreamingServerConnector.clone();
+                theStreamingServerConnector.prepare(aResponse);
+                listen(theStreamingServerConnector, theClientId);
+            } catch(EventServiceException e) {
+                throw new ServletException("Error on streaming events to the client\"" + theClientId + "\"!", e);
+            } catch(CloneNotSupportedException e) {
+                throw new ServletException("Error on cloning \"" + StreamingServerConnector.class.getName() + "\" for client \"" + theClientId + "\"!", e);
+            } finally {
+                ServletOutputStream theServletOutputStream = aResponse.getOutputStream();
+                theServletOutputStream.close();
+            }
+        }
     }
 
     /**
@@ -181,9 +214,9 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      */
     public List<DomainEvent> listen() {
         final String theClientId = getClientId();
-        ConnectionStrategyServerConnector theServerEventListener = myConfigurationDependentFactory.getConnectionStrategyServerConnector();
+        ConnectionStrategyServerConnector theConnectionStrategyServerConnector = myConfigurationDependentFactory.getConnectionStrategyServerConnector();
         LOG.debug("Listen (client id \"" + theClientId + "\").");
-        return listen(theServerEventListener, theClientId);
+        return listen(theConnectionStrategyServerConnector, theClientId);
     }
 
     /**

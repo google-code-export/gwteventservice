@@ -22,12 +22,14 @@ package de.novanic.eventservice;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.junit.tools.GWTTestSuite;
 
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.GwtTestGWTStreamingClientConnector;
 import de.novanic.eventservice.client.event.GwtTestRemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
 import de.novanic.eventservice.clientmock.GWTRemoteEventConnectorTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceMockTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceRuntimeExceptionTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceUnlistenerMockTest;
+import de.novanic.eventservice.clientmock.config.ConfigurationTransferableDependentFactoryTest;
 import de.novanic.eventservice.clientmock.event.command.*;
 import de.novanic.eventservice.clientmock.event.command.schedule.ClientCommandSchedulerFactoryTest;
 
@@ -47,6 +49,9 @@ public class GWTEventServiceTestSuite extends GWTTestCase
 
         // --- Mock-Tests ---
 
+        // Configuration
+        theGWTEventServiceTestSuite.addTestSuite(ConfigurationTransferableDependentFactoryTest.class);
+
         // Command
         theGWTEventServiceTestSuite.addTestSuite(ClientCommandSchedulerFactoryTest.class);
         theGWTEventServiceTestSuite.addTestSuite(InitEventServiceCommandTest.class);
@@ -63,6 +68,9 @@ public class GWTEventServiceTestSuite extends GWTTestCase
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceUnlistenerMockTest.class);
 
         // --- GWT-Tests ---
+
+        // Connection
+        theGWTEventServiceTestSuite.addTestSuite(GwtTestGWTStreamingClientConnector.class);
 
         // Event
         theGWTEventServiceTestSuite.addTestSuite(GwtTestRemoteEventService.class);

@@ -65,23 +65,25 @@ public abstract class ConnectionStrategyServerConnectorAdapter implements Connec
      * @throws EventServiceException can occur when the waiting was interrupted by an error
      */
     protected boolean waitMaxWaitingTime(UserInfo aUserInfo) throws EventServiceException {
-        boolean isMaxWaitingTimeReached = false;
         final int theMaxWaitingTime = myConfiguration.getMaxWaitingTime();
-        if(theMaxWaitingTime > 0 && aUserInfo.isEventsEmpty()) {
+        if(theMaxWaitingTime <= 0) {
+            return true;
+        }
+        if(aUserInfo.isEventsEmpty()) {
             //monitor for event notification and double checked
             synchronized(aUserInfo) {
                 if(aUserInfo.isEventsEmpty()) {
                     try {
                         final long theStartTime = System.currentTimeMillis();
                         aUserInfo.wait(theMaxWaitingTime);
-                        isMaxWaitingTimeReached = (System.currentTimeMillis() - theStartTime >= theMaxWaitingTime);
+                        return (System.currentTimeMillis() - theStartTime >= theMaxWaitingTime);
                     } catch(InterruptedException e) {
                         throw new EventServiceException("Error on waiting max. waiting time!", e);
                     }
                 }
             }
         }
-        return isMaxWaitingTimeReached;
+        return false;
     }
 
     /**

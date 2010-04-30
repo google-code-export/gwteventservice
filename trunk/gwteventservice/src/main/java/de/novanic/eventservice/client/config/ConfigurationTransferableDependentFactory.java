@@ -21,6 +21,7 @@ package de.novanic.eventservice.client.config;
 
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
 
 /**
  * The {@link de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory} can create instances from a transferable configuration
@@ -91,6 +92,10 @@ public final class ConfigurationTransferableDependentFactory
         }
     }
 
+    /**
+     * Returns the configured {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     * @return configured {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}
+     */
     public ConnectionStrategyClientConnector getConnectionStrategyClientConnector() {
         return myConnectionStrategyClientConnector;
     }
@@ -107,6 +112,8 @@ public final class ConfigurationTransferableDependentFactory
         //GWT doesn't seem to support instance creation from a String (via reflection)
         if(aClassName.equals(DefaultClientConnector.class.getName())) {
             return (T)new DefaultClientConnector();
+        } else if(aClassName.equals(GWTStreamingClientConnector.class.getName())) {
+            return (T)new GWTStreamingClientConnector();
         } else {
             throw new ConfigurationException("The configured class \"" + aClassName + "\" is unknown!");
         }
@@ -127,19 +134,7 @@ public final class ConfigurationTransferableDependentFactory
      * @param aConfiguration new configuration
      */
     public void reset(EventServiceConfigurationTransferable aConfiguration) {
-        reset(aConfiguration, true);
-    }
-
-    /**
-     * Resets the {@link ConfigurationTransferableDependentFactory} and can automatically re-initialize it
-     * with a new configuration.
-     * @param aConfiguration new configuration
-     * @param isReInit if is the factory should be re-initialized with the new factory
-     */
-    protected void reset(EventServiceConfigurationTransferable aConfiguration, boolean isReInit) {
         myConfiguration = aConfiguration;
-        if(isReInit) {
-            init();
-        }
+        init();
     }
 }

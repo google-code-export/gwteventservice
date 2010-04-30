@@ -73,7 +73,11 @@ public abstract class EventServiceTestCase extends TestCase
     }
 
     protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime) {
-        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGenerator.class.getName(), null, LongPollingServerConnector.class.getName());
+        return createConfiguration(aMinTime, aMaxTime, aTimeoutTime, LongPollingServerConnector.class.getName());
+    }
+
+    protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime, String aConnectionStrategyServerConnectorClassName) {
+        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, SessionConnectionIdGenerator.class.getName(), null, aConnectionStrategyServerConnectorClassName);
     }
 
     protected ConnectionStrategyServerConnector getLongPollingListener() {
