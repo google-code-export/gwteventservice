@@ -185,6 +185,14 @@ public class UserInfo implements Comparable<UserInfo>
         return myLastActivityTime;
     }
 
+    /**
+     * That method must be called to report a user activity and protects the user from a timeout for the time of the
+     * timeout interval ({@link de.novanic.eventservice.config.EventServiceConfiguration#getTimeoutTime()}).
+     */
+    public void reportUserActivity() {
+        setLastActivityTime(PlatformUtil.getCurrentTime());
+    }
+
     public int compareTo(UserInfo aUserInfo) {
         return myUserId.compareTo(aUserInfo.myUserId);
     }

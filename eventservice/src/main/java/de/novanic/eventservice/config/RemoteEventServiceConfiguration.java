@@ -183,9 +183,9 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
         theConfigStringBuilder.append("EventServiceConfiguration (");
         theConfigStringBuilder.append(getConfigDescription());
         theConfigStringBuilder.append(')');
+        //print time settings
         theConfigStringBuilder.append(PlatformUtil.getNewLine());
-        theConfigStringBuilder.append("  ");
-        theConfigStringBuilder.append("Min.: ");
+        theConfigStringBuilder.append("  Min.: ");
         if(theMinWaitingTime != null) {
             theConfigStringBuilder.append(theMinWaitingTime);
         } else {

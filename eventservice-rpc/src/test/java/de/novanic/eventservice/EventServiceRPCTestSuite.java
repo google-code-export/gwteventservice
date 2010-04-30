@@ -20,9 +20,9 @@
 package de.novanic.eventservice;
 
 import de.novanic.eventservice.client.config.ConfigurationExceptionTest;
-import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactoryTest;
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferableTest;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnectorTest;
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnectorTest;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 import de.novanic.eventservice.client.logger.ClientLoggerFactoryTest;
@@ -56,7 +56,6 @@ public class EventServiceRPCTestSuite
         // Configuration
         theSuite.addTestSuite(ConfigurationExceptionTest.class);
         theSuite.addTestSuite(RemoteEventServiceConfigurationTransferableTest.class);
-        theSuite.addTestSuite(ConfigurationTransferableDependentFactoryTest.class);
 
         // Domain
         theSuite.addTestSuite(DomainFactoryTest.class);
@@ -64,6 +63,7 @@ public class EventServiceRPCTestSuite
 
         // Connection
         theSuite.addTestSuite(DefaultClientConnectorTest.class);
+        theSuite.addTestSuite(DefaultStreamingClientConnectorTest.class);
 
         // Command
         theSuite.addTestSuite(DefaultRemoteCommandTest.class);

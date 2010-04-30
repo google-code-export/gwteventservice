@@ -17,10 +17,16 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.config;
+package de.novanic.eventservice.clientmock.config;
 
+import de.novanic.eventservice.client.config.ConfigurationException;
+import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
 import junit.framework.TestCase;
 
 /**
@@ -69,18 +75,6 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error() {
-        ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(null);
-        theConfigurationTransferableDependentFactory.reset(null, false);
-
-        try {
-            ConfigurationTransferableDependentFactory.getInstance();
-            fail("Exception expected, because the factory wasn't initialized with a configuration!");
-        } catch(ExceptionInInitializerError e) {
-            assertTrue(e.getCause() instanceof ConfigurationException);
-        } catch(ConfigurationException e) {}
-    }
-
-    public void testGetInstance_Error_2() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "12345678", String.class.getName());
         try {
             ConfigurationTransferableDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
@@ -90,7 +84,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
-    public void testGetInstance_Error_3() {
+    public void testGetInstance_Error_2() {
         try {
             ConfigurationTransferableDependentFactory.getInstance(null).reset(null);
             fail("Exception expected, because the type isn't a " + ConnectionStrategyClientConnector.class.getSimpleName() + '!');
@@ -99,7 +93,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
-    public void testGetInstance_Error_4() {
+    public void testGetInstance_Error_3() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "12345678", "NotExistingClassXY");
         try {
             ConfigurationTransferableDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
@@ -124,6 +118,18 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertTrue(theConnectionStrategyClientConnector instanceof DefaultClientConnector);
     }
 
+    public void testGetConnectionStrategyClientConnector_2() {
+        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
+        theConfig.setConnectionStrategyClientConnector(GWTStreamingClientConnector.class.getName());
+
+        ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(theConfig);
+        theConfigurationTransferableDependentFactory.reset(theConfig);
+
+        final ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigurationTransferableDependentFactory.getConnectionStrategyClientConnector();
+        assertNotNull(theConnectionStrategyClientConnector);
+        assertTrue(theConnectionStrategyClientConnector instanceof DefaultStreamingClientConnector);
+    }
+
     public void testGetConnectionStrategyClientConnector_Default() {
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(null);
@@ -140,11 +146,28 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(String.class.getName());
 
-        ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(theConfig);
         try {
-            theConfigurationTransferableDependentFactory.reset(theConfig);
+            ConfigurationTransferableDependentFactory.getInstance(theConfig).reset(theConfig);
+        } catch(ExceptionInInitializerError e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+            assertTrue(e.getCause().getMessage().contains(String.class.getName()));
         } catch(ConfigurationException e) {
             assertTrue(e.getMessage().contains(String.class.getName()));
+        }
+    }
+
+    public void testGetConnectionStrategyClientConnector_Error_2() {
+        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
+        theConfig.setConnectionStrategyClientConnector(DefaultStreamingClientConnector.class.getName());
+
+        try {
+            ConfigurationTransferableDependentFactory.getInstance(theConfig).reset(theConfig);
+            fail("Exception expected, because " + DefaultStreamingClientConnector.class.getName() + " is unknown!");
+        } catch(ExceptionInInitializerError e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+            assertTrue(e.getCause().getMessage().contains(DefaultStreamingClientConnector.class.getName()));
+        } catch(ConfigurationException e) {
+            assertTrue(e.getMessage().contains(DefaultStreamingClientConnector.class.getName()));
         }
     }
 

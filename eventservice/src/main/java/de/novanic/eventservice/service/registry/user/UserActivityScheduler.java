@@ -136,15 +136,7 @@ public class UserActivityScheduler
      * @param aUserInfo user/client to refresh
      */
     public void reportUserActivity(UserInfo aUserInfo) {
-        aUserInfo.setLastActivityTime(createCurrentTime());
-    }
-
-    /**
-     * Returns the current time in milliseconds.
-     * @return current time in milliseconds
-     */
-    private long createCurrentTime() {
-        return PlatformUtil.getCurrentTime();
+        aUserInfo.reportUserActivity();
     }
 
     /**
@@ -168,7 +160,7 @@ public class UserActivityScheduler
     private class TimeoutTimerTask extends TimerTask
     {
         public void run() {
-            final long theTimeoutCriteriaTime = createCurrentTime() - myTimeoutInterval;
+            final long theTimeoutCriteriaTime = PlatformUtil.getCurrentTime() - myTimeoutInterval;
 
             Iterator<UserInfo> theUserInfoIterator = myUserInfoCollection.iterator();
             while(theUserInfoIterator.hasNext()) {
