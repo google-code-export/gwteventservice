@@ -46,4 +46,13 @@ public class ServerGeneratedMessageEvent implements Event
     public String getServerGeneratedMessage() {
         return myServerGeneratedMessage;
     }
+
+    public String toString() {
+        StringBuilder theStringBuilder = new StringBuilder(100);
+        theStringBuilder.append(ServerGeneratedMessageEvent.class.getName());
+        theStringBuilder.append(new char[] {' ', '('});
+        theStringBuilder.append(myServerGeneratedMessage);
+        theStringBuilder.append(')');
+        return theStringBuilder.toString();        
+    }
 }

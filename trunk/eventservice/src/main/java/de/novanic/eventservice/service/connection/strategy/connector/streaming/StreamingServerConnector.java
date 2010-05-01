@@ -24,6 +24,8 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.logger.ServerLogger;
+import de.novanic.eventservice.logger.ServerLoggerFactory;
 import de.novanic.eventservice.service.EventServiceException;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnectorAdapter;
 import de.novanic.eventservice.service.registry.user.UserInfo;
@@ -49,6 +51,8 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
     private static final byte[] SCRIPT_TAG_PREFIX = "<script type='text/javascript'>window.parent.receiveEvent('".getBytes();
     private static final byte[] SCRIPT_TAG_SUFFIX = "');</script>".getBytes();
     private static final byte[] CYCLE_TAG = "cycle".getBytes();
+
+    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(StreamingServerConnector.class.getName());
 
     private HttpServletResponse myResponse;
     private OutputStream myOutputStream;
@@ -108,31 +112,35 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
      */
     public List<DomainEvent> listen(UserInfo aUserInfo) throws EventServiceException {
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
-        //loops until the max. waiting time is exceed
-        do {
-            List<DomainEvent> theCurrentEvents = aUserInfo.retrieveEvents();
-            if(!theCurrentEvents.isEmpty()) {
-                aUserInfo.reportUserActivity();
-                theEvents.addAll(theCurrentEvents);
-                for(DomainEvent theEvent: theCurrentEvents) {
-                    //serialization and escaping
-                    String theSerializedEvent = serialize(theEvent);
-                    theSerializedEvent = escapeSerializedData(theSerializedEvent);
-                    //writing to the stream
-                    printStatement(theSerializedEvent.getBytes(), myOutputStream);
-                }
-                aUserInfo.reportUserActivity();
-            }
-        } while(!waitMaxWaitingTime(aUserInfo));
-        //TODO think of a max. connection time, because max. waiting time describes the waiting time max. time between events and another time is required to define the max. connection time to avoid client side timeout detection
-
-        //writing cycle command to the stream
-        printStatement(CYCLE_TAG, myOutputStream);
-
         try {
-            myOutputStream.close();
-        } catch(IOException e) {
-            throw new EventServiceException("Error on closing output stream!", e);
+            //loops until the max. waiting time is exceed
+            do {
+                List<DomainEvent> theCurrentEvents = aUserInfo.retrieveEvents();
+                if(!theCurrentEvents.isEmpty()) {
+                    aUserInfo.reportUserActivity();
+                    theEvents.addAll(theCurrentEvents);
+                    for(DomainEvent theEvent: theCurrentEvents) {
+                        //serialization and escaping
+                        String theSerializedEvent = serialize(theEvent);
+                        theSerializedEvent = escapeSerializedData(theSerializedEvent);
+                        //writing to the stream
+                        printStatement(theSerializedEvent.getBytes(), myOutputStream);
+                    }
+                    aUserInfo.reportUserActivity();
+                }
+            } while(!waitMaxWaitingTime(aUserInfo));
+            //TODO think of a max. connection time, because max. waiting time describes the waiting time max. time between events and another time is required to define the max. connection time to avoid client side timeout detection
+
+            //writing cycle command to the stream
+            printStatement(CYCLE_TAG, myOutputStream);
+        } catch(FlushException e) {
+            LOG.debug(e.getMessage());
+        } finally {
+            try {
+                close(myOutputStream);
+            } catch(CloseException e) {
+                LOG.debug(e.getMessage());
+            }
         }
         return theEvents;
     }
@@ -187,15 +195,50 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
      * @param anOutputStream stream
      * @throws EventServiceException
      */
-    private void printStatement(byte[] aStatement, OutputStream anOutputStream) throws EventServiceException {
+    private void printStatement(byte[] aStatement, OutputStream anOutputStream) throws EventServiceException, FlushException {
         try {
             anOutputStream.write(SCRIPT_TAG_PREFIX);
             anOutputStream.write(aStatement);
             anOutputStream.write(SCRIPT_TAG_SUFFIX);
+        } catch(IOException e) {
+            throw new EventServiceException("Error on printing statement \"" + new String(aStatement) + "\"!", e);
+        } finally {
+            flush(aStatement, anOutputStream);
+        }
+    }
+
+    private void flush(byte[] aStatement, OutputStream anOutputStream) throws FlushException {
+        try {
             anOutputStream.flush();
             myResponse.flushBuffer();
         } catch(IOException e) {
-            throw new EventServiceException("Error on printing statement \"" + new String(aStatement) + "\"!", e);
+            throw new FlushException(aStatement, e);
+        }
+    }
+
+    private void close(OutputStream anOutputStream) throws CloseException {
+        try {
+            anOutputStream.close();
+        } catch(IOException e) {
+            throw new CloseException(e);
+        }
+    }
+
+    private static class CloseException extends Exception
+    {
+        private CloseException(Throwable aThrowable) {
+            super("Error on closing output stream!", aThrowable);
+        }
+    }
+
+    private static class FlushException extends Exception
+    {
+        private FlushException(byte[] aFlushingStatement, Throwable aThrowable) {
+            super(createMessage(aFlushingStatement), aThrowable);
+        }
+
+        private static String createMessage(byte[] aFlushingStatement) {
+            return "Flushing wasn't successful (\"" + new String(aFlushingStatement) + "\")!";
         }
     }
 }

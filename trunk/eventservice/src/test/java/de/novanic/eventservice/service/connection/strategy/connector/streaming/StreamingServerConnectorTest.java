@@ -33,6 +33,10 @@ import org.easymock.MockControl;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
  * @author sstrohschein
@@ -144,34 +148,67 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
     public void testListen_Error() throws Exception {
         final UserInfo theUserInfo = new UserInfo("test_user");
 
-        ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
+        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(0, new DummyServletOutputStreamNotClosable());
 
-        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(0, new DummyServletOutputStreamNotClosable(theByteArrayOutputStream));
+        TestLoggingHandler theTestLoggingHandler = new TestLoggingHandler();
 
-        ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);
-        Thread theListenThread = new Thread(theListenRunnable);
-        theListenThread.start();
-        theListenThread.join();
+        Logger theLogger = Logger.getLogger(StreamingServerConnector.class.getName());
+        final Level theOldLevel = theLogger.getLevel();
+        try {
+            theLogger.setLevel(Level.FINEST);
+            theLogger.addHandler(theTestLoggingHandler);
 
-        EventServiceException theOccurredException = theListenRunnable.getOccurredException();
-        assertNotNull(theOccurredException);
-        assertTrue(theOccurredException.getCause() instanceof IOException);
+            ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);
+            Thread theListenThread = new Thread(theListenRunnable);
+            theListenThread.start();
+            theListenThread.join();
+
+            assertNotNull(theTestLoggingHandler.getLastMessage());
+            assertTrue(theTestLoggingHandler.getLastMessage().contains("close") || theTestLoggingHandler.getLastMessage().contains("closing"));
+        } finally {
+            theLogger.setLevel(theOldLevel);
+            theLogger.removeHandler(theTestLoggingHandler);
+        }
     }
 
     public void testListen_Error_2() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
 
-        ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
+        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(0, new DummyServletOutputStreamNotFlushable());
 
-        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(0, new DummyServletOutputStreamNotFlushable(theByteArrayOutputStream));
+        TestLoggingHandler theTestLoggingHandler = new TestLoggingHandler();
+
+        Logger theLogger = Logger.getLogger(StreamingServerConnector.class.getName());
+        final Level theOldLevel = theLogger.getLevel();
+        try {
+            theLogger.setLevel(Level.FINEST);
+            theLogger.addHandler(theTestLoggingHandler);
+
+            ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);
+            Thread theListenThread = new Thread(theListenRunnable);
+            theListenThread.start();
+
+            theUserInfo.addEvent(theDomain, new DummyEvent());
+
+            theListenThread.join();
+
+            assertNotNull(theTestLoggingHandler.getLastMessage());
+            assertTrue(theTestLoggingHandler.getLastMessage().contains("Flush") || theTestLoggingHandler.getLastMessage().contains("flush"));
+        } finally {
+            theLogger.setLevel(theOldLevel);
+            theLogger.removeHandler(theTestLoggingHandler);
+        }
+    }
+
+    public void testListen_Error_3() throws Exception {
+        final UserInfo theUserInfo = new UserInfo("test_user");
+
+        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(0, new DummyServletOutputStreamNotWritable());
 
         ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);
         Thread theListenThread = new Thread(theListenRunnable);
         theListenThread.start();
-
-        theUserInfo.addEvent(theDomain, new DummyEvent());
-
         theListenThread.join();
 
         EventServiceException theOccurredException = theListenRunnable.getOccurredException();
@@ -179,7 +216,7 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
         assertTrue(theOccurredException.getCause() instanceof IOException);
     }
 
-    public void testListen_Error_3() throws Exception {
+    public void testListen_Error_4() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
 
@@ -352,10 +389,25 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
         return theStreamingServerConnector;
     }
 
+    private class DummyServletOutputStreamNotWritable extends DummyServletOutputStream
+    {
+        private DummyServletOutputStreamNotWritable() {
+            super(new ByteArrayOutputStream());
+        }
+
+        public void write(byte[] b) throws IOException {
+            throw new IOException("Test-Exception!");
+        }
+
+        public void write(byte[] b, int off, int len) throws IOException {
+            throw new IOException("Test-Exception!");
+        }
+    }
+
     private class DummyServletOutputStreamNotClosable extends DummyServletOutputStream
     {
-        private DummyServletOutputStreamNotClosable(ByteArrayOutputStream aByteArrayOutputStream) {
-            super(aByteArrayOutputStream);
+        private DummyServletOutputStreamNotClosable() {
+            super(new ByteArrayOutputStream());
         }
 
         public void close() throws IOException {
@@ -365,8 +417,8 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
 
     private class DummyServletOutputStreamNotFlushable extends DummyServletOutputStream
     {
-        private DummyServletOutputStreamNotFlushable(ByteArrayOutputStream aByteArrayOutputStream) {
-            super(aByteArrayOutputStream);
+        private DummyServletOutputStreamNotFlushable() {
+            super(new ByteArrayOutputStream());
         }
 
         public void flush() throws IOException {
@@ -378,6 +430,23 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
     {
         public void validateSerialize(Class<?> aClass) throws SerializationException {
             throw new SerializationException("Test-Exception");
+        }
+    }
+
+    private class TestLoggingHandler extends Handler
+    {
+        private String myLastMessage;
+
+        public void publish(LogRecord aRecord) {
+            myLastMessage = aRecord.getMessage();
+        }
+
+        public void flush() {}
+
+        public void close() throws SecurityException {}
+
+        public String getLastMessage() {
+            return myLastMessage;
         }
     }
 }
