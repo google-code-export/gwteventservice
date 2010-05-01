@@ -61,13 +61,9 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
         ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
         theGWTStreamingClientConnector.init(myEventService);
         theGWTStreamingClientConnector.listen(new DummyEventNotification(), new AsyncCallback<List<DomainEvent>>() {
-            public void onSuccess(List<DomainEvent> aDomainEvents) {
-                System.out.println("onSuccess");
-            }
+            public void onSuccess(List<DomainEvent> aDomainEvents) {}
 
-            public void onFailure(Throwable aThrowable) {
-                System.out.println("onFailure");
-            }
+            public void onFailure(Throwable aThrowable) {}
         });
     }
 

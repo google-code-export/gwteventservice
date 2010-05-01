@@ -285,7 +285,6 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
         theListenThread.join();
 
         ListenResult theListenResult = theListenRunnable.getListenResult();
-        System.out.println(theListenResult.getDuration());
         assertEquals(1, theListenResult.getEvents().size());
         assertTrue(theListenResult.getDuration() >= 500 && theListenResult.getDuration() < 8000);
 
