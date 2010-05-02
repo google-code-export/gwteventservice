@@ -935,7 +935,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     public static class DummyStreamingConnectorNotCloneable extends StreamingServerConnector
     {
-        public DummyStreamingConnectorNotCloneable(EventServiceConfiguration aConfiguration) {
+        public DummyStreamingConnectorNotCloneable(EventServiceConfiguration aConfiguration) throws EventServiceException {
             super(aConfiguration);
         }
 

@@ -21,9 +21,13 @@ package de.novanic.eventservice.service.connection.strategy.connector;
 
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.client.event.DomainEvent;
+import de.novanic.eventservice.config.ConfigParameter;
+import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.service.EventServiceException;
 import de.novanic.eventservice.service.registry.user.UserInfo;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -31,8 +35,31 @@ import java.util.List;
  *         <br>Date: 16.03.2010
  *         <br>Time: 23:21:05
  */
-public abstract class ServerEventConnectorTest extends EventServiceTestCase
+public abstract class ConnectionStrategyServerConnectorTest extends EventServiceTestCase
 {
+    public void testGetEncoding(Class<? extends ConnectionStrategyServerConnectorAdapter> aConnectorClass) throws Exception {
+        Constructor<? extends ConnectionStrategyServerConnectorAdapter> theConstructor = aConnectorClass.getConstructor(EventServiceConfiguration.class);
+        theConstructor.newInstance(createConfiguration(0, 30000, 90000));
+        assertEquals("utf-8", ConnectionStrategyServerConnectorAdapter.getEncoding());
+    }
+
+    public void testGetEncoding_Error(Class<? extends ConnectionStrategyServerConnectorAdapter> aConnectorClass) throws Exception {
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 30000, 90000);
+        theConfiguration.getConfigMap().put(ConfigParameter.CONNECTION_STRATEGY_ENCODING, null);
+        theConfiguration.getConfigMap().put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, null);
+        try {
+            Constructor<? extends ConnectionStrategyServerConnectorAdapter> theConstructor = aConnectorClass.getConstructor(EventServiceConfiguration.class);
+            theConstructor.newInstance(theConfiguration);
+            ConnectionStrategyServerConnectorAdapter.getEncoding();
+            fail("Exception expected, because the encoding isn't defined!");
+        } catch(InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof EventServiceException);
+            assertNotNull(e.getCause().getMessage());
+        } catch(EventServiceException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+
     protected class ListenRunnable implements Runnable
     {
         private ConnectionStrategyServerConnector myServerEventListener;

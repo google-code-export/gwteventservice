@@ -48,6 +48,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
     }
 
 	public void testLoad_FQ() {
@@ -63,6 +64,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
     }
 	
     public void testLoad_Error() {

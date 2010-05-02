@@ -58,6 +58,11 @@ public enum ConfigParameter
      */
     CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector", false),
 
+    /**
+     * Connection strategy encoding - Encoding / charset for the connection strategy
+     */
+    CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding", false),
+
     // --- Full-qualified declarations ---
 
     /**
@@ -88,7 +93,12 @@ public enum ConfigParameter
     /**
      * Connection strategy (server side part / connector) - Connection strategies are used to define the communication between the client and the server side
      */
-    FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector", true);
+    FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector", true),
+
+    /**
+     * Connection strategy encoding - Encoding / charset for the connection strategy
+     */
+    FQ_CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding", true);
 
     // --- Constants ---
 

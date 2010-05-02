@@ -52,7 +52,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, LongPollingServerConnector.class.getName());
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, LongPollingServerConnector.class.getName(), "utf-8");
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theEventServiceConfiguration);
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance(theEventServiceConfiguration));
@@ -60,7 +60,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_2() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, null, "utf-8");
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theEventServiceConfiguration);
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance());
@@ -68,7 +68,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_3() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, SessionConnectionIdGenerator.class.getName(), null, null, "utf-8");
 
         ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theEventServiceConfiguration);
         theConfigurationDependentFactory.reset(theEventServiceConfiguration);
@@ -89,7 +89,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_2() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, String.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, String.class.getName(), null, null, "utf-8");
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because no configuration is available!");
@@ -108,7 +108,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_4() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, "NotExistingClassXY", null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, "NotExistingClassXY", null, null, "utf-8");
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the NotExistingClassXY class couldn't be found!");
@@ -121,7 +121,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_5() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGeneratorAbstract.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGeneratorAbstract.class.getName(), null, null, "utf-8");
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the constructor of " + DummyConnectionIdGeneratorAbstract.class.getName() + " throws an exception!");
@@ -134,7 +134,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_6() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator.class.getName(), null, null, "utf-8");
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the " + DummyConnectionIdGenerator.class.getName() + " couldn't be instantiated caused by the private constructor!");
@@ -147,7 +147,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_7() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_2.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_2.class.getName(), null, null, "utf-8");
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the constructor of " + DummyConnectionIdGenerator_2.class.getName() + " throws an exception!");
@@ -160,7 +160,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error_9() {
-        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_3.class.getName(), null, null);
+        final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, DummyConnectionIdGenerator_3.class.getName(), null, null, "utf-8");
         try {
             ConfigurationDependentFactory.getInstance(theEventServiceConfiguration).reset(theEventServiceConfiguration);
             fail("Exception expected, because the constructor of " + DummyConnectionIdGenerator_3.class.getName() + " throws an exception!");
@@ -259,6 +259,10 @@ public class ConfigurationDependentFactoryTest extends TestCase
 
         public void setConnectionStrategyServerConnectorClassName(String aConnectionStrategyServerConnectorClassName) {
             myConnectionStrategyServerConnectorClassName = aConnectionStrategyServerConnectorClassName;
+        }
+
+        public String getConnectionStrategyEncoding() {
+            return "utf-8";
         }
 
         public Map<ConfigParameter, Object> getConfigMap() {

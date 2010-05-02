@@ -23,6 +23,8 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.service.EventServiceException;
 import de.novanic.eventservice.service.registry.user.UserInfo;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * {@link ConnectionStrategyServerConnectorAdapter} is an abstract default implementation of {@link ConnectionStrategyServerConnector}
  * and offers some general methods for the internal operation which can be useful for various connection strategies.
@@ -39,6 +41,7 @@ import de.novanic.eventservice.service.registry.user.UserInfo;
 public abstract class ConnectionStrategyServerConnectorAdapter implements ConnectionStrategyServerConnector
 {
     private EventServiceConfiguration myConfiguration;
+    private static String ENCODING;
 
     /**
      * Creates a new connection strategy with a configuration ({@link de.novanic.eventservice.config.EventServiceConfiguration}).
@@ -46,6 +49,7 @@ public abstract class ConnectionStrategyServerConnectorAdapter implements Connec
      */
     protected ConnectionStrategyServerConnectorAdapter(EventServiceConfiguration aConfiguration) {
         myConfiguration = aConfiguration;
+        ENCODING = myConfiguration.getConnectionStrategyEncoding();
     }
 
     /**
@@ -98,6 +102,21 @@ public abstract class ConnectionStrategyServerConnectorAdapter implements Connec
             } catch(InterruptedException e) {
                 throw new EventServiceException("Error on waiting min. waiting time!", e);
             }
+        }
+    }
+
+    protected static String getEncoding() throws EventServiceException {
+        if(ENCODING != null) {
+            return ENCODING;
+        }
+        throw new EventServiceException("The encoding property wasn't initialized. It is initialized with the configuration at the time of object construction.");
+    }
+
+    protected static byte[] encode(String aString) throws EventServiceException {
+        try {
+            return aString.getBytes(getEncoding());
+        } catch(UnsupportedEncodingException e) {
+            throw new EventServiceException("Error on encoding \"" + aString + "\"!", e); //shouldn't be able to occur
         }
     }
 }

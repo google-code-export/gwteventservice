@@ -123,9 +123,10 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
         final String theConnectionIdGenerator = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_ID_GENERATOR, ConfigParameter.CONNECTION_ID_GENERATOR);
         final String theConnectionStrategyClientConnector = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR, ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR);
         final String theConnectionStrategyServerConnector = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR, ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR);
+        final String theConnectionStrategyEncoding = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, ConfigParameter.CONNECTION_STRATEGY_ENCODING);
 
         return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime, theConnectionIdGenerator,
-                theConnectionStrategyClientConnector, theConnectionStrategyServerConnector);
+                theConnectionStrategyClientConnector, theConnectionStrategyServerConnector, theConnectionStrategyEncoding);
     }
 
     /**
