@@ -19,7 +19,6 @@
  */
 package de.novanic.eventservice.config;
 
-import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.util.PlatformUtil;
 
 import java.util.HashMap;
@@ -39,27 +38,9 @@ import java.util.Map;
  */
 public class RemoteEventServiceConfiguration implements EventServiceConfiguration
 {
-    private Map<ConfigParameter, Object> myConfigMap;
-
     private final String myConfigDescription;
 
-    /**
-     * Creates a new RemoteEventServiceConfiguration.
-     * @param aConfigDescription description of the configuration (for example the location)
-     * @param aMinWaitingTime min waiting time before listen returns (in milliseconds)
-     * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
-     * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
-     */
-    public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime) {
-        if(aConfigDescription == null) {
-            throw new ConfigurationException("The configuration description must be defined!");
-        }
-        myConfigDescription = aConfigDescription;
-        myConfigMap = new HashMap<ConfigParameter, Object>();
-        myConfigMap.put(ConfigParameter.MIN_WAITING_TIME_TAG, aMinWaitingTime);
-        myConfigMap.put(ConfigParameter.MAX_WAITING_TIME_TAG, aMaxWaitingTime);
-        myConfigMap.put(ConfigParameter.TIMEOUT_TIME_TAG, aTimeoutTime);
-    }
+    private Map<ConfigParameter, Object> myConfigMap;
 
     /**
      * Creates a new RemoteEventServiceConfiguration.
@@ -70,13 +51,20 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      * @param aConnectionIdGeneratorClassName class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} to generate unique client ids
      * @param aConnectionStrategyClientClassName class name of the configured connection strategy (client side part)
      * @param aConnectionStrategyServerClassName class name of the configured connection strategy (server side part)
+     * @param aConnectionStrategyEncoding encoding / charset which is used by the connection strategies
      */
     public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime,
-                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClientClassName, String aConnectionStrategyServerClassName) {
-        this(aConfigDescription, aMinWaitingTime, aMaxWaitingTime, aTimeoutTime);
+                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClientClassName, String aConnectionStrategyServerClassName,
+                                           String aConnectionStrategyEncoding) {
+        myConfigDescription = aConfigDescription;
+        myConfigMap = new HashMap<ConfigParameter, Object>();
+        myConfigMap.put(ConfigParameter.MIN_WAITING_TIME_TAG, aMinWaitingTime);
+        myConfigMap.put(ConfigParameter.MAX_WAITING_TIME_TAG, aMaxWaitingTime);
+        myConfigMap.put(ConfigParameter.TIMEOUT_TIME_TAG, aTimeoutTime);
         myConfigMap.put(ConfigParameter.CONNECTION_ID_GENERATOR, aConnectionIdGeneratorClassName);
         myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR, aConnectionStrategyClientClassName);
         myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR, aConnectionStrategyServerClassName);
+        myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_ENCODING, aConnectionStrategyEncoding);
     }
 
     /**
@@ -140,6 +128,15 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      */
     public String getConnectionStrategyServerConnectorClassName() {
         return (String)myConfigMap.get(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR);
+    }
+
+    /**
+     * Returns the configured encoding / charset for the connection strategy.
+     * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_STRATEGY_ENCODING
+     * @return configured encoding / charset
+     */
+    public String getConnectionStrategyEncoding() {
+        return (String)myConfigMap.get(ConfigParameter.CONNECTION_STRATEGY_ENCODING);
     }
 
     /**

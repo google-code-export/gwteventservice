@@ -136,6 +136,10 @@ public class UserManagerFactoryTest extends TestCase
             return null;
         }
 
+        public String getConnectionStrategyEncoding() {
+            return "utf-8";
+        }
+
         public Map<ConfigParameter, Object> getConfigMap() {
             return new HashMap<ConfigParameter, Object>();
         }

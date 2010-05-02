@@ -78,7 +78,8 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
                 readIntParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration()),
 				readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration()),
 				readParameter(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR.declaration()),
-				readParameter(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration()));
+				readParameter(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration()),
+                readParameter(ConfigParameter.CONNECTION_STRATEGY_ENCODING.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING.declaration()));
     }
 
     /**

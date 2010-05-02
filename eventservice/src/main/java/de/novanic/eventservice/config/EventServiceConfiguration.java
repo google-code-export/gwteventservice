@@ -86,6 +86,12 @@ public interface EventServiceConfiguration
     String getConnectionStrategyServerConnectorClassName();
 
     /**
+     * Returns the configured encoding / charset for the connection strategy.
+     * @return configured encoding / charset
+     */
+    String getConnectionStrategyEncoding();
+
+    /**
      * Returns the configurations as a {@link java.util.Map} with {@link de.novanic.eventservice.config.ConfigParameter}
      * instances as the key.
      * @return {@link java.util.Map} with the configurations with {@link de.novanic.eventservice.config.ConfigParameter}

@@ -23,9 +23,10 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
+import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.service.EventServiceException;
-import de.novanic.eventservice.service.connection.strategy.connector.ServerEventConnectorTest;
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnectorTest;
 import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.DummyServletOutputStream;
@@ -43,7 +44,7 @@ import java.util.logging.Logger;
  *         <br>Date: 25.04.2010
  *         <br>Time: 15:56:39
  */
-public class StreamingServerConnectorTest extends ServerEventConnectorTest
+public class StreamingServerConnectorTest extends ConnectionStrategyServerConnectorTest
 {
     public void testPrepare() throws Exception {
         MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
@@ -222,7 +223,8 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
 
         ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
 
-        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(700, theByteArrayOutputStream, new DummyEventSerializationPolicy());
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 700, 90000);
+        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(theByteArrayOutputStream, new DummyEventSerializationPolicy(), theConfiguration);
 
         ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);
         Thread theListenThread = new Thread(theListenRunnable);
@@ -235,6 +237,30 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
         EventServiceException theOccurredException = theListenRunnable.getOccurredException();
         assertNotNull(theOccurredException);
         assertTrue(theOccurredException.getCause() instanceof SerializationException);
+    }
+
+    public void testListen_Error_5() throws Exception {
+        final Domain theDomain = DomainFactory.getDomain("test_domain");
+        final UserInfo theUserInfo = new UserInfo("test_user");
+
+        ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
+
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 700, 90000);
+        theConfiguration.getConfigMap().put(ConfigParameter.CONNECTION_STRATEGY_ENCODING, "XYZ");
+        theConfiguration.getConfigMap().put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, "XYZ");
+        StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(theByteArrayOutputStream, new EventSerializationPolicy(), theConfiguration);
+
+        ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);
+        Thread theListenThread = new Thread(theListenRunnable);
+        theListenThread.start();
+
+        theUserInfo.addEvent(theDomain, new DummyEvent());
+
+        theListenThread.join();
+
+        EventServiceException theOccurredException = theListenRunnable.getOccurredException();
+        assertNotNull(theOccurredException);
+        assertTrue(theOccurredException.getCause() instanceof UnsupportedEncodingException);
     }
 
     /**
@@ -356,11 +382,20 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
         assertNotSame(theStreamingServerConnector, theClone_2);
     }
 
-    private StreamingServerConnector createStreamingServerConnector(int aMaxWaitingTime, OutputStream anOutputStream) throws EventServiceException, IOException {
-        return createStreamingServerConnector(aMaxWaitingTime, anOutputStream, null);
+    public void testGetEncoding() throws Exception {
+        testGetEncoding(StreamingServerConnector.class);
     }
 
-    private StreamingServerConnector createStreamingServerConnector(int aMaxWaitingTime, OutputStream anOutputStream, SerializationPolicy aSerializationPolicy) throws EventServiceException, IOException {
+    public void testGetEncoding_Error() throws Exception {
+        testGetEncoding_Error(StreamingServerConnector.class);
+    }
+
+    private StreamingServerConnector createStreamingServerConnector(int aMaxWaitingTime, OutputStream anOutputStream) throws EventServiceException, IOException {
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, aMaxWaitingTime, 90000);
+        return createStreamingServerConnector(anOutputStream, null, theConfiguration);
+    }
+
+    private StreamingServerConnector createStreamingServerConnector(OutputStream anOutputStream, SerializationPolicy aSerializationPolicy, EventServiceConfiguration aConfiguration) throws EventServiceException, IOException {
         MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
         HttpServletResponse theResponseMock = theResponseMockControl.getMock();
 
@@ -374,12 +409,11 @@ public class StreamingServerConnectorTest extends ServerEventConnectorTest
         theResponseMockControl.setReturnValue(new DummyServletOutputStream(anOutputStream));
 
         theResponseMockControl.replay();
-            final EventServiceConfiguration theConfiguration = createConfiguration(0, aMaxWaitingTime, 90000);
             final StreamingServerConnector theStreamingServerConnector;
             if(aSerializationPolicy != null) {
-                theStreamingServerConnector = new StreamingServerConnector(theConfiguration, aSerializationPolicy);
+                theStreamingServerConnector = new StreamingServerConnector(aConfiguration, aSerializationPolicy);
             } else {
-                theStreamingServerConnector = new StreamingServerConnector(theConfiguration);
+                theStreamingServerConnector = new StreamingServerConnector(aConfiguration);
             }
             theStreamingServerConnector.prepare(theResponseMock);
         theResponseMockControl.verify();

@@ -50,5 +50,6 @@ public class DefaultConfigurationLoaderTest extends TestCase
         assertEquals(SessionConnectionIdGenerator.class.getName(), theEventServiceConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theEventServiceConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theEventServiceConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertEquals("utf-8", theEventServiceConfiguration.getConnectionStrategyEncoding());
     }
 }

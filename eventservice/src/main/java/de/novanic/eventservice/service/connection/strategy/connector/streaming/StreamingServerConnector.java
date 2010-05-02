@@ -48,9 +48,9 @@ import java.util.List;
  */
 public class StreamingServerConnector extends ConnectionStrategyServerConnectorAdapter implements Cloneable
 {
-    private static final byte[] SCRIPT_TAG_PREFIX = "<script type='text/javascript'>window.parent.receiveEvent('".getBytes();
-    private static final byte[] SCRIPT_TAG_SUFFIX = "');</script>".getBytes();
-    private static final byte[] CYCLE_TAG = "cycle".getBytes();
+    private static byte[] SCRIPT_TAG_PREFIX;
+    private static byte[] SCRIPT_TAG_SUFFIX;
+    private static byte[] CYCLE_TAG;
 
     private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(StreamingServerConnector.class.getName());
 
@@ -64,8 +64,11 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
      * the streaming event listen method.
      * @param aConfiguration configuration
      */
-    public StreamingServerConnector(EventServiceConfiguration aConfiguration) {
+    public StreamingServerConnector(EventServiceConfiguration aConfiguration) throws EventServiceException {
         this(aConfiguration, new EventSerializationPolicy());
+        SCRIPT_TAG_PREFIX = encode("<script type='text/javascript'>window.parent.receiveEvent('");
+        SCRIPT_TAG_SUFFIX = encode("');</script>");
+        CYCLE_TAG = encode("cycle");
     }
 
     /**
@@ -93,7 +96,7 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
         } catch(IOException e) {
             throw new EventServiceException("Error on using output stream of the response!", e);
         }
-        myResponse.setContentType("text/html;charset=utf-8");
+        myResponse.setContentType("text/html;charset=" + getEncoding());
         myResponse.setHeader("expires", "0");
         myResponse.setHeader("cache-control", "no-cache");
         myResponse.setHeader("transfer-encoding", "chunked");
@@ -124,7 +127,7 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
                         String theSerializedEvent = serialize(theEvent);
                         theSerializedEvent = escapeSerializedData(theSerializedEvent);
                         //writing to the stream
-                        printStatement(theSerializedEvent.getBytes(), myOutputStream);
+                        printStatement(encode(theSerializedEvent), myOutputStream);
                     }
                     aUserInfo.reportUserActivity();
                 }

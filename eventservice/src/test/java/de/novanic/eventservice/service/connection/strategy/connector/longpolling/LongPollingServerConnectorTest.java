@@ -21,7 +21,7 @@ package de.novanic.eventservice.service.connection.strategy.connector.longpollin
 
 import de.novanic.eventservice.service.EventServiceException;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
-import de.novanic.eventservice.service.connection.strategy.connector.ServerEventConnectorTest;
+import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnectorTest;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.service.registry.user.UserInfo;
@@ -34,7 +34,7 @@ import java.util.Date;
  *         <br>Date: 16.03.2010
  *         <br>Time: 20:40:34
  */
-public class LongPollingServerConnectorTest extends ServerEventConnectorTest
+public class LongPollingServerConnectorTest extends ConnectionStrategyServerConnectorTest
 {
     public void testListen() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
@@ -116,5 +116,13 @@ public class LongPollingServerConnectorTest extends ServerEventConnectorTest
         ListenResult theListenResult = theListenRunnable.getListenResult();
         assertEquals(0, theListenResult.getEvents().size());
         assertTrue(theListenResult.getDuration() >= 400);
+    }
+
+    public void testGetEncoding() throws Exception {
+        testGetEncoding(LongPollingServerConnector.class);
+    }
+
+    public void testGetEncoding_Error() throws Exception {
+        testGetEncoding_Error(LongPollingServerConnector.class);
     }
 }

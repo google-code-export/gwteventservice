@@ -22,8 +22,10 @@ package de.novanic.eventservice.config.loader;
 import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.EventServiceTestCase;
+import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
+import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -62,6 +64,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertNull(theConfiguration.getConnectionStrategyEncoding());
     }
 
     public void testLoad_2() {
@@ -74,8 +77,9 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(5000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
-        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
-        assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertEquals("de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector", theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(StreamingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
     }
 
     public void testLoad_3() {
@@ -93,6 +97,17 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertNull(theConfiguration.getConnectionStrategyServerConnectorClassName());
+    }
+
+    public void testLoad_With_Defaults() {
+        EventServiceConfiguration theConfiguration = EventServiceConfigurationFactory.getInstance().loadEventServiceConfiguration();
+        assertEquals("Properties \"eventservice.properties\"", theConfiguration.getConfigDescription());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
     }
 
     public void testLoad_Failure() {
