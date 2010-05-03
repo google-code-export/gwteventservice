@@ -69,6 +69,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     public synchronized void deactivate() {
         if(isActive) {
             isActive = false;
+            myConnectionStrategyClientConnector.deactivate();
             LOG.log("RemoteEventConnector deactivated.");
         }
     }

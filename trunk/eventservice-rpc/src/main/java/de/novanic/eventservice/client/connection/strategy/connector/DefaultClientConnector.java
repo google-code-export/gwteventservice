@@ -51,6 +51,11 @@ public class DefaultClientConnector implements ConnectionStrategyClientConnector
     }
 
     /**
+     * Deactivates the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     */
+    public void deactivate() {}
+
+    /**
      * Checks if the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} is
      * initialized.
      * @return true when the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} is

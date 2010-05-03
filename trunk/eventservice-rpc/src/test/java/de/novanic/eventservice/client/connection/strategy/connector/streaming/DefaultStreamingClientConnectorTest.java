@@ -43,6 +43,18 @@ public class DefaultStreamingClientConnectorTest extends TestCase
         assertTrue(theStreamingClientConnector.isInitialized());
     }
 
+    public void testDeactivate() {
+        final ConnectionStrategyClientConnector theStreamingClientConnector = new DummyStreamingClientConnector();
+
+        assertFalse(theStreamingClientConnector.isInitialized());
+        theStreamingClientConnector.init(null);
+        assertTrue(theStreamingClientConnector.isInitialized());
+
+        assertTrue(theStreamingClientConnector.isInitialized());
+        theStreamingClientConnector.deactivate();
+        assertTrue(theStreamingClientConnector.isInitialized());//it is deactivated, but still initialized
+    }
+
     public void testListen() {
         final DummyStreamingClientConnector theStreamingClientConnector = new DummyStreamingClientConnector();
         theStreamingClientConnector.init(null);

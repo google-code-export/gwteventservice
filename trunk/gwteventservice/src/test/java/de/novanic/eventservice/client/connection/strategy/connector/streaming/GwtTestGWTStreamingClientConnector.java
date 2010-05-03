@@ -57,6 +57,37 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
         assertTrue(theGWTStreamingClientConnector.isInitialized());
     }
 
+    public void testDeactivate() {
+        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+
+        assertFalse(theGWTStreamingClientConnector.isInitialized());
+        theGWTStreamingClientConnector.init(myEventService);
+        assertTrue(theGWTStreamingClientConnector.isInitialized());
+
+        assertTrue(theGWTStreamingClientConnector.isInitialized());
+        theGWTStreamingClientConnector.deactivate();
+        assertTrue(theGWTStreamingClientConnector.isInitialized());//it is deactivated, but still initialized
+    }
+
+    public void testDeactivate_2() {
+        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+
+        assertFalse(theGWTStreamingClientConnector.isInitialized());
+        theGWTStreamingClientConnector.init(myEventService);
+        assertTrue(theGWTStreamingClientConnector.isInitialized());
+
+        //create the forever frame
+        theGWTStreamingClientConnector.listen(new DummyEventNotification(), new AsyncCallback<List<DomainEvent>>() {
+            public void onSuccess(List<DomainEvent> aDomainEvents) {}
+
+            public void onFailure(Throwable aThrowable) {}
+        });
+
+        assertTrue(theGWTStreamingClientConnector.isInitialized());
+        theGWTStreamingClientConnector.deactivate();
+        assertTrue(theGWTStreamingClientConnector.isInitialized());//it is deactivated, but still initialized
+    }
+
     public void testListen() {
         ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
         theGWTStreamingClientConnector.init(myEventService);
