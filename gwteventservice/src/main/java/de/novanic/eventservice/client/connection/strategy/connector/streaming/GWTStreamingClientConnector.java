@@ -62,6 +62,18 @@ public class GWTStreamingClientConnector extends DefaultStreamingClientConnector
     }
 
     /**
+     * Deactivates the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     *
+     * That implementation removes the forever frame, so the listening is stopped and cleared up. 
+     */
+    public void deactivate() {
+        if(myStreamingConnectorFrame != null) {
+            RootPanel.get().remove(myStreamingConnectorFrame);
+            myStreamingConnectorFrame = null;
+        }
+    }
+
+    /**
      * Initializes or refreshes the forever frame.
      */
     private void initStreamingConnectorFrame() {

@@ -44,6 +44,11 @@ public interface ConnectionStrategyClientConnector
     void init(EventServiceAsync anEventService);
 
     /**
+     * Deactivates the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     */
+    void deactivate();
+
+    /**
      * Checks if the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} is
      * initialized.
      * @return true when the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} is

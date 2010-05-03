@@ -50,6 +50,26 @@ public class DefaultClientConnectorTest extends TestCase
         theEventServiceMockControl.reset();
     }
 
+    public void testDeactivate() {
+        MockControl<EventServiceAsync> theEventServiceMockControl = MockControl.createControl(EventServiceAsync.class);
+        EventServiceAsync theEventServiceMock = theEventServiceMockControl.getMock();
+
+        theEventServiceMockControl.replay();
+
+        ConnectionStrategyClientConnector theClientConnector = new DefaultClientConnector();
+
+        assertFalse(theClientConnector.isInitialized());
+        theClientConnector.init(theEventServiceMock);
+        assertTrue(theClientConnector.isInitialized());
+
+        assertTrue(theClientConnector.isInitialized());
+        theClientConnector.deactivate();
+        assertTrue(theClientConnector.isInitialized());//it is deactivated, but still initialized
+
+        theEventServiceMockControl.verify();
+        theEventServiceMockControl.reset();
+    }
+
     public void testListen() {
         final AsyncCallback<List<DomainEvent>> theDummyAsyncCallback = new AsyncCallback<List<DomainEvent>>() {
             public void onFailure(Throwable aThrowable) {
