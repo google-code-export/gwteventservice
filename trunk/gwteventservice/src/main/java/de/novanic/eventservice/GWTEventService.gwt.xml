@@ -4,4 +4,12 @@
 
     <servlet path="/gwteventservice" class='de.novanic.eventservice.service.EventServiceImpl'/>
 
+    <replace-with class="de.novanic.eventservice.client.connection.strategy.connector.streaming.specific.GWTStreamingClientConnectorGecko">
+        <when-type-is class="de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector"/>
+        <any>
+            <when-property-is name="user.agent" value="gecko"/>
+            <when-property-is name="user.agent" value="gecko1_8"/>
+        </any>
+    </replace-with>
+
 </module>

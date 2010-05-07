@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.config;
 
+import com.google.gwt.core.client.GWT;
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
@@ -113,7 +114,7 @@ public final class ConfigurationTransferableDependentFactory
         if(aClassName.equals(DefaultClientConnector.class.getName())) {
             return (T)new DefaultClientConnector();
         } else if(aClassName.equals(GWTStreamingClientConnector.class.getName())) {
-            return (T)new GWTStreamingClientConnector();
+            return (T)GWT.create(GWTStreamingClientConnector.class);
         } else {
             throw new ConfigurationException("The configured class \"" + aClassName + "\" is unknown!");
         }

@@ -118,18 +118,6 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertTrue(theConnectionStrategyClientConnector instanceof DefaultClientConnector);
     }
 
-    public void testGetConnectionStrategyClientConnector_2() {
-        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
-        theConfig.setConnectionStrategyClientConnector(GWTStreamingClientConnector.class.getName());
-
-        ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(theConfig);
-        theConfigurationTransferableDependentFactory.reset(theConfig);
-
-        final ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigurationTransferableDependentFactory.getConnectionStrategyClientConnector();
-        assertNotNull(theConnectionStrategyClientConnector);
-        assertTrue(theConnectionStrategyClientConnector instanceof DefaultStreamingClientConnector);
-    }
-
     public void testGetConnectionStrategyClientConnector_Default() {
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(null);

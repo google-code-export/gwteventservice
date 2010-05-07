@@ -23,6 +23,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.junit.tools.GWTTestSuite;
 
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.GwtTestGWTStreamingClientConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.specific.GwtTestGWTStreamingClientConnectorGecko;
 import de.novanic.eventservice.client.event.GwtTestRemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
 import de.novanic.eventservice.clientmock.GWTRemoteEventConnectorTest;
@@ -69,12 +70,13 @@ public class GWTEventServiceTestSuite extends GWTTestCase
 
         // --- GWT-Tests ---
 
-        // Connection
-        theGWTEventServiceTestSuite.addTestSuite(GwtTestGWTStreamingClientConnector.class);
-
         // Event
         theGWTEventServiceTestSuite.addTestSuite(GwtTestRemoteEventService.class);
 
+        // Connection
+        theGWTEventServiceTestSuite.addTestSuite(GwtTestGWTStreamingClientConnector.class);
+        theGWTEventServiceTestSuite.addTestSuite(GwtTestGWTStreamingClientConnectorGecko.class);
+        
         return theGWTEventServiceTestSuite;
     }
 }

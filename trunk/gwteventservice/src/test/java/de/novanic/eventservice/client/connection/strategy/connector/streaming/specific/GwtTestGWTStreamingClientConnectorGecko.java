@@ -17,14 +17,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.connection.strategy.connector.streaming;
+package de.novanic.eventservice.client.connection.strategy.connector.streaming.specific;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.user.client.rpc.*;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.RemoteEventServiceRuntimeException;
 import de.novanic.eventservice.client.event.listener.EventNotification;
@@ -36,10 +39,10 @@ import java.util.List;
 
 /**
  * @author sstrohschein
- *         <br>Date: 30.04.2010
- *         <br>Time: 18:21:17
+ *         <br>Date: 07.05.2010
+ *         <br>Time: 23:39:35
  */
-public class GwtTestGWTStreamingClientConnector extends GWTTestCase
+public class GwtTestGWTStreamingClientConnectorGecko extends GWTTestCase
 {
     private EventServiceAsync myEventService;
 
@@ -52,7 +55,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
     }
 
     public void testInit() {
-        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
 
         assertFalse(theGWTStreamingClientConnector.isInitialized());
         theGWTStreamingClientConnector.init(myEventService);
@@ -72,7 +75,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
     }
 
     public void testDeactivate() {
-        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
 
         assertFalse(theGWTStreamingClientConnector.isInitialized());
         theGWTStreamingClientConnector.init(myEventService);
@@ -84,7 +87,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
     }
 
     public void testDeactivate_2() {
-        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
 
         assertFalse(theGWTStreamingClientConnector.isInitialized());
         theGWTStreamingClientConnector.init(myEventService);
@@ -103,7 +106,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
     }
 
     public void testListen() {
-        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+        ConnectionStrategyClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
         theGWTStreamingClientConnector.init(myEventService);
         theGWTStreamingClientConnector.listen(new DummyEventNotification(), new AsyncCallback<List<DomainEvent>>() {
             public void onSuccess(List<DomainEvent> aDomainEvents) {}
@@ -117,7 +120,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
 
         assertEquals(0, theDummyEventNotification.getOccurredDomainEvents().size());
 
-        GWTStreamingClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+        GWTStreamingClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
         theGWTStreamingClientConnector.init(myEventService);
         theGWTStreamingClientConnector.listen(theDummyEventNotification, new DummyListenAsyncCallback());
 
@@ -138,7 +141,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
 
         assertEquals(0, theDummyEventNotification.getOccurredDomainEvents().size());
 
-        GWTStreamingClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnector();
+        GWTStreamingClientConnector theGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
         theGWTStreamingClientConnector.init(myEventService);
         theGWTStreamingClientConnector.listen(theDummyEventNotification, new DummyListenAsyncCallback());
 
@@ -152,7 +155,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
         }
     }
 
-    private ServiceDefTarget getService(Object aService, String aServiceMappingName) {
+    private static ServiceDefTarget getService(Object aService, String aServiceMappingName) {
         String theServiceURL = GWT.getModuleBaseURL() + aServiceMappingName;
         ServiceDefTarget theServiceEndPoint = (ServiceDefTarget)aService;
         theServiceEndPoint.setServiceEntryPoint(theServiceURL);
