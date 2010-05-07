@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.connection.strategy.connector.streaming.specific;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.RootPanel;
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
@@ -37,7 +38,15 @@ import de.novanic.eventservice.client.connection.strategy.connector.streaming.GW
  */
 public class GWTStreamingClientConnectorGecko extends GWTStreamingClientConnector
 {
-    private static final String DUMMY_FRAME_ID = "gwteventservice_dummy_frame";
+    private static final Element DUMMY_FRAME_ELEMENT;
+
+    static {
+        Frame theDummyFrame = new Frame();
+    	theDummyFrame.setVisible(false);
+        final Element theDummyFrameElement = theDummyFrame.getElement();
+        theDummyFrameElement.setId("gwteventservice_dummy_frame");
+        DUMMY_FRAME_ELEMENT = theDummyFrameElement;
+    }
 
     /**
      * That method can be used by a concrete implementation to sent received events. It de-serializes the event
@@ -50,11 +59,8 @@ public class GWTStreamingClientConnectorGecko extends GWTStreamingClientConnecto
      */
     public void receiveEvent(String anEvent) {
         //Gecko / FF hack start (avoid loading messages)
-    	Frame theDummyFrame = new Frame();
-    	theDummyFrame.setVisible(false);
-    	theDummyFrame.getElement().setId(DUMMY_FRAME_ID);
-		RootPanel.getBodyElement().appendChild(theDummyFrame.getElement());
-		RootPanel.getBodyElement().removeChild(theDummyFrame.getElement());
+		RootPanel.getBodyElement().appendChild(DUMMY_FRAME_ELEMENT);
+		RootPanel.getBodyElement().removeChild(DUMMY_FRAME_ELEMENT);
     	//Gecko / FF hack end (avoid loading messages)
         super.receiveEvent(anEvent);
     }
