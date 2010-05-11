@@ -57,6 +57,16 @@
 				<artifactId>eventservice-rpc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.google.code.gwteventservice</groupId>
+				<artifactId>eventservice</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gwteventservice</groupId>
+				<artifactId>gwteventservice</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<scm>
@@ -105,6 +115,7 @@
 		<module>eventservice</module>
 		<module>gwteventservice</module>
 		<module>demo</module>
+		<module>zip</module>
 	</modules>
 	<!--
 		To use the distributionManagement you will need to add the following
