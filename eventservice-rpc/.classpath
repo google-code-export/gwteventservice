@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="C:/developer/GWTEventService/branch1.0.3/lib/easymock.jar"/>
-	<classpathentry kind="lib" path="C:/developer/GWTEventService/branch1.0.3/lib/junit.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/developer/GWTEventService/trunk_test/lib/junit.jar"/>
+	<classpathentry kind="lib" path="C:/developer/GWTEventService/trunk_test/lib/easymock-2.5.2.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

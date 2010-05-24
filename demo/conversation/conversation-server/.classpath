@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DemoConversationAppRPC"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/EventServiceRPC"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/EventService"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/conversation-rpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eventservice"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eventservice-rpc"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
