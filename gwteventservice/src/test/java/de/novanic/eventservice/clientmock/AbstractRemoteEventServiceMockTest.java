@@ -78,9 +78,16 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     }
 
     protected void mockInit(TestException aThrowable) {
+        mockInit(null, aThrowable);
+    }
+
+    protected void mockInit(RemoteEventServiceConfigurationTransferable aConfiguration, TestException aThrowable) {
         myEventServiceAsyncMock.initEventService(null);
-        final AsyncCallArgumentsMatcher theAsyncCallArgumentsMatcher = new AsyncCallArgumentsMatcher(aThrowable);
-        myEventServiceAsyncMockControl.setMatcher(theAsyncCallArgumentsMatcher);
+        if(aThrowable != null) {
+            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(aThrowable));
+        } else {
+            myEventServiceAsyncMockControl.setMatcher(new AsyncCallArgumentsMatcher(aConfiguration));
+        }
         myEventServiceAsyncMockControl.setVoidCallable();
     }
 
@@ -244,7 +251,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {
-        return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "test_client_1", DefaultClientConnector.class.getName());
+        return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, null, DefaultClientConnector.class.getName());
     }
 
     protected class AsyncCallArgumentsMatcher implements ArgumentsMatcher

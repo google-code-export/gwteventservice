@@ -19,12 +19,16 @@
  */
 package de.novanic.eventservice.service;
 
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.DomainEvent;
+import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.id.SessionExtendedConnectionIdGenerator;
+import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
 import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
@@ -65,7 +69,9 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         super.tearDown();
         tearDownEventServiceConfiguration();
 
-        myEventService.unlisten();
+        if(myEventService != null) {
+            myEventService.unlisten();
+        }
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
@@ -83,7 +89,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, theEventService.getActiveListenDomains().size());
     }
 
-    public void testInit_3() throws Exception {
+    public void testInit_2() throws Exception {
         final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
         theEventServiceConfigurationFactory.removeConfigurationLoader(new PropertyConfigurationLoader());
@@ -99,6 +105,39 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(Integer.valueOf(40000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(5000), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
+    }
+
+    public void testInitEventService() throws Exception {
+        final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+        //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
+        theEventServiceConfigurationFactory.removeConfigurationLoader(new PropertyConfigurationLoader());
+
+        myEventService = new DummyEventServiceImpl(new DummyServletConfig(SessionConnectionIdGenerator.class.getName()));
+        super.setUp(myEventService);
+
+        EventServiceConfigurationTransferable theEventServiceConfigurationTransferable = myEventService.initEventService();
+        assertNull(theEventServiceConfigurationTransferable.getConnectionId());
+    }
+
+    public void testInitEventService_2() throws Exception {
+        setUp(createConfiguration(0, 30000, 90000, SessionExtendedConnectionIdGenerator.class.getName(), LongPollingServerConnector.class.getName()));
+
+        myEventService = new DummyEventServiceImpl(new DummyServletConfig(SessionExtendedConnectionIdGenerator.class.getName()));
+        super.setUp(myEventService);
+
+        EventServiceConfigurationTransferable theEventServiceConfigurationTransferable = myEventService.initEventService();
+        assertEquals("test_user_id", theEventServiceConfigurationTransferable.getConnectionId());
+    }
+
+    public void testInitEventService_Error() throws Exception {
+        setUp(createConfiguration(0, 30000, 90000, SessionExtendedConnectionIdGenerator.class.getName(), LongPollingServerConnector.class.getName()));
+
+        myEventService = new DummyEventServiceImpl_2();
+        try {
+            super.setUp(myEventService);
+            myEventService.initEventService();
+            fail("Exception expected, because no session / request is available!");
+        } catch(Exception e) {}
     }
 
     public void testListen() throws Exception {
@@ -895,7 +934,22 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
             init(aConfig);
         }
 
-        protected String getClientId(boolean isInitSession) {
+        protected String getClientId() {
+            return TEST_USER_ID;
+        }
+
+        protected String generateClientId() {
+            return TEST_USER_ID;
+        }
+    }
+
+    private class DummyEventServiceImpl_2 extends EventServiceImpl
+    {
+        private DummyEventServiceImpl_2() throws ServletException {
+            init(null);
+        }
+
+        protected String getClientId() {
             return TEST_USER_ID;
         }
     }
@@ -905,15 +959,18 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         private ConcurrentHashMap<String, String> myParameterMap;
 
         public DummyServletConfig() {
-            this(40000);
+            this(null);
         }
 
-        public DummyServletConfig(int aMaxWaitingTime) {
+        public DummyServletConfig(String aConnectionIdGeneratorClassName) {
             myParameterMap = new ConcurrentHashMap<String, String>(4);
-            myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), String.valueOf(aMaxWaitingTime));
+            myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), String.valueOf(40000));
             myParameterMap.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), String.valueOf(5000));
             myParameterMap.put(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), String.valueOf(120000));
             myParameterMap.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), StreamingServerConnector.class.getName());
+            if(aConnectionIdGeneratorClassName != null) {
+                myParameterMap.put(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), aConnectionIdGeneratorClassName);
+            }
         }
 
         public String getServletName() {

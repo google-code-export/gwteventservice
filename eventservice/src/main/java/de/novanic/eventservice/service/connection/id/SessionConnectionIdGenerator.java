@@ -50,7 +50,7 @@ public class SessionConnectionIdGenerator implements ConnectionIdGenerator
      * (see {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator#generateConnectionId(javax.servlet.http.HttpServletRequest)})
      * without generating a new connection / client id.
      * @see de.novanic.eventservice.service.connection.id.ConnectionIdGenerator#generateConnectionId(javax.servlet.http.HttpServletRequest)
-     * @param aRequest
+     * @param aRequest request
      * @return the previous generated connection / client id for the specific client
      */
     public String getConnectionId(HttpServletRequest aRequest) {

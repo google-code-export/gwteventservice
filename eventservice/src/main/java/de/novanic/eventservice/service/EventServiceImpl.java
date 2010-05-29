@@ -37,6 +37,7 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
@@ -112,11 +113,18 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      * @return EventServiceConfigurationTransferable a transferable configuration for the client side
      */
     public EventServiceConfigurationTransferable initEventService() {
-        final String theClientId = getClientId(true);
+        final String theClientId = generateClientId();
+        final EventServiceConfiguration theConfiguration = myEventRegistry.getConfiguration();
+
+        String theClientIdTransferable;
+        if(SessionConnectionIdGenerator.class.getName().equals(theConfiguration.getConnectionIdGeneratorClassName())) {
+            theClientIdTransferable = null;
+        } else {
+            theClientIdTransferable = theClientId;
+        }
         LOG.info("Client \"" + theClientId + "\" initialized.");
-        EventServiceConfiguration theConfiguration = myEventRegistry.getConfiguration();
         return new RemoteEventServiceConfigurationTransferable(theConfiguration.getMinWaitingTime(), theConfiguration.getMaxWaitingTime(),
-                theConfiguration.getTimeoutTime(), theClientId, theConfiguration.getConnectionStrategyClientConnectorClassName());
+                theConfiguration.getTimeoutTime(), theClientIdTransferable, theConfiguration.getConnectionStrategyClientConnectorClassName());
     }
 
     /**
@@ -327,16 +335,15 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      * Returns the client id.
      * @return client id
      */
-    private String getClientId() {
-        return getClientId(false);
+    protected String getClientId() {
+        return myConfigurationDependentFactory.getConnectionIdGenerator().getConnectionId(getThreadLocalRequest());
     }
 
     /**
-     * Returns the client id.
-     * @param isInitSession initializes the session (if not already initialized).
+     * Generates and returns a new client id.
      * @return client id
      */
-    protected String getClientId(boolean isInitSession) {
-        return getThreadLocalRequest().getSession(isInitSession).getId();
+    protected String generateClientId() {
+        return myConfigurationDependentFactory.getConnectionIdGenerator().generateConnectionId(getThreadLocalRequest());
     }
 }
