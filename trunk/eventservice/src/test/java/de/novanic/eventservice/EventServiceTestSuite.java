@@ -22,6 +22,7 @@ package de.novanic.eventservice;
 import de.novanic.eventservice.config.ConfigurationDependentFactoryTest;
 import de.novanic.eventservice.service.*;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
+import de.novanic.eventservice.service.connection.id.SessionExtendedConnectionIdGeneratorTest;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnectorTest;
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.EventSerializationPolicyTest;
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnectorTest;
@@ -79,6 +80,7 @@ public class EventServiceTestSuite
 
         // Connection
         theSuite.addTestSuite(SessionConnectionIdGeneratorTest.class);
+        theSuite.addTestSuite(SessionExtendedConnectionIdGeneratorTest.class);
         theSuite.addTestSuite(EventSerializationPolicyTest.class);
 
         // Server connectors

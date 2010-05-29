@@ -64,8 +64,17 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * That method is called to execute the first server call (for initialization).
      * @param aCallback callback
      */
-    public void init(AsyncCallback<EventServiceConfigurationTransferable> aCallback) {
-        myEventService.initEventService(aCallback);
+    public void init(final AsyncCallback<EventServiceConfigurationTransferable> aCallback) {
+        myEventService.initEventService(new AsyncCallback<EventServiceConfigurationTransferable>() {
+            public void onSuccess(EventServiceConfigurationTransferable anEventServiceConfigurationTransferable) {
+                myEventService = refreshEventService(anEventServiceConfigurationTransferable.getConnectionId());
+                aCallback.onSuccess(anEventServiceConfigurationTransferable);
+            }
+
+            public void onFailure(Throwable aThrowable) {
+                aCallback.onFailure(aThrowable);
+            }
+        });
     }
 
     /**
@@ -152,8 +161,28 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      */
     private static EventServiceAsync createEventService() {
         final String theServiceURL = GWT.getModuleBaseURL() + "gwteventservice";
+        return createEventService(theServiceURL);
+    }
+
+    /**
+     * Refreshes / re-initializes the {@link de.novanic.eventservice.client.event.service.EventService} when an explicit
+     * connection id is assigned for the client. When the connection id is NULL (no explicit connection id assigned), the
+     * {@link de.novanic.eventservice.client.event.service.EventService} will not be refreshed, because no separate connection
+     * id has to be transferred back to the server.
+     * @param aConnectionId connection id
+     * @return refreshed / re-initialized {@link de.novanic.eventservice.client.event.service.EventService}
+     */
+    private EventServiceAsync refreshEventService(String aConnectionId) {
+        if(aConnectionId != null) {
+            final String theServiceURL = GWT.getModuleBaseURL() + "gwteventservice?id=" + aConnectionId;
+            return createEventService(theServiceURL);
+        }
+        return myEventService;
+    }
+
+    private static EventServiceAsync createEventService(String aServiceURL) {
         ServiceDefTarget theServiceEndPoint = (ServiceDefTarget)GWT.create(EventService.class);
-        theServiceEndPoint.setServiceEntryPoint(theServiceURL);
+        theServiceEndPoint.setServiceEntryPoint(aServiceURL);
         return (EventServiceAsync)theServiceEndPoint;
     }
 }

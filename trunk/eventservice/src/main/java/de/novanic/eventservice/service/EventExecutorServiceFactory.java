@@ -64,6 +64,7 @@ public class EventExecutorServiceFactory
      */
     public EventExecutorService getEventExecutorService(final HttpSession aHttpSession) {
         String theClientId = null;
+        //TODO: You can no longer determine a client id from an HttpSession alone (when SessionExtendedConnectionIdGenerator is configured)!
         if(aHttpSession != null) {
             theClientId = aHttpSession.getId();
         }

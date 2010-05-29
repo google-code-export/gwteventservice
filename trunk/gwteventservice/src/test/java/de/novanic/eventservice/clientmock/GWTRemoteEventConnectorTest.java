@@ -19,6 +19,8 @@
  */
 package de.novanic.eventservice.clientmock;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
@@ -67,7 +69,11 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         //init connector
         myEventServiceAsyncMockControl.replay();
 
-            myRemoteEventConnector.init(null);
+            myRemoteEventConnector.init(new AsyncCallback<EventServiceConfigurationTransferable>() {
+                public void onSuccess(EventServiceConfigurationTransferable anEventServiceConfigurationTransferable) {}
+
+                public void onFailure(Throwable aThrowable) {}
+            });
 
         myEventServiceAsyncMockControl.verify();
         myEventServiceAsyncMockControl.reset();

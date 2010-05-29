@@ -308,7 +308,11 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
 
     private class DummyEventServiceImpl extends EventServiceImpl
     {
-        protected String getClientId(boolean isInitSession) {
+        protected String getClientId() {
+            return TEST_USER_ID;
+        }
+
+        protected String generateClientId() {
             return TEST_USER_ID;
         }
     }
