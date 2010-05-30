@@ -23,6 +23,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 import com.google.gwt.user.client.rpc.SerializationStreamReader;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.RootPanel;
 import de.novanic.eventservice.client.event.DomainEvent;
@@ -48,6 +49,7 @@ import de.novanic.eventservice.client.event.service.EventServiceAsync;
 public class GWTStreamingClientConnector extends DefaultStreamingClientConnector
 {
     private Frame myStreamingConnectorFrame;
+    private String myServiceURL;
 
     /**
      * Initializes the {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} with
@@ -57,6 +59,7 @@ public class GWTStreamingClientConnector extends DefaultStreamingClientConnector
      * @param anEventService the {@link de.novanic.eventservice.client.event.service.EventServiceAsync}
      */
     public void init(EventServiceAsync anEventService) {
+        myServiceURL = ((ServiceDefTarget)anEventService).getServiceEntryPoint();
         initReceiveEventScript(this);
         super.init(anEventService);
     }
@@ -77,14 +80,13 @@ public class GWTStreamingClientConnector extends DefaultStreamingClientConnector
      * Initializes or refreshes the forever frame.
      */
     private void initStreamingConnectorFrame() {
-    	final String theURL = GWT.getModuleBaseURL() + "gwteventservice";
     	if(myStreamingConnectorFrame == null) {
-			myStreamingConnectorFrame = new Frame(theURL);
+			myStreamingConnectorFrame = new Frame(myServiceURL);
 			myStreamingConnectorFrame.setVisible(false);
     		RootPanel.get().add(myStreamingConnectorFrame);
     	} else {
     		//refresh / restart the connection
-    		myStreamingConnectorFrame.setUrl(theURL);
+    		myStreamingConnectorFrame.setUrl(myServiceURL);
     	}
     }
 
