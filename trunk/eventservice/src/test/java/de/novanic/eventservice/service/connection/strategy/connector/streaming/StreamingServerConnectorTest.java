@@ -30,7 +30,7 @@ import de.novanic.eventservice.service.connection.strategy.connector.ConnectionS
 import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.DummyServletOutputStream;
-import org.easymock.MockControl;
+import org.easymock.EasyMock;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -47,44 +47,35 @@ import java.util.logging.Logger;
 public class StreamingServerConnectorTest extends ConnectionStrategyServerConnectorTest
 {
     public void testPrepare() throws Exception {
-        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
-        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
 
-        theResponseMock.setContentType(null);
-        theResponseMockControl.setDefaultVoidCallable();
+        theResponseMock.setContentType(EasyMock.<String>anyObject());
 
-        theResponseMock.setHeader(null, null);
-        theResponseMockControl.setDefaultVoidCallable();
+        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
+        EasyMock.expectLastCall().anyTimes();
 
-        theResponseMock.getOutputStream();
-        theResponseMockControl.setReturnValue(new DummyServletOutputStream(new ByteArrayOutputStream()));
+        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(new DummyServletOutputStream(new ByteArrayOutputStream()));
 
-        theResponseMockControl.replay();
+        EasyMock.replay(theResponseMock);
             StreamingServerConnector theStreamingServerConnector = new StreamingServerConnector(createConfiguration(0, 700, 90000));
             theStreamingServerConnector.prepare(theResponseMock);
-        theResponseMockControl.verify();
-        theResponseMockControl.reset();
+        EasyMock.verify(theResponseMock);
+        EasyMock.reset(theResponseMock);
     }
 
     public void testPrepare_Error() throws Exception {
-        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
-        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
 
-        theResponseMock.getOutputStream();
-        try {
-            throw new IOException("Test-Exception");
-        } catch(IOException e) {
-            theResponseMockControl.setThrowable(e);
-        }
+        EasyMock.expect(theResponseMock.getOutputStream()).andThrow(new IOException("Test-Exception"));
 
-        theResponseMockControl.replay();
+        EasyMock.replay(theResponseMock);
             StreamingServerConnector theStreamingServerConnector = new StreamingServerConnector(createConfiguration(0, 700, 90000));
             try {
                 theStreamingServerConnector.prepare(theResponseMock);
                 fail("EventServiceException expected!");
             } catch(EventServiceException e) {}
-        theResponseMockControl.verify();
-        theResponseMockControl.reset();
+        EasyMock.verify(theResponseMock);
+        EasyMock.reset(theResponseMock);
     }
 
     public void testListen() throws Exception {
@@ -396,19 +387,16 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
     }
 
     private StreamingServerConnector createStreamingServerConnector(OutputStream anOutputStream, SerializationPolicy aSerializationPolicy, EventServiceConfiguration aConfiguration) throws EventServiceException, IOException {
-        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
-        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
 
-        theResponseMock.setContentType(null);
-        theResponseMockControl.setDefaultVoidCallable();
+        theResponseMock.setContentType(EasyMock.<String>anyObject());
 
-        theResponseMock.setHeader(null, null);
-        theResponseMockControl.setDefaultVoidCallable();
+        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
+        EasyMock.expectLastCall().anyTimes();
 
-        theResponseMock.getOutputStream();
-        theResponseMockControl.setReturnValue(new DummyServletOutputStream(anOutputStream));
+        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(new DummyServletOutputStream(anOutputStream));
 
-        theResponseMockControl.replay();
+        EasyMock.replay(theResponseMock);
             final StreamingServerConnector theStreamingServerConnector;
             if(aSerializationPolicy != null) {
                 theStreamingServerConnector = new StreamingServerConnector(aConfiguration, aSerializationPolicy);
@@ -416,8 +404,8 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
                 theStreamingServerConnector = new StreamingServerConnector(aConfiguration);
             }
             theStreamingServerConnector.prepare(theResponseMock);
-        theResponseMockControl.verify();
-        theResponseMockControl.reset();
+        EasyMock.verify(theResponseMock);
+        EasyMock.reset(theResponseMock);
 
         return theStreamingServerConnector;
     }

@@ -21,7 +21,7 @@ package de.novanic.eventservice.service.connection.id;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
 import junit.framework.TestCase;
-import org.easymock.MockControl;
+import org.easymock.EasyMock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -36,87 +36,67 @@ public class SessionExtendedConnectionIdGeneratorTest extends TestCase
     public void testGenerateConnectionId() {
         final String theSessionId = "123b";
 
-        MockControl theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theRequestMock = (HttpServletRequest)theRequestMockControl.getMock();
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        MockControl theSessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = (HttpSession)theSessionMockControl.getMock();
+        EasyMock.expect(theRequestMock.getSession(true)).andReturn(theSessionMock);
 
-        theRequestMock.getSession(true);
-        theRequestMockControl.setReturnValue(theSessionMock);
-
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(theSessionId);
+        EasyMock.expect(theSessionMock.getId()).andReturn(theSessionId);
 
         ConnectionIdGenerator theConnectionIdGenerator = new SessionExtendedConnectionIdGenerator();
 
-        theRequestMockControl.replay();
-        theSessionMockControl.replay();
+        EasyMock.replay(theRequestMock, theSessionMock);
             final String theConnectionId = theConnectionIdGenerator.generateConnectionId(theRequestMock);
             assertTrue(theConnectionId.startsWith(theSessionId));
             assertTrue(theSessionId.length() < theConnectionId.length());
-        theSessionMockControl.verify();
-        theRequestMockControl.verify();
-        theSessionMockControl.reset();
-        theRequestMockControl.reset();
+        EasyMock.verify(theRequestMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theSessionMock);
     }
 
     public void testGetConnectionId() {
         final String theSessionId = "123b";
 
-        MockControl theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theRequestMock = (HttpServletRequest)theRequestMockControl.getMock();
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        MockControl theSessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = (HttpSession)theSessionMockControl.getMock();
+        EasyMock.expect(theRequestMock.getSession(true)).andReturn(theSessionMock);
 
-        theRequestMock.getSession(true);
-        theRequestMockControl.setReturnValue(theSessionMock);
-
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(theSessionId);
+        EasyMock.expect(theSessionMock.getId()).andReturn(theSessionId);
 
         ConnectionIdGenerator theConnectionIdGenerator = new SessionExtendedConnectionIdGenerator();
 
-        theRequestMockControl.replay();
-        theSessionMockControl.replay();
+        EasyMock.replay(theRequestMock, theSessionMock);
             //generate a connection id at first
             final String theConnectionId = theConnectionIdGenerator.generateConnectionId(theRequestMock);
             assertTrue(theConnectionId.startsWith(theSessionId));
             assertTrue(theSessionId.length() < theConnectionId.length());
-        theRequestMockControl.verify();
-        theSessionMockControl.verify();
-        theRequestMockControl.reset();
-        theSessionMockControl.reset();
+        EasyMock.verify(theRequestMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theSessionMock);
 
-        MockControl theSecondRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theSecondRequestMock = (HttpServletRequest)theSecondRequestMockControl.getMock();
+        HttpServletRequest theSecondRequestMock = EasyMock.createMock(HttpServletRequest.class);
 
-        theSecondRequestMock.getParameter("id");
-        theSecondRequestMockControl.setReturnValue(theConnectionId);
+        EasyMock.expect(theSecondRequestMock.getParameter("id")).andReturn(theConnectionId);
 
-        theSecondRequestMockControl.replay();
+        EasyMock.replay(theSecondRequestMock);
             final String theSecondConnectionId = theConnectionIdGenerator.getConnectionId(theSecondRequestMock);
             assertEquals(theConnectionId, theSecondConnectionId);
-        theSecondRequestMockControl.verify();
-        theSecondRequestMockControl.reset();
+        EasyMock.verify(theSecondRequestMock);
+        EasyMock.reset(theSecondRequestMock);
     }
 
     public void testGetConnectionId_Error() {
-        MockControl theSecondRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theSecondRequestMock = (HttpServletRequest)theSecondRequestMockControl.getMock();
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
 
-        theSecondRequestMock.getParameter("id");
-        theSecondRequestMockControl.setReturnValue(null);
+        EasyMock.expect(theRequestMock.getParameter("id")).andReturn(null);
 
         ConnectionIdGenerator theConnectionIdGenerator = new SessionExtendedConnectionIdGenerator();
 
-        theSecondRequestMockControl.replay();
+        EasyMock.replay(theRequestMock);
             try {
-                theConnectionIdGenerator.getConnectionId(theSecondRequestMock);
+                theConnectionIdGenerator.getConnectionId(theRequestMock);
                 fail("Exception expected, because no connection id was generated at first (no connection id in the request)!");
             } catch(ConfigurationException e) {}
-        theSecondRequestMockControl.verify();
-        theSecondRequestMockControl.reset();
+        EasyMock.verify(theRequestMock);
+        EasyMock.reset(theRequestMock);
     }
 }

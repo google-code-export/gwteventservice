@@ -36,7 +36,6 @@ public class RegistrationEventFilterCommandTest extends ClientCommandTestCase
         final TypeEventFilterTestMode theTestEventFilter = new TypeEventFilterTestMode();
 
         getRemoteEventConnectorMock().registerEventFilter(theTestDomain, theTestEventFilter, getCommandCallback());
-        getRemoteEventConnectorMockControl().setVoidCallable();
 
         testExecute(new RegistrationEventFilterCommand(getRemoteEventConnectorMock(), theTestDomain, theTestEventFilter, getCommandCallback()));
     }

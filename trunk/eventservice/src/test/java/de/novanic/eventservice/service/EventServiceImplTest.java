@@ -37,7 +37,7 @@ import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoader;
-import org.easymock.MockControl;
+import org.easymock.EasyMock;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
@@ -747,31 +747,21 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
-        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
 
-        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = theSessionMockControl.getMock();
-
-        theRequestMock.getSession(false);
-        theRequestMockControl.setReturnValue(theSessionMock);
-
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(TEST_USER_ID);
+        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
 
         ServletOutputStream theOutputStream = new DummyServletOutputStream(new ByteArrayOutputStream());
+        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(theOutputStream).anyTimes();
 
-        theResponseMock.getOutputStream();
-        theResponseMockControl.setDefaultReturnValue(theOutputStream);
+        theResponseMock.setContentType("text/html;charset=utf-8");
 
-        theResponseMock.setContentType(null);
-        theResponseMockControl.setDefaultVoidCallable();
-
-        theResponseMock.setHeader(null, null);
-        theResponseMockControl.setDefaultVoidCallable();
+        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
+        EasyMock.expectLastCall().anyTimes();
 
         final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
@@ -780,13 +770,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService = new DummyEventServiceImpl(new DummyServletConfig());
         super.setUp(myEventService);
 
-        theRequestMockControl.replay();
-        theResponseMockControl.replay();
+        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
             myEventService.doGet(theRequestMock, theResponseMock);
-        theRequestMockControl.verify();
-        theResponseMockControl.verify();
-        theRequestMockControl.reset();
-        theResponseMockControl.reset();
+        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
     }
 
     public void testDoGet_Streaming() throws Exception {
@@ -796,49 +783,34 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
-        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
 
-        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = theSessionMockControl.getMock();
-
-        theRequestMock.getSession(false);
-        theRequestMockControl.setReturnValue(theSessionMock);
-
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(TEST_USER_ID);
+        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
 
         final ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
         ServletOutputStream theOutputStream = new DummyServletOutputStream(theByteArrayOutputStream);
 
-        theResponseMock.getOutputStream();
-        theResponseMockControl.setDefaultReturnValue(theOutputStream);
+        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(theOutputStream).anyTimes();
 
-        theResponseMock.setContentType(null);
-        theResponseMockControl.setDefaultVoidCallable();
+        theResponseMock.setContentType("text/html;charset=utf-8");
 
-        theResponseMock.setHeader(null, null);
-        theResponseMockControl.setDefaultVoidCallable();
+        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
+        EasyMock.expectLastCall().anyTimes();
 
         theResponseMock.flushBuffer();
-        theResponseMockControl.setDefaultVoidCallable();
+        EasyMock.expectLastCall().anyTimes();
 
         myEventService.register(TEST_DOMAIN);
         myEventService.addEvent(TEST_DOMAIN, new DummyEvent());
 
-        theRequestMockControl.replay();
-        theResponseMockControl.replay();
-        theSessionMockControl.replay();
+        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
             myEventService.doGet(theRequestMock, theResponseMock);
-        theRequestMockControl.verify();
-        theResponseMockControl.verify();
-        theSessionMockControl.verify();
-        theRequestMockControl.reset();
-        theResponseMockControl.reset();
-        theSessionMockControl.reset();
+        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
 
         myEventService.unlisten(TEST_DOMAIN);
 
@@ -854,38 +826,24 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
-        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
 
-        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = theSessionMockControl.getMock();
+        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
 
-        theRequestMock.getSession(false);
-        theRequestMockControl.setReturnValue(theSessionMock);
+        EasyMock.expect(theResponseMock.getOutputStream()).andThrow(new IOException("Test-Exception")).anyTimes();
 
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(TEST_USER_ID);
-
-        theResponseMock.getOutputStream();
-        theResponseMockControl.setDefaultThrowable(new IOException("Test-Exception"));
-
-        theRequestMockControl.replay();
-        theResponseMockControl.replay();
-        theSessionMockControl.replay();
+        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
             try {
                 myEventService.doGet(theRequestMock, theResponseMock);
                 fail("Exception expected!");
             } catch(ServletException e) {
             } catch(IOException e) {}
-        theRequestMockControl.verify();
-        theResponseMockControl.verify();
-        theSessionMockControl.verify();
-        theRequestMockControl.reset();
-        theResponseMockControl.reset();
-        theSessionMockControl.reset();
+        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
     }
 
     public void testDoGet_Streaming_Error_2() throws Exception {
@@ -895,27 +853,17 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, DummyStreamingConnectorNotCloneable.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theRequestMock = theRequestMockControl.getMock();
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
-        HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
 
-        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = theSessionMockControl.getMock();
+        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
 
-        theRequestMock.getSession(false);
-        theRequestMockControl.setReturnValue(theSessionMock);
+        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(new DummyServletOutputStream(new ByteArrayOutputStream()));
 
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(TEST_USER_ID);
-
-        theResponseMock.getOutputStream();
-        theResponseMockControl.setDefaultReturnValue(new DummyServletOutputStream(new ByteArrayOutputStream()));
-
-        theRequestMockControl.replay();
-        theResponseMockControl.replay();
-        theSessionMockControl.replay();
+        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
             try {
                 myEventService.doGet(theRequestMock, theResponseMock);
                 fail("Exception expected!");
@@ -924,12 +872,8 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
             } catch(IOException e) {
                 assertTrue(e.getCause() instanceof CloneNotSupportedException);
             }
-        theRequestMockControl.verify();
-        theResponseMockControl.verify();
-        theSessionMockControl.verify();
-        theRequestMockControl.reset();
-        theResponseMockControl.reset();
-        theSessionMockControl.reset();
+        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
     }
 
     private void initEventService() throws Exception {

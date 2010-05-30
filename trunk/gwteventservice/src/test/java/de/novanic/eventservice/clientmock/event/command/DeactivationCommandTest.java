@@ -37,7 +37,6 @@ public class DeactivationCommandTest extends ClientCommandTestCase
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
 
         getRemoteEventConnectorMock().deactivate(theTestDomain, getCommandCallback());
-        getRemoteEventConnectorMockControl().setVoidCallable();
 
         testExecute(new DeactivationCommand(getRemoteEventConnectorMock(), theTestDomain, getCommandCallback()));
     }
@@ -48,14 +47,12 @@ public class DeactivationCommandTest extends ClientCommandTestCase
         theDomains.add(theTestDomain);
 
         getRemoteEventConnectorMock().deactivate(theDomains, getCommandCallback());
-        getRemoteEventConnectorMockControl().setVoidCallable();
 
         testExecute(new DeactivationCommand(getRemoteEventConnectorMock(), theDomains, getCommandCallback()));
     }
 
     public void testExecute_3() {
         getRemoteEventConnectorMock().deactivate();
-        getRemoteEventConnectorMockControl().setVoidCallable();
 
         testExecute(new DeactivationCommand(getRemoteEventConnectorMock()));
     }

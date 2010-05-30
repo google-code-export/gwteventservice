@@ -23,7 +23,7 @@ import de.novanic.eventservice.client.config.EventServiceConfigurationTransferab
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.command.ClientCommand;
-import org.easymock.MockControl;
+import org.easymock.EasyMock;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -34,28 +34,26 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public abstract class ClientCommandTestCase extends TestCase
 {
     private RemoteEventConnector myRemoteEventConnectorMock;
-    private MockControl myRemoteEventConnectorMockControl;
     private TestAsyncCallback myTestAsyncCallback;
 
     public void setUp() {
-        myRemoteEventConnectorMockControl = MockControl.createControl(RemoteEventConnector.class);
-        myRemoteEventConnectorMock = (RemoteEventConnector)myRemoteEventConnectorMockControl.getMock();
+        myRemoteEventConnectorMock = EasyMock.createMock(RemoteEventConnector.class);
         myTestAsyncCallback = null;
     }
 
     public void tearDown() {
-        myRemoteEventConnectorMockControl.reset();
+        EasyMock.reset(myRemoteEventConnectorMock);
     }
 
     public void testExecute(ClientCommand aClientCommand) {
         checkInit(aClientCommand);
 
-        myRemoteEventConnectorMockControl.replay();
+        EasyMock.replay(myRemoteEventConnectorMock);
 
         aClientCommand.execute();
 
-        myRemoteEventConnectorMockControl.verify();
-        myRemoteEventConnectorMockControl.reset();
+        EasyMock.verify(myRemoteEventConnectorMock);
+        EasyMock.reset(myRemoteEventConnectorMock);
     }
 
     private void checkInit(ClientCommand aClientCommand) {
@@ -67,10 +65,6 @@ public abstract class ClientCommandTestCase extends TestCase
 
     public RemoteEventConnector getRemoteEventConnectorMock() {
         return myRemoteEventConnectorMock;
-    }
-
-    public MockControl getRemoteEventConnectorMockControl() {
-        return myRemoteEventConnectorMockControl;
     }
 
     public TestAsyncCallback<Void> getCommandCallback() {

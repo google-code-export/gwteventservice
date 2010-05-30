@@ -31,7 +31,6 @@ public class InitEventServiceCommandTest extends ClientCommandTestCase
 {
     public void testExecute() {
         getRemoteEventConnectorMock().init(getCommandCallback(EventServiceConfigurationTransferable.class));
-        getRemoteEventConnectorMockControl().setVoidCallable();
 
         testExecute(new InitEventServiceCommand(getRemoteEventConnectorMock(), getCommandCallback(EventServiceConfigurationTransferable.class)));
     }
