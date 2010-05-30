@@ -90,7 +90,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) throws ServletException, IOException {
         ConnectionStrategyServerConnector theConnectionStrategyServerConnector = myConfigurationDependentFactory.getConnectionStrategyServerConnector();
         if(theConnectionStrategyServerConnector instanceof StreamingServerConnector) {
-            final String theClientId = aRequest.getSession().getId();
+            final String theClientId = getClientId(aRequest);
             StreamingServerConnector theStreamingServerConnector = (StreamingServerConnector)theConnectionStrategyServerConnector;
             try {
                 //The streaming server connector has to be cloned, because it isn't stateless (a prepare method is required).
@@ -336,7 +336,16 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      * @return client id
      */
     protected String getClientId() {
-        return myConfigurationDependentFactory.getConnectionIdGenerator().getConnectionId(getThreadLocalRequest());
+        return getClientId(getThreadLocalRequest());
+    }
+
+    /**
+     * Returns the client id.
+     * @param aRequest request
+     * @return client id
+     */
+    protected String getClientId(HttpServletRequest aRequest) {
+        return myConfigurationDependentFactory.getConnectionIdGenerator().getConnectionId(aRequest);
     }
 
     /**

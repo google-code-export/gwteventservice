@@ -790,7 +790,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
         HttpSession theSessionMock = theSessionMockControl.getMock();
 
-        theRequestMock.getSession();
+        theRequestMock.getSession(false);
         theRequestMockControl.setReturnValue(theSessionMock);
 
         theSessionMock.getId();
@@ -848,7 +848,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
         HttpSession theSessionMock = theSessionMockControl.getMock();
 
-        theRequestMock.getSession();
+        theRequestMock.getSession(false);
         theRequestMockControl.setReturnValue(theSessionMock);
 
         theSessionMock.getId();
@@ -889,7 +889,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
         HttpSession theSessionMock = theSessionMockControl.getMock();
 
-        theRequestMock.getSession();
+        theRequestMock.getSession(false);
         theRequestMockControl.setReturnValue(theSessionMock);
 
         theSessionMock.getId();
