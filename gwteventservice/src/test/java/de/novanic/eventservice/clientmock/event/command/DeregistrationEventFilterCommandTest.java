@@ -34,7 +34,6 @@ public class DeregistrationEventFilterCommandTest extends ClientCommandTestCase
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
 
         getRemoteEventConnectorMock().deregisterEventFilter(theTestDomain, getCommandCallback());
-        getRemoteEventConnectorMockControl().setVoidCallable();
 
         testExecute(new DeregistrationEventFilterCommand(getRemoteEventConnectorMock(), theTestDomain, getCommandCallback()));
     }

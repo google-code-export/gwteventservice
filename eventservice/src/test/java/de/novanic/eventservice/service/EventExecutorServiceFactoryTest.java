@@ -20,7 +20,7 @@
 package de.novanic.eventservice.service;
 
 import junit.framework.TestCase;
-import org.easymock.MockControl;
+import org.easymock.EasyMock;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,20 +41,15 @@ public class EventExecutorServiceFactoryTest extends TestCase
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
-        MockControl theSessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = (HttpSession)theSessionMockControl.getMock();
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(TEST_USER_ID);
+        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID).times(2);
 
-        theSessionMock.getId();
-        theSessionMockControl.setReturnValue(TEST_USER_ID);
-
-        theSessionMockControl.replay();
+        EasyMock.replay(theSessionMock);
             EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theSessionMock);
             assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theSessionMock));
-        theSessionMockControl.verify();
-        theSessionMockControl.reset();
+        EasyMock.verify(theSessionMock);
+        EasyMock.reset(theSessionMock);
 
         assertFalse(theEventExecutorService.isUserRegistered());
     }

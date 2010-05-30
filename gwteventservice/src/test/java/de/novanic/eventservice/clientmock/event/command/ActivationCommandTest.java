@@ -40,7 +40,6 @@ public class ActivationCommandTest extends ClientCommandTestCase
         final TestEventNotification theTestEventNotification = new TestEventNotification();
 
         getRemoteEventConnectorMock().activate(theTestDomain, theEventFilter, theTestEventNotification, getCommandCallback());
-        getRemoteEventConnectorMockControl().setVoidCallable();
 
         testExecute(new ActivationCommand(getRemoteEventConnectorMock(), theTestDomain, theEventFilter, theTestEventNotification, getCommandCallback()));
     }

@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-import org.easymock.MockControl;
+import org.easymock.EasyMock;
 
 /**
  * @author sstrohschein
@@ -42,8 +42,8 @@ import org.easymock.MockControl;
  */
 public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
 {
-    private MockControl myRequestMockControl;
-    private MockControl mySessionMockControl;
+    private HttpServletRequest myRequestMock;
+    private HttpSession mySessionMock;
 
     public EventExecutorService initEventExecutorService() {
         return setUpRemoteEventServiceServlet();
@@ -79,29 +79,21 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
     }
 
     private RemoteEventServiceServlet setUpRemoteEventServiceServlet() {
-        myRequestMockControl = MockControl.createControl(HttpServletRequest.class);
-        HttpServletRequest theRequestMock = (HttpServletRequest)myRequestMockControl.getMock();
+        myRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        mySessionMock = EasyMock.createMock(HttpSession.class);
 
-        mySessionMockControl = MockControl.createControl(HttpSession.class);
-        HttpSession theSessionMock = (HttpSession)mySessionMockControl.getMock();
+        EasyMock.expect(myRequestMock.getSession()).andReturn(mySessionMock).anyTimes();
 
-        theRequestMock.getSession();
-        myRequestMockControl.setDefaultReturnValue(theSessionMock);
+        EasyMock.expect(mySessionMock.getId()).andReturn(TEST_USER_ID).anyTimes();
 
-        theSessionMock.getId();
-        mySessionMockControl.setDefaultReturnValue(TEST_USER_ID);
+        EasyMock.replay(myRequestMock, mySessionMock);
 
-        myRequestMockControl.replay();
-        mySessionMockControl.replay();
-
-        return new DummyRemoteEventServiceServlet_Request(theRequestMock);
+        return new DummyRemoteEventServiceServlet_Request(myRequestMock);
     }
 
     private void tearDownRemoteEventServiceServlet() {
-        myRequestMockControl.verify();
-        mySessionMockControl.verify();
-        myRequestMockControl.reset();
-        mySessionMockControl.reset();
+        EasyMock.verify(myRequestMock, mySessionMock);
+        EasyMock.reset(myRequestMock, mySessionMock);
     }
 
     public void testAddEvent_Init_WithoutSession() throws Exception {

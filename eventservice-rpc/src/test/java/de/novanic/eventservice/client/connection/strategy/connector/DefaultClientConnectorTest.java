@@ -24,7 +24,7 @@ import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import junit.framework.TestCase;
-import org.easymock.MockControl;
+import org.easymock.EasyMock;
 
 import java.util.List;
 
@@ -36,25 +36,23 @@ import java.util.List;
 public class DefaultClientConnectorTest extends TestCase
 {
     public void testInit() {
-        MockControl<EventServiceAsync> theEventServiceMockControl = MockControl.createControl(EventServiceAsync.class);
-        EventServiceAsync theEventServiceMock = theEventServiceMockControl.getMock();
+        EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
 
-        theEventServiceMockControl.replay();
+        EasyMock.replay(theEventServiceMock);
 
         ConnectionStrategyClientConnector theClientConnector = new DefaultClientConnector();
         assertFalse(theClientConnector.isInitialized());
         theClientConnector.init(theEventServiceMock);
         assertTrue(theClientConnector.isInitialized());
 
-        theEventServiceMockControl.verify();
-        theEventServiceMockControl.reset();
+        EasyMock.verify(theEventServiceMock);
+        EasyMock.reset(theEventServiceMock);
     }
 
     public void testDeactivate() {
-        MockControl<EventServiceAsync> theEventServiceMockControl = MockControl.createControl(EventServiceAsync.class);
-        EventServiceAsync theEventServiceMock = theEventServiceMockControl.getMock();
+        EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
 
-        theEventServiceMockControl.replay();
+        EasyMock.replay(theEventServiceMock);
 
         ConnectionStrategyClientConnector theClientConnector = new DefaultClientConnector();
 
@@ -66,8 +64,8 @@ public class DefaultClientConnectorTest extends TestCase
         theClientConnector.deactivate();
         assertTrue(theClientConnector.isInitialized());//it is deactivated, but still initialized
 
-        theEventServiceMockControl.verify();
-        theEventServiceMockControl.reset();
+        EasyMock.verify(theEventServiceMock);
+        EasyMock.reset(theEventServiceMock);
     }
 
     public void testListen() {
@@ -79,20 +77,18 @@ public class DefaultClientConnectorTest extends TestCase
             }
         };
 
-        MockControl<EventServiceAsync> theEventServiceMockControl = MockControl.createControl(EventServiceAsync.class);
-        EventServiceAsync theEventServiceMock = theEventServiceMockControl.getMock();
+        EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
 
         theEventServiceMock.listen(theDummyAsyncCallback);
-        theEventServiceMockControl.setVoidCallable();
 
-        theEventServiceMockControl.replay();
+        EasyMock.replay(theEventServiceMock);
 
         ConnectionStrategyClientConnector theClientConnector = new DefaultClientConnector();
         theClientConnector.init(theEventServiceMock);
         theClientConnector.listen(new DummyEventNotification(), theDummyAsyncCallback);
 
-        theEventServiceMockControl.verify();
-        theEventServiceMockControl.reset();
+        EasyMock.verify(theEventServiceMock);
+        EasyMock.reset(theEventServiceMock);
     }
 
     private class DummyEventNotification implements EventNotification
