@@ -741,11 +741,26 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
     }
 
     public void testDoGet() throws Exception {
+        initEventService();
+
+        tearDownEventServiceConfiguration();
+        setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
+        myEventService = new DummyEventServiceImpl();
+
         MockControl<HttpServletRequest> theRequestMockControl = MockControl.createControl(HttpServletRequest.class);
         HttpServletRequest theRequestMock = theRequestMockControl.getMock();
 
         MockControl<HttpServletResponse> theResponseMockControl = MockControl.createControl(HttpServletResponse.class);
         HttpServletResponse theResponseMock = theResponseMockControl.getMock();
+
+        MockControl<HttpSession> theSessionMockControl = MockControl.createControl(HttpSession.class);
+        HttpSession theSessionMock = theSessionMockControl.getMock();
+
+        theRequestMock.getSession(false);
+        theRequestMockControl.setReturnValue(theSessionMock);
+
+        theSessionMock.getId();
+        theSessionMockControl.setReturnValue(TEST_USER_ID);
 
         ServletOutputStream theOutputStream = new DummyServletOutputStream(new ByteArrayOutputStream());
 

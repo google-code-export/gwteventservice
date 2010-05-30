@@ -1107,7 +1107,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
 
         Date theEndTime = new Date();
-        assertTrue((theEndTime.getTime() - theStartTime.getTime()) >= 500);
+        assertTrue((theEndTime.getTime() - theStartTime.getTime()) >= 400);
 
         //test with interrupt
         theStartTime = new Date();
@@ -1119,7 +1119,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         logOn();
 
         theEndTime = new Date();
-        assertFalse((theEndTime.getTime() - theStartTime.getTime()) >= 500);
+        assertFalse((theEndTime.getTime() - theStartTime.getTime()) >= 400);
     }
 
     public void testListen_Multi() throws Exception {
