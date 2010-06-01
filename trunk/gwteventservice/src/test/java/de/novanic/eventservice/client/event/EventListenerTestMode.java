@@ -35,7 +35,6 @@ public class EventListenerTestMode implements RemoteEventListener
 {
     private List<Event> myEvents;
     private Map<Class, Integer> myEventCountMap;
-    private RemoteEventListener myListener;
 
     public EventListenerTestMode() {
         myEvents = new ArrayList<Event>();
@@ -66,10 +65,6 @@ public class EventListenerTestMode implements RemoteEventListener
         return theCount;
     }
 
-    public void setListener(RemoteEventListener aListener) {
-        myListener = aListener;
-    }
-
     protected void addEvent(Event anEvent) {
         myEvents.add(anEvent);
         Integer theEventCount = getEventCountInternal(anEvent.getClass());
@@ -77,9 +72,6 @@ public class EventListenerTestMode implements RemoteEventListener
             myEventCountMap.put(anEvent.getClass(), 1);
         } else {
             myEventCountMap.put(anEvent.getClass(), theEventCount + 1);
-        }
-        if(myListener != null) {
-            myListener.apply(anEvent);
         }
     }
 }

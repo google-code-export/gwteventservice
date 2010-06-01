@@ -29,6 +29,7 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.*;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import de.novanic.eventservice.client.logger.AbstractClientLogger;
+import org.easymock.EasyMock;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         mockInit();
         
         //init connector
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
 
             myRemoteEventConnector.init(new AsyncCallback<EventServiceConfigurationTransferable>() {
                 public void onSuccess(EventServiceConfigurationTransferable anEventServiceConfigurationTransferable) {}
@@ -75,8 +76,8 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
                 public void onFailure(Throwable aThrowable) {}
             });
 
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
 
         assertFalse(myRemoteEventConnector.isActive());
     }
@@ -84,18 +85,18 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
     public void testDeactivate() {
         assertFalse(myRemoteEventConnector.isActive());
 
-        mockRegister(TEST_DOMAIN, true);
-        mockListen(true);
+        mockRegister(TEST_DOMAIN);
+        mockListen();
 
         final TestEventNotification theEventNotification = new TestEventNotification();
 
         //activate connector
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
 
             myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
 
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
 
         //check activation
         assertTrue(myRemoteEventConnector.isActive());
@@ -121,18 +122,18 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
     public void testDeactivate_2() {
         assertFalse(myRemoteEventConnector.isActive());
 
-        mockRegister(TEST_DOMAIN, true);
-        mockListen(true);
+        mockRegister(TEST_DOMAIN);
+        mockListen();
 
         final TestEventNotification theEventNotification = new TestEventNotification();
 
         //activate connector
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
 
             myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
 
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
 
         //check activation
         assertTrue(myRemoteEventConnector.isActive());
@@ -160,20 +161,20 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
     public void testDeactivate_3() {
         assertFalse(myRemoteEventConnector.isActive());
 
-        mockRegister(TEST_DOMAIN, true);
-        mockRegister(TEST_DOMAIN_2, false);
-        mockListen(true);
+        mockRegister(TEST_DOMAIN);
+        mockRegister(TEST_DOMAIN_2);
+        mockListen();
 
         final TestEventNotification theEventNotification = new TestEventNotification();
 
         //activate connector
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
 
             myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
             myRemoteEventConnector.activate(TEST_DOMAIN_2, null, theEventNotification, null);
 
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
 
         //check activation
         assertTrue(myRemoteEventConnector.isActive());
@@ -200,18 +201,18 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
     public void testDeactivate_After_Timeout() {
         assertFalse(myRemoteEventConnector.isActive());
 
-        mockRegister(TEST_DOMAIN, true);
+        mockRegister(TEST_DOMAIN);
         mockListen(null, 1);
 
         final TestEventNotification theEventNotification = new TestEventNotification();
 
         //activate connector
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
 
             myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
 
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
 
         //check deactivation
         assertFalse(myRemoteEventConnector.isActive());
