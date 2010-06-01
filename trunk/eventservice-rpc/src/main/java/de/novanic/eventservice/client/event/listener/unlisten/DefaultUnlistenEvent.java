@@ -202,6 +202,8 @@ public class DefaultUnlistenEvent implements UnlistenEvent
             }
         } else if(myUserId != null) {
             theStringBuilder.append("\")");
+        } else {
+            theStringBuilder.append(')');
         }
         return theStringBuilder.toString();
     }

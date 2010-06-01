@@ -218,4 +218,9 @@ public class UnlistenEventTest extends TestCase
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(null, "XY", false);
         assertEquals("Event: Unlisten (user \"XY\")", theUnlistenEvent.toString());
     }
+
+    public void testToString_UserLess() {
+        UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(null, null, false);
+        assertEquals("Event: Unlisten (user not available)", theUnlistenEvent.toString());
+    }
 }
