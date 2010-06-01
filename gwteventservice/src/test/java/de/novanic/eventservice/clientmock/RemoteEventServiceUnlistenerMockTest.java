@@ -25,6 +25,7 @@ import de.novanic.eventservice.client.event.*;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
+import org.easymock.EasyMock;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -51,19 +52,19 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         mockInit();
 
         //caused by add Listener
-        mockRegister(TEST_DOMAIN, true);
+        mockRegister(TEST_DOMAIN);
 
         //mock listen
         List<DomainEvent> theDomainEvents = new ArrayList<DomainEvent>();
         theDomainEvents.add(new DefaultDomainEvent(new Event() {}));
         mockListen(theDomainEvents, 3, new TestException());
-        mockListen(false);
-        mockListen(false);
+        mockListen();
+        mockListen();
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
         final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
 
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
             //add UnlistenListener
             assertEquals(0, theUnlistenEventListener.getEventCount());
 
@@ -75,7 +76,6 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
             myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
 
-            joinAllListenThreads(3);
             assertEquals(1, theUnlistenEventListener.getEventCount());
             assertEquals(1, theUnlistenEventListener.getEventCount(DefaultUnlistenEvent.class));
 
@@ -86,81 +86,37 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
             assertEquals(TEST_DOMAIN, theUnlistenEventResult.getDomains().iterator().next());
             assertEquals("testUser", theUnlistenEventResult.getUserId());
             assertEquals(theUnlistenEvent, theUnlistenEventResult);
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
     }
 
     public void testAddUnlistenListener_Local_2() {
         mockInit();
 
         //caused by add Listener
-        mockRegister(TEST_DOMAIN, true);
+        mockRegister(TEST_DOMAIN);
 
         //mock listen
         List<DomainEvent> theDomainEvents = new ArrayList<DomainEvent>();
         theDomainEvents.add(new DefaultDomainEvent(new Event() {}));
         mockListen(theDomainEvents, 3, new TestException());
-        mockListen(false);
-        mockListen(false);
+        mockListen();
+        mockListen();
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
-        final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
 
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
             //add UnlistenListener
             assertEquals(0, theUnlistenEventListener.getEventCount());
 
             assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
-            assertTrue(myRemoteEventService.isActive());
-
-            assertTrue(myRemoteEventService.isActive());
-            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, theUnlistenEventListener, theUnlistenEvent, null);
-            assertTrue(myRemoteEventService.isActive());
-
-            joinAllListenThreads(3);
-            assertEquals(1, theUnlistenEventListener.getEventCount());
-            assertEquals(1, theUnlistenEventListener.getEventCount(DefaultUnlistenEvent.class));
-
-            final UnlistenEvent theUnlistenEventResult = (UnlistenEvent)theUnlistenEventListener.getEvents().get(0);
-            assertFalse(theUnlistenEventResult.isTimeout());
-            assertTrue(theUnlistenEventResult.isLocal());
-            assertEquals(1, theUnlistenEventResult.getDomains().size());
-            assertEquals(TEST_DOMAIN, theUnlistenEventResult.getDomains().iterator().next());
-            assertEquals("testUser", theUnlistenEventResult.getUserId());
-            assertEquals(theUnlistenEvent, theUnlistenEventResult);
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
-    }
-
-    public void testAddUnlistenListener_Local_3() {
-        mockInit();
-
-        //caused by add Listener
-        mockRegister(TEST_DOMAIN, true);
-
-        //mock listen
-        List<DomainEvent> theDomainEvents = new ArrayList<DomainEvent>();
-        theDomainEvents.add(new DefaultDomainEvent(new Event() {}));
-        mockListen(theDomainEvents, 3, new TestException());
-        mockListen(false);
-        mockListen(false);
-
-        final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
-
-        myEventServiceAsyncMockControl.replay();
-            //add UnlistenListener
-            assertEquals(0, theUnlistenEventListener.getEventCount());
-
-            assertFalse(myRemoteEventService.isActive());
-            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
-            assertTrue(myRemoteEventService.isActive());
-
-            assertTrue(myRemoteEventService.isActive());
             myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, theUnlistenEventListener, null);
+            assertFalse(myRemoteEventService.isActive());
+
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
             assertTrue(myRemoteEventService.isActive());
 
-            joinAllListenThreads(3);
             assertEquals(1, theUnlistenEventListener.getEventCount());
             assertEquals(1, theUnlistenEventListener.getEventCount(DefaultUnlistenEvent.class));
 
@@ -169,25 +125,25 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
             assertTrue(theUnlistenEventResult.isLocal());
             assertNull(theUnlistenEventResult.getDomains());
             assertNull(theUnlistenEventResult.getUserId());
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
     }
 
     public void testAddUnlistenListener_Unlisten() {
         mockInit();
 
         //caused by add UnlistenListener
-        mockRegister(DomainFactory.UNLISTEN_DOMAIN, true);
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN);
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
-        mockRegisterUnlistenEvent(null, true);
+        mockRegisterUnlistenEvent(null);
 
         //mock listen
         List<DomainEvent> theDomainEvents = new ArrayList<DomainEvent>();
         theDomainEvents.add(new DefaultDomainEvent(new DefaultUnlistenEvent(), DomainFactory.UNLISTEN_DOMAIN));
         mockListen(theDomainEvents, 1);
-        mockListen(false);
+        mockListen();
 
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
             //add UnlistenListener
             assertEquals(0, theUnlistenEventListener.getEventCount());
 
@@ -204,26 +160,26 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
             assertFalse(theUnlistenEventResult.isLocal());
             assertNull(theUnlistenEventResult.getDomains());
             assertNull(theUnlistenEventResult.getUserId());
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
     }
 
     public void testAddUnlistenListener_Unlisten_2() {
         mockInit();
 
         //caused by add UnlistenListener
-        mockRegister(DomainFactory.UNLISTEN_DOMAIN, true);
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN);
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
         final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
-        mockRegisterUnlistenEvent(theUnlistenEvent, true);
+        mockRegisterUnlistenEvent(theUnlistenEvent);
 
         //mock listen
         List<DomainEvent> theDomainEvents = new ArrayList<DomainEvent>();
         theDomainEvents.add(new DefaultDomainEvent(theUnlistenEvent, DomainFactory.UNLISTEN_DOMAIN));
         mockListen(theDomainEvents, 1);
-        mockListen(false);
+        mockListen();
 
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
             //add UnlistenListener
             assertEquals(0, theUnlistenEventListener.getEventCount());
 
@@ -241,26 +197,26 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
             assertEquals(TEST_DOMAIN, theUnlistenEventResult.getDomains().iterator().next());
             assertEquals("testUser", theUnlistenEventResult.getUserId());
             assertEquals(theUnlistenEvent, theUnlistenEventResult);
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
     }
 
     public void testAddUnlistenListener_Timeout() {
         mockInit();
 
         //caused by add UnlistenListener
-        mockRegister(DomainFactory.UNLISTEN_DOMAIN, true);
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN);
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
         final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", true);
-        mockRegisterUnlistenEvent(theUnlistenEvent, true);
+        mockRegisterUnlistenEvent(theUnlistenEvent);
 
         //mock listen
         List<DomainEvent> theDomainEvents = new ArrayList<DomainEvent>();
         theDomainEvents.add(new DefaultDomainEvent(theUnlistenEvent, DomainFactory.UNLISTEN_DOMAIN));
         mockListen(theDomainEvents, 1);
-        mockListen(false);
+        mockListen();
 
-        myEventServiceAsyncMockControl.replay();
+        EasyMock.replay(myEventServiceAsyncMock);
             //add UnlistenListener
             assertEquals(0, theUnlistenEventListener.getEventCount());
 
@@ -278,7 +234,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
             assertEquals(TEST_DOMAIN, theUnlistenEventResult.getDomains().iterator().next());
             assertEquals("testUser", theUnlistenEventResult.getUserId());
             assertEquals(theUnlistenEvent, theUnlistenEventResult);
-        myEventServiceAsyncMockControl.verify();
-        myEventServiceAsyncMockControl.reset();
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
     }
 }
