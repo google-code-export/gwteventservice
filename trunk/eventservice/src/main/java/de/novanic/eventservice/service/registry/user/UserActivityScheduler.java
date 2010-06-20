@@ -86,7 +86,7 @@ public class UserActivityScheduler
     public void start(boolean isAutoClean) {
         if(!isActive) {
             myIsAutoClean = isAutoClean;
-            myTimer = new Timer();
+            myTimer = new Timer("GWTEventService-UserActivityScheduler", true);
             myTimeoutTimerTask = new TimeoutTimerTask();
             isActive = true;
             schedule(myTimer, myTimeoutTimerTask, myTimeoutInterval);
