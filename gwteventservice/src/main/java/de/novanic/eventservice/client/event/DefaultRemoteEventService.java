@@ -19,9 +19,6 @@
  */
 package de.novanic.eventservice.client.event;
 
-import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
-import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
-import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
@@ -29,7 +26,6 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.command.*;
-import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 
@@ -49,20 +45,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * <br>Date: 06.06.2008
  * <br>Time: 18:56:46
  */
-public final class DefaultRemoteEventService implements RemoteEventService
+public class DefaultRemoteEventService extends RemoteEventServiceAccessor implements RemoteEventService
 {
-    private RemoteEventConnector myRemoteEventConnector;
-    private Queue<ClientCommand<?>> myClientCommandQueue;
     private Map<Domain, List<RemoteEventListener>> myDomainListenerMapping;
-    private boolean isSessionInitialized;
 
     /**
      * Creates a new RemoteEventService.
      * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector} for the connection
      * between client side and server side
      */
-    DefaultRemoteEventService(RemoteEventConnector aRemoteEventConnector) {
-        myRemoteEventConnector = aRemoteEventConnector;
+    protected DefaultRemoteEventService(RemoteEventConnector aRemoteEventConnector) {
+        super(aRemoteEventConnector);
         myDomainListenerMapping = new HashMap<Domain, List<RemoteEventListener>>();
     }
 
@@ -215,11 +208,11 @@ public final class DefaultRemoteEventService implements RemoteEventService
     public void addUnlistenListener(final UnlistenEventListener.Scope anUnlistenScope, UnlistenEventListener anUnlistenEventListener, final UnlistenEvent anUnlistenEvent, final AsyncCallback<Void> aCallback) {
         if(UnlistenEventListener.Scope.LOCAL == anUnlistenScope) {
             addListenerLocal(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener);
-            schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, myRemoteEventConnector, anUnlistenEvent, aCallback));
+            schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, getRemoteEventConnector(), anUnlistenEvent, aCallback));
         } else {
             addListener(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener, new VoidAsyncCallback() {
                 public void onSuccess(Void aResult) {
-                    schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, myRemoteEventConnector, anUnlistenEvent, aCallback));
+                    schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, getRemoteEventConnector(), anUnlistenEvent, aCallback));
                 }
             });
         }
@@ -265,7 +258,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback
      */
     private void activate(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
-        schedule(new ActivationCommand(myRemoteEventConnector, aDomain, anEventFilter, new ListenerEventNotification(), aCallback));
+        schedule(new ActivationCommand(getRemoteEventConnector(), aDomain, anEventFilter, new ListenerEventNotification(), aCallback));
     }
 
     /**
@@ -286,7 +279,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback
      */
     public void registerEventFilter(Domain aDomain, EventFilter anEventFilter, AsyncCallback<Void> aCallback) {
-        schedule(new RegistrationEventFilterCommand(myRemoteEventConnector, aDomain, anEventFilter, aCallback));
+        schedule(new RegistrationEventFilterCommand(getRemoteEventConnector(), aDomain, anEventFilter, aCallback));
     }
 
     /**
@@ -303,7 +296,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @param aCallback callback
      */
     public void deregisterEventFilter(Domain aDomain, AsyncCallback<Void> aCallback) {
-        schedule(new DeregistrationEventFilterCommand(myRemoteEventConnector, aDomain, aCallback));
+        schedule(new DeregistrationEventFilterCommand(getRemoteEventConnector(), aDomain, aCallback));
     }
 
     /**
@@ -311,7 +304,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
      * @return true when active/listening, otherwise false
      */
     public boolean isActive() {
-        return myRemoteEventConnector.isActive();
+        return isListenActive();
     }
 
     /**
@@ -374,7 +367,7 @@ public final class DefaultRemoteEventService implements RemoteEventService
         }
         if(!theDomains.isEmpty()) {
             //removeListeners is called with a set of domains to reduce remote server calls.
-            schedule(new DeactivationCommand(myRemoteEventConnector, theDomains, aCallback));
+            schedule(new DeactivationCommand(getRemoteEventConnector(), theDomains, aCallback));
         }
     }
 
@@ -459,10 +452,10 @@ public final class DefaultRemoteEventService implements RemoteEventService
         boolean isRemoved = (myDomainListenerMapping.remove(aDomain) != null);
         if(isRemoved) {
             if(aCallback != null) {
-                schedule(new DeactivationCommand(myRemoteEventConnector, aDomain, aCallback));
+                schedule(new DeactivationCommand(getRemoteEventConnector(), aDomain, aCallback));
             }
             if(myDomainListenerMapping.isEmpty()) {
-                schedule(new DeactivationCommand(myRemoteEventConnector));
+                schedule(new DeactivationCommand(getRemoteEventConnector()));
             }
         }
         return isRemoved;
@@ -481,35 +474,6 @@ public final class DefaultRemoteEventService implements RemoteEventService
             return theCollectionCopy;
         }
         return aList;
-    }
-
-    /**
-     * Starts the init command and schedules all other commands till the init command is finished. That must be done
-     * to avoid double initialized sessions (race condition GWT issue 1846).  
-     * @param aClientCommand command to schedule
-     * @param <R> Return type of the command callback
-     */
-    private <R> void schedule(final ClientCommand<R> aClientCommand) {
-        if(myClientCommandQueue == null) {
-            myClientCommandQueue = new LinkedList<ClientCommand<?>>();
-            InitEventServiceCommand theInitCommand = new InitEventServiceCommand(myRemoteEventConnector, new InitCommandCallback());
-            theInitCommand.execute();
-        }
-        myClientCommandQueue.add(aClientCommand);
-        executeCommands();
-    }
-
-    /**
-     * Executes the scheduled commands ({@link ClientCommand}. The commands can be scheduled with
-     * {@link de.novanic.eventservice.client.event.DefaultRemoteEventService#schedule(de.novanic.eventservice.client.event.command.ClientCommand)}.
-     */
-    private void executeCommands() {
-        if(isSessionInitialized) {
-            ClientCommand<?> theClientCommand;
-            while((theClientCommand = myClientCommandQueue.poll()) != null) {
-                theClientCommand.execute();
-            }
-        }
     }
 
     /**
@@ -538,57 +502,6 @@ public final class DefaultRemoteEventService implements RemoteEventService
         public void onAbort() {
             //if the remote doesn't know the client, all listeners will be removed and the connection gets inactive
             removeListeners();
-        }
-    }
-
-    /**
-     * Empty callback
-     */
-    private static class VoidAsyncCallback implements AsyncCallback<Void>
-    {
-        public void onFailure(Throwable aThrowable) {}
-
-        public void onSuccess(Void aResult) {}
-    }
-
-    /**
-     * Callback for the init command.
-     */
-    private class InitCommandCallback implements AsyncCallback<EventServiceConfigurationTransferable>
-    {
-        /**
-         * Executes the scheduled commands on success.
-         * @param aConfiguration configuration for the client side
-         */
-        public void onSuccess(EventServiceConfigurationTransferable aConfiguration) {
-            ConfigurationTransferableDependentFactory theConfigDependentFactory = ConfigurationTransferableDependentFactory.getInstance(aConfiguration);
-            ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigDependentFactory.getConnectionStrategyClientConnector();
-            myRemoteEventConnector.initListen(theConnectionStrategyClientConnector);
-            finishFirstCall();
-        }
-
-        /**
-         * Throws a runtime exception when the event service couldn't be activated / initialized.
-         * @param aThrowable throwable caused by a failed server call
-         */
-        public void onFailure(Throwable aThrowable) {
-            throw new RemoteEventServiceRuntimeException("Error on activating / initializing \"" + RemoteEventService.class.getName() + "\"!", aThrowable);
-        }
-
-        /**
-         * Executes the scheduled commands.
-         */
-        private void finishFirstCall() {
-            //Schedule the next command after the callback is finished. The timer is needed, because some browsers doesn't
-            //notice the server call cycle, when the next command is executed directly.
-            ClientCommandSchedulerFactory.getInstance().getClientCommandScheduler().schedule(new ClientCommand<Void>() {
-                public void execute() {
-                    isSessionInitialized = true;
-                    executeCommands();
-                }
-
-                public AsyncCallback<Void> getCommandCallback() { return null; }
-            });
         }
     }
 }
