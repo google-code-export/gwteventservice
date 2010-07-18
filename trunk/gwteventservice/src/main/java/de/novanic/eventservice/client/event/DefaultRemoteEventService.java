@@ -409,6 +409,44 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
     }
 
     /**
+     * Adds / sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * @param aDomain domain
+     * @param anEvent event
+     */
+    public void addEvent(Domain aDomain, Event anEvent) {
+        addEvent(aDomain, anEvent, new VoidAsyncCallback());
+    }
+
+    /**
+     * Adds / sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * @param aDomain domain
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    public void addEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> aCallback) {
+        schedule(new EventExecutionCommand(getRemoteEventConnector(), aDomain, anEvent, aCallback));
+    }
+
+    /**
+     * Adds / sends an event to the calling client / user and get eventually filtered at the server side
+     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
+     * @param anEvent event
+     */
+    public void addEventUserSpecific(Event anEvent) {
+        addEventUserSpecific(anEvent, new VoidAsyncCallback());
+    }
+
+    /**
+     * Adds / sends an event to the calling client / user and get eventually filtered at the server side
+     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    public void addEventUserSpecific(Event anEvent, AsyncCallback<Void> aCallback) {
+        schedule(new EventExecutionCommand(getRemoteEventConnector(), anEvent, aCallback));
+    }
+
+    /**
      * Stops listening for the corresponding domain. The RemoteEventFilters for the domain will also be removed.
      * {@link DefaultRemoteEventService#removeListeners()} can be used to call unlisten for all domains.
      * @param aDomain domain to unlisten

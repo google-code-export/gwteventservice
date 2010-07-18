@@ -20,6 +20,7 @@
 package de.novanic.eventservice.client.connection.strategy.connector;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.listener.EventNotification;
@@ -85,6 +86,22 @@ public interface RemoteEventConnector
      * @return true when active/listening, otherwise false
      */
     boolean isActive();
+
+    /**
+     * Sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * @param aDomain domain
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    void sendEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> aCallback);
+
+    /**
+     * Sends an event to the calling user / client and get eventually filtered at the server side
+     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    void sendEventUserSpecific(Event anEvent, AsyncCallback<Void> aCallback);
 
     /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which

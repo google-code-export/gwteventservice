@@ -23,6 +23,7 @@ import de.novanic.eventservice.client.config.ConfigurationTransferableDependentF
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
+import de.novanic.eventservice.client.event.Event;
 import org.easymock.EasyMock;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -153,6 +154,14 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     protected void mockRegisterUnlistenEvent(UnlistenEvent anUnlistenEvent) {
         myEventServiceAsyncMock.registerUnlistenEvent(EasyMock.eq(UnlistenEventListener.Scope.UNLISTEN), EasyMock.eq(anUnlistenEvent), EasyMock.<AsyncCallback<Void>>anyObject());
+    }
+
+    protected void mockAddEvent(Domain aDomain) {
+        myEventServiceAsyncMock.addEvent(EasyMock.eq(aDomain), EasyMock.<Event>anyObject(), eqAsyncCallback(null));
+    }
+
+    protected void mockAddEventUserSpecific() {
+        myEventServiceAsyncMock.addEventUserSpecific(EasyMock.<Event>anyObject(), eqAsyncCallback(null));
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {

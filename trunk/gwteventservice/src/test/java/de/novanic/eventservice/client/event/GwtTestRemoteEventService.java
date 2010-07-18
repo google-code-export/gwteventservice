@@ -161,6 +161,50 @@ public class GwtTestRemoteEventService extends RemoteEventServiceLiveTest
         executeActions();
     }
 
+    public void testAddListener_ClientSide() {
+        assertFalse(myRemoteEventService.isActive());
+
+        //start listen
+        addAction(new TestAction() {
+            public void execute() {
+                myRemoteEventService.addListener(TEST_DOMAIN, getListener(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(0, getEventCount());
+            }
+        });
+
+        //add event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                myRemoteEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
+            }
+        });
+
+        //add another event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(1, getEventCount());
+                myRemoteEventService.addEvent(TEST_DOMAIN, new DummyEvent(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(2, getEventCount());
+            }
+        });
+
+        executeActions();
+    }
+
     public void testAddUnlistenListener() {
         assertFalse(myRemoteEventService.isActive());
 
