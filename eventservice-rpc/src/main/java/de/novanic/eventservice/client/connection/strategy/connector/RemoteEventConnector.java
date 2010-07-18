@@ -89,19 +89,12 @@ public interface RemoteEventConnector
 
     /**
      * Sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * User-specific events can be sent with the usage of this domain: {@link de.novanic.eventservice.client.event.domain.DomainFactory#USER_SPECIFIC_DOMAIN}.
      * @param aDomain domain
      * @param anEvent event
      * @param aCallback callback
      */
     void sendEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> aCallback);
-
-    /**
-     * Sends an event to the calling user / client and get eventually filtered at the server side
-     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
-     * @param anEvent event
-     * @param aCallback callback
-     */
-    void sendEventUserSpecific(Event anEvent, AsyncCallback<Void> aCallback);
 
     /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which

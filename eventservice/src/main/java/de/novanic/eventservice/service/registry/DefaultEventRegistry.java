@@ -392,7 +392,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     private void addEventUserSpecific(UserInfo aUserInfo, Event anEvent) {
         if(aUserInfo != null) {
             LOG.debug("User specific event \"" + anEvent + "\" added to client id \"" + aUserInfo + "\".");
-            addEvent(null, aUserInfo, anEvent);
+            addEvent(DomainFactory.USER_SPECIFIC_DOMAIN, aUserInfo, anEvent);
         }
     }
 

@@ -29,7 +29,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 public class DummyDomainEvent extends DefaultDomainEvent
 {
     /**
-     * Userspecific event
+     * User-specific event
      */
     public DummyDomainEvent() {
         super(new DummyEvent());
@@ -44,8 +44,8 @@ public class DummyDomainEvent extends DefaultDomainEvent
     }
 
     /**
-     * Userspecific event
-     * @param aEvent a userspecific event
+     * User-specific event
+     * @param aEvent a user-specific event
      */
     public DummyDomainEvent(Event aEvent) {
         super(aEvent);

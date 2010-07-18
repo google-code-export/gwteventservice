@@ -26,7 +26,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 
 /**
  * The {@link de.novanic.eventservice.client.event.command.EventExecutionCommand} sends an event to a domain or to the
- * sending / calling user (user-specific event, when no domain is provided).
+ * sending / calling user (user-specific event, when the {@link de.novanic.eventservice.client.event.domain.DomainFactory#USER_SPECIFIC_DOMAIN} is used).
  *
  * @author sstrohschein
  *         <br>Date: 04.07.2010
@@ -52,25 +52,9 @@ public class EventExecutionCommand extends ServerCallCommand<Void>
     }
 
     /**
-     * Creates an EventExecutionCommand to send / register events to the server side. When no domain is provided it will be
-     * registered as a user-specific event.
-     *
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
-     * @param anEvent event
-     * @param aCallback callback of the command
-     */
-    public EventExecutionCommand(RemoteEventConnector aRemoteEventConnector, Event anEvent, AsyncCallback<Void> aCallback) {
-        this(aRemoteEventConnector, null, anEvent, aCallback);
-    }
-
-    /**
      * Sends / registers the event to the server side (domain- or user-specific events)
      */
     public void execute() {
-        if(myDomain != null) {
-            getRemoteEventConnector().sendEvent(myDomain, myEvent, getCommandCallback());
-        } else {
-            getRemoteEventConnector().sendEventUserSpecific(myEvent, getCommandCallback());
-        }
+        getRemoteEventConnector().sendEvent(myDomain, myEvent, getCommandCallback());
     }
 }

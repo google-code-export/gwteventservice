@@ -31,10 +31,18 @@ package de.novanic.eventservice.client.event.domain;
 public final class DomainFactory
 {
     /**
-     * All unlisten event ({@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}) will be registered to
+     * All unlisten events ({@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent}) will be registered to
      * the UNLISTEN_DOMAIN.
      */
     public static final Domain UNLISTEN_DOMAIN = getDomain("service_unlisten_domain");
+
+    /**
+     * The {@link de.novanic.eventservice.client.event.domain.DomainFactory#USER_SPECIFIC_DOMAIN} is a special domain for
+     * user-specific events. User-specific events will be registered to that domain. This domain holds only events for
+     * the specified client / user and doesn't provide events for all users like all other domains.
+     * Technically the user-specific domain is implemented as a / the NULL-domain.
+     */
+    public static final Domain USER_SPECIFIC_DOMAIN = null;
 
     private DomainFactory() {}
 

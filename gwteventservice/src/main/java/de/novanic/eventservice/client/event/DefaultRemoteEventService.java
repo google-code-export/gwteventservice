@@ -410,6 +410,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
 
     /**
      * Adds / sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * User-specific events can be added with the usage of this domain: {@link de.novanic.eventservice.client.event.domain.DomainFactory#USER_SPECIFIC_DOMAIN}.
      * @param aDomain domain
      * @param anEvent event
      */
@@ -419,31 +420,13 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
 
     /**
      * Adds / sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * User-specific events can be added with the usage of this domain: {@link de.novanic.eventservice.client.event.domain.DomainFactory#USER_SPECIFIC_DOMAIN}.
      * @param aDomain domain
      * @param anEvent event
      * @param aCallback callback
      */
     public void addEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> aCallback) {
         schedule(new EventExecutionCommand(getRemoteEventConnector(), aDomain, anEvent, aCallback));
-    }
-
-    /**
-     * Adds / sends an event to the calling client / user and get eventually filtered at the server side
-     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
-     * @param anEvent event
-     */
-    public void addEventUserSpecific(Event anEvent) {
-        addEventUserSpecific(anEvent, new VoidAsyncCallback());
-    }
-
-    /**
-     * Adds / sends an event to the calling client / user and get eventually filtered at the server side
-     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
-     * @param anEvent event
-     * @param aCallback callback
-     */
-    public void addEventUserSpecific(Event anEvent, AsyncCallback<Void> aCallback) {
-        schedule(new EventExecutionCommand(getRemoteEventConnector(), anEvent, aCallback));
     }
 
     /**

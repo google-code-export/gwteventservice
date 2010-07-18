@@ -1506,8 +1506,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockListen();
 
         //caused by add event from the client side
-        mockAddEventUserSpecific();
-        mockAddEventUserSpecific();
+        mockAddEvent(DomainFactory.USER_SPECIFIC_DOMAIN);
+        mockAddEvent(DomainFactory.USER_SPECIFIC_DOMAIN);
 
         EasyMock.replay(myEventServiceAsyncMock);
             assertFalse(myRemoteEventService.isActive());
@@ -1515,10 +1515,42 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             myRemoteEventService.addListener(TEST_DOMAIN, theEventListener);
             assertTrue(myRemoteEventService.isActive());
 
-            myRemoteEventService.addEventUserSpecific(new DummyEvent());
+            myRemoteEventService.addEvent(DomainFactory.USER_SPECIFIC_DOMAIN, new DummyEvent());
             assertTrue(myRemoteEventService.isActive());
 
-            myRemoteEventService.addEventUserSpecific(new DummyEvent());
+            myRemoteEventService.addEvent(DomainFactory.USER_SPECIFIC_DOMAIN, new DummyEvent());
+            assertTrue(myRemoteEventService.isActive());
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
+        assertContainsListeners(TEST_DOMAIN_2, 0);
+    }
+
+    public void testAddEventUserSpecific_NULL_Domain() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN);
+
+        //caused by callback of register
+        mockListen();
+
+        //caused by add event from the client side
+        mockAddEvent(null);
+        mockAddEvent(null);
+
+        EasyMock.replay(myEventServiceAsyncMock);
+            assertFalse(myRemoteEventService.isActive());
+            final EventListenerTestMode theEventListener = new EventListenerTestMode();
+            myRemoteEventService.addListener(TEST_DOMAIN, theEventListener);
+            assertTrue(myRemoteEventService.isActive());
+
+            myRemoteEventService.addEvent(null, new DummyEvent());
+            assertTrue(myRemoteEventService.isActive());
+
+            myRemoteEventService.addEvent(null, new DummyEvent());
             assertTrue(myRemoteEventService.isActive());
         EasyMock.verify(myEventServiceAsyncMock);
         EasyMock.reset(myEventServiceAsyncMock);

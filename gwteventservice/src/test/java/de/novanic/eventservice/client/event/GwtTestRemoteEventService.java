@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListenerAdapter;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 
@@ -80,6 +81,50 @@ public class GwtTestRemoteEventService extends RemoteEventServiceLiveTest
         addAction(new TestAction() {
             public void execute() {
                 myRemoteEventService.addListener(null, getListener(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(0, getEventCount());
+            }
+        });
+
+        //add event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
+            }
+        });
+
+        //add another event
+        addAction(new TestAction(true) {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(1, getEventCount());
+                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
+            }
+        });
+        //check result
+        addAction(new TestAction() {
+            public void execute() {
+                assertTrue(myRemoteEventService.isActive());
+                assertEquals(2, getEventCount());
+            }
+        });
+
+        executeActions();
+    }
+
+    public void testAddListener_UserSpecific() {
+        assertFalse(myRemoteEventService.isActive());
+
+        //start listen
+        addAction(new TestAction() {
+            public void execute() {
+                myRemoteEventService.addListener(DomainFactory.USER_SPECIFIC_DOMAIN, getListener(), getCallback());
             }
         });
         //check result

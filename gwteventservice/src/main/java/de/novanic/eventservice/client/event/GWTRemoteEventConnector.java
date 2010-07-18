@@ -121,22 +121,13 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
 
     /**
      * Sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * User-specific events can be sent with the usage of this domain: {@link de.novanic.eventservice.client.event.domain.DomainFactory#USER_SPECIFIC_DOMAIN}.
      * @param aDomain domain
      * @param anEvent event
      * @param aCallback callback
      */
     public void sendEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> aCallback) {
         myEventService.addEvent(aDomain, anEvent, aCallback);
-    }
-
-    /**
-     * Sends an event to the calling user / client and get eventually filtered at the server side
-     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
-     * @param anEvent event
-     * @param aCallback callback
-     */
-    public void sendEventUserSpecific(Event anEvent, AsyncCallback<Void> aCallback) {
-        myEventService.addEventUserSpecific(anEvent, aCallback);
     }
 
     /**
