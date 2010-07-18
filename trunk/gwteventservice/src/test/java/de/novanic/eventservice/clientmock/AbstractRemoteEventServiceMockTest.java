@@ -160,10 +160,6 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         myEventServiceAsyncMock.addEvent(EasyMock.eq(aDomain), EasyMock.<Event>anyObject(), eqAsyncCallback(null));
     }
 
-    protected void mockAddEventUserSpecific() {
-        myEventServiceAsyncMock.addEventUserSpecific(EasyMock.<Event>anyObject(), eqAsyncCallback(null));
-    }
-
     private EventServiceConfigurationTransferable getDefaultConfiguration() {
         return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, null, DefaultClientConnector.class.getName());
     }

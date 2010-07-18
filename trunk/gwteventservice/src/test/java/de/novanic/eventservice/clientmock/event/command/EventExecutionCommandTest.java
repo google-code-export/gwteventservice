@@ -42,10 +42,11 @@ public class EventExecutionCommandTest extends ClientCommandTestCase
     }
 
     public void testExecute_2() {
+        final Domain theUserSpecificDomain = DomainFactory.USER_SPECIFIC_DOMAIN;
         final Event theTestEvent = new DummyEvent();
 
-        getRemoteEventConnectorMock().sendEventUserSpecific(theTestEvent, getCommandCallback());
+        getRemoteEventConnectorMock().sendEvent(theUserSpecificDomain, theTestEvent, getCommandCallback());
 
-        testExecute(new EventExecutionCommand(getRemoteEventConnectorMock(), theTestEvent, getCommandCallback()));
+        testExecute(new EventExecutionCommand(getRemoteEventConnectorMock(), theUserSpecificDomain, theTestEvent, getCommandCallback()));
     }
 }
