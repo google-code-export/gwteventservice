@@ -60,6 +60,7 @@ public class GWTEventServiceTestSuite extends GWTTestCase
         theGWTEventServiceTestSuite.addTestSuite(DeactivationCommandTest.class);
         theGWTEventServiceTestSuite.addTestSuite(DeregistrationEventFilterCommandTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RegistrationEventFilterCommandTest.class);
+        theGWTEventServiceTestSuite.addTestSuite(EventExecutionCommandTest.class);
 
         // Event
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceRuntimeExceptionTest.class);

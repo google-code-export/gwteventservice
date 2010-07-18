@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.event.command.EventExecutionCommand;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -256,4 +257,34 @@ public interface RemoteEventService
      * @param aCallback callback (only called when an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener} is registered)
      */
     void removeUnlistenListeners(AsyncCallback<Void> aCallback);
+
+    /**
+     * Adds / sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * @param aDomain domain
+     * @param anEvent event
+     */
+    void addEvent(Domain aDomain, Event anEvent);
+
+    /**
+     * Adds / sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * @param aDomain domain
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    void addEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> aCallback);
+
+    /**
+     * Adds / sends an event to the calling client / user and get eventually filtered at the server side
+     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
+     * @param anEvent event
+     */
+    void addEventUserSpecific(Event anEvent);
+
+    /**
+     * Adds / sends an event to the calling client / user and get eventually filtered at the server side
+     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    void addEventUserSpecific(Event anEvent, AsyncCallback<Void> aCallback);
 }

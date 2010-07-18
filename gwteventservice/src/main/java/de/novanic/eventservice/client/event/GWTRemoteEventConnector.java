@@ -120,6 +120,26 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
     }
 
     /**
+     * Sends an event to a domain. The event will be received from all clients which are registered to that domain.
+     * @param aDomain domain
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    public void sendEvent(Domain aDomain, Event anEvent, AsyncCallback<Void> aCallback) {
+        myEventService.addEvent(aDomain, anEvent, aCallback);
+    }
+
+    /**
+     * Sends an event to the calling user / client and get eventually filtered at the server side
+     * (when an {@link de.novanic.eventservice.client.event.filter.EventFilter} is used).
+     * @param anEvent event
+     * @param aCallback callback
+     */
+    public void sendEventUserSpecific(Event anEvent, AsyncCallback<Void> aCallback) {
+        myEventService.addEventUserSpecific(anEvent, aCallback);
+    }
+
+    /**
      * Registers an {@link de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent} to the server side which
      * will be triggered  when a timeout or unlisten/deactivation for a domain occurs.
      * @param anUnlistenScope scope of the unlisten events to receive
