@@ -22,7 +22,6 @@ package de.novanic.eventservice.service;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import de.novanic.eventservice.service.exception.NoSessionAvailableException;
@@ -59,25 +58,6 @@ public class EventExecutorServiceFactoryTest extends TestCase
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
-        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
-        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID).times(2);
-
-        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(theRequestMock.getSession(EasyMock.anyBoolean())).andReturn(theSessionMock).times(2);
-
-        EasyMock.replay(theRequestMock, theSessionMock);
-            EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theRequestMock);
-            assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theRequestMock));
-        EasyMock.verify(theRequestMock, theSessionMock);
-        EasyMock.reset(theRequestMock, theSessionMock);
-
-        assertFalse(theEventExecutorService.isUserRegistered());
-    }
-
-    public void testFactory_3() {
-        EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
-        assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
-
         EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(TEST_USER_ID);
         assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(TEST_USER_ID));
 
@@ -109,30 +89,6 @@ public class EventExecutorServiceFactoryTest extends TestCase
     }
 
     public void testFactory_SessionLess_2() {
-        EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
-        assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
-
-        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService((HttpServletRequest)null);
-        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService((HttpServletRequest)null));
-
-        //isUserRegistered() shouldn't work without a session (without client-/user-id)
-        try {
-            theEventExecutorService.isUserRegistered();
-            fail("Exception \"" + NoSessionAvailableException.class.getName() + "\" expected!");
-        } catch(NoSessionAvailableException e) {
-            assertEquals("There is no session / client information available!", e.getMessage());
-            assertNull(e.getCause());
-        }
-
-        //addEvent() should work without a session, because the client-/user-id isn't required to add a domain specific event.
-        try {
-            theEventExecutorService.addEvent(DomainFactory.getDomain("X"), new Event() {});
-        } catch(NoSessionAvailableException e) {
-            fail("No Exception \"" + e.getClass().getName() + "\" expected!");
-        }
-    }
-
-    public void testFactory_SessionLess_3() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
