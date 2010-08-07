@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice;
 
+import de.novanic.eventservice.client.DefaultClientHandlerTest;
 import de.novanic.eventservice.client.config.ConfigurationExceptionTest;
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferableTest;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnectorTest;
@@ -48,6 +49,9 @@ public class EventServiceRPCTestSuite
         TestSuite theSuite = new TestSuite();
 
         theSuite.setName("EventServiceRPC - Tests");
+
+        // Client
+        theSuite.addTestSuite(DefaultClientHandlerTest.class);
 
         // Logging
         theSuite.addTestSuite(ClientLoggerFactoryTest.class);
