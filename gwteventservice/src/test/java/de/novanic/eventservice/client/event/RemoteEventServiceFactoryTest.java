@@ -19,7 +19,6 @@
  */
 package de.novanic.eventservice.client.event;
 
-import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import de.novanic.eventservice.client.ClientHandler;
