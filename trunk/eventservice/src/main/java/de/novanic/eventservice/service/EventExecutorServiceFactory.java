@@ -19,6 +19,12 @@
  */
 package de.novanic.eventservice.service;
 
+import de.novanic.eventservice.config.ConfigurationDependentFactory;
+import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
+import de.novanic.eventservice.service.registry.EventRegistryFactory;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -57,14 +63,17 @@ public class EventExecutorServiceFactory
 
     /**
      * This method should be used to create an instance of EventExecutorService.
-     * EventExecutorService is a singleton, so this method returns always the same instance of EventExecutorService.
      * The session is needed to generate the client/user id.
+     *
+     * @deprecated Please use {@link de.novanic.eventservice.service.EventExecutorServiceFactory#getEventExecutorService(javax.servlet.http.HttpServletRequest)} instead
+     * because a request is necessary instead of a session to support multiple sessions. This method will work like before, but multiple sessions will not be support
+     * when it is configured.
+     *
      * @param aHttpSession the session is needed to generate the client/user id
      * @return EventExecutorService
      */
     public EventExecutorService getEventExecutorService(final HttpSession aHttpSession) {
         String theClientId = null;
-        //TODO: You can no longer determine a client id from an HttpSession alone (when SessionExtendedConnectionIdGenerator is configured)!
         if(aHttpSession != null) {
             theClientId = aHttpSession.getId();
         }
@@ -73,11 +82,29 @@ public class EventExecutorServiceFactory
 
     /**
      * This method should be used to create an instance of EventExecutorService.
-     * EventExecutorService is a singleton, so this method returns always the same instance of EventExecutorService.
+     * The session is needed to generate the client/user id.
+     * @param aRequest a request / session is needed to generate the client/user id
+     * @return EventExecutorService
+     */
+    public EventExecutorService getEventExecutorService(HttpServletRequest aRequest) {
+        String theConnectionId = null;
+        if(aRequest != null) {
+            EventServiceConfiguration theConfiguration = EventRegistryFactory.getInstance().getEventRegistry().getConfiguration();
+
+            ConnectionIdGenerator theConnectionIdGenerator = ConfigurationDependentFactory.getInstance(theConfiguration).getConnectionIdGenerator();
+            theConnectionId = theConnectionIdGenerator.getConnectionId(aRequest);
+        }
+        return getEventExecutorService(theConnectionId);
+    }
+
+    /**
+     * This method should be used to create an instance of EventExecutorService.
+     * The EventExecutorService can also be created with a request.
+     * @see EventExecutorServiceFactory#getEventExecutorService(javax.servlet.http.HttpServletRequest)
      * @param aClientId the client/user id
      * @return EventExecutorService
      */
-    public EventExecutorService getEventExecutorService(final String aClientId) {
+    public EventExecutorService getEventExecutorService(String aClientId) {
         return new DefaultEventExecutorService(aClientId);
     }
 }
