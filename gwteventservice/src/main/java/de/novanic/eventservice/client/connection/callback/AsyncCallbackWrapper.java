@@ -31,17 +31,21 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class AsyncCallbackWrapper<T> implements AsyncCallback<T>
 {
-    private AsyncCallback<T> myAsyncCallback;
+    private final AsyncCallback<T> myAsyncCallback;
 
     public AsyncCallbackWrapper(AsyncCallback<T> anAsyncCallback) {
         myAsyncCallback = anAsyncCallback;
     }
 
     public void onSuccess(T anObject) {
-        myAsyncCallback.onSuccess(anObject);
+        if(myAsyncCallback != null) {
+            myAsyncCallback.onSuccess(anObject);
+        }
     }
 
     public void onFailure(Throwable aThrowable) {
-        myAsyncCallback.onFailure(aThrowable);
+        if(myAsyncCallback != null) {
+            myAsyncCallback.onFailure(aThrowable);
+        }
     }
 }

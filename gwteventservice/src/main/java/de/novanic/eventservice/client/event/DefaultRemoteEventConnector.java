@@ -23,6 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 
+import de.novanic.eventservice.client.connection.callback.AsyncCallbackWrapper;
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
@@ -134,14 +135,13 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     /**
      * Callback to activate listening of RemoteEventConnector.
      */
-    private final class ActivationCallback<T> implements AsyncCallback<T>
+    private final class ActivationCallback<T> extends AsyncCallbackWrapper<T>
     {
         private final EventNotification myEventNotification;
-        private final AsyncCallback<T> myCallback;
 
         private ActivationCallback(EventNotification anEventNotification, AsyncCallback<T> aCallback) {
+            super(aCallback);
             myEventNotification = anEventNotification;
-            myCallback = aCallback;
         }
 
         /**
@@ -160,17 +160,13 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
                     throw new RemoteEventServiceRuntimeException("No connection strategy was set at the start of listening!");
                 }
             }
-            if(myCallback != null) {
-                myCallback.onSuccess(aResult);
-            }
+            super.onSuccess(aResult);
         }
 
         public void onFailure(Throwable aThrowable) {
             LOG.error("Error on register client for domain!", aThrowable);
             fireUnlistenEvent(myEventNotification);
-            if(myCallback != null) {
-                myCallback.onFailure(aThrowable);
-            }
+            super.onFailure(aThrowable);
         }
     }
 
