@@ -82,7 +82,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         myRequestMock = EasyMock.createMock(HttpServletRequest.class);
         mySessionMock = EasyMock.createMock(HttpSession.class);
 
-        EasyMock.expect(myRequestMock.getSession()).andReturn(mySessionMock).anyTimes();
+        EasyMock.expect(myRequestMock.getSession(false)).andReturn(mySessionMock).anyTimes();
 
         EasyMock.expect(mySessionMock.getId()).andReturn(TEST_USER_ID).anyTimes();
 

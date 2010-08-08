@@ -19,6 +19,8 @@
  */
 package de.novanic.gwteventservice.demo.conversationapp.client.conversation.control;
 
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import de.novanic.eventservice.client.ClientHandler;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui.*;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui.message.MessageButtonListener;
 import de.novanic.gwteventservice.demo.conversationapp.client.conversation.ui.message.MessageBoxCreator;
@@ -36,7 +38,6 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListenerAdapter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.core.client.GWT;
@@ -71,27 +72,14 @@ public class ConversationControl
         final RemoteEventServiceFactory theRemoteEventHandlerFactory = RemoteEventServiceFactory.getInstance();
         myRemoteEventService = theRemoteEventHandlerFactory.getRemoteEventService();
 
-        requestChannelList(new DefaultAsyncCallback<List<Channel>>() {
-            public void onSuccess(List<Channel> aChannelList) {
-                
-                final ConversationLoginPanel theLoginPanel = myConversationMainPanel.getConversationLoginPanel();
-                theLoginPanel.addLoginButtonListener(new ClickHandler() {
-                    public void onClick(ClickEvent aClickEvent) {
-                        final boolean isLoginMode = theLoginPanel.isLogin();
-                        boolean isActionSuccessful;
-                        if(isLoginMode) {
-                            //in case of login mode
-                            isActionSuccessful = login();
-                        } else {
-                            //in case of logout mode
-                            isActionSuccessful = logout();
-                        }
-                        if(isActionSuccessful) {
-                            toggleLoginStateUI(theLoginPanel, isLoginMode);
-                            myConversationMainPanel.clearMessageHistory();
-                        }
-                    }
-                });
+        theRemoteEventHandlerFactory.requestClientHandler(new DefaultAsyncCallback<ClientHandler>() {
+            public void onSuccess(ClientHandler aClientHandler) {
+                //create an event execution service (that is only necessary when user-specific events or user-specific EventFilters
+                // must dynamically changeable at the server-side).
+                theRemoteEventHandlerFactory.registerClientSpecificHandler((ServiceDefTarget)myConversationService, aClientHandler);
+
+                //custom logic for the UI control
+                initUILogic();
             }
         });
     }
@@ -213,6 +201,32 @@ public class ConversationControl
     private void joinChannel(String aChannelName, AsyncCallback<Channel> aCallback) {
         myConversationService.join(myUser, aChannelName, aCallback);
         myConversationMainPanel.getConversationChannelPanel().addContact(aChannelName, myUser);
+    }
+
+    private void initUILogic() {
+        requestChannelList(new DefaultAsyncCallback<List<Channel>>() {
+            public void onSuccess(List<Channel> aChannelList) {
+
+                final ConversationLoginPanel theLoginPanel = myConversationMainPanel.getConversationLoginPanel();
+                theLoginPanel.addLoginButtonListener(new ClickHandler() {
+                    public void onClick(ClickEvent aClickEvent) {
+                        final boolean isLoginMode = theLoginPanel.isLogin();
+                        boolean isActionSuccessful;
+                        if(isLoginMode) {
+                            //in case of login mode
+                            isActionSuccessful = login();
+                        } else {
+                            //in case of logout mode
+                            isActionSuccessful = logout();
+                        }
+                        if(isActionSuccessful) {
+                            toggleLoginStateUI(theLoginPanel, isLoginMode);
+                            myConversationMainPanel.clearMessageHistory();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void requestChannelList(AsyncCallback<List<Channel>> aCallback) {
