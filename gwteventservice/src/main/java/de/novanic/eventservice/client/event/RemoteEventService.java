@@ -19,7 +19,6 @@
  */
 package de.novanic.eventservice.client.event;
 
-import de.novanic.eventservice.client.event.command.EventExecutionCommand;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.Domain;
