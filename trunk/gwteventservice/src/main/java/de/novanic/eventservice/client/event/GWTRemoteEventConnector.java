@@ -20,6 +20,7 @@
 package de.novanic.eventservice.client.event;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.connection.callback.AsyncCallbackWrapper;
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
@@ -65,14 +66,10 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @param aCallback callback
      */
     public void init(final AsyncCallback<EventServiceConfigurationTransferable> aCallback) {
-        myEventService.initEventService(new AsyncCallback<EventServiceConfigurationTransferable>() {
+        myEventService.initEventService(new AsyncCallbackWrapper<EventServiceConfigurationTransferable>(aCallback) {
             public void onSuccess(EventServiceConfigurationTransferable anEventServiceConfigurationTransferable) {
                 myEventService = refreshEventService(anEventServiceConfigurationTransferable.getConnectionId());
-                aCallback.onSuccess(anEventServiceConfigurationTransferable);
-            }
-
-            public void onFailure(Throwable aThrowable) {
-                aCallback.onFailure(aThrowable);
+                super.onSuccess(anEventServiceConfigurationTransferable);
             }
         });
     }
