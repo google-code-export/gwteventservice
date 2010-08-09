@@ -19,7 +19,6 @@
  # [http://29539.webhosting15.1blu.de/gwteventservice/roadmap.html RoadMap]
  # [Feedback Conclusion / Feedback]
  # [FAQ FAQ]
- # [ProjectPlan Project Plan]
  # Appendix
   # [CodeExamples Code-Examples]
   # [DemoApplication Demo application and "EventFilter" functionality]
