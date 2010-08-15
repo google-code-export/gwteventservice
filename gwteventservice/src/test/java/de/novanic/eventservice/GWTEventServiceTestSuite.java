@@ -19,12 +19,6 @@
  */
 package de.novanic.eventservice;
 
-import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.junit.tools.GWTTestSuite;
-
-import de.novanic.eventservice.client.connection.strategy.connector.streaming.GwtTestGWTStreamingClientConnector;
-import de.novanic.eventservice.client.connection.strategy.connector.streaming.specific.GwtTestGWTStreamingClientConnectorGecko;
-import de.novanic.eventservice.client.event.GwtTestRemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
 import de.novanic.eventservice.clientmock.GWTRemoteEventConnectorTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceMockTest;
@@ -33,20 +27,18 @@ import de.novanic.eventservice.clientmock.RemoteEventServiceUnlistenerMockTest;
 import de.novanic.eventservice.clientmock.config.ConfigurationTransferableDependentFactoryTest;
 import de.novanic.eventservice.clientmock.event.command.*;
 import de.novanic.eventservice.clientmock.event.command.schedule.ClientCommandSchedulerFactoryTest;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * @author sstrohschein
  * Date: 28.07.2008   
  * Time: 21:41:04
  */
-public class GWTEventServiceTestSuite extends GWTTestCase
+public class GWTEventServiceTestSuite extends TestSuite
 {
-    public String getModuleName() {
-    	return "de.novanic.eventservice.GWTEventService";
-    }
-
-    public static GWTTestSuite suite() {
-        GWTTestSuite theGWTEventServiceTestSuite = new GWTTestSuite("GWTEventService - GWT-Tests");
+    public static Test suite() {
+        TestSuite theGWTEventServiceTestSuite = new TestSuite("GWTEventService - Client-Tests");
 
         // --- Mock-Tests ---
 
@@ -71,12 +63,7 @@ public class GWTEventServiceTestSuite extends GWTTestCase
 
         // --- GWT-Tests ---
 
-        // Event
-        theGWTEventServiceTestSuite.addTestSuite(GwtTestRemoteEventService.class);
-
-        // Connection
-        theGWTEventServiceTestSuite.addTestSuite(GwtTestGWTStreamingClientConnector.class);
-        theGWTEventServiceTestSuite.addTestSuite(GwtTestGWTStreamingClientConnectorGecko.class);
+        theGWTEventServiceTestSuite.addTest(GWTEventServiceGWTTestSuite.suite());
         
         return theGWTEventServiceTestSuite;
     }
