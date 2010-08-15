@@ -53,6 +53,12 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-dev</artifactId>
+				<version>${gwt.version}</version>				
+				<scope>test</scope>
+			</dependency>
+			<dependency>
 				<groupId>com.google.code.gwteventservice</groupId>
 				<artifactId>eventservice-rpc</artifactId>
 				<version>${project.version}</version>
@@ -84,6 +90,28 @@
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<useSystemClassLoader>false</useSystemClassLoader>
+							<additionalClasspathElements>
+								<additionalClasspathElement>${basedir}/src/main/java</additionalClasspathElement>
+								<additionalClasspathElement>${basedir}/src/test/java</additionalClasspathElement>
+							</additionalClasspathElements>
+							<includes>
+								<include>**/*GWTTestSuite.java</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
         <extensions>
