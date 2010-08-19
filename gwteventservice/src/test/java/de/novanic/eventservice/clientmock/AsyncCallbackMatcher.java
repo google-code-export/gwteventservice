@@ -39,6 +39,7 @@ public class AsyncCallbackMatcher implements IArgumentMatcher
     }
 
     public AsyncCallbackMatcher(Throwable aCallbackThrowable) {
+        this(true);
         myCallbackThrowable = aCallbackThrowable;
     }
 
@@ -48,12 +49,14 @@ public class AsyncCallbackMatcher implements IArgumentMatcher
 
     public boolean matches(Object anObject) {
         if(anObject instanceof AsyncCallback) {
-            if(myCallbackThrowable != null) {
-                try {
-                    ((AsyncCallback)anObject).onFailure(myCallbackThrowable);
-                } catch(RuntimeException e) { /* do nothing, because the matcher wouldn't work, when the match is aborted by an exception */}
-            } else if(isCall) {
-                ((AsyncCallback)anObject).onSuccess(myCallbackResult);
+            if(isCall) {
+                if(myCallbackThrowable != null) {
+                    try {
+                        ((AsyncCallback)anObject).onFailure(myCallbackThrowable);
+                    } catch(RuntimeException e) { /* do nothing, because the matcher wouldn't work, when the match is aborted by an exception */}
+                } else if(isCall) {
+                    ((AsyncCallback)anObject).onSuccess(myCallbackResult);
+                }
             }
             return true;
         }
