@@ -50,6 +50,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     private boolean isActive;
     private ConnectionStrategyClientConnector myConnectionStrategyClientConnector;
     private UnlistenEvent myUnlistenEvent;
+    private int myErrorCount;
 
     /**
      * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
@@ -183,7 +184,12 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
 
         public void onFailure(Throwable aThrowable) {
             LOG.error("Error on processing event!", aThrowable);
-            fireUnlistenEvent(myEventNotification);
+            if(++myErrorCount > 2) {
+                fireUnlistenEvent(myEventNotification);
+            } else {
+                LOG.log("Reconnecting after error...");
+                callListen();
+            }
         }
 
         /**
@@ -193,6 +199,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
          * @see de.novanic.eventservice.client.event.GWTRemoteEventConnector.ListenEventCallback#callListen()
          */
         public void onSuccess(List<DomainEvent> anEvents) {
+            myErrorCount = 0;
             if(anEvents != null) {
                 for(DomainEvent theEvent: anEvents) {
                     myEventNotification.onNotify(theEvent);

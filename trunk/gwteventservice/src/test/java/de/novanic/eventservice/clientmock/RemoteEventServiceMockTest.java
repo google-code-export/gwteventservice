@@ -1418,7 +1418,10 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
         theEvents.add(new DummyDomainEvent(new DummyEvent(), TEST_DOMAIN));
         mockListen(theEvents, 3, new TestException());
+        //two reconnect attempts
         mockListen();
+        mockListen();
+        //one successful call
         mockListen();
 
         EasyMock.replay(myEventServiceAsyncMock);
@@ -1427,7 +1430,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
             assertTrue(myRemoteEventService.isActive());
 
-            assertEquals(2, theRemoteListener.getEventCount(DummyEvent.class));
+            assertEquals(1, theRemoteListener.getEventCount(DummyEvent.class));
             assertTrue(myRemoteEventService.isActive());
         EasyMock.verify(myEventServiceAsyncMock);
         EasyMock.reset(myEventServiceAsyncMock);

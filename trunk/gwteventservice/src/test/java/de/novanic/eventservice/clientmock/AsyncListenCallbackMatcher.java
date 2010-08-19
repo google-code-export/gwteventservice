@@ -36,8 +36,9 @@ public class AsyncListenCallbackMatcher extends AsyncCallbackMatcher
     }
 
     public boolean matches(Object anObject) {
+        myCallbackThrowable = myThrowable;
         if(myLoops == 1) {
-            myCallbackThrowable = myThrowable;
+            myCallbackThrowable = null;
         } else if(myLoops <= 0) {
             isCall = false;
         }
