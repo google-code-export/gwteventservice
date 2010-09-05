@@ -331,11 +331,25 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
     }
 
     private void waitForStart(StartObservable aStartObservable) {
-        while(!aStartObservable.isStarted()) {}
+        while(!aStartObservable.isStarted()) {
+            try {
+                Thread.sleep(1);
+                Thread.yield();
+            } catch(InterruptedException e) {
+                throw new RuntimeException("Error on waiting for starting listen threads.");
+            }
+        }
     }
 
     private void waitForFinish(FinishObservable aFinishObservable) {
-        while(!aFinishObservable.isFinished()) {}
+        while(!aFinishObservable.isFinished()) {
+            try {
+                Thread.sleep(1);
+                Thread.yield();
+            } catch(InterruptedException e) {
+                throw new RuntimeException("Error on waiting for finishing listen threads.");
+            }
+        }
     }
 
     private class RunningUnit
