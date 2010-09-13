@@ -189,7 +189,7 @@ public class DefaultUnlistenEvent implements UnlistenEvent
             theStringBuilder.append("not available");
         }
 
-        if(myDomains != null) {
+        if(myDomains != null && !myDomains.isEmpty()) {
             final int theDomainCount = myDomains.size();
             if(theDomainCount == 1) {
                 theStringBuilder.append("\" for domain \"");
