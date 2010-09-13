@@ -236,9 +236,9 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
      * @param aUserId user
      */
     public void unlisten(Domain aDomain, String aUserId) {
-        if(aDomain != null) {
-            UserInfo theUserInfo = getUserInfo(aUserId);
-            if(theUserInfo != null) {
+        UserInfo theUserInfo = getUserInfo(aUserId);
+        if(theUserInfo != null) {
+            if(aDomain != null) {
                 LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
                 if(isUserRegistered(aDomain, theUserInfo)) {
                     Set<Domain> theDomains = new HashSet<Domain>(1);
@@ -246,9 +246,12 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
                     addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(theUserInfo, theDomains, false));
                 }
                 removeUser(aDomain, theUserInfo);
+            } else {
+                //An unlisten for the NULL-domain should only have an effect when the user isn't still registered for a domain.
+                if(!myDomainUserMapping.isUserContained(theUserInfo)) {
+                    unlisten(theUserInfo, false);
+                }
             }
-        } else {
-            unlisten(aUserId);
         }
     }
 
