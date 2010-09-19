@@ -21,6 +21,7 @@ package de.novanic.eventservice.clientmock;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
@@ -79,7 +80,108 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         EasyMock.verify(myEventServiceAsyncMock);
         EasyMock.reset(myEventServiceAsyncMock);
 
+        assertFalse(myRemoteEventConnector.isActive()); //false because an exception is occurred while the initialization / refreshing of the EventService
+    }
+
+    public void testInit_2() {
         assertFalse(myRemoteEventConnector.isActive());
+
+        mockInit(new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "dummy-connection-id", DefaultClientConnector.class.getName()));
+
+        //init connector
+        EasyMock.replay(myEventServiceAsyncMock);
+
+            myRemoteEventConnector.init(new AsyncCallback<EventServiceConfigurationTransferable>() {
+                public void onSuccess(EventServiceConfigurationTransferable anEventServiceConfigurationTransferable) {}
+
+                public void onFailure(Throwable aThrowable) {}
+            });
+
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+
+        assertFalse(myRemoteEventConnector.isActive());
+    }
+
+    public void testActivate() {
+        assertFalse(myRemoteEventConnector.isActive());
+
+        mockRegister(TEST_DOMAIN);
+        mockListen();
+
+        final TestEventNotification theEventNotification = new TestEventNotification();
+
+        //activate connector
+        EasyMock.replay(myEventServiceAsyncMock);
+
+            myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
+
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+
+        //check activation
+        assertTrue(myRemoteEventConnector.isActive());
+
+        List<String> theLogMessages = myClientLogger.getLogMessages();
+        assertEquals(2, theLogMessages.size());
+        assertEquals("Log: Activate RemoteEventConnector for domain \"test-domain\".", theLogMessages.get(0));
+        assertEquals("Log: RemoteEventConnector activated.", theLogMessages.get(1));
+        myClientLogger.clearLogMessages();
+    }
+
+    public void testActivate_Error() {
+        assertFalse(myRemoteEventConnector.isActive());
+        myRemoteEventConnector.initListen(null);
+        assertFalse(myRemoteEventConnector.isActive());
+
+        mockRegister(TEST_DOMAIN);
+
+        final TestEventNotification theEventNotification = new TestEventNotification();
+
+        //activate connector
+        EasyMock.replay(myEventServiceAsyncMock);
+
+                myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null); //an catched exception occurs (it is necessary to catch it in the matcher)
+
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+
+        //check activation
+        assertFalse(myRemoteEventConnector.isActive()); //false because an exception is occurred while the activation / listening
+    }
+
+    public void testActivate_Error_2() {
+        assertFalse(myRemoteEventConnector.isActive());
+
+        mockRegister(TEST_DOMAIN);
+        mockListen();
+
+        final TestEventNotification theEventNotification = new TestEventNotification();
+
+        //activate connector
+        EasyMock.replay(myEventServiceAsyncMock);
+
+            myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null);
+
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+
+        //check activation
+        assertTrue(myRemoteEventConnector.isActive());
+
+        List<String> theLogMessages = myClientLogger.getLogMessages();
+        assertEquals(2, theLogMessages.size());
+        assertEquals("Log: Activate RemoteEventConnector for domain \"test-domain\".", theLogMessages.get(0));
+        assertEquals("Log: RemoteEventConnector activated.", theLogMessages.get(1));
+        myClientLogger.clearLogMessages();
+
+        try {
+            myRemoteEventConnector.initListen(new DefaultClientConnector());
+            fail("An exception was expected, because it was tried to change the connection strategy after the start of listening!");
+        } catch(RemoteEventServiceRuntimeException e) {
+            assertTrue(e.getMessage().contains("connection"));
+            assertTrue(e.getMessage().contains("strategy"));
+        }
     }
 
     public void testDeactivate() {

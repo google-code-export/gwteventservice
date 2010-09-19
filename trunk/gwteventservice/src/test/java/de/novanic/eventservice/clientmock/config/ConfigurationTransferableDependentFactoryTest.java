@@ -26,7 +26,6 @@ import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTran
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnector;
-import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
 import junit.framework.TestCase;
 
 /**
@@ -105,7 +104,17 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
             assertNull(e.getCause().getCause());
         }
     }
-    
+
+    public void testGetInstance_Error_4() {
+        try {
+            ConfigurationTransferableDependentFactory.getInstance(null).reset(null, false);
+            ConfigurationTransferableDependentFactory.getInstance();
+            fail("Exception expected, because the configured class isn't registered / unknown!");
+        } catch(ExceptionInInitializerError e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+        } catch(ConfigurationException e) {}
+    }
+
     public void testGetConnectionStrategyClientConnector() {
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(DefaultClientConnector.class.getName());

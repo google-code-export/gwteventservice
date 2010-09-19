@@ -135,7 +135,19 @@ public final class ConfigurationTransferableDependentFactory
      * @param aConfiguration new configuration
      */
     public void reset(EventServiceConfigurationTransferable aConfiguration) {
+        reset(aConfiguration, true);
+    }
+
+    /**
+     * Resets the {@link de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory} and can automatically re-initialize it
+     * with a new configuration.
+     * @param aConfiguration new configuration
+     * @param isReInit if is the factory should be re-initialized with the new factory
+     */
+    public void reset(EventServiceConfigurationTransferable aConfiguration, boolean isReInit) {
         myConfiguration = aConfiguration;
-        init();
+        if(isReInit) {
+            init();
+        }
     }
 }
