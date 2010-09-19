@@ -82,7 +82,7 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      */
     public void initListen(ConnectionStrategyClientConnector aConnectionStrategyClientConnector) {
         super.initListen(aConnectionStrategyClientConnector);
-        if(!aConnectionStrategyClientConnector.isInitialized()) {
+        if(aConnectionStrategyClientConnector != null && !aConnectionStrategyClientConnector.isInitialized()) {
             aConnectionStrategyClientConnector.init(myEventService);
         }
     }

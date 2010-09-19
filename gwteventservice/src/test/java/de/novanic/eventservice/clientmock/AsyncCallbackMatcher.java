@@ -53,9 +53,11 @@ public class AsyncCallbackMatcher implements IArgumentMatcher
                 if(myCallbackThrowable != null) {
                     try {
                         ((AsyncCallback)anObject).onFailure(myCallbackThrowable);
-                    } catch(RuntimeException e) { /* do nothing, because the matcher wouldn't work, when the match is aborted by an exception */}
+                    } catch(Throwable e) { /* do nothing, because the matcher wouldn't work, when the match is aborted by an exception */}
                 } else if(isCall) {
-                    ((AsyncCallback)anObject).onSuccess(myCallbackResult);
+                    try {
+                        ((AsyncCallback)anObject).onSuccess(myCallbackResult);
+                    } catch(Throwable e) { /* do nothing, because the matcher wouldn't work, when the match is aborted by an exception */}
                 }
             }
             return true;

@@ -77,10 +77,10 @@ public class ConfigurationDependentFactoryTest extends TestCase
     }
 
     public void testGetInstance_Error() {
-        ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(null);
-        theConfigurationDependentFactory.reset(null, false);
-
         try {
+            ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(null);
+            theConfigurationDependentFactory.reset(null, false);
+
             ConfigurationDependentFactory.getInstance();
             fail("Exception expected, because the factory wasn't initialized with a configuration!");
         } catch(ExceptionInInitializerError e) {
@@ -188,9 +188,11 @@ public class ConfigurationDependentFactoryTest extends TestCase
         final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
         theConfig.setConnectionIdGeneratorClassName(String.class.getName());
 
-        ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfig);
         try {
-            theConfigurationDependentFactory.reset(theConfig);
+            ConfigurationDependentFactory.getInstance(theConfig).reset(theConfig);
+        } catch(ExceptionInInitializerError e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+            assertTrue(e.getCause().getMessage().contains(String.class.getName()));
         } catch(ConfigurationException e) {
             assertTrue(e.getMessage().contains(String.class.getName()));
         }
@@ -212,9 +214,11 @@ public class ConfigurationDependentFactoryTest extends TestCase
         final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
         theConfig.setConnectionStrategyServerConnectorClassName(String.class.getName());
 
-        ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfig);
         try {
-            theConfigurationDependentFactory.reset(theConfig);
+            ConfigurationDependentFactory.getInstance(theConfig).reset(theConfig);
+        } catch(ExceptionInInitializerError e) {
+            assertTrue(e.getCause() instanceof ConfigurationException);
+            assertTrue(e.getCause().getMessage().contains(String.class.getName()));
         } catch(ConfigurationException e) {
             assertTrue(e.getMessage().contains(String.class.getName()));
         }
