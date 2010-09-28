@@ -168,8 +168,7 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * @return EventService
      */
     private static EventServiceAsync createEventService() {
-        final String theServiceURL = GWT.getModuleBaseURL() + "gwteventservice";
-        return createEventService(theServiceURL);
+        return (EventServiceAsync)GWT.create(EventService.class);
     }
 
     /**
@@ -182,15 +181,13 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      */
     private EventServiceAsync refreshEventService(String aConnectionId) {
         if(aConnectionId != null) {
-            final String theServiceURL = GWT.getModuleBaseURL() + "gwteventservice?id=" + aConnectionId;
-            return createEventService(theServiceURL);
+            EventServiceAsync theEventService = createEventService();
+
+            final ServiceDefTarget theServiceDefTarget = (ServiceDefTarget)theEventService;
+            theServiceDefTarget.setServiceEntryPoint(theServiceDefTarget.getServiceEntryPoint() + "?id=" + aConnectionId);
+
+            return theEventService;
         }
         return myEventService;
-    }
-
-    private static EventServiceAsync createEventService(String aServiceURL) {
-        ServiceDefTarget theServiceEndPoint = (ServiceDefTarget)GWT.create(EventService.class);
-        theServiceEndPoint.setServiceEntryPoint(aServiceURL);
-        return (EventServiceAsync)theServiceEndPoint;
     }
 }
