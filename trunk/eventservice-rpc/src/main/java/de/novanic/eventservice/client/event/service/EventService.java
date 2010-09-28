@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event.service;
 
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.Event;
@@ -39,6 +40,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * <br>Date: 05.06.2008
  * <br>Time: 19:07:07
  */
+@RemoteServiceRelativePath("gwteventservice")
 public interface EventService extends RemoteService
 {
     /**
