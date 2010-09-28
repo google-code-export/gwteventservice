@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * AutoIncrementFactory can be used to create unique idents for various contexts. 
+ * AutoIncrementFactory can be used to create unique idents for various contexts.
  *
  * @author sstrohschein
  *         <br>Date: 07.02.2009
@@ -59,7 +59,14 @@ public class AutoIncrementFactory
     }
 
     private AtomicInteger getAtomic(String aKey) {
-        myAutoIncrementMap.putIfAbsent(aKey, new AtomicInteger());
-        return myAutoIncrementMap.get(aKey);
+        AtomicInteger theAtomicInteger = myAutoIncrementMap.get(aKey);
+        if(theAtomicInteger == null) {
+            AtomicInteger theNewAtomicInteger = new AtomicInteger();
+            theAtomicInteger = myAutoIncrementMap.putIfAbsent(aKey, theNewAtomicInteger);
+            if(theAtomicInteger == null) {
+                return theNewAtomicInteger;
+            }
+        }
+        return theAtomicInteger;
     }
 }
