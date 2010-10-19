@@ -25,12 +25,11 @@ import de.novanic.eventservice.client.connection.strategy.connector.ConnectionSt
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
-import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.core.client.GWT;
+import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
 
 import java.util.Set;
 
@@ -44,21 +43,16 @@ import java.util.Set;
  */
 public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
 {
+    private EventServiceCreator myEventServiceCreator;
     private EventServiceAsync myEventService;
 
     /**
-     * Creates a new RemoteEventConnector with a connection to {@link EventService}.
-     */
-    protected GWTRemoteEventConnector() {
-        this(createEventService());
-    }
-
-    /**
      * Creates a new RemoteEventConnector with a connection to the corresponding EventService.
-     * @param anEventServiceAsync EventService for the connection
+     * @param aGWTEventServiceCreator factory to create the EventService for the connection
      */
-    protected GWTRemoteEventConnector(EventServiceAsync anEventServiceAsync) {
-        myEventService = anEventServiceAsync;
+    protected GWTRemoteEventConnector(EventServiceCreator aGWTEventServiceCreator) {
+        myEventServiceCreator = aGWTEventServiceCreator;
+        myEventService = aGWTEventServiceCreator.createEventService();
     }
 
     /**
@@ -164,14 +158,6 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
     }
 
     /**
-     * Creates an instance of the EventService.
-     * @return EventService
-     */
-    private static EventServiceAsync createEventService() {
-        return (EventServiceAsync)GWT.create(EventService.class);
-    }
-
-    /**
      * Refreshes / re-initializes the {@link de.novanic.eventservice.client.event.service.EventService} when an explicit
      * connection id is assigned for the client. When the connection id is NULL (no explicit connection id assigned), the
      * {@link de.novanic.eventservice.client.event.service.EventService} will not be refreshed, because no separate connection
@@ -181,7 +167,7 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      */
     private EventServiceAsync refreshEventService(String aConnectionId) {
         if(aConnectionId != null) {
-            EventServiceAsync theEventService = createEventService();
+            EventServiceAsync theEventService = myEventServiceCreator.createEventService();
 
             final ServiceDefTarget theServiceDefTarget = (ServiceDefTarget)theEventService;
             theServiceDefTarget.setServiceEntryPoint(theServiceDefTarget.getServiceEntryPoint() + "?id=" + aConnectionId);
