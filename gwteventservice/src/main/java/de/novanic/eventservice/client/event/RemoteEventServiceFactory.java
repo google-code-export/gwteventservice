@@ -25,7 +25,10 @@ import de.novanic.eventservice.client.ClientHandler;
 import de.novanic.eventservice.client.DefaultClientHandler;
 import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.connection.callback.AsyncCallbackWrapper;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.command.ClientCommand;
+import de.novanic.eventservice.client.event.service.creator.DefaultEventServiceCreator;
+import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
 
 /**
  * The RemoteEventServiceFactory is used to create the RemoteEventService and to ensure that only one instance of
@@ -67,20 +70,38 @@ public class RemoteEventServiceFactory
     /**
      * This method should be used to create an instance of RemoteEventService.
      * RemoteEventService is a singleton, so this method returns always the same instance of RemoteEventService.
-     * The session is needed to generate the client/user id.
      * @return RemoteEventService (singleton)
      */
     public RemoteEventService getRemoteEventService() {
+        if(myRemoteEventService != null) {
+            return myRemoteEventService;
+        }
+        EventServiceCreator theEventServiceCreator = DefaultEventServiceCreator.getInstance();
+        return getRemoteEventService(new GWTRemoteEventConnector(theEventServiceCreator));
+    }
+
+    /**
+     * This method should be used to create an instance of RemoteEventService.
+     * RemoteEventService is a singleton, so this method returns always the same instance of RemoteEventService.
+     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
+     * to specify the connection to the server side
+     * @return RemoteEventService (singleton)
+     */
+    public RemoteEventService getRemoteEventService(RemoteEventConnector aRemoteEventConnector) {
         if(myRemoteEventService == null) {
             synchronized(this) {
                 if(myRemoteEventService == null) {
-                    myRemoteEventService = new DefaultRemoteEventService(new GWTRemoteEventConnector());
+                    myRemoteEventService = new DefaultRemoteEventService(aRemoteEventConnector);
                 }
             }
         }
         return myRemoteEventService;
     }
 
+    /**
+     * Creates an instance of {@link RemoteEventServiceFactory} (everytime a new instance).
+     * @return new instance of {@link RemoteEventServiceFactory} 
+     */
     private static RemoteEventServiceFactory createRemoteEventServiceFactory() {
         return new RemoteEventServiceFactory();
     }

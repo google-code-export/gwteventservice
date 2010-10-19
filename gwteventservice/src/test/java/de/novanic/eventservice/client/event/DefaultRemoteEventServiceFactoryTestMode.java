@@ -20,6 +20,8 @@
 package de.novanic.eventservice.client.event;
 
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
+import de.novanic.eventservice.client.event.service.creator.DefaultEventServiceCreator;
+import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
 
 /**
  * @author sstrohschein
@@ -37,14 +39,19 @@ public class DefaultRemoteEventServiceFactoryTestMode
     }
 
     public RemoteEventService getDefaultRemoteEventService() {
-        return new DefaultRemoteEventService(new GWTRemoteEventConnector());
+        EventServiceCreator theEventServiceCreator = DefaultEventServiceCreator.getInstance();
+        return new DefaultRemoteEventService(new GWTRemoteEventConnector(theEventServiceCreator));
     }
 
     public RemoteEventService getDefaultRemoteEventService(EventServiceAsync anEventService) {
         return new DefaultRemoteEventService(getGWTRemoteEventConnector(anEventService));
     }
 
-    public GWTRemoteEventConnector getGWTRemoteEventConnector(EventServiceAsync anEventService) {
-        return new GWTRemoteEventConnector(anEventService);
+    public GWTRemoteEventConnector getGWTRemoteEventConnector(final EventServiceAsync anEventService) {
+        return new GWTRemoteEventConnector(new EventServiceCreator() {
+            public EventServiceAsync createEventService() {
+                return anEventService;
+            }
+        });
     }
 }

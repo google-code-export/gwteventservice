@@ -27,11 +27,14 @@ import de.novanic.eventservice.client.config.ConfigurationTransferableDependentF
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
+import de.novanic.eventservice.client.event.service.EventServiceAsync;
+import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -109,6 +112,24 @@ public class RemoteEventServiceFactoryTest extends TestCase
         } catch(Error e) {
             fail("No exception was expected! - " + e.getMessage());
         }
+    }
+
+    public void testGetInstance_3() {
+        RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
+        assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
+
+        RemoteEventConnector theRemoteEventConnector = new GWTRemoteEventConnector(new EventServiceCreator() {
+            public EventServiceAsync createEventService() {
+                return null;
+            }
+        });
+
+        RemoteEventService theRemoteEventService = theRemoteEventServiceFactory.getRemoteEventService(theRemoteEventConnector);
+        assertSame(theRemoteEventService, theRemoteEventServiceFactory.getRemoteEventService());
+        assertSame(theRemoteEventService, theRemoteEventServiceFactory.getRemoteEventService());
+        assertSame(theRemoteEventService, theRemoteEventServiceFactory.getRemoteEventService(theRemoteEventConnector));
+        assertSame(theRemoteEventService, theRemoteEventServiceFactory.getRemoteEventService(theRemoteEventConnector));
+        assertSame(theRemoteEventService, theRemoteEventServiceFactory.getRemoteEventService());
     }
 
     public void testRequestClientHandler() throws Exception {
