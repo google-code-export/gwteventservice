@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.clientmock.config;
 
+import com.google.gwt.junit.GWTMockUtilities;
 import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
@@ -26,6 +27,7 @@ import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTran
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnector;
+import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
 import junit.framework.TestCase;
 
 /**
@@ -137,6 +139,23 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         final ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigurationTransferableDependentFactory.getConnectionStrategyClientConnector();
         assertNotNull(theConnectionStrategyClientConnector);
         assertTrue(theConnectionStrategyClientConnector instanceof DefaultClientConnector);
+    }
+
+    public void testGetConnectionStrategyClientConnector_Streaming() {
+        final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "12345678", GWTStreamingClientConnector.class.getName());
+
+        GWTMockUtilities.disarm();
+
+        ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(theEventServiceConfiguration);
+        theConfigurationTransferableDependentFactory.reset(theEventServiceConfiguration);
+
+        GWTMockUtilities.restore();
+
+        assertSame(theConfigurationTransferableDependentFactory, ConfigurationTransferableDependentFactory.getInstance());
+        assertSame(theConfigurationTransferableDependentFactory, ConfigurationTransferableDependentFactory.getInstance());
+
+        //NULL because GWTMockUtilities is used
+        assertNull(theConfigurationTransferableDependentFactory.getConnectionStrategyClientConnector());
     }
 
     public void testGetConnectionStrategyClientConnector_Error() {
