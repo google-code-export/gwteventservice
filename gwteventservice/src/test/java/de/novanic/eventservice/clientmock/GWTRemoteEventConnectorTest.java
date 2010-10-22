@@ -28,8 +28,10 @@ import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventC
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.*;
+import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import de.novanic.eventservice.client.logger.AbstractClientLogger;
+import de.novanic.eventservice.test.testhelper.EventServiceAsyncSuccessDummy;
 import org.easymock.EasyMock;
 
 import java.util.List;
@@ -101,6 +103,19 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         EasyMock.reset(myEventServiceAsyncMock);
 
         assertFalse(myRemoteEventConnector.isActive());
+    }
+
+    public void testInit_3() {
+        DefaultRemoteEventServiceFactoryTestMode theEventServiceFactoryTestMode = DefaultRemoteEventServiceFactoryTestMode.getInstance();
+
+        EventServiceAsync theEventServiceAsyncDummy = new EventServiceAsyncSuccessDummy();
+
+        GWTRemoteEventConnector theGWTRemoteEventConnector = theEventServiceFactoryTestMode.getGWTRemoteEventConnector(theEventServiceAsyncDummy);
+        theGWTRemoteEventConnector.init(new AsyncCallback<EventServiceConfigurationTransferable>() {
+            public void onSuccess(EventServiceConfigurationTransferable anEventServiceConfigurationTransferable) {}
+
+            public void onFailure(Throwable aThrowable) {}
+        });
     }
 
     public void testActivate() {
