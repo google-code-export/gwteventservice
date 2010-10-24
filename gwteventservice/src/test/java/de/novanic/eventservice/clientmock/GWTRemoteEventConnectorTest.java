@@ -31,6 +31,7 @@ import de.novanic.eventservice.client.event.*;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.logger.ClientLoggerFactory;
 import de.novanic.eventservice.client.logger.AbstractClientLogger;
+import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
 import de.novanic.eventservice.test.testhelper.EventServiceAsyncSuccessDummy;
 import org.easymock.EasyMock;
 

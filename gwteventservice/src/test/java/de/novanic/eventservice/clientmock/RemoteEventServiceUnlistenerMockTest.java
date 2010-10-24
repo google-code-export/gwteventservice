@@ -25,6 +25,9 @@ import de.novanic.eventservice.client.event.*;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
+import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
+import de.novanic.eventservice.test.testhelper.EventListenerTestMode;
+import de.novanic.eventservice.test.testhelper.UnlistenEventListenerTestMode;
 import org.easymock.EasyMock;
 
 import java.util.Arrays;

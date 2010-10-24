@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice.clientmock.event;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -28,6 +28,7 @@ import de.novanic.eventservice.client.config.EventServiceConfigurationTransferab
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.event.*;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
@@ -35,6 +36,7 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
+import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -118,7 +120,7 @@ public class RemoteEventServiceFactoryTest extends TestCase
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
 
-        RemoteEventConnector theRemoteEventConnector = new GWTRemoteEventConnector(new EventServiceCreator() {
+        RemoteEventConnector theRemoteEventConnector = DefaultRemoteEventServiceFactoryTestMode.getInstance().getGWTRemoteEventConnector(new EventServiceCreator() {
             public EventServiceAsync createEventService() {
                 return null;
             }
@@ -181,7 +183,7 @@ public class RemoteEventServiceFactoryTest extends TestCase
     private class RemoteEventServiceFactoryTestMode extends RemoteEventServiceFactory
     {
         public RemoteEventService getRemoteEventService() {
-            return new DefaultRemoteEventService(new DummyRemoteEventConnector());
+            return DefaultRemoteEventServiceFactoryTestMode.getInstance().getDefaultRemoteEventService(new DummyRemoteEventConnector());
         }
 
         private class DummyRemoteEventConnector extends DefaultRemoteEventConnector

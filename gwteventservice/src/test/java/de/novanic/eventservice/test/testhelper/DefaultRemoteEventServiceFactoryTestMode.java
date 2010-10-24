@@ -17,8 +17,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice.test.testhelper;
 
+import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
+import de.novanic.eventservice.client.event.DefaultRemoteEventService;
+import de.novanic.eventservice.client.event.GWTRemoteEventConnector;
+import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.creator.DefaultEventServiceCreator;
 import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
@@ -40,18 +44,40 @@ public class DefaultRemoteEventServiceFactoryTestMode
 
     public RemoteEventService getDefaultRemoteEventService() {
         EventServiceCreator theEventServiceCreator = DefaultEventServiceCreator.getInstance();
-        return new DefaultRemoteEventService(new GWTRemoteEventConnector(theEventServiceCreator));
+        return new DefaultRemoteEventServiceAccessible(new GWTRemoteEventConnectorAccessible(theEventServiceCreator));
     }
 
     public RemoteEventService getDefaultRemoteEventService(EventServiceAsync anEventService) {
-        return new DefaultRemoteEventService(getGWTRemoteEventConnector(anEventService));
+        return getDefaultRemoteEventService(getGWTRemoteEventConnector(anEventService));
+    }
+
+    public RemoteEventService getDefaultRemoteEventService(RemoteEventConnector aRemoteEventConnector) {
+        return new DefaultRemoteEventServiceAccessible(aRemoteEventConnector);
     }
 
     public GWTRemoteEventConnector getGWTRemoteEventConnector(final EventServiceAsync anEventService) {
-        return new GWTRemoteEventConnector(new EventServiceCreator() {
+        return getGWTRemoteEventConnector(new EventServiceCreator() {
             public EventServiceAsync createEventService() {
                 return anEventService;
             }
         });
+    }
+
+    public GWTRemoteEventConnector getGWTRemoteEventConnector(EventServiceCreator anEventServiceCreator) {
+        return new GWTRemoteEventConnectorAccessible(anEventServiceCreator);
+    }
+
+    private class GWTRemoteEventConnectorAccessible extends GWTRemoteEventConnector
+    {
+        protected GWTRemoteEventConnectorAccessible(EventServiceCreator aGWTEventServiceCreator) {
+            super(aGWTEventServiceCreator);
+        }
+    }
+
+    private class DefaultRemoteEventServiceAccessible extends DefaultRemoteEventService
+    {
+        protected DefaultRemoteEventServiceAccessible(RemoteEventConnector aRemoteEventConnector) {
+            super(aRemoteEventConnector);
+        }
     }
 }

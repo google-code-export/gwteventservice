@@ -1,4 +1,4 @@
-package de.novanic.eventservice.client.event;
+package de.novanic.eventservice.test.testhelper;
 
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
