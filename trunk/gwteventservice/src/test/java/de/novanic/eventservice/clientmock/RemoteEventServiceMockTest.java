@@ -1360,9 +1360,6 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
         theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
         mockListen(theEvents, 3);
-        mockListen();
-        mockListen();
-        mockListen();
 
         EasyMock.replay(myEventServiceAsyncMock);
             assertFalse(myRemoteEventService.isActive());
@@ -1389,9 +1386,6 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
         theEvents.add(new DummyDomainEvent(new DummyEvent()));
         mockListen(theEvents, 3);
-        mockListen();
-        mockListen();
-        mockListen();
 
         EasyMock.replay(myEventServiceAsyncMock);
             assertFalse(myRemoteEventService.isActive());
@@ -1418,11 +1412,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
         theEvents.add(new DummyDomainEvent(new DummyEvent(), TEST_DOMAIN));
         mockListen(theEvents, 3, new TestException());
-        //two reconnect attempts
-        mockListen();
-        mockListen();
-        //one successful call
-        mockListen();
+        //two reconnect attempts and one successful call
 
         EasyMock.replay(myEventServiceAsyncMock);
             assertFalse(myRemoteEventService.isActive());
@@ -1576,7 +1566,6 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         //listen without filter
         mockListen(theEvents, 1);
-        mockListen();
 
         final TestEventFilter theEventFilter = new TestEventFilter();
         mockRegisterEventFilter(TEST_DOMAIN, theEventFilter);
@@ -1614,9 +1603,6 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
         theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
         mockListen(theEvents, 1);
-
-        //listen without filter
-        mockListen();
 
         final TestEventFilter theEventFilter = new TestEventFilter();
         mockRegisterEventFilter(TEST_DOMAIN, theEventFilter);
@@ -1663,9 +1649,6 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
         mockListen(theEvents, 1);
 
-        //listen without filter
-        mockListen();
-
         final TestEventFilter theEventFilter = new TestEventFilter();
         mockRegisterEventFilter(TEST_DOMAIN, theEventFilter, new TestException());
 
@@ -1710,9 +1693,6 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
         theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
         mockListen(theEvents, 1);
-
-        //listen without filter
-        mockListen();
 
         final TestEventFilter theEventFilter = new TestEventFilter();
         mockRegisterEventFilter(TEST_DOMAIN, theEventFilter);
