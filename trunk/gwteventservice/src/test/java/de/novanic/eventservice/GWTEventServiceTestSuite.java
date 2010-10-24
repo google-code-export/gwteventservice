@@ -27,6 +27,7 @@ import de.novanic.eventservice.clientmock.RemoteEventServiceUnlistenerMockTest;
 import de.novanic.eventservice.clientmock.config.ConfigurationTransferableDependentFactoryTest;
 import de.novanic.eventservice.clientmock.event.command.*;
 import de.novanic.eventservice.clientmock.event.command.schedule.ClientCommandSchedulerFactoryTest;
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -60,6 +61,10 @@ public class GWTEventServiceTestSuite extends TestSuite
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceFactoryTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceMockTest.class);
         theGWTEventServiceTestSuite.addTestSuite(RemoteEventServiceUnlistenerMockTest.class);
+
+        // --- PowerMock-Tests ---
+
+        theGWTEventServiceTestSuite.addTest(new JUnit4TestAdapter(GWTEventServicePowerMockTestSuite.class));
 
         // --- GWT-Tests ---
 
