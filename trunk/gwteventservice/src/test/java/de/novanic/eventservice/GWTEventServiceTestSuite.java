@@ -19,7 +19,7 @@
  */
 package de.novanic.eventservice;
 
-import de.novanic.eventservice.client.event.RemoteEventServiceFactoryTest;
+import de.novanic.eventservice.clientmock.event.RemoteEventServiceFactoryTest;
 import de.novanic.eventservice.clientmock.GWTRemoteEventConnectorTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceMockTest;
 import de.novanic.eventservice.clientmock.RemoteEventServiceRuntimeExceptionTest;
