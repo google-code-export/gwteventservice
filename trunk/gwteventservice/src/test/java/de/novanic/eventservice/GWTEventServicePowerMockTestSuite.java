@@ -20,6 +20,7 @@
 package de.novanic.eventservice;
 
 import de.novanic.eventservice.clientmock.connection.strategy.connector.streaming.GWTStreamingClientConnectorTest;
+import de.novanic.eventservice.clientmock.connection.strategy.connector.streaming.specific.GWTStreamingClientConnectorGeckoTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -29,5 +30,8 @@ import org.junit.runners.Suite;
  *         <br>Time: 17:48:30
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses(GWTStreamingClientConnectorTest.class)
+@Suite.SuiteClasses({
+        GWTStreamingClientConnectorTest.class,
+        GWTStreamingClientConnectorGeckoTest.class
+})
 public class GWTEventServicePowerMockTestSuite {}
