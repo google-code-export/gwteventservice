@@ -41,11 +41,15 @@ public class GWTStreamingClientConnectorGecko extends GWTStreamingClientConnecto
     private static final Element DUMMY_FRAME_ELEMENT;
 
     static {
+        DUMMY_FRAME_ELEMENT = createFrameElement();
+    }
+
+    private static Element createFrameElement() {
         Frame theDummyFrame = new Frame();
     	theDummyFrame.setVisible(false);
         final Element theDummyFrameElement = theDummyFrame.getElement();
         theDummyFrameElement.setId("gwteventservice_dummy_frame");
-        DUMMY_FRAME_ELEMENT = theDummyFrameElement;
+        return theDummyFrameElement;
     }
 
     /**

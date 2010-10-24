@@ -230,7 +230,40 @@ public class GWTStreamingClientConnectorTest extends TestCase
             assertFalse(theEventNotification.isNotified());
             assertFalse(theEventNotification.isAborted);
 
-            //deactivates / removes the streaming frame
+            //deactivate / remove the streaming frame
+            myGWTStreamingClientConnector.deactivate();
+
+        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
+    }
+
+    public void testDeactivate_2() throws Exception {
+        mockInitJS();
+
+        myGWTStreamingClientConnector.init(new EventServiceAsyncSuccessDummy());
+
+        Frame theFrameMock = mockInitFrame();
+        RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
+
+        //RootPanel reset caused by the deactivation
+        EasyMock.expect(theRootPanelMock.remove(theFrameMock)).andReturn(Boolean.TRUE);
+
+        EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
+
+        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+
+            //initializes the streaming frame
+            myGWTStreamingClientConnector.listen(theEventNotification, null);
+            assertFalse(theEventNotification.isNotified());
+            assertFalse(theEventNotification.isAborted);
+
+            //deactivate / remove the streaming frame
+            myGWTStreamingClientConnector.deactivate();
+
+            //deactivate / remove the streaming frame again
             myGWTStreamingClientConnector.deactivate();
 
         PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
@@ -260,7 +293,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
             assertFalse(theEventNotification.isNotified());
             assertFalse(theEventNotification.isAborted);
 
-            //deactivates / removes the streaming frame
+            //deactivate / remove the streaming frame
             myGWTStreamingClientConnector.deactivate();
 
         PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
@@ -306,7 +339,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
             assertFalse(theEventNotification.isNotified());
             assertFalse(theEventNotification.isAborted);
 
-            //deactivates / removes the streaming frame
+            //deactivate / remove the streaming frame
             myGWTStreamingClientConnector.deactivate();
 
         PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
@@ -328,7 +361,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
             assertFalse(theEventNotification.isNotified());
             assertFalse(theEventNotification.isAborted);
 
-            //deactivates / removes the streaming frame
+            //deactivate / remove the streaming frame
             myGWTStreamingClientConnector.deactivate();
 
         PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
