@@ -44,6 +44,8 @@ import java.util.Set;
  */
 public class EventServiceAsyncSuccessDummy implements EventServiceAsync, ServiceDefTarget
 {
+    private String myServiceURL = "dummyurl";
+
     public void initEventService(AsyncCallback<EventServiceConfigurationTransferable> aCallback) {
         aCallback.onSuccess(new RemoteEventServiceConfigurationTransferable(0, 0, 99999, "12345", null));
     }
@@ -117,12 +119,13 @@ public class EventServiceAsyncSuccessDummy implements EventServiceAsync, Service
     }
 
     public String getServiceEntryPoint() {
-        return null;
-    }
-
-    public void setRpcRequestBuilder(RpcRequestBuilder aRpcRequestBuilder) {
+        return myServiceURL;
     }
 
     public void setServiceEntryPoint(String aServiceEntryPoint) {
+        myServiceURL = aServiceEntryPoint;
+    }
+
+    public void setRpcRequestBuilder(RpcRequestBuilder aRpcRequestBuilder) {
     }
 }
