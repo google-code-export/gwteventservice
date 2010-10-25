@@ -48,11 +48,20 @@ public class GWTCommandScheduler implements ClientCommandScheduler
      * @param aDelay delay in milliseconds
      */
     public void schedule(final ClientCommand<?> aCommand, int aDelay) {
-        Timer theTimer = new Timer() {
-            public void run() {
-                aCommand.execute();
-            }
-        };
+        Timer theTimer = new GWTCommandTimer(aCommand);
         theTimer.schedule(aDelay);
+    }
+
+    public static class GWTCommandTimer extends Timer
+    {
+        private ClientCommand<?> myClientCommand;
+
+        public GWTCommandTimer(ClientCommand<?> aClientCommand) {
+            myClientCommand = aClientCommand;
+        }
+
+        public void run() {
+            myClientCommand.execute();
+        }
     }
 }

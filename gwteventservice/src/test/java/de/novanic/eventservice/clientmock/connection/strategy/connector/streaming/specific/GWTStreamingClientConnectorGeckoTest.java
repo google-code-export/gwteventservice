@@ -118,8 +118,6 @@ public class GWTStreamingClientConnectorGeckoTest extends TestCase
         PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, theElementMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
     }
 
-    //TODO pull up static mock methods (to reuse)
-
     private static void mockInitJS() {
         suppress(method(GWTStreamingClientConnectorGecko.class, "initReceiveEventScript", DefaultStreamingClientConnector.class));
     }
