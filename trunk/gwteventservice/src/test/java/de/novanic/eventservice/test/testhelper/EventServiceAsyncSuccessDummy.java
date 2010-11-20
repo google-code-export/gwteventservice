@@ -128,4 +128,8 @@ public class EventServiceAsyncSuccessDummy implements EventServiceAsync, Service
 
     public void setRpcRequestBuilder(RpcRequestBuilder aRpcRequestBuilder) {
     }
+
+    public String getSerializationPolicyName() {
+        return null;
+    }
 }
