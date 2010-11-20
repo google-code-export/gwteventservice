@@ -103,7 +103,10 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertTrue(theByteArrayOutputStream.toString().contains("DummyEvent"));
         assertTrue(theByteArrayOutputStream.toString().contains("test_domain"));
         assertFalse(theByteArrayOutputStream.toString().contains("test_domain_2"));
-        assertEquals("<script type='text/javascript'>window.parent.receiveEvent('[4,3,2,1,[\"de.novanic.eventservice.client.event.DefaultDomainEvent/3924906731\",\"de.novanic.eventservice.client.event.domain.DefaultDomain/240262385\",\"test_domain\",\"de.novanic.eventservice.test.testhelper.DummyEvent/2679388400\"],0,5]');</script><script type='text/javascript'>window.parent.receiveEvent('cycle');</script>", theByteArrayOutputStream.toString());
+
+        final String theOutput = theByteArrayOutputStream.toString();
+        assertContainsScriptReceivedEvent(theOutput);
+        assertContainsScriptCycle(theOutput);
     }
 
     public void testListen_2() throws Exception {
@@ -278,7 +281,9 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertEquals(1, theListenResult.getEvents().size());
         assertTrue(theListenResult.getDuration() >= 600);
 
-        assertEquals("<script type='text/javascript'>window.parent.receiveEvent('[4,3,2,1,[\"de.novanic.eventservice.client.event.DefaultDomainEvent/3924906731\",\"de.novanic.eventservice.client.event.domain.DefaultDomain/240262385\",\"test_domain\",\"de.novanic.eventservice.test.testhelper.DummyEvent/2679388400\"],0,5]');</script><script type='text/javascript'>window.parent.receiveEvent('cycle');</script>", theByteArrayOutputStream.toString());
+        final String theOutput = theByteArrayOutputStream.toString();
+        assertContainsScriptReceivedEvent(theOutput);
+        assertContainsScriptCycle(theOutput);
     }
 
     /**
@@ -305,7 +310,9 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertEquals(1, theListenResult.getEvents().size());
         assertTrue(theListenResult.getDuration() >= 500 && theListenResult.getDuration() < 8000);
 
-        assertEquals("<script type='text/javascript'>window.parent.receiveEvent('[4,3,2,1,[\"de.novanic.eventservice.client.event.DefaultDomainEvent/3924906731\",\"de.novanic.eventservice.client.event.domain.DefaultDomain/240262385\",\"test_domain\",\"de.novanic.eventservice.test.testhelper.DummyEvent/2679388400\"],0,5]');</script><script type='text/javascript'>window.parent.receiveEvent('cycle');</script>", theByteArrayOutputStream.toString());
+        final String theOutput = theByteArrayOutputStream.toString();
+        assertContainsScriptReceivedEvent(theOutput);
+        assertContainsScriptCycle(theOutput);
     }
 
     public void testListen_Max_Waiting() throws Exception {
@@ -325,7 +332,7 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertEquals(0, theListenResult.getEvents().size());
         assertTrue(theListenResult.getDuration() >= 600);
 
-        assertEquals("<script type='text/javascript'>window.parent.receiveEvent('cycle');</script>", theByteArrayOutputStream.toString());
+        assertContainsScriptCycle(theByteArrayOutputStream.toString());
     }
 
     public void testListen_Max_Waiting_Concurrency() throws Exception {
@@ -408,6 +415,23 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         EasyMock.reset(theResponseMock);
 
         return theStreamingServerConnector;
+    }
+
+    private static void assertContainsScriptReceivedEvent(String aContent) {
+        assertNotNull(aContent);
+        //check script start for received events
+        assertTrue(aContent.contains("<script type='text/javascript'>window.parent.receiveEvent('"));
+        //check received event class
+        assertTrue(aContent.contains("\"de.novanic.eventservice.client.event.DefaultDomainEvent/"));
+        //check received domain class
+        assertTrue(aContent.contains("\"de.novanic.eventservice.client.event.domain.DefaultDomain/"));
+        //check script end for received events
+        assertTrue(aContent.contains("');</script>"));
+    }
+
+    private static void assertContainsScriptCycle(String aContent) {
+        assertNotNull(aContent);
+        assertTrue(aContent.contains("<script type='text/javascript'>window.parent.receiveEvent('cycle');</script>"));
     }
 
     private class DummyServletOutputStreamNotWritable extends DummyServletOutputStream

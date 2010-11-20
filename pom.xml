@@ -15,7 +15,7 @@
 		</license>
 	</licenses>
 	<properties>
-		<gwt.version>2.0.3</gwt.version>
+		<gwt.version>2.1.0</gwt.version>
 		<maven.compiler.source>1.5</maven.compiler.source>
 		<maven.compiler.target>1.5</maven.compiler.target>
 		<stagingSiteURL>file://${settings.localRepository}/../site-stage/gwteventservice</stagingSiteURL>
