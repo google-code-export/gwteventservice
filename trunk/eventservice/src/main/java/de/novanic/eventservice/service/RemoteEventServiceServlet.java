@@ -116,4 +116,11 @@ public abstract class RemoteEventServiceServlet extends RemoteServiceServlet imp
     protected HttpServletRequest getRequest() {
         return getThreadLocalRequest();
     }
+
+    /**
+     * This method is overridden because applications with various GWT versions got a {@link SecurityException}
+     * @throws SecurityException
+     */
+    @Override
+    protected void checkPermutationStrongName() throws SecurityException {}
 }
