@@ -355,4 +355,11 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     protected String generateClientId() {
         return myConfigurationDependentFactory.getConnectionIdGenerator().generateConnectionId(getThreadLocalRequest());
     }
+
+    /**
+     * This method is overridden because applications with various GWT versions got a {@link SecurityException}
+     * @throws SecurityException
+     */
+    @Override
+    protected void checkPermutationStrongName() throws SecurityException {}
 }
