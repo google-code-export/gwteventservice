@@ -151,6 +151,17 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         assertTrue(theEvents.isEmpty());
     }
 
+    public void testCheckPermutationStrongName() {
+        RemoteEventServiceServlet theRemoteEventServiceServlet = setUpRemoteEventServiceServlet();
+        boolean isSuccessful = false;
+        try {
+            theRemoteEventServiceServlet.checkPermutationStrongName();
+            isSuccessful = true;
+        } finally {
+            assertTrue("The execution of checkPermutationStrongName couldn't be completed successfully!", isSuccessful);
+        }
+    }
+
     private class DummyRemoteEventServiceServletOriginal extends RemoteEventServiceServlet {}
 
     private class DummyRemoteEventServlet extends RemoteEventServiceServlet

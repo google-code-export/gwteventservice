@@ -876,6 +876,19 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
     }
 
+    public void testCheckPermutationStrongName() throws Exception {
+        initEventService();
+        assertNotNull(myEventService);
+
+        boolean isSuccessful = false;
+        try {
+            myEventService.checkPermutationStrongName();
+            isSuccessful = true;
+        } finally {
+            assertTrue("The execution of checkPermutationStrongName couldn't be completed successfully!", isSuccessful);
+        }
+    }
+
     private void initEventService() throws Exception {
         setUp(createConfiguration(0, 30000, 90000));
 
