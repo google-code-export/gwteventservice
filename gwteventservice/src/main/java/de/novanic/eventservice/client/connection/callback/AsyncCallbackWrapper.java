@@ -48,4 +48,8 @@ public class AsyncCallbackWrapper<T> implements AsyncCallback<T>
             myAsyncCallback.onFailure(aThrowable);
         }
     }
+
+    protected AsyncCallback<T> getCallback() {
+        return myAsyncCallback;
+    }
 }

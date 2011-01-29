@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.client.event;
 
+import de.novanic.eventservice.client.connection.callback.AsyncCallbackWrapper;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
@@ -210,9 +211,9 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
             addListenerLocal(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener);
             schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, getRemoteEventConnector(), anUnlistenEvent, aCallback));
         } else {
-            addListener(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener, new VoidAsyncCallback() {
+            addListener(DomainFactory.UNLISTEN_DOMAIN, anUnlistenEventListener, new AsyncCallbackWrapper<Void>(aCallback) {
                 public void onSuccess(Void aResult) {
-                    schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, getRemoteEventConnector(), anUnlistenEvent, aCallback));
+                    schedule(new RegistrationUnlistenEventCommand(anUnlistenScope, getRemoteEventConnector(), anUnlistenEvent, getCallback()));
                 }
             });
         }
@@ -225,19 +226,28 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aRemoteListener listener to remove
      */
     public void removeListener(Domain aDomain, RemoteEventListener aRemoteListener) {
-        removeListener(aDomain, aRemoteListener, new VoidAsyncCallback());
+        removeListener(aDomain, aRemoteListener, null);
     }
 
     /**
      * Removes a listener for a domain.
      * The RemoteEventService will get inactive, when no other listeners are registered.
-     * @param aDomain domain
+     * @param aDomain domain to remove the listener from (the domain will be removed when no other listeners are registered to the domain)
      * @param aRemoteListener listener to remove
      * @param aCallback callback
      */
     public void removeListener(Domain aDomain, RemoteEventListener aRemoteListener, AsyncCallback<Void> aCallback) {
-        if(myDomainListenerMapping.containsKey(aDomain)) {
-            removeListenerInternal(aDomain, aRemoteListener, aCallback);
+        if(aRemoteListener != null && myDomainListenerMapping.containsKey(aDomain)) {
+            //remove the listener
+            List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
+            if(theListeners != null) {
+                theListeners = removeOnCopy(theListeners, aRemoteListener);
+                myDomainListenerMapping.put(aDomain, theListeners);
+            }
+            //When it was the last listener, the domain will be deregistered for listening, because there aren't any listeners registered for the domain.
+            if(theListeners == null || theListeners.isEmpty()) {
+                removeDomain(aDomain, aCallback);
+            }
         }
     }
 
@@ -268,7 +278,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param anEventFilter EventFilter to filter the events before RemoteEventListener
      */
     public void registerEventFilter(Domain aDomain, EventFilter anEventFilter) {
-        registerEventFilter(aDomain, anEventFilter, new VoidAsyncCallback());
+        registerEventFilter(aDomain, anEventFilter, null);
     }
 
     /**
@@ -287,7 +297,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aDomain domain to remove the EventFilter from
      */
     public void deregisterEventFilter(Domain aDomain) {
-        deregisterEventFilter(aDomain, new VoidAsyncCallback());
+        deregisterEventFilter(aDomain, null);
     }
 
     /**
@@ -328,7 +338,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * Removes all RemoteEventListeners and deactivates the RemoteEventService (stop listening).
      */
     public void removeListeners() {
-        removeListeners(new VoidAsyncCallback());
+        removeListeners((AsyncCallback<Void>)null);
     }
 
     /**
@@ -346,7 +356,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aDomains domains to unlisten
      */
     public void removeListeners(Set<Domain> aDomains) {
-        removeListeners(aDomains, new VoidAsyncCallback());
+        removeListeners(aDomains, null);
     }
 
     /**
@@ -366,7 +376,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aDomain domain to unlisten
      */
     public void removeListeners(Domain aDomain) {
-        removeListeners(aDomain, new VoidAsyncCallback());
+        removeListeners(aDomain, null);
     }
 
     /**
@@ -404,7 +414,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param anEvent event
      */
     public void addEvent(Domain aDomain, Event anEvent) {
-        addEvent(aDomain, anEvent, new VoidAsyncCallback());
+        addEvent(aDomain, anEvent, null);
     }
 
     /**
@@ -426,29 +436,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @return true when listeners registered (remote call needed), otherwise false
      */
     private boolean unlisten(Domain aDomain, AsyncCallback<Void> aCallback) {
-        return myDomainListenerMapping.containsKey(aDomain) && removeDomain(aDomain, aCallback);
-    }
-
-    /**
-     * Removes a listener from a domain. When it is the last listener, the domain will be deregistered for listening,
-     * because there aren't any listeners registered for the domain.
-     * It deactivates the RemoteEventService if no more domains/listeners are registered.
-     * @param aDomain domain to remove the listener from (the domain will be removed when no other listeners are registered to the domain)
-     * @param aListener listener to remove
-     * @param aCallback callback
-     */
-    private void removeListenerInternal(Domain aDomain, RemoteEventListener aListener, AsyncCallback<Void> aCallback) {
-        if(aListener != null) {
-            //remove the listener
-            List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
-            if(theListeners != null) {
-                myDomainListenerMapping.put(aDomain, removeOnCopy(theListeners, aListener));
-            }
-            theListeners = myDomainListenerMapping.get(aDomain);
-            if(theListeners == null || theListeners.isEmpty()) {
-                removeDomain(aDomain, aCallback);
-            }
-        }
+        return removeDomain(aDomain, aCallback);
     }
 
     /**
@@ -502,7 +490,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param <CT> type of the contained objects
      * @return new list instance without the removed entry
      */
-    private <CT> List<CT> removeOnCopy(List<CT> aList, CT anEntry) {
+    private static <CT> List<CT> removeOnCopy(List<CT> aList, CT anEntry) {
         List<CT> theCollectionCopy = new ArrayList<CT>(aList);
         if(theCollectionCopy.remove(anEntry)) {
             return theCollectionCopy;
