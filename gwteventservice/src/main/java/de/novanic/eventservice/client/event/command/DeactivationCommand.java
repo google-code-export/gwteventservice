@@ -38,14 +38,6 @@ public class DeactivationCommand extends ServerCallCommand<Void>
     private Set<Domain> myDomains;
 
     /**
-     * Creates a DeactivationCommand to deactivate the event listening of the client completely.
-     * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
-     */
-    public DeactivationCommand(RemoteEventConnector aRemoteEventConnector) {
-        super(aRemoteEventConnector, null);
-    }
-
-    /**
      * Creates a DeactivationCommand to deactivate the event listening of the client for a specified domain.
      * @param aRemoteEventConnector {@link de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector}
      * @param aDomain domain which should be deactivated for event listening
@@ -71,20 +63,14 @@ public class DeactivationCommand extends ServerCallCommand<Void>
 
     /**
      * Deactivates the event listening of the client completely or for a specified domain/context.
-     * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector)
      * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector , de.novanic.eventservice.client.event.domain.Domain, com.google.gwt.user.client.rpc.AsyncCallback)
      * @see de.novanic.eventservice.client.event.command.DeactivationCommand#DeactivationCommand(de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector , java.util.Set, com.google.gwt.user.client.rpc.AsyncCallback)
      */
     public void execute() {
-        final AsyncCallback<Void> theCallback = getCommandCallback();
-        if(theCallback != null) {
-            if(myDomains != null) {
-                getRemoteEventConnector().deactivate(myDomains, getCommandCallback());
-            } else {
-                getRemoteEventConnector().deactivate(myDomain, getCommandCallback());
-            }
+        if(myDomains != null) {
+            getRemoteEventConnector().deactivate(myDomains, getCommandCallback());
         } else {
-            getRemoteEventConnector().deactivate();
+            getRemoteEventConnector().deactivate(myDomain, getCommandCallback());
         }
     }
 }

@@ -50,10 +50,4 @@ public class DeactivationCommandTest extends ClientCommandTestCase
 
         testExecute(new DeactivationCommand(getRemoteEventConnectorMock(), theDomains, getCommandCallback()));
     }
-
-    public void testExecute_3() {
-        getRemoteEventConnectorMock().deactivate();
-
-        testExecute(new DeactivationCommand(getRemoteEventConnectorMock()));
-    }
 }

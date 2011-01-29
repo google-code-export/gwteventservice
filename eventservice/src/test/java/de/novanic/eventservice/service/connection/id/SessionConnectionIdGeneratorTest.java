@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.service.connection.id;
 
+import de.novanic.eventservice.service.exception.NoSessionAvailableException;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -60,6 +61,21 @@ public class SessionConnectionIdGeneratorTest extends TestCase
 
         EasyMock.replay(theRequestMock, theSessionMock);
             assertEquals("123b", theConnectionIdGenerator.getConnectionId(theRequestMock));
+        EasyMock.verify(theRequestMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theSessionMock);
+    }
+
+    public void testGetConnectionId_2() {
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
+
+        EasyMock.expect(theRequestMock.getSession(false)).andReturn(null);
+
+        EasyMock.replay(theRequestMock, theSessionMock);
+            try {
+                new SessionConnectionIdGenerator().getConnectionId(theRequestMock);
+                fail("An exception is expected, because the session is NULL!");
+            } catch(NoSessionAvailableException e) {}
         EasyMock.verify(theRequestMock, theSessionMock);
         EasyMock.reset(theRequestMock, theSessionMock);
     }

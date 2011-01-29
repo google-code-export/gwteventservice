@@ -19,7 +19,10 @@
  */
 package de.novanic.eventservice.service.connection.id;
 
+import de.novanic.eventservice.service.exception.NoSessionAvailableException;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * A {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} generates unique ids which are used to
@@ -54,6 +57,10 @@ public class SessionConnectionIdGenerator implements ConnectionIdGenerator
      * @return the previous generated connection / client id for the specific client
      */
     public String getConnectionId(HttpServletRequest aRequest) {
-        return aRequest.getSession(false).getId();
+        final HttpSession theSession = aRequest.getSession(false);
+        if(theSession == null) {
+            throw new NoSessionAvailableException("There is no session available! Maybe no session was generated explicitly by the connection id generator.");
+        }
+        return theSession.getId();
     }
 }

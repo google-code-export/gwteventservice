@@ -85,7 +85,7 @@ public abstract class RemoteEventServiceAccessor
     private void executeCommands() {
         if(isSessionInitialized) {
             ClientCommand<?> theClientCommand;
-            while((theClientCommand = myClientCommandQueue.poll()) != null) {
+            while(myClientCommandQueue != null && (theClientCommand = myClientCommandQueue.poll()) != null) {
                 theClientCommand.execute();
             }
         }
@@ -97,6 +97,11 @@ public abstract class RemoteEventServiceAccessor
      */
     protected RemoteEventConnector getRemoteEventConnector() {
         return myRemoteEventConnector;
+    }
+
+    protected void reset() {
+        myClientCommandQueue = null;
+        getRemoteEventConnector().deactivate();
     }
 
     /**
