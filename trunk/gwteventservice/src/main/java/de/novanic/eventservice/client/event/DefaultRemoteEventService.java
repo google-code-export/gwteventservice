@@ -357,18 +357,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aCallback callback (only called when a listener is registered for the domain)
      */
     public void removeListeners(Set<Domain> aDomains, AsyncCallback<Void> aCallback) {
-        Set<Domain> theDomains = new HashSet<Domain>(aDomains);
-        Iterator<Domain> theDomainIterator = theDomains.iterator();
-        while(theDomainIterator.hasNext()) {
-            Domain theDomain = theDomainIterator.next();
-            if(!(unlisten(theDomain, null))) {
-                theDomainIterator.remove();
-            }
-        }
-        if(!theDomains.isEmpty()) {
-            //removeListeners is called with a set of domains to reduce remote server calls.
-            schedule(new DeactivationCommand(getRemoteEventConnector(), theDomains, aCallback));
-        }
+        removeDomains(aDomains, aCallback);
     }
 
     /**
@@ -466,17 +455,41 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * Removes the domain with all listener registrations to the domain.
      * @param aDomain domain to remove
      * @param aCallback callback (only called when the domain isn't already removed)
-     * @return true when the domain is removed, otherwise false (false when the domain was already removed)
+     * @return true when the domain was removed, otherwise false (false when the domain was already removed)
      */
     private boolean removeDomain(Domain aDomain, AsyncCallback<Void> aCallback) {
         //remove the domain (all domain registrations)
         boolean isRemoved = (myDomainListenerMapping.remove(aDomain) != null);
         if(isRemoved) {
-            if(aCallback != null) {
-                schedule(new DeactivationCommand(getRemoteEventConnector(), aDomain, aCallback));
-            }
+            schedule(new DeactivationCommand(getRemoteEventConnector(), aDomain, aCallback));
             if(myDomainListenerMapping.isEmpty()) {
-                schedule(new DeactivationCommand(getRemoteEventConnector()));
+                reset();
+            }
+        }
+        return isRemoved;
+    }
+
+    /**
+     * Removes the domains with all listener registrations to the domains.
+     * @param aDomains domains to remove
+     * @param aCallback callback (only called when at least one of the domains isn't already removed)
+     * @return true when at least one domain was removed, otherwise false (false when all domains were already removed)
+     */
+    private boolean removeDomains(Set<Domain> aDomains, AsyncCallback<Void> aCallback) {
+        //remove the domains (all domain registrations)
+        Set<Domain> theRemovableDomains = new HashSet<Domain>(aDomains);
+        Iterator<Domain> theDomainIterator = theRemovableDomains.iterator();
+        while(theDomainIterator.hasNext()) {
+            Domain theDomain = theDomainIterator.next();
+            if(myDomainListenerMapping.remove(theDomain) == null) {
+                theDomainIterator.remove();
+            }
+        }
+        boolean isRemoved = !theRemovableDomains.isEmpty();
+        if(isRemoved) {
+            schedule(new DeactivationCommand(getRemoteEventConnector(), theRemovableDomains, aCallback));
+            if(myDomainListenerMapping.isEmpty()) {
+                reset();
             }
         }
         return isRemoved;

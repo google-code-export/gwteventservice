@@ -482,6 +482,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
     public void testRemoveListener_3() {
         mockInit();
+        //caused by new activation after complete deactivation
+        mockInit();
 
         //caused by first addListener / activate
         mockRegister(TEST_DOMAIN);
