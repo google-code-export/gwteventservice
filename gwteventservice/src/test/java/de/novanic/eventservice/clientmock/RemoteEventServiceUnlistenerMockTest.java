@@ -225,6 +225,37 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    public void testAddUnlistenListener_Unlisten_3() {
+        mockInit();
+
+        //caused by add UnlistenListener (the server couldn't connected)
+        mockRegister(DomainFactory.UNLISTEN_DOMAIN, new TestException());
+        final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
+        final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
+
+        EasyMock.replay(myEventServiceAsyncMock);
+            //add UnlistenListener
+            assertEquals(0, theUnlistenEventListener.getEventCount());
+
+            RecordedCallback theRecordedCallback = new RecordedCallback();
+
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.UNLISTEN, theUnlistenEventListener, theUnlistenEvent, theRecordedCallback);
+            assertFalse(myRemoteEventService.isActive());
+
+            assertFalse(theRecordedCallback.isOnSuccessCalled());
+            assertTrue(theRecordedCallback.isOnFailureCalled());
+
+            assertEquals(1, theUnlistenEventListener.getEventCount());
+            assertEquals(1, theUnlistenEventListener.getEventCount(DefaultUnlistenEvent.class));
+
+            final UnlistenEvent theUnlistenEventResult = (UnlistenEvent)theUnlistenEventListener.getEvents().get(0);
+            assertFalse(theUnlistenEventResult.isTimeout());
+            assertTrue(theUnlistenEventResult.isLocal());
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+    }
+
     public void testAddUnlistenListener_Timeout() {
         mockInit();
 
