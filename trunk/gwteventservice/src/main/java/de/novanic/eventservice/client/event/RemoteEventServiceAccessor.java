@@ -144,4 +144,14 @@ public abstract class RemoteEventServiceAccessor
             });
         }
     }
+
+    /**
+     * Empty callback
+     */
+    protected static class VoidAsyncCallback implements AsyncCallback<Void>
+    {
+        public void onFailure(Throwable aThrowable) {}
+
+        public void onSuccess(Void aResult) {}
+    }
 }
