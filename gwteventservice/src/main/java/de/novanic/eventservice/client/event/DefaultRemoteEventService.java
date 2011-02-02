@@ -226,7 +226,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aRemoteListener listener to remove
      */
     public void removeListener(Domain aDomain, RemoteEventListener aRemoteListener) {
-        removeListener(aDomain, aRemoteListener, null);
+        removeListener(aDomain, aRemoteListener, new VoidAsyncCallback());
     }
 
     /**
@@ -278,7 +278,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param anEventFilter EventFilter to filter the events before RemoteEventListener
      */
     public void registerEventFilter(Domain aDomain, EventFilter anEventFilter) {
-        registerEventFilter(aDomain, anEventFilter, null);
+        registerEventFilter(aDomain, anEventFilter, new VoidAsyncCallback());
     }
 
     /**
@@ -297,7 +297,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aDomain domain to remove the EventFilter from
      */
     public void deregisterEventFilter(Domain aDomain) {
-        deregisterEventFilter(aDomain, null);
+        deregisterEventFilter(aDomain, new VoidAsyncCallback());
     }
 
     /**
@@ -338,7 +338,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * Removes all RemoteEventListeners and deactivates the RemoteEventService (stop listening).
      */
     public void removeListeners() {
-        removeListeners((AsyncCallback<Void>)null);
+        removeListeners(new VoidAsyncCallback());
     }
 
     /**
@@ -356,7 +356,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aDomains domains to unlisten
      */
     public void removeListeners(Set<Domain> aDomains) {
-        removeListeners(aDomains, null);
+        removeListeners(aDomains, new VoidAsyncCallback());
     }
 
     /**
@@ -376,7 +376,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param aDomain domain to unlisten
      */
     public void removeListeners(Domain aDomain) {
-        removeListeners(aDomain, null);
+        removeListeners(aDomain, new VoidAsyncCallback());
     }
 
     /**
@@ -414,7 +414,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @param anEvent event
      */
     public void addEvent(Domain aDomain, Event anEvent) {
-        addEvent(aDomain, anEvent, null);
+        addEvent(aDomain, anEvent, new VoidAsyncCallback());
     }
 
     /**
