@@ -100,6 +100,7 @@ public abstract class RemoteEventServiceAccessor
     }
 
     protected void reset() {
+        isSessionInitialized = false;
         myClientCommandQueue = null;
         getRemoteEventConnector().deactivate();
     }
