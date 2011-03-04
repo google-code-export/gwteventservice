@@ -12,12 +12,6 @@
 		<dependencySet>
 			<unpack>false</unpack>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
-			<!-- 
-			<excludes>
-        		<exclude>commons-lang:commons-lang</exclude>
-        		<exclude>log4j:log4j</exclude>
-			</excludes>
-			 -->
 		</dependencySet>
 	</dependencySets>
 	<!-- pack these files -->
@@ -28,7 +22,6 @@
 				<include>about*</include>
 				<include>license*</include>
 				<include>release-notes*</include>
-				<include>roadmap*</include>
 				<include>system-requirements*</include>
 			</includes>
 		</fileSet>
