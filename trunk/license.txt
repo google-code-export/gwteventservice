@@ -1,4 +1,4 @@
-GWTEventService Licence Information
+GWTEventService License Information
 
 
 	The documentation and the source code of GWTEventService including the demo application is licensed under the
