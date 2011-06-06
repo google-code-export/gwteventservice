@@ -12,6 +12,9 @@
 		<dependencySet>
 			<unpack>false</unpack>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<excludes>
+				<exclude>*:sources</exclude>
+			</excludes>
 		</dependencySet>
 	</dependencySets>
 	<!-- pack these files -->

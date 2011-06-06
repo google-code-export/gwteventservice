@@ -1,5 +1,5 @@
 <assembly
-	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" 
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
 	<id>developer</id>
@@ -7,24 +7,30 @@
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
+	<!-- pack the dependencies -->
 	<dependencySets>
 		<dependencySet>
 			<unpack>false</unpack>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<excludes>
+				<exclude>*:sources</exclude>
+			</excludes>
+		</dependencySet>
+		<dependencySet>
+			<unpack>true</unpack>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<outputDirectory>source</outputDirectory>
+			<includes>
+				<include>*:sources</include>
+			</includes>
+			<unpackOptions>
+				<excludes>
+					<exclude>META-INF/**</exclude>
+				</excludes>
+			</unpackOptions>
 		</dependencySet>
 	</dependencySets>
-	<moduleSets>
-		<moduleSet>
-			<includes>
-				<include>com.google.code.gwteventservice:eventservice-rpc</include>
-				<include>com.google.code.gwteventservice:eventservice</include>
-				<include>com.google.code.gwteventservice:gwteventservice</include>
-			</includes>
-			<sources>
-				<outputDirectory>sources/${artifactId}</outputDirectory>
-			</sources>
-		</moduleSet>
-	</moduleSets>	
+	<!-- pack these files -->
 	<fileSets>
 		<fileSet>
 			<directory>../</directory>
@@ -42,14 +48,6 @@
 				<include>conf/*</include>
 			</includes>
 		</fileSet>
-		<!--
-		<fileSet>
-			<directory>../</directory>
-			<includes>
-				<include>src/*</include>
-			</includes>
-		</fileSet>
-		-->
 		<fileSet>
 			<directory>../</directory>
 			<includes>
