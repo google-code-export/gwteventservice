@@ -14,6 +14,7 @@
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<excludes>
 				<exclude>*:sources</exclude>
+				<exclude>*:javadoc</exclude>
 			</excludes>
 		</dependencySet>
 	</dependencySets>
