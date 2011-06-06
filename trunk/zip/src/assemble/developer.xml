@@ -14,14 +14,28 @@
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<excludes>
 				<exclude>*:sources</exclude>
+				<exclude>*:javadoc</exclude>
 			</excludes>
 		</dependencySet>
 		<dependencySet>
 			<unpack>true</unpack>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
-			<outputDirectory>source</outputDirectory>
+			<outputDirectory>src</outputDirectory>
 			<includes>
 				<include>*:sources</include>
+			</includes>
+			<unpackOptions>
+				<excludes>
+					<exclude>META-INF/**</exclude>
+				</excludes>
+			</unpackOptions>
+		</dependencySet>
+		<dependencySet>
+			<unpack>true</unpack>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<outputDirectory>doc/javadoc</outputDirectory>
+			<includes>
+				<include>*:javadoc</include>
 			</includes>
 			<unpackOptions>
 				<excludes>

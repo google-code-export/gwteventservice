@@ -57,6 +57,12 @@
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>com.google.code.gwteventservice</groupId>
+			<artifactId>eventservice-rpc</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
+		</dependency>
 		
 		<dependency>
 			<groupId>com.google.code.gwteventservice</groupId>
@@ -69,6 +75,12 @@
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>com.google.code.gwteventservice</groupId>
+			<artifactId>eventservice</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
+		</dependency>
 		
 		<dependency>
 			<groupId>com.google.code.gwteventservice</groupId>
@@ -80,6 +92,12 @@
 			<artifactId>gwteventservice</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gwteventservice</groupId>
+			<artifactId>gwteventservice</artifactId>
+			<version>${project.version}</version>
+			<classifier>javadoc</classifier>
 		</dependency>
 	</dependencies>
 </project>
