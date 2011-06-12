@@ -124,7 +124,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
         }
         LOG.info("Client \"" + theClientId + "\" initialized.");
         return new RemoteEventServiceConfigurationTransferable(theConfiguration.getMinWaitingTime(), theConfiguration.getMaxWaitingTime(),
-                theConfiguration.getTimeoutTime(), theClientIdTransferable, theConfiguration.getConnectionStrategyClientConnectorClassName());
+                theConfiguration.getTimeoutTime(), theConfiguration.getReconnectAttemptCount(), theClientIdTransferable, theConfiguration.getConnectionStrategyClientConnectorClassName());
     }
 
     /**

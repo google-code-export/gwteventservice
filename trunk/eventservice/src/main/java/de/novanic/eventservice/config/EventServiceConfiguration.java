@@ -64,6 +64,13 @@ public interface EventServiceConfiguration
     Integer getTimeoutTime();
 
     /**
+     * Returns the number of reconnect attempts to execute.
+     * @see de.novanic.eventservice.config.ConfigParameter#RECONNECT_ATTEMPT_COUNT_TAG
+     * @return reconnect attempt count
+     */
+    Integer getReconnectAttemptCount();
+
+    /**
      * Returns the class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}.
      * The {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} generates unique ids to identify the clients.
      * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_ID_GENERATOR

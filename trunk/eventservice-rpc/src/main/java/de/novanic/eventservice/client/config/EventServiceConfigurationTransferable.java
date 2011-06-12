@@ -53,6 +53,12 @@ public interface EventServiceConfigurationTransferable extends Serializable
     Integer getTimeoutTime();
 
     /**
+     * Returns the number of reconnect attempts to execute.
+     * @return number of reconnect attempts
+     */
+    Integer getReconnectAttemptCount();
+
+    /**
      * Returns the connection / client id.
      * @return connection / client id
      */

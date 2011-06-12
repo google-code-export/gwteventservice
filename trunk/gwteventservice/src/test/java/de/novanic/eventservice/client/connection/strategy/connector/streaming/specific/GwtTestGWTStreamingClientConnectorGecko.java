@@ -203,6 +203,10 @@ public class GwtTestGWTStreamingClientConnectorGecko extends GWTTestCase
             return 0;
         }
 
+        public Integer getReconnectAttemptCount() {
+            return 0;
+        }
+
         public String getConnectionId() {
             return "12345678";
         }

@@ -151,7 +151,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(90000), theLoadedConfiguration.getTimeoutTime());
     }
 
-    public void testAddCustomConfigurationLoader_2() {
+    public void testAddCustomConfigurationLoader_WebDescriptor() {
         //add custom ConfigurationLoader
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
 
@@ -166,6 +166,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(30000), theLoadedConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(120000), theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(3), theLoadedConfiguration.getReconnectAttemptCount());
 
         theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOWEST, theCustomConfigurationLoader);
 
@@ -173,6 +174,35 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(3000), theLoadedConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(70000), theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getReconnectAttemptCount());
+    }
+
+    public void testAddCustomConfigurationLoader_WebDescriptor_Incomplete() {
+        //add custom ConfigurationLoader
+        final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
+
+        EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+
+        final ServletConfigDummy theServletConfig = new ServletConfigDummy(true, false);
+        theServletConfig.removeParameter(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG);
+        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOW, new WebDescriptorConfigurationLoader(theServletConfig));
+
+        final DummyConfigurationLoader theCustomConfigurationLoader = new DummyConfigurationLoader(theConfiguration);
+        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.HIGH, theCustomConfigurationLoader);
+
+        EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(30000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(120000), theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getReconnectAttemptCount()); //the default value is taken
+
+        theConfigurationFactory.addConfigurationLoader(ConfigLevelFactory.LOWEST, theCustomConfigurationLoader);
+
+        theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(3000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(70000), theLoadedConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getReconnectAttemptCount());
     }
 
     public void testResetCustomConfigurationLoaders() {

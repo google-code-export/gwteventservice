@@ -48,19 +48,21 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      * @param aMinWaitingTime min waiting time before listen returns (in milliseconds)
      * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
      * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
+     * @param aReconnectAttemptCount number of reconnect attempts
      * @param aConnectionIdGeneratorClassName class name of the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator} to generate unique client ids
      * @param aConnectionStrategyClientClassName class name of the configured connection strategy (client side part)
      * @param aConnectionStrategyServerClassName class name of the configured connection strategy (server side part)
      * @param aConnectionStrategyEncoding encoding / charset which is used by the connection strategies
      */
     public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime,
-                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClientClassName, String aConnectionStrategyServerClassName,
-                                           String aConnectionStrategyEncoding) {
+                                           Integer aReconnectAttemptCount,
+                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClientClassName, String aConnectionStrategyServerClassName, String aConnectionStrategyEncoding) {
         myConfigDescription = aConfigDescription;
         myConfigMap = new HashMap<ConfigParameter, Object>();
         myConfigMap.put(ConfigParameter.MIN_WAITING_TIME_TAG, aMinWaitingTime);
         myConfigMap.put(ConfigParameter.MAX_WAITING_TIME_TAG, aMaxWaitingTime);
         myConfigMap.put(ConfigParameter.TIMEOUT_TIME_TAG, aTimeoutTime);
+        myConfigMap.put(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG, aReconnectAttemptCount);
         myConfigMap.put(ConfigParameter.CONNECTION_ID_GENERATOR, aConnectionIdGeneratorClassName);
         myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR, aConnectionStrategyClientClassName);
         myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR, aConnectionStrategyServerClassName);
@@ -100,6 +102,15 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      */
     public Integer getTimeoutTime() {
         return (Integer)myConfigMap.get(ConfigParameter.TIMEOUT_TIME_TAG);
+    }
+
+    /**
+     * Returns the number of reconnect attempts to execute.
+     * @see de.novanic.eventservice.config.ConfigParameter#RECONNECT_ATTEMPT_COUNT_TAG
+     * @return reconnect attempt count
+     */
+    public Integer getReconnectAttemptCount() {
+        return (Integer)myConfigMap.get(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG);
     }
 
     /**

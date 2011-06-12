@@ -33,32 +33,35 @@ public class RemoteEventServiceConfigurationTransferableTest extends TestCase
         assertNull(theConfiguration.getMinWaitingTime());
         assertNull(theConfiguration.getMaxWaitingTime());
         assertNull(theConfiguration.getTimeoutTime());
+        assertNull(theConfiguration.getReconnectAttemptCount());
         assertNull(theConfiguration.getConnectionId());
         assertNull(theConfiguration.getConnectionStrategyClientConnector());
     }
 
     public void testInit_2() {
-        EventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(1, 2, 3, "4", "client_connector");
+        EventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "5", "client_connector");
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(2), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(3), theConfiguration.getTimeoutTime());
-        assertEquals("4", theConfiguration.getConnectionId());
+        assertEquals(Integer.valueOf(4), theConfiguration.getReconnectAttemptCount());
+        assertEquals("5", theConfiguration.getConnectionId());
         assertEquals("client_connector", theConfiguration.getConnectionStrategyClientConnector());
     }
 
     public void testEquals() {
-        EventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(1, 2, 3, "4", null);
+        EventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "5", null);
         assertEquals(theConfiguration, theConfiguration);
-        assertEquals(theConfiguration, new RemoteEventServiceConfigurationTransferable(1, 2, 3, "4", null));
-        assertEquals(theConfiguration, new RemoteEventServiceConfigurationTransferable(1, 2, 3, "4", null));
-        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfigurationTransferable(1, 2, 3, "4", null).hashCode());
+        assertEquals(theConfiguration, new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "5", null));
+        assertEquals(theConfiguration, new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "5", null));
+        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "5", null).hashCode());
 
         EventServiceConfigurationTransferable theConfiguration_2 = null;
         assertFalse(theConfiguration.equals(theConfiguration_2));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(9, 2, 3, "4", null)));
-        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfigurationTransferable(9, 2, 3, "4", null).hashCode());
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(1, 9, 3, "4", null)));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(1, 2, 9, "4", null)));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(1, 2, 3, "9", null)));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(9, 2, 3, 4, "5", null)));
+        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfigurationTransferable(9, 2, 3, 4, "5", null).hashCode());
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(1, 9, 3, 4, "5", null)));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(1, 2, 9, 4, "5", null)));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(1, 2, 3, 9, "5", null)));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "9", null)));
     }
 }

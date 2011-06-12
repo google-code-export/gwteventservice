@@ -69,16 +69,17 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
     }
 
     /**
-     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} from the configuration.
      * That is required to specify the listen / connection strategy. The connection strategy can't be changed, when the listening has already started / an listener was added.
      * That implementation initializes the connection strategy with the {@link de.novanic.eventservice.client.event.service.EventService}.
-     * @param aConnectionStrategyClientConnector {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} which implements the listen method
+     * @param aConfiguration configuration
      */
-    public void initListen(ConnectionStrategyClientConnector aConnectionStrategyClientConnector) {
-        super.initListen(aConnectionStrategyClientConnector);
-        if(aConnectionStrategyClientConnector != null && !aConnectionStrategyClientConnector.isInitialized()) {
-            aConnectionStrategyClientConnector.init(myEventService);
+    public ConnectionStrategyClientConnector initListen(EventServiceConfigurationTransferable aConfiguration) {
+        ConnectionStrategyClientConnector theConnectionStrategyClientConnector = super.initListen(aConfiguration);
+        if(theConnectionStrategyClientConnector != null && !theConnectionStrategyClientConnector.isInitialized()) {
+            theConnectionStrategyClientConnector.init(myEventService);
         }
+        return theConnectionStrategyClientConnector;
     }
 
     /**

@@ -177,7 +177,7 @@ public class RemoteEventServiceFactoryTest extends TestCase
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {
-        return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "ABC123", DefaultClientConnector.class.getName());
+        return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "ABC123", DefaultClientConnector.class.getName());
     }
     
     private class RemoteEventServiceFactoryTestMode extends RemoteEventServiceFactory

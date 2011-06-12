@@ -194,7 +194,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {
-        return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, null, DefaultClientConnector.class.getName());
+        return new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, null, DefaultClientConnector.class.getName());
     }
 
     protected static class TestException extends Exception

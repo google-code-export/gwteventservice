@@ -44,6 +44,11 @@ public enum ConfigParameter
     TIMEOUT_TIME_TAG("time.timeout", false),
 
     /**
+     * Reconnect attempts count - Number of reconnect attempts to execute
+     */
+    RECONNECT_ATTEMPT_COUNT_TAG("reconnect.attempt.count", false),
+
+    /**
      * Connection id generator - Generates unique ids to identify the clients.
      */
     CONNECTION_ID_GENERATOR("connection.id.generator", false),
@@ -79,6 +84,11 @@ public enum ConfigParameter
      * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
      */
     FQ_TIMEOUT_TIME_TAG("time.timeout", true),
+
+    /**
+     * Reconnect attempts count - Number of reconnect attempts to execute
+     */
+    FQ_RECONNECT_ATTEMPT_COUNT_TAG("reconnect.attempt.count", true),
 
     /**
      * Connection id generator - Generates unique ids to identify the clients.

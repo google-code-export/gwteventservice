@@ -57,7 +57,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         ClientLoggerFactory.getClientLogger().attach(myClientLogger);
 
         myRemoteEventConnector = DefaultRemoteEventServiceFactoryTestMode.getInstance().getGWTRemoteEventConnector(myEventServiceAsyncMock);
-        myRemoteEventConnector.initListen(new DefaultClientConnector());
+        myRemoteEventConnector.initListen(new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "dummy-connection-id", DefaultClientConnector.class.getName()));
     }
 
     public void tearDown() {
@@ -89,7 +89,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
     public void testInit_2() {
         assertFalse(myRemoteEventConnector.isActive());
 
-        mockInit(new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, "dummy-connection-id", DefaultClientConnector.class.getName()));
+        mockInit(new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "dummy-connection-id", DefaultClientConnector.class.getName()));
 
         //init connector
         EasyMock.replay(myEventServiceAsyncMock);
@@ -147,23 +147,11 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
 
     public void testActivate_Error() {
         assertFalse(myRemoteEventConnector.isActive());
-        myRemoteEventConnector.initListen(null);
+        try {
+            myRemoteEventConnector.initListen(null);
+            fail("No configuration was provided");
+        } catch(RemoteEventServiceRuntimeException e) {}
         assertFalse(myRemoteEventConnector.isActive());
-
-        mockRegister(TEST_DOMAIN);
-
-        final TestEventNotification theEventNotification = new TestEventNotification();
-
-        //activate connector
-        EasyMock.replay(myEventServiceAsyncMock);
-
-                myRemoteEventConnector.activate(TEST_DOMAIN, null, theEventNotification, null); //an catched exception occurs (it is necessary to catch it in the matcher)
-
-        EasyMock.verify(myEventServiceAsyncMock);
-        EasyMock.reset(myEventServiceAsyncMock);
-
-        //check activation
-        assertFalse(myRemoteEventConnector.isActive()); //false because an exception is occurred while the activation / listening
     }
 
     public void testActivate_Error_2() {
@@ -192,7 +180,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         myClientLogger.clearLogMessages();
 
         try {
-            myRemoteEventConnector.initListen(new DefaultClientConnector());
+            myRemoteEventConnector.initListen(new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "dummy-connection-id", DefaultClientConnector.class.getName()));
             fail("An exception was expected, because it was tried to change the connection strategy after the start of listening!");
         } catch(RemoteEventServiceRuntimeException e) {
             assertTrue(e.getMessage().contains("connection"));
