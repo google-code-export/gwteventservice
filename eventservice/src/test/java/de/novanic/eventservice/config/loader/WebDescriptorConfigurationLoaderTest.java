@@ -20,6 +20,7 @@
 package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
+import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import junit.framework.TestCase;
@@ -45,6 +46,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(30000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(3), theConfiguration.getReconnectAttemptCount());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
@@ -61,12 +63,36 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals(Integer.valueOf(40000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(130000), theConfiguration.getTimeoutTime());
+        assertEquals(Integer.valueOf(1), theConfiguration.getReconnectAttemptCount());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
     }
-	
+
+    public void testLoad_IncompleteConfiguration() {
+        ServletConfigDummy theServletConfig = new ServletConfigDummy(true, false);
+        assertTrue(theServletConfig.removeParameter(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG));
+        assertTrue(theServletConfig.removeParameter(ConfigParameter.CONNECTION_ID_GENERATOR));
+        assertFalse(theServletConfig.removeParameter(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR)); //isn't already configured
+        assertTrue(theServletConfig.removeParameter(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR));
+        assertTrue(theServletConfig.removeParameter(ConfigParameter.CONNECTION_STRATEGY_ENCODING));
+
+        ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
+
+        assertTrue(theConfigurationLoader.isAvailable());
+
+        EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
+        assertEquals(Integer.valueOf(30000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
+        assertNull(theConfiguration.getReconnectAttemptCount());
+        assertNull(theConfiguration.getConnectionIdGeneratorClassName());
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertNull(theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertNull(theConfiguration.getConnectionStrategyEncoding());
+    }
+
     public void testLoad_Error() {
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(null);
 

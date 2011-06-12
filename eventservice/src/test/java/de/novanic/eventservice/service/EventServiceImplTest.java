@@ -939,6 +939,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
             myParameterMap.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), String.valueOf(40000));
             myParameterMap.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), String.valueOf(5000));
             myParameterMap.put(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), String.valueOf(120000));
+            myParameterMap.put(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG.declaration(), String.valueOf(2));
             myParameterMap.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), StreamingServerConnector.class.getName());
             if(aConnectionIdGeneratorClassName != null) {
                 myParameterMap.put(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), aConnectionIdGeneratorClassName);

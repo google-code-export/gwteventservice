@@ -46,11 +46,11 @@ public interface RemoteEventConnector
     void init(AsyncCallback<EventServiceConfigurationTransferable> aCallback);
 
     /**
-     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} from the configuration.
      * That is required to specify the listen / connection strategy.
-     * @param aConnectionStrategyClientConnector {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} which implements the listen method
+     * @param aConfiguration configuration
      */
-    void initListen(ConnectionStrategyClientConnector aConnectionStrategyClientConnector);
+    ConnectionStrategyClientConnector initListen(EventServiceConfigurationTransferable aConfiguration);
 
     /**
      * Activates the connector for the domain. An {@link de.novanic.eventservice.client.event.filter.EventFilter}

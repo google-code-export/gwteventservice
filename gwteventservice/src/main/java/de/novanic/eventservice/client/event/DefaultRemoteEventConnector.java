@@ -23,6 +23,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 
+import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.callback.AsyncCallbackWrapper;
 import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.event.listener.EventNotification;
@@ -48,21 +50,26 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
     private static final ClientLogger LOG = ClientLoggerFactory.getClientLogger();
 
     private boolean isActive;
+    private EventServiceConfigurationTransferable myConfiguration;
     private ConnectionStrategyClientConnector myConnectionStrategyClientConnector;
     private UnlistenEvent myUnlistenEvent;
     private int myErrorCount;
 
     /**
-     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector}.
+     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} from the configuration.
      * That is required to specify the listen / connection strategy. The connection strategy can't be changed, when the listening has already started / an listener was added.
-     * @param aConnectionStrategyClientConnector {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} which implements the listen method
+     * @param aConfiguration configuration
      */
-    public synchronized void initListen(ConnectionStrategyClientConnector aConnectionStrategyClientConnector) {
-        if(!isActive) {
-            myConnectionStrategyClientConnector = aConnectionStrategyClientConnector;
-        } else {
-            throw new RemoteEventServiceRuntimeException("It was tried to change the connection strategy after listening was started!");
+    public synchronized ConnectionStrategyClientConnector initListen(EventServiceConfigurationTransferable aConfiguration) {
+        if(isActive) {
+            throw new RemoteEventServiceRuntimeException("Invalid attempt to change the connection strategy after listening was started!");
         }
+        if(aConfiguration == null) {
+            throw new RemoteEventServiceRuntimeException("Invalid attempt to initialize the listening without a configuration!");
+        }
+        myConfiguration = aConfiguration;
+        ConfigurationTransferableDependentFactory theConfigDependentFactory = ConfigurationTransferableDependentFactory.getInstance(aConfiguration);
+        return (myConnectionStrategyClientConnector = theConfigDependentFactory.getConnectionStrategyClientConnector());
     }
 
     /**
@@ -184,7 +191,7 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
 
         public void onFailure(Throwable aThrowable) {
             LOG.error("Error on processing event!", aThrowable);
-            if(++myErrorCount > 2) {
+            if(++myErrorCount > myConfiguration.getReconnectAttemptCount()) {
                 fireUnlistenEvent(myEventNotification);
             } else {
                 LOG.log("Reconnecting after error...");

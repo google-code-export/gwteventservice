@@ -34,6 +34,7 @@ public class RemoteEventServiceConfigurationTransferable implements EventService
     private Integer myMinWaitingTime;
     private Integer myMaxWaitingTime;
     private Integer myTimeoutTime;
+    private Integer myReconnectAttemptCount;
     private String myConnectionId;
     private String myConnectionStrategyClientConnector;
 
@@ -47,14 +48,16 @@ public class RemoteEventServiceConfigurationTransferable implements EventService
      * @param aMinWaitingTime min waiting time before listen returns (in milliseconds)
      * @param aMaxWaitingTime max waiting time before listen returns, when no events recognized (in milliseconds)
      * @param aTimeoutTime timeout time for a listen cycle (in milliseconds)
+     * @param aReconnectAttemptCount number of reconnect attempts to execute
      * @param aConnectionId unique id to identify the client
      * @param aConnectionStrategyClientConnector class name of the configured connection strategy (client side part)
      */
-    public RemoteEventServiceConfigurationTransferable(int aMinWaitingTime, int aMaxWaitingTime, int aTimeoutTime, String aConnectionId,
-                                                       String aConnectionStrategyClientConnector) {
+    public RemoteEventServiceConfigurationTransferable(int aMinWaitingTime, int aMaxWaitingTime, int aTimeoutTime, int aReconnectAttemptCount,
+                                                       String aConnectionId, String aConnectionStrategyClientConnector) {
         myMinWaitingTime = aMinWaitingTime;
         myMaxWaitingTime = aMaxWaitingTime;
         myTimeoutTime = aTimeoutTime;
+        myReconnectAttemptCount = aReconnectAttemptCount;
         myConnectionId = aConnectionId;
         myConnectionStrategyClientConnector = aConnectionStrategyClientConnector;
     }
@@ -82,6 +85,14 @@ public class RemoteEventServiceConfigurationTransferable implements EventService
      */
     public Integer getTimeoutTime() {
         return myTimeoutTime;
+    }
+
+    /**
+     * Returns the number of reconnect attempts to execute.
+     * @return number of reconnect attempts
+     */
+    public Integer getReconnectAttemptCount() {
+        return myReconnectAttemptCount;
     }
 
     /**
@@ -119,6 +130,9 @@ public class RemoteEventServiceConfigurationTransferable implements EventService
         if(myMinWaitingTime != null ? !myMinWaitingTime.equals(theOther.myMinWaitingTime) : theOther.myMinWaitingTime != null) {
             return false;
         }
+        if(myReconnectAttemptCount != null ? !myReconnectAttemptCount.equals(theOther.myReconnectAttemptCount) : theOther.myReconnectAttemptCount != null) {
+            return false;
+        }
         if(myTimeoutTime != null ? !myTimeoutTime.equals(theOther.myTimeoutTime) : theOther.myTimeoutTime != null) {
             return false;
         }
@@ -129,6 +143,7 @@ public class RemoteEventServiceConfigurationTransferable implements EventService
         int theResult = myMinWaitingTime != null ? myMinWaitingTime.hashCode() : 0;
         theResult = 31 * theResult + (myMaxWaitingTime != null ? myMaxWaitingTime.hashCode() : 0);
         theResult = 31 * theResult + (myTimeoutTime != null ? myTimeoutTime.hashCode() : 0);
+        theResult = 31 * theResult + (myReconnectAttemptCount != null ? myReconnectAttemptCount.hashCode() : 0);
         theResult = 31 * theResult + (myConnectionId != null ? myConnectionId.hashCode() : 0);
         return theResult;
     }

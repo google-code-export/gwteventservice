@@ -19,6 +19,9 @@
  */
 package de.novanic.eventservice.clientmock;
 
+import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
+import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
+import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.*;
@@ -52,13 +55,14 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
     }
 
     public void testAddUnlistenListener_Local() {
-        mockInit();
+        final RemoteEventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 0, null, DefaultClientConnector.class.getName());
+        mockInit(theConfiguration);
 
         //caused by add Listener
         mockRegister(TEST_DOMAIN);
 
         //mock listen
-        mockListen(null, 4, new TestException());
+        mockListen(null, 2, new TestException()); //reconnect is configured to zero reconnect attempts. The reconnect attempts are executed, because an exception is simulated
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
         final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
@@ -90,13 +94,14 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
     }
 
     public void testAddUnlistenListener_Local_2() {
-        mockInit();
+        final RemoteEventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 0, null, DefaultClientConnector.class.getName());
+        mockInit(theConfiguration);
 
         //caused by add Listener
         mockRegister(TEST_DOMAIN);
 
         //mock listen
-        mockListen(null, 4, new TestException());
+        mockListen(null, 2, new TestException()); //reconnect is configured to zero reconnect attempts. The reconnect attempts are executed, because an exception is simulated
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
 
@@ -151,6 +156,79 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
 
             assertEquals(0, theUnlistenEventListener.getEventCount());
             assertEquals(0, theUnlistenEventListener.getEventCount(DefaultUnlistenEvent.class));
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+    }
+
+    public void testAddUnlistenListener_Local_Reconnect() {
+        mockInit();
+
+        //caused by add Listener
+        mockRegister(TEST_DOMAIN);
+
+        //mock listen
+        mockListen(null, 4, new TestException()); //reconnect is configured to 2 reconnect attempts. The reconnect attempts are executed, because an exception is simulated
+
+        final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
+        final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
+
+        EasyMock.replay(myEventServiceAsyncMock);
+            //add UnlistenListener
+            assertEquals(0, theUnlistenEventListener.getEventCount());
+
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, theUnlistenEventListener, theUnlistenEvent, null);
+            assertFalse(myRemoteEventService.isActive());
+
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
+            assertTrue(myRemoteEventService.isActive());
+
+            assertEquals(1, theUnlistenEventListener.getEventCount());
+            assertEquals(1, theUnlistenEventListener.getEventCount(DefaultUnlistenEvent.class));
+
+            final UnlistenEvent theUnlistenEventResult = (UnlistenEvent)theUnlistenEventListener.getEvents().get(0);
+            assertFalse(theUnlistenEventResult.isTimeout());
+            assertTrue(theUnlistenEventResult.isLocal());
+            assertEquals(1, theUnlistenEventResult.getDomains().size());
+            assertEquals(TEST_DOMAIN, theUnlistenEventResult.getDomains().iterator().next());
+            assertEquals("testUser", theUnlistenEventResult.getUserId());
+            assertEquals(theUnlistenEvent, theUnlistenEventResult);
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+    }
+
+    public void testAddUnlistenListener_Local_Reconnect_2() {
+        mockInit();
+
+        //caused by add Listener
+        mockRegister(TEST_DOMAIN);
+
+        //mock listen
+        mockListen(null, 4, new TestException()); //reconnect is configured to 2 reconnect attempts. The reconnect attempts are executed, because an exception is simulated
+
+        final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
+
+        EasyMock.replay(myEventServiceAsyncMock);
+            //add UnlistenListener
+            assertEquals(0, theUnlistenEventListener.getEventCount());
+
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addUnlistenListener(UnlistenEventListener.Scope.LOCAL, theUnlistenEventListener, null);
+            assertFalse(myRemoteEventService.isActive());
+
+            assertFalse(myRemoteEventService.isActive());
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
+            assertTrue(myRemoteEventService.isActive());
+
+            assertEquals(1, theUnlistenEventListener.getEventCount());
+            assertEquals(1, theUnlistenEventListener.getEventCount(DefaultUnlistenEvent.class));
+
+            final UnlistenEvent theUnlistenEventResult = (UnlistenEvent)theUnlistenEventListener.getEvents().get(0);
+            assertFalse(theUnlistenEventResult.isTimeout());
+            assertTrue(theUnlistenEventResult.isLocal());
+            assertNull(theUnlistenEventResult.getDomains());
+            assertNull(theUnlistenEventResult.getUserId());
         EasyMock.verify(myEventServiceAsyncMock);
         EasyMock.reset(myEventServiceAsyncMock);
     }

@@ -20,9 +20,7 @@
 package de.novanic.eventservice.client.event;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
-import de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import de.novanic.eventservice.client.event.command.InitEventServiceCommand;
@@ -115,9 +113,7 @@ public abstract class RemoteEventServiceAccessor
          * @param aConfiguration configuration for the client side
          */
         public void onSuccess(EventServiceConfigurationTransferable aConfiguration) {
-            ConfigurationTransferableDependentFactory theConfigDependentFactory = ConfigurationTransferableDependentFactory.getInstance(aConfiguration);
-            ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigDependentFactory.getConnectionStrategyClientConnector();
-            getRemoteEventConnector().initListen(theConnectionStrategyClientConnector);
+            getRemoteEventConnector().initListen(aConfiguration);
             finishFirstCall();
         }
 

@@ -47,7 +47,7 @@ public class EventServiceAsyncSuccessDummy implements EventServiceAsync, Service
     private String myServiceURL = "dummyurl";
 
     public void initEventService(AsyncCallback<EventServiceConfigurationTransferable> aCallback) {
-        aCallback.onSuccess(new RemoteEventServiceConfigurationTransferable(0, 0, 99999, "12345", null));
+        aCallback.onSuccess(new RemoteEventServiceConfigurationTransferable(0, 0, 99999, 2, "12345", null));
     }
 
     public void register(Domain aDomain, AsyncCallback<Void> aCallback) {

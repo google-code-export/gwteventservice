@@ -46,6 +46,7 @@ public class ServletConfigDummy implements ServletConfig
                 myInitParameters.put(ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration(), "40000");
                 myInitParameters.put(ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration(), "001");
                 myInitParameters.put(ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration(), "130000");
+                myInitParameters.put(ConfigParameter.FQ_RECONNECT_ATTEMPT_COUNT_TAG.declaration(), "1");
                 myInitParameters.put(ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration(), SessionConnectionIdGenerator.class.getName());
                 myInitParameters.put(ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), LongPollingServerConnector.class.getName());
                 myInitParameters.put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING.declaration(), "utf-8");
@@ -53,6 +54,7 @@ public class ServletConfigDummy implements ServletConfig
                 myInitParameters.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), "30000");
                 myInitParameters.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), "000");
                 myInitParameters.put(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), "120000");
+                myInitParameters.put(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG.declaration(), "3");
                 myInitParameters.put(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), SessionConnectionIdGenerator.class.getName());
                 myInitParameters.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), LongPollingServerConnector.class.getName());
                 myInitParameters.put(ConfigParameter.CONNECTION_STRATEGY_ENCODING.declaration(), "iso-8859-1");
@@ -74,5 +76,9 @@ public class ServletConfigDummy implements ServletConfig
 
     public Enumeration getInitParameterNames() {
         return Collections.enumeration(myInitParameters.keySet());
+    }
+
+    public boolean removeParameter(ConfigParameter aParameter) {
+        return myInitParameters.remove(aParameter.declaration()) != null;
     }
 }

@@ -120,13 +120,15 @@ public class PropertyConfigurationLoader implements ConfigurationLoader
         final Integer theMaxWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MAX_WAITING_TIME_TAG, ConfigParameter.MAX_WAITING_TIME_TAG));
         final Integer theMinWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MIN_WAITING_TIME_TAG, ConfigParameter.MIN_WAITING_TIME_TAG));
         final Integer theTimeoutTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_TIMEOUT_TIME_TAG, ConfigParameter.TIMEOUT_TIME_TAG));
+        final Integer theReconnectAttemptCount = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_RECONNECT_ATTEMPT_COUNT_TAG, ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG));
         final String theConnectionIdGenerator = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_ID_GENERATOR, ConfigParameter.CONNECTION_ID_GENERATOR);
         final String theConnectionStrategyClientConnector = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR, ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR);
         final String theConnectionStrategyServerConnector = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR, ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR);
         final String theConnectionStrategyEncoding = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, ConfigParameter.CONNECTION_STRATEGY_ENCODING);
 
-        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime, theConnectionIdGenerator,
-                theConnectionStrategyClientConnector, theConnectionStrategyServerConnector, theConnectionStrategyEncoding);
+        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime,
+                theReconnectAttemptCount,
+                theConnectionIdGenerator, theConnectionStrategyClientConnector, theConnectionStrategyServerConnector, theConnectionStrategyEncoding);
     }
 
     /**

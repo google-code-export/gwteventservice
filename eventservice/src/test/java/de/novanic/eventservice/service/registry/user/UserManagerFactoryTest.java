@@ -124,6 +124,10 @@ public class UserManagerFactoryTest extends TestCase
             return myTimeoutTime;
         }
 
+        public Integer getReconnectAttemptCount() {
+            return 0;
+        }
+
         public String getConnectionIdGeneratorClassName() {
             return SessionConnectionIdGeneratorTest.class.getName();
         }
