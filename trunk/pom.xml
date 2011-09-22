@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 	<version>1.2.0-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
-	<description></description>
+	<description>GWTEventService</description>
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License</name>
