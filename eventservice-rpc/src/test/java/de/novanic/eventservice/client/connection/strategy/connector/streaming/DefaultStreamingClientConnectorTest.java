@@ -65,6 +65,7 @@ public class DefaultStreamingClientConnectorTest extends TestCase
         theStreamingClientConnector.listen(theEventNotification, theDummyCallback);
 
         assertFalse("No cycle was expected! Therefore the callback shouldn't be used!", theDummyCallback.isOnSuccessCalled);
+        assertNull(theDummyCallback.myReceivedEvents);
         assertSame(theStreamingClientConnector.myDummyEvent, theEventNotification.myNotifiedEvent);
     }
 
@@ -78,6 +79,7 @@ public class DefaultStreamingClientConnectorTest extends TestCase
         theStreamingClientConnector.listen(theEventNotification, theDummyCallback);
 
         assertTrue("A cycle was expected, because the " + DummyStreamingClientConnectorCycle.class.getName() + " should send a cycle tag!", theDummyCallback.isOnSuccessCalled);
+        assertTrue("No events are expected from the callback, because the events are processed directly at streaming, so no events should be received/processed with the connection cycle.", theDummyCallback.myReceivedEvents.isEmpty());
     }
 
     private class DummyStreamingClientConnector extends DefaultStreamingClientConnector
@@ -118,8 +120,10 @@ public class DefaultStreamingClientConnectorTest extends TestCase
     private class DummyCallback implements AsyncCallback<List<DomainEvent>>
     {
         private boolean isOnSuccessCalled;
+        private List<DomainEvent> myReceivedEvents;
 
         public void onSuccess(List<DomainEvent> aDomainEvents) {
+            myReceivedEvents = aDomainEvents;
             isOnSuccessCalled = true;
         }
 

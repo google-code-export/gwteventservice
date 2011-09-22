@@ -48,7 +48,6 @@ public abstract class DefaultStreamingClientConnector implements ConnectionStrat
 	protected static final String CYCLE_TAG = "cycle";
 
     private EventNotification myEventNotification;
-    private List<DomainEvent> myDomainEvents;
     private AsyncCallback<List<DomainEvent>> myCallback;
     private boolean isInitialized;
 
@@ -89,24 +88,22 @@ public abstract class DefaultStreamingClientConnector implements ConnectionStrat
     public void listen(EventNotification anEventNotification, AsyncCallback<List<DomainEvent>> aCallback) {
         myEventNotification = anEventNotification;
         myCallback = aCallback;
-        myDomainEvents = new ArrayList<DomainEvent>();
         listen();
     }
 
     /**
      * That method can be used by a concrete implementation to sent received events. It de-serializes the event
      * and notifies the callback and the {@link de.novanic.eventservice.client.event.listener.EventNotification} about the occurred
-     * event, itself. The callback is notified about events when the cycle ({@link de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnector#CYCLE_TAG})
-     * is triggered.
+     * event, itself. The callback isn't notified about events when the cycle ({@link de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnector#CYCLE_TAG})
+     * is triggered, because the events were already processed to the EventNotification before.
      * @param anEvent event or cycle tag ({@link de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnector#CYCLE_TAG})
      */
     public void receiveEvent(String anEvent) {
     	if(CYCLE_TAG.equals(anEvent)) {
-    		myCallback.onSuccess(myDomainEvents);
+    		myCallback.onSuccess(new ArrayList<DomainEvent>(0));
     	} else {
             DomainEvent theDeserializedEvent = deserializeEvent(anEvent);
             myEventNotification.onNotify(theDeserializedEvent);
-            myDomainEvents.add(theDeserializedEvent);
     	}
     }
 
