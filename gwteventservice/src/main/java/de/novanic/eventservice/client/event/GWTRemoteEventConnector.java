@@ -63,6 +63,7 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
         myEventService.initEventService(new AsyncCallbackWrapper<EventServiceConfigurationTransferable>(aCallback) {
             public void onSuccess(EventServiceConfigurationTransferable anEventServiceConfigurationTransferable) {
                 myEventService = refreshEventService(anEventServiceConfigurationTransferable.getConnectionId());
+                refreshConnectionStrategyClientConnector(anEventServiceConfigurationTransferable, myEventService);
                 super.onSuccess(anEventServiceConfigurationTransferable);
             }
         });
@@ -73,11 +74,26 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
      * That is required to specify the listen / connection strategy. The connection strategy can't be changed, when the listening has already started / an listener was added.
      * That implementation initializes the connection strategy with the {@link de.novanic.eventservice.client.event.service.EventService}.
      * @param aConfiguration configuration
+     * @return initialized connection strategy connector
      */
     public ConnectionStrategyClientConnector initListen(EventServiceConfigurationTransferable aConfiguration) {
+        return initListen(aConfiguration, myEventService, false);
+    }
+
+    /**
+     * Initializes the listen method implementation with a {@link de.novanic.eventservice.client.connection.strategy.connector.ConnectionStrategyClientConnector} from the configuration.
+     * That is required to specify the listen / connection strategy. The connection strategy can't be changed, when the listening has already started / an listener was added.
+     * That implementation initializes the connection strategy with the {@link de.novanic.eventservice.client.event.service.EventService}.
+     * @param aConfiguration configuration
+     * @param anEventService event service (required for the connection strategy)
+     * @param isReinitialize decides if the initialization (init method) of the connection strategy connector is also executed when the connection strategy connector is already initialized
+     * (required for refreshes).
+     * @return initialized connection strategy connector
+     */
+    private ConnectionStrategyClientConnector initListen(EventServiceConfigurationTransferable aConfiguration, EventServiceAsync anEventService, boolean isReinitialize) {
         ConnectionStrategyClientConnector theConnectionStrategyClientConnector = super.initListen(aConfiguration);
-        if(theConnectionStrategyClientConnector != null && !theConnectionStrategyClientConnector.isInitialized()) {
-            theConnectionStrategyClientConnector.init(myEventService);
+        if(theConnectionStrategyClientConnector != null && (isReinitialize || !theConnectionStrategyClientConnector.isInitialized())) {
+            theConnectionStrategyClientConnector.init(anEventService);
         }
         return theConnectionStrategyClientConnector;
     }
@@ -176,5 +192,15 @@ public class GWTRemoteEventConnector extends DefaultRemoteEventConnector
             return theEventService;
         }
         return myEventService;
+    }
+
+    /**
+     * Refreshes or creates the connection strategy connector.
+     * @param aConfiguration configuration
+     * @param anEventService event service (required for the connection strategy)
+     * @return initialized connection strategy connector
+     */
+    private ConnectionStrategyClientConnector refreshConnectionStrategyClientConnector(EventServiceConfigurationTransferable aConfiguration, EventServiceAsync anEventService) {
+        return initListen(aConfiguration, anEventService, true);
     }
 }
