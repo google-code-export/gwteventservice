@@ -75,7 +75,7 @@
 			<includes>
 				<include>demo/pom.xml</include>
 				<include>demo/conf/**/*</include>
-				<include>demo/**/src/**/*</include>
+				<include>demo/**/src/main/**/*</include>
 				<include>demo/**/pom.xml</include>
 			</includes>
 		</fileSet>
