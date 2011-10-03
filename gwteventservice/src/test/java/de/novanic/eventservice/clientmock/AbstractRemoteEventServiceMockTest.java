@@ -131,32 +131,30 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     }
 
     protected void mockListen(List<DomainEvent> anEvents, int aLoops) {
-        for(int i = 0; i < aLoops; i++) {
+        int i = 0;
+        do {
             myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
             EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<List<DomainEvent>>(anEvents));
-        }
-        if(anEvents != null) {
+        } while(++i < aLoops);
+
+        if(aLoops > 0 && anEvents != null) {
             myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
         }
     }
 
     protected void mockListen(List<DomainEvent> anEvents, int aLoops, Throwable aTestException) {
-        if(aTestException != null && aLoops == 1) {
+        int i = 0;
+        do {
             myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
             EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aTestException));
-        } else {
-            for(int i = 0; i < aLoops - 1; i++) {//TODO test for TestException != null instead of using -1
-                myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
-                EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aTestException));
-            }
+        } while(++i < aLoops);
 
-            //When no events are available, there will not follow a successful call.
-            if(anEvents != null && !anEvents.isEmpty()) {
-                myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
-                EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer(anEvents));
+        //When no events are available, there will not follow a successful call.
+        if(aLoops > 0 && anEvents != null && !anEvents.isEmpty()) {
+            myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
+            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer(anEvents));
 
-                myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
-            }
+            myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
         }
     }
 
