@@ -19,6 +19,7 @@
  */
 package de.novanic.eventservice.clientmock;
 
+import com.google.gwt.user.client.rpc.StatusCodeException;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
@@ -1461,6 +1462,59 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
         assertEqualsActiveDomains();
         assertContainsListeners(TEST_DOMAIN, 0);
+    }
+
+    public void testListen_Error_3() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN);
+
+        //caused by callback of register
+        List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
+        theEvents.add(new DummyDomainEvent(new DummyEvent(), TEST_DOMAIN));
+        mockListen(theEvents, 1, new StatusCodeException(0, ""));
+
+        EasyMock.replay(myEventServiceAsyncMock);
+            assertFalse(myRemoteEventService.isActive());
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
+            myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
+            assertTrue(myRemoteEventService.isActive());
+
+            assertEquals(0, theRemoteListener.getEventCount(DummyEvent.class)); //no reconnect will be executed due to status code 0
+            assertTrue(myRemoteEventService.isActive());
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
+    }
+
+    public void testListen_Error_4() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN);
+
+        //caused by callback of register
+        List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
+        theEvents.add(new DummyDomainEvent(new DummyEvent(), TEST_DOMAIN));
+        mockListen(theEvents, 2, new StatusCodeException(500, ""));
+        //one reconnect attempt and one successful call
+
+        EasyMock.replay(myEventServiceAsyncMock);
+            assertFalse(myRemoteEventService.isActive());
+            final EventListenerTestMode theRemoteListener = new EventListenerTestMode();
+            myRemoteEventService.addListener(TEST_DOMAIN, theRemoteListener);
+            assertTrue(myRemoteEventService.isActive());
+
+            assertEquals(1, theRemoteListener.getEventCount(DummyEvent.class));
+            assertTrue(myRemoteEventService.isActive());
+        EasyMock.verify(myEventServiceAsyncMock);
+        EasyMock.reset(myEventServiceAsyncMock);
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 1);
     }
 
     public void testAddEvent() {

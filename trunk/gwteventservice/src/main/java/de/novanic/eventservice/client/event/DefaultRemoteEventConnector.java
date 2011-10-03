@@ -23,6 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.StatusCodeException;
 import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.callback.AsyncCallbackWrapper;
@@ -190,12 +191,19 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
         }
 
         public void onFailure(Throwable aThrowable) {
-            LOG.error("Error on processing event!", aThrowable);
-            if(++myErrorCount > myConfiguration.getReconnectAttemptCount()) {
-                fireUnlistenEvent(myEventNotification);
+            if((aThrowable instanceof StatusCodeException) && !isValidStatusCode((StatusCodeException)aThrowable)) {
+                //Status code 0 is not handled as an error. Some browsers send this status code when the user leaves the site/application.
+                //The module is unloaded in this case and it has no negative effects to the application. Therefore it isn't a notable error.
+                LOG.log("The current connection was terminated with status code " + ((StatusCodeException)aThrowable).getStatusCode() + '.');
+                fireUnlistenEvent(myEventNotification); //client side clean-up
             } else {
-                LOG.log("Reconnecting after error...");
-                callListen();
+                LOG.error("Error on processing event!", aThrowable);
+                if(++myErrorCount > myConfiguration.getReconnectAttemptCount()) {
+                    fireUnlistenEvent(myEventNotification); //client side clean-up
+                } else {
+                    LOG.log("Reconnecting after error...");
+                    callListen();
+                }
             }
         }
 
@@ -227,6 +235,10 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
                 //after getting an event, register itself to listen for the next events
                 myConnectionStrategyClientConnector.listen(myEventNotification, this);
             }
+        }
+
+        private boolean isValidStatusCode(StatusCodeException aStatusCodeException) {
+            return aStatusCodeException.getStatusCode() != 0;
         }
     }
 }
