@@ -19,7 +19,6 @@
  */
 package de.novanic.eventservice.clientmock;
 
-import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
@@ -62,7 +61,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         mockRegister(TEST_DOMAIN);
 
         //mock listen
-        mockListen(null, 2, new TestException()); //reconnect is configured to zero reconnect attempts. The reconnect attempts are executed, because an exception is simulated
+        mockListen(null, 1, new TestException()); //reconnect is configured to zero reconnect attempts. The reconnect attempts are executed, because an exception is simulated
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
         final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
@@ -101,7 +100,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         mockRegister(TEST_DOMAIN);
 
         //mock listen
-        mockListen(null, 2, new TestException()); //reconnect is configured to zero reconnect attempts. The reconnect attempts are executed, because an exception is simulated
+        mockListen(null, 1, new TestException()); //reconnect is configured to zero reconnect attempts. The reconnect attempts are executed, because an exception is simulated
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
 
@@ -138,7 +137,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         //mock listen
         List<DomainEvent> theDomainEvents = new ArrayList<DomainEvent>();
         theDomainEvents.add(new DefaultDomainEvent(new Event() {}));
-        mockListen(theDomainEvents, 3, new TestException());
+        mockListen(theDomainEvents, 2, new TestException());
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
 
@@ -167,7 +166,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         mockRegister(TEST_DOMAIN);
 
         //mock listen
-        mockListen(null, 4, new TestException()); //reconnect is configured to 2 reconnect attempts. The reconnect attempts are executed, because an exception is simulated
+        mockListen(null, 3, new TestException()); //reconnect is configured to 2 reconnect attempts. The reconnect attempts are executed, because an exception is simulated
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
         final UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(TEST_DOMAIN)), "testUser", false);
@@ -205,7 +204,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         mockRegister(TEST_DOMAIN);
 
         //mock listen
-        mockListen(null, 4, new TestException()); //reconnect is configured to 2 reconnect attempts. The reconnect attempts are executed, because an exception is simulated
+        mockListen(null, 3, new TestException()); //reconnect is configured to 2 reconnect attempts. The reconnect attempts are executed, because an exception is simulated
 
         final UnlistenEventListenerTestMode theUnlistenEventListener = new UnlistenEventListenerTestMode();
 

@@ -1418,7 +1418,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         //caused by callback of register
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
         theEvents.add(new DummyDomainEvent(new DummyEvent(), TEST_DOMAIN));
-        mockListen(theEvents, 3, new TestException());
+        mockListen(theEvents, 2, new TestException());
         //two reconnect attempts and one successful call
 
         EasyMock.replay(myEventServiceAsyncMock);
@@ -1473,7 +1473,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         //caused by callback of register
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
         theEvents.add(new DummyDomainEvent(new DummyEvent(), TEST_DOMAIN));
-        mockListen(theEvents, 1, new StatusCodeException(0, ""));
+        mockListen(theEvents, 0, new StatusCodeException(0, ""));
 
         EasyMock.replay(myEventServiceAsyncMock);
             assertFalse(myRemoteEventService.isActive());
@@ -1499,7 +1499,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         //caused by callback of register
         List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
         theEvents.add(new DummyDomainEvent(new DummyEvent(), TEST_DOMAIN));
-        mockListen(theEvents, 2, new StatusCodeException(500, ""));
+        mockListen(theEvents, 1, new StatusCodeException(500, ""));
         //one reconnect attempt and one successful call
 
         EasyMock.replay(myEventServiceAsyncMock);
