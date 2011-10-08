@@ -190,8 +190,13 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
             myEventNotification = anEventNotification;
         }
 
+        /**
+         * When an error occurs while listening for events, reconnect attempts are started (when configured) and an unlisten event
+         * will be processed when the connection error could not be solved (to clean-up the client side).
+         * @param aThrowable
+         */
         public void onFailure(Throwable aThrowable) {
-            if((aThrowable instanceof StatusCodeException) && !isValidStatusCode((StatusCodeException)aThrowable)) {
+            if((aThrowable instanceof StatusCodeException) && !isNotableStatusCode((StatusCodeException)aThrowable)) {
                 //Status code 0 is not handled as an error. Some browsers send this status code when the user leaves the site/application.
                 //The module is unloaded in this case and it has no negative effects to the application. Therefore it isn't a notable error.
                 LOG.log("The current connection was terminated with status code " + ((StatusCodeException)aThrowable).getStatusCode() + '.');
@@ -237,7 +242,13 @@ public abstract class DefaultRemoteEventConnector implements RemoteEventConnecto
             }
         }
 
-        private boolean isValidStatusCode(StatusCodeException aStatusCodeException) {
+        /**
+         * Checks if the status code is a valid error code. For example status code 0 is rather an informational status code
+         * instead of a notable error status code.
+         * @param aStatusCodeException {@link StatusCodeException} which occurred with the status code
+         * @return true when it is a notable error status code, otherwise false
+         */
+        private boolean isNotableStatusCode(StatusCodeException aStatusCodeException) {
             return aStatusCodeException.getStatusCode() != 0;
         }
     }
