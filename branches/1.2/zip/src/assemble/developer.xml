@@ -65,7 +65,6 @@
 		<fileSet>
 			<directory>../</directory>
 			<includes>
-				<include>doc/diagram/*</include>
 				<include>doc/logo.png</include>
 				<include>doc/Manual.pdf</include>
 			</includes>
