@@ -1,0 +1,183 @@
+<html>
+	<head>
+		<title>GWTEventService - Release-Notes</title>
+		<link rel="stylesheet" type="text/css" href="./doc/style.css">
+	</head>
+	<body>
+		<table width="99%">
+			<tr>
+				<td width="33%">
+					<a href="http://gwteventservice.googlecode.com"><img src="./doc/logo.png"/></a>
+				</td>
+				<td width="33%">
+					<center><h3>GWTEventService - Release Notes</h3></center>
+				</td>
+				<td width="33%"></td>
+			</tr>
+		</table>
+		<hr>
+		<h3>Features / Advantages</h3>
+		<ul>
+			<li>Encapsulation of the client-server communication</li>
+			<li>High-level API with listeners and events</li>
+			<li>Easy to use</li>
+			<li>Only one open connection for event listening</li>
+			<li>Reduction of server calls</li>
+			<li>Reduction of connection peaks</li>
+			<li>Events are returned directly when the event is occurred (instead of polling)</li>
+			<li>Events are bundled to reduce server calls</li>
+			<li>Based on the GWT-RPC mechanism</li>
+			<li>Automatic timeout recognition and handling</li>
+			<li>Extensible architecture</li>
+		</ul>
+		
+		<table width="99%">
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.2</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Support for multiple / shared sessions</li>
+							<li>Support for streaming added (alternative to long-polling)</li>
+							<li>Support for individual service mappings (for example required for GWT-RPC-Spring)</li>
+							<li>Support for automatic reconnect added (automatic client side reconnect when the connection is lost)</li>
+							<li>Support for optional configuration parameters added</li>
+							<li>Support for various connection strategies added (server and client side)</li>
+							<li>Possibility to add events directly from the client side</li>
+							<li>Introduction of a user-specific domain (explicit domain additional to the implicit NULL-domain)</li>
+							<li>Intoduction of the ClientHandler to transfer the connection-/client-id to custom server-side services</li>
+							<li>Configuration access possibilities at the client side implemented (the server side defined configurations can now be accessed at the client side)</li>
+							<li>Client side timeout listener extension realized (when the request to the server fails the callback and the UnlistenListener get informed)</li>
+							<li>Introduction of Maven as the new build system and new project stucture (Maven conventions)</li>
+							<li>Logging improvements</li>
+							<li>Some code and structure refactorings</li>
+							<li>Bugfix: One possible concurrency issue fixed (rare problem)</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=17">Issue17</a>: UserActivityScheduler is now a daemon thread. That makes sense and solves a freeze issue with Tomcat on Ubuntu (9.10).</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=19">Issue19</a>: Support for Automatic reconnect (see above)</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=24">Issue24</a>: An unlisten call for the NULL-domain caused a deactivation (complete unlisten) even if the user is still registered for another domain.</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=26">Issue26</a>: Support for individual service mapping added (see above)</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=27">Issue27</a>: Exception solved which occurred when all listeners were removed, a session-timeout occurred and after that a new listener was registered.</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=30">Issue30</a>: Blocked request without GWT permutation header (rare problem)</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=32">Issue32</a>: Status code 0 which is sent from some browsers will now be handled correctly.</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>		
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.1.1</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=14">Issue14</a>: Compatibility for JDK 1.5 / 5.0 ensured<br>
+							The end of service life of JDK 1.5 / 5.0 was actually reached on 2009-11-03 (see http://java.sun.com/javase/downloads/index_jdk5.jsp), but some productive environments may not be migrated to JDK 1.6 / 6.0 at the time. The compatibility for JDK 1.5 / 5.0 should therefore be ensured.</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=16">Issue16</a>: Support for full-qualified configuration parameters added for the web descriptor configuration.</li>
+							<li>Small performance optimizations</li>
+							<li>System requirements introduced (<a href="./system-requirements.html">system requirements</a>)</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.1</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Support for unlisten and timeout listening (new UnlistenEventListener) added</li>
+							<li>Support for web deployment descriptor configurations added</li>
+							<li>EventFilter enhancements</li>
+							<li>Support for GWT 2.0 added (for the demo projects, the core is compatible with GWT 2.0 since version 1.0)</li>
+							<li>Revised configuration loading</li>
+							<li>Concurrency optimizations</li>
+							<li>Multi-threading improvements</li>
+							<li>Platform refactoring</li>
+							<li>Logging improvements</li>
+							<li>New demo application "HelloGWTEventService"</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.0.2</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=6">Issue6</a>: The callback wasn't used when a listener is removed without a domain (domain-less listener)</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=7">Issue7</a>: Empty domains weren't removed automatically</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=8">Issue8</a>: Possible dead-lock when a user is registered and another user is concurrent deregistered</li>
+							<li>Improvements for domain-less usage</li>
+							<li>Concurrency optimizations</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.0.1</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Bugfix: Work-around to avoid multiple session creation (GWT issue 1826) when GWTEventService had to execute the first server call of the application</li>
+							<li>Bugfix: Client side multi-threading bug fixed, which could occur when a listener is removed while processing listen results</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=3">Issue3</a>: Chrome appeared as if the page never finishes loading when GWTEventService had to execute the first server call of the application</li>
+							<li>Client commands introduced to solve the problems described above (new interfaces ClientCommand and ClientCommandScheduler)</li>
+							<li>Some client side optimizations</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
+						<span class="version">GWTEventService 1.0 (Changes from 0.9 to 1.0)</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>Logging improved</li>
+							<li>Bug fixes</li>
+							<li>Some small improvements</li>
+							<li>No API changes compared to GWTEventService 0.9</li>
+							<li>Documentation completed</li>
+							<li>Build scripts updated</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+		</table>
+		
+		<hr>
+		<a href="http://gwteventservice.googlecode.com/">Project home (online)</a>
+	</body>
+</html>
