@@ -15,6 +15,12 @@
         <value>1.2.0-20111016.134750-1</value>
         <updated>20111016134750</updated>
       </snapshotVersion>
+      <snapshotVersion>
+        <classifier>core</classifier>
+        <extension>zip</extension>
+        <value>1.2.0-20111016.134750-1</value>
+        <updated>20111016134750</updated>
+      </snapshotVersion>
     </snapshotVersions>
   </versioning>
 </metadata>
