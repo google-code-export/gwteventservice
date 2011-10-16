@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.google.code.gwteventservice.demo.conversation</groupId>
+  <artifactId>conversation</artifactId>
+  <version>1.2.0-RC1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20111016.093308</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20111016093308</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.2.0-RC1-20111016.093308-1</value>
+        <updated>20111016093308</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
