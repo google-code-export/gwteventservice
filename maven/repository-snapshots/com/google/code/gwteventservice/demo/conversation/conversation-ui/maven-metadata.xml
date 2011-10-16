@@ -4,9 +4,9 @@
   <artifactId>conversation-ui</artifactId>
   <versioning>
     <versions>
-      <version>1.2.0-RC1-SNAPSHOT</version>
       <version>1.2.0-SNAPSHOT</version>
+      <version>1.2.0-RC1-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20111016125836</lastUpdated>
+    <lastUpdated>20111016134636</lastUpdated>
   </versioning>
 </metadata>
