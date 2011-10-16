@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.google.code.gwteventservice</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.0-RC1</version>
 	<name>${project.artifactId}</name>
 	<description>GWTEventService</description>
 	<licenses>
@@ -88,9 +87,9 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/trunk/</developerConnection>
-		<url>http://gwteventservice.googlecode.com/svn/trunk/</url>
+		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/tags/1.2.0-RC1</connection>
+		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/tags/1.2.0-RC1</developerConnection>
+		<url>http://gwteventservice.googlecode.com/svn/tags/1.2.0-RC1</url>
 	</scm>
 	<build>
 		<plugins>
