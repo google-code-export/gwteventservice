@@ -207,7 +207,7 @@
 		<site>
 			<id>googlecode</id>
 			<name>googlecode</name>
-			<url>svn:svn+https://gwteventservice.googlecode.com/svn/maven/site</url>
+			<url>svn:https://gwteventservice.googlecode.com/svn/maven/site</url>
 		</site>
 	</distributionManagement>
 	<mailingLists>
