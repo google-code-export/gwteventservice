@@ -21,6 +21,12 @@
         <value>1.2.0-RC1-20111016.093850-1</value>
         <updated>20111016093850</updated>
       </snapshotVersion>
+      <snapshotVersion>
+        <classifier>developer</classifier>
+        <extension>zip</extension>
+        <value>1.2.0-RC1-20111016.093850-1</value>
+        <updated>20111016093850</updated>
+      </snapshotVersion>
     </snapshotVersions>
   </versioning>
 </metadata>
