@@ -1,0 +1,3 @@
+Welcome to the Maven Site of GWTEventService "${project.name}"
+
+  ${project.description}
