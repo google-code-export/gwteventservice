@@ -4,7 +4,7 @@
 	<groupId>com.google.code.gwteventservice</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.2.0-RC1</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<description>GWTEventService</description>
 	<licenses>
@@ -87,9 +87,9 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/tags/1.2.0-RC1</connection>
-		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/tags/1.2.0-RC1</developerConnection>
-		<url>http://gwteventservice.googlecode.com/svn/tags/1.2.0-RC1</url>
+		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/branches/1.2/</connection>
+		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/branches/1.2/</developerConnection>
+		<url>http://gwteventservice.googlecode.com/svn/branches/1.2/</url>
 	</scm>
 	<build>
 		<plugins>
