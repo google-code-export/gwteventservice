@@ -1,4 +1,4 @@
-Here are some code examples to demonstrate the implementation of events and listeners. !UserJoinEvent and !UserLeaveEvent are subclasses of !GameUserEvent. Chapter 9.2 is referencing to a complete demo application using GWTEventService.
+Here are some code examples to demonstrate the implementation of events and listeners. !UserJoinEvent and !UserLeaveEvent are subclasses of !GameUserEvent.
 
 *!GameUserListener*
 {{{
