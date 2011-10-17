@@ -10,6 +10,7 @@ http://29539.webhosting15.1blu.de/gwteventservice/images/logo.png
  * Reduction of connection peaks
  * Events are returned directly when the event has occurred (instead of polling)
  * Events are bundled to reduce server calls
+ * Server-side event filtering to reduce server calls
  * Based on the GWT-RPC mechanism
  * Automatic timeout recognition and handling
  * Extensible architecture
