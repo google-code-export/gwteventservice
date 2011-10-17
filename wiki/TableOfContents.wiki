@@ -7,17 +7,6 @@
   # [DefineDomains Define your domains]
   # [WriteListenersAndEvents Write your listeners and events]
   # [ConnectionHandling Connection-Handling]
- # API - Overview
-  # API class diagram
-   # [ClassDiagramServerSide Server side]
-   # [ClassDiagramClientSide Client side]
-  # Polling compared to Comet / server-push
-   # [SequenceDiagramPolling Polling sequence diagram]
-   # [SequenceDiagramComet Comet / server-push sequence diagram]
- # [Deployment Deployment]
- # [GWTEventServiceChangeLog Changelog]
- # [http://29539.webhosting15.1blu.de/gwteventservice/roadmap.html RoadMap]
- # [Feedback Conclusion / Feedback]
  # [FAQ FAQ]
  # Appendix
   # [CodeExamples Code-Examples]
