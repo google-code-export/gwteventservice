@@ -8,6 +8,7 @@
 	<version>1.3.0-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<description>GWTEventService</description>
+	<url>http://gwteventservice.googlecode.com</url>
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License</name>
