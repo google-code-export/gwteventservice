@@ -9,15 +9,14 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <context-artifact name="conversation-ui:war exploded" />
       </configuration>
     </facet>
     <facet type="gwt" name="GWT">
       <configuration>
         <setting name="compilerMaxHeapSize" value="256" />
         <setting name="gwtScriptOutputStyle" value="DETAILED" />
+        <setting name="gwtSdkUrl" value="file://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.1.0/" />
         <setting name="gwtSdkType" value="maven" />
-        <setting name="gwtSdkUrl" value="file://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.0.3/" />
         <setting name="webFacet" value="Web" />
         <packaging>
           <module name="de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI" path="/de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI" />
@@ -46,12 +45,14 @@
     </orderEntry>
     <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.0.3" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.7" level="project" />
-    <orderEntry type="module" module-name="conversation-rpc" exported="" />
-    <orderEntry type="module" module-name="eventservice-rpc" exported="" />
-    <orderEntry type="module" module-name="conversation-server" exported="" scope="RUNTIME" />
-    <orderEntry type="module" module-name="eventservice" exported="" />
-    <orderEntry type="module" module-name="gwteventservice" exported="" />
+    <orderEntry type="module" module-name="conversation-rpc" />
+    <orderEntry type="module" module-name="eventservice-rpc" />
+    <orderEntry type="module" module-name="conversation-server" scope="RUNTIME" />
+    <orderEntry type="module" module-name="eventservice" />
+    <orderEntry type="module" module-name="gwteventservice" />
   </component>
 </module>
 

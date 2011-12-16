@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.google.code.gwteventservice.demo.conversation</groupId>
+		<groupId>de.novanic.gwteventservice.demo.conversation</groupId>
 		<artifactId>conversation</artifactId>
 		<version>1.3.0-SNAPSHOT</version>
 	</parent>
@@ -39,7 +39,7 @@
 			<artifactId>conversation-server</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.code.gwteventservice</groupId>
+			<groupId>de.novanic.gwteventservice</groupId>
 			<artifactId>gwteventservice</artifactId>
 			<version>${project.version}</version>
 		</dependency>
