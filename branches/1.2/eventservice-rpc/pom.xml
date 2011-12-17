@@ -10,7 +10,7 @@
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 	<dependencies>
-		<!--  GWT dependencies (from central repo) -->
+		<!--  GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>

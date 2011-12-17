@@ -45,6 +45,8 @@
 		</plugins>
 	</build>
 	<dependencies>
+        <!-- GWTEventService libraries / dependencies -->
+        <!-- GWTEventService - EventService-RPC (rpc / communication module) -->
 		<dependency>
 			<groupId>de.novanic.gwteventservice</groupId>
 			<artifactId>eventservice-rpc</artifactId>
@@ -62,7 +64,7 @@
 			<version>${project.version}</version>
 			<classifier>javadoc</classifier>
 		</dependency>
-		
+		<!-- GWTEventService - EventService (server-side module) -->
 		<dependency>
 			<groupId>de.novanic.gwteventservice</groupId>
 			<artifactId>eventservice</artifactId>
@@ -80,7 +82,7 @@
 			<version>${project.version}</version>
 			<classifier>javadoc</classifier>
 		</dependency>
-		
+		<!-- GWTEventService - GWTEventService (GWT module) -->
 		<dependency>
 			<groupId>de.novanic.gwteventservice</groupId>
 			<artifactId>gwteventservice</artifactId>
