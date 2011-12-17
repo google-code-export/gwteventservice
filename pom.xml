@@ -27,7 +27,7 @@
 	</issueManagement>
 	<dependencyManagement>
 		<dependencies>
-			<!--  GWT dependencies (from central repo) -->
+			<!--  GWT dependencies -->
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-servlet</artifactId>
@@ -104,20 +104,20 @@
             </activation>
             <build>
                 <plugins>
-                <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -216,13 +216,6 @@
 		<module>demo</module>
 		<module>zip</module>
 	</modules>
-	<!--
-		To use the distributionManagement you will need to add the following
-		to your ~/.m2/settings.xml: See:
-		http://maven.apache.org/settings.html#Servers <servers> <server>
-		<id>googlecode</id> <username>yourgooglecodeusername</username>
-		<password>yourgooglecodepassword</password> </server> </servers>
-	-->
 	<distributionManagement>
 		<repository>
 			<id>googlecode</id>
