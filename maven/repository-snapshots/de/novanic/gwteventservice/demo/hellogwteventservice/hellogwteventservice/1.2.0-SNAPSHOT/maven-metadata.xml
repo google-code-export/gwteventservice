@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>de.novanic.gwteventservice.demo.hellogwteventservice</groupId>
+  <artifactId>hellogwteventservice</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20111218.215535</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20111218215535</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>war</extension>
+        <value>1.2.0-20111218.215535-1</value>
+        <updated>20111218215535</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.2.0-20111218.215535-1</value>
+        <updated>20111218215535</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
