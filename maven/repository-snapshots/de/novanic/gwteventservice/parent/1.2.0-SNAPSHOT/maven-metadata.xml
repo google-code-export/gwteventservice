@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>de.novanic.gwteventservice</groupId>
+  <artifactId>parent</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20111218.214132</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20111218214132</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.2.0-20111218.214132-1</value>
+        <updated>20111218214132</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
