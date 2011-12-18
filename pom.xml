@@ -128,7 +128,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
+				<version>2.3.2</version>
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
@@ -150,12 +150,12 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.6.1</version>
+				<version>2.8</version>
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<links>
 						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-						<link>http://google-web-toolkit.googlecode.com/svn/javadoc/2.0</link>
+						<link>http://google-web-toolkit.googlecode.com/svn/javadoc/2.1</link>
 					</links>
 					<linksource>true</linksource>
 				</configuration>
@@ -172,7 +172,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.6</version>
+				<version>2.11</version>
 				<executions>
 					<execution>
 						<phase>integration-test</phase>
@@ -206,7 +206,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5.1</version>
 			</plugin>
 		</plugins>
 	</reporting>
