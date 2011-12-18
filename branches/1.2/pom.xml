@@ -39,6 +39,22 @@
 				<version>${gwt.version}</version>
 				<scope>provided</scope>
 			</dependency>
+            <!-- GWTEventService module dependencies -->
+			<dependency>
+				<groupId>de.novanic.gwteventservice</groupId>
+				<artifactId>eventservice-rpc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.novanic.gwteventservice</groupId>
+				<artifactId>eventservice</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.novanic.gwteventservice</groupId>
+				<artifactId>gwteventservice</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<!-- Test -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -69,21 +85,6 @@
 				<artifactId>gwt-dev</artifactId>
 				<version>${gwt.version}</version>				
 				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>de.novanic.gwteventservice</groupId>
-				<artifactId>eventservice-rpc</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.novanic.gwteventservice</groupId>
-				<artifactId>eventservice</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.novanic.gwteventservice</groupId>
-				<artifactId>gwteventservice</artifactId>
-				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
