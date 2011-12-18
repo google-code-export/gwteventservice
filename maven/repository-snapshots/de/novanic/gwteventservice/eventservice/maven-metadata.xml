@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>de.novanic.gwteventservice</groupId>
+  <artifactId>eventservice</artifactId>
+  <versioning>
+    <versions>
+      <version>1.2.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20111218214518</lastUpdated>
+  </versioning>
+</metadata>
