@@ -223,14 +223,14 @@
 	</modules>
 	<distributionManagement>
 		<repository>
-			<id>googlecode</id>
-			<name>googlecode</name>
-			<url>svn:https://gwteventservice.googlecode.com/svn/maven/repository</url>
+			<id>sonatype-nexus-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 		<snapshotRepository>
-			<id>googlecode</id>
-			<name>googlecode</name>
-			<url>svn:https://gwteventservice.googlecode.com/svn/maven/repository-snapshots</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<site>
 			<id>googlecode</id>
