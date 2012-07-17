@@ -28,16 +28,23 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Date;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 16.03.2010
  *         <br>Time: 20:40:34
  */
+@RunWith(JUnit4.class)
 public class LongPollingServerConnectorTest extends ConnectionStrategyServerConnectorTest
 {
+    @Test
     public void testListen() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -57,6 +64,7 @@ public class LongPollingServerConnectorTest extends ConnectionStrategyServerConn
         assertTrue(theListenResult.getDuration() < 500);
     }
 
+    @Test
     public void testListen_Min_Waiting() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -76,6 +84,7 @@ public class LongPollingServerConnectorTest extends ConnectionStrategyServerConn
         assertTrue(theListenResult.getDuration() > 400); //could be get a little bit lesser than the specified min. waiting time (sleep) caused by accuracies of the OS and JDK implementations. 
     }
 
+    @Test
     public void testListen_Min_Waiting_Interrupted() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -105,6 +114,7 @@ public class LongPollingServerConnectorTest extends ConnectionStrategyServerConn
         assertTrue((theEndTime.getTime() - theStartTime.getTime()) < 1000);
     }
 
+    @Test
     public void testListen_Max_Waiting() throws Exception {
         final UserInfo theUserInfo = new UserInfo("test_user");
 
@@ -120,10 +130,12 @@ public class LongPollingServerConnectorTest extends ConnectionStrategyServerConn
         assertTrue(theListenResult.getDuration() >= 400);
     }
 
+    @Test
     public void testGetEncoding() throws Exception {
         testGetEncoding(LongPollingServerConnector.class);
     }
 
+    @Test
     public void testGetEncoding_Error() throws Exception {
         testGetEncoding_Error(LongPollingServerConnector.class);
     }

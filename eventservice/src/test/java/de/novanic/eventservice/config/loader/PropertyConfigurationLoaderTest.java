@@ -28,33 +28,43 @@ import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.InputStream;
 import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 15:46:58
  */
+@RunWith(JUnit4.class)
 public class PropertyConfigurationLoaderTest extends EventServiceTestCase
 {
+    @Test
     public void testAvailable() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
         assertTrue(theConfigurationLoader.isAvailable());
     }
 
+    @Test
     public void testAvailable_2() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice_error.properties");
         assertTrue(theConfigurationLoader.isAvailable());
     }
 
+    @Test
     public void testAvailable_Error() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("notAnExistingFile");
         assertFalse(theConfigurationLoader.isAvailable());
         assertNull(theConfigurationLoader.load());
     }
 
+    @Test
     public void testLoad() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
         assertTrue(theConfigurationLoader.isAvailable());
@@ -69,6 +79,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionStrategyEncoding());
     }
 
+    @Test
     public void testLoad_2() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice.bak.properties");
         assertTrue(theConfigurationLoader.isAvailable());
@@ -84,6 +95,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
     }
 
+    @Test
     public void testLoad_3() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("empty.properties");
         assertTrue(theConfigurationLoader.isAvailable());
@@ -101,6 +113,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 
+    @Test
     public void testLoad_With_Defaults() {
         EventServiceConfiguration theConfiguration = EventServiceConfigurationFactory.getInstance().loadEventServiceConfiguration();
         assertEquals("Properties \"eventservice.properties\"", theConfiguration.getConfigDescription());
@@ -112,6 +125,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
     }
 
+    @Test
     public void testLoad_Failure() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice_error.properties");
         try {
@@ -120,6 +134,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testLoad_ClassLoaderError() throws Exception {
         ClassLoader theDefaultClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(new DummyClassLoader(new DummyInputStream()));
@@ -137,6 +152,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         }
     }
 
+    @Test
     public void testEquals() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
         ConfigurationLoader theConfigurationLoader_2 = new PropertyConfigurationLoader("eventservice_error.properties");

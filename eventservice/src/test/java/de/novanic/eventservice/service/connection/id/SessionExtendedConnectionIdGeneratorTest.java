@@ -22,19 +22,25 @@
 package de.novanic.eventservice.service.connection.id;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 29.05.2010
  *         <br>Time: 00:45:18
  */
-public class SessionExtendedConnectionIdGeneratorTest extends TestCase
+@RunWith(JUnit4.class)
+public class SessionExtendedConnectionIdGeneratorTest
 {
+    @Test
     public void testGenerateConnectionId() {
         final String theSessionId = "123b";
 
@@ -55,6 +61,7 @@ public class SessionExtendedConnectionIdGeneratorTest extends TestCase
         EasyMock.reset(theRequestMock, theSessionMock);
     }
 
+    @Test
     public void testGetConnectionId() {
         final String theSessionId = "123b";
 
@@ -86,6 +93,7 @@ public class SessionExtendedConnectionIdGeneratorTest extends TestCase
         EasyMock.reset(theSecondRequestMock);
     }
 
+    @Test
     public void testGetConnectionId_Error() {
         HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
 

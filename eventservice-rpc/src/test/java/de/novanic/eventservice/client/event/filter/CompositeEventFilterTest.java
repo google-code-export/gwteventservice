@@ -21,23 +21,30 @@
  */
 package de.novanic.eventservice.client.event.filter;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.Event;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 04.03.2009
  *         <br>Time: 23:22:17
  */
-public class CompositeEventFilterTest extends TestCase
+@RunWith(JUnit4.class)
+public class CompositeEventFilterTest
 {
+    @Test
     public void testMatch() {
         EventFilter theEventFilter = new DefaultEventFilter();
         assertFalse(theEventFilter.match(new Event() {}));
     }
 
+    @Test
     public void testAppend() {
         EventFilter theEventFilter_1 = new EventFilter() {
             public boolean match(Event anEvent) {
@@ -67,6 +74,7 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theAppendableEventFilter.match(new TestEvent(3)));
     }
 
+    @Test
     public void testAppend_2() {
         EventFilter theEventFilter_1 = new EventFilter() {
             public boolean match(Event anEvent) {
@@ -94,6 +102,7 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theAppendableEventFilter.match(new TestEvent(3)));
     }
 
+    @Test
     public void testAppend_3() {
         EventFilter theEventFilter_1 = new EventFilter() {
             public boolean match(Event anEvent) {
@@ -120,6 +129,7 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theAppendableEventFilter.match(new TestEvent(3)));
     }
 
+    @Test
     public void testDetach() {
         EventFilter theEventFilter_1 = new EventFilter() {
             public boolean match(Event anEvent) {
@@ -171,6 +181,7 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
     }
 
+    @Test
     public void testDetach_Empty() {
         EventFilter theEventFilter_1 = new EventFilter() {
             public boolean match(Event anEvent) {
@@ -182,6 +193,7 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theCompositeEventFilter.detach(theEventFilter_1));
     }
 
+    @Test
     public void testDetach_2() {
         EventFilter theEventFilter_1 = new EventFilter() {
             public boolean match(Event anEvent) {
@@ -225,6 +237,7 @@ public class CompositeEventFilterTest extends TestCase
         assertFalse(theAttachedEventFilters.contains(theEventFilter_3));
     }
 
+    @Test
     public void testDetach_2_Empty() {
         CompositeEventFilter theCompositeEventFilter = new DefaultCompositeEventFilter();
         assertFalse(theCompositeEventFilter.detach());

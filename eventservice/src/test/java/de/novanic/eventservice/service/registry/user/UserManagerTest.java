@@ -21,18 +21,24 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
-import junit.framework.TestCase;
-
 import java.util.Iterator;
 
 import de.novanic.eventservice.service.UserTimeoutListener;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 29.01.2009
  *         <br>Time: 20:15:01
  */
-public class UserManagerTest extends TestCase
+@RunWith(JUnit4.class)
+public class UserManagerTest
 {
     private static final String TEST_USER_ID = "test_user_id";
     private static final String TEST_USER_ID_2 = "test_user_id_2";
@@ -41,15 +47,18 @@ public class UserManagerTest extends TestCase
 
     private DefaultUserManager myUserManager;
 
+    @Before
     public void setUp() {
         myUserManager = new DefaultUserManager(99999);
     }
 
+    @After
     public void tearDown() {
         myUserManager.getUserActivityScheduler().stop();
         myUserManager.removeUsers();
     }
 
+    @Test
     public void testAddUser() {
         assertEquals(0, myUserManager.getUserCount());
 
@@ -60,6 +69,7 @@ public class UserManagerTest extends TestCase
         assertEquals(1, myUserManager.getUserCount());
     }
 
+    @Test
     public void testAddUser_2() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -74,6 +84,7 @@ public class UserManagerTest extends TestCase
         assertEquals(1, myUserManager.getUserCount());
     }
 
+    @Test
     public void testAddUser_3() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -101,6 +112,7 @@ public class UserManagerTest extends TestCase
         assertEquals(2, myUserManager.getUserCount());
     }
 
+    @Test
     public void testAddUser_4() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -123,6 +135,7 @@ public class UserManagerTest extends TestCase
         assertNotSame(theUserInfo, myUserManager.getUser(TEST_USER_ID_2));
     }
 
+    @Test
     public void testAddUser_Error() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -135,6 +148,7 @@ public class UserManagerTest extends TestCase
         assertEquals(0, myUserManager.getUserCount());
     }
 
+    @Test
     public void testAddUser_Error_2() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -147,6 +161,7 @@ public class UserManagerTest extends TestCase
         assertEquals(0, myUserManager.getUserCount());
     }
 
+    @Test
     public void testRemoveUser() {
         //test remove without users
         assertEquals(0, myUserManager.getUserCount());
@@ -190,6 +205,7 @@ public class UserManagerTest extends TestCase
         assertEquals(0, myUserManager.getUserCount());
     }
 
+    @Test
     public void testRemoveUser_2() {
         //test remove without users
         assertEquals(0, myUserManager.getUserCount());
@@ -229,6 +245,7 @@ public class UserManagerTest extends TestCase
         assertEquals(0, myUserManager.getUserCount());
     }
 
+    @Test
     public void testRemoveUser_Error() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -242,6 +259,7 @@ public class UserManagerTest extends TestCase
         assertNull(myUserManager.getUser(null));
     }
 
+    @Test
     public void testRemoveUser_Error_2() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -255,6 +273,7 @@ public class UserManagerTest extends TestCase
         assertNull(myUserManager.getUser(null));
     }
 
+    @Test
     public void testRemoveUsers() {
         assertEquals(0, myUserManager.getUserCount());
         myUserManager.removeUsers();
@@ -269,6 +288,7 @@ public class UserManagerTest extends TestCase
         assertEquals(0, myUserManager.getUserCount());
     }
 
+    @Test
     public void testGetUser() {
         assertNull(myUserManager.getUser("unknownUser"));
         assertNull(myUserManager.getUser(null));
@@ -282,6 +302,7 @@ public class UserManagerTest extends TestCase
         assertEquals(theAddedUser, theReturnedUser);
     }
 
+    @Test
     public void testGetUsers() {
         assertNotNull(myUserManager.getUsers());
         assertEquals(0, myUserManager.getUsers().size());
@@ -311,6 +332,7 @@ public class UserManagerTest extends TestCase
         assertFalse(theUserInfo_1.equals(theUserInfo_2));
     }
 
+    @Test
     public void testGetUserActivityScheduler() {
         UserActivityScheduler theUserActivityScheduler = myUserManager.getUserActivityScheduler();
         assertNotNull(theUserActivityScheduler);
@@ -318,6 +340,7 @@ public class UserManagerTest extends TestCase
         assertFalse(theUserActivityScheduler.equals(new DefaultUserManager(99999).getUserActivityScheduler()));
     }
 
+    @Test
     public void testActivateUserActivityScheduler() throws Exception {
         myUserManager = new DefaultUserManager(400);
 
@@ -351,6 +374,7 @@ public class UserManagerTest extends TestCase
         myUserManager.deactivateUserActivityScheduler();
     }
 
+    @Test
     public void testActivateUserActivityScheduler_WithAutoClean() throws Exception {
         myUserManager = new DefaultUserManager(400);
 

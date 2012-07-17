@@ -25,18 +25,24 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 22.04.2010
  *         <br>Time: 00:14:17
  */
-public class DefaultClientConnectorTest extends TestCase
+@RunWith(JUnit4.class)
+public class DefaultClientConnectorTest
 {
+    @Test
     public void testInit() {
         EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
 
@@ -51,6 +57,7 @@ public class DefaultClientConnectorTest extends TestCase
         EasyMock.reset(theEventServiceMock);
     }
 
+    @Test
     public void testDeactivate() {
         EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
 
@@ -70,6 +77,7 @@ public class DefaultClientConnectorTest extends TestCase
         EasyMock.reset(theEventServiceMock);
     }
 
+    @Test
     public void testListen() {
         final AsyncCallback<List<DomainEvent>> theDummyAsyncCallback = new AsyncCallback<List<DomainEvent>>() {
             public void onFailure(Throwable aThrowable) {

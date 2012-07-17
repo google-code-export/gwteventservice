@@ -21,20 +21,27 @@
  */
 package de.novanic.eventservice.logger;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 15.08.2008
  * <br>Time: 22:21:20
  */
-public class ServerLoggerFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class ServerLoggerFactoryTest
 {
+    @Test
     public void testPrivateConstructor() {
         assertNotNull(new PrivateMethodExecutor<ServerLoggerFactory>(ServerLoggerFactory.class).executePrivateConstructor());
     }
 
+    @Test
     public void testFactory() {
         final String theLoggerName = "testLogger";
         ServerLogger theServerLogger = ServerLoggerFactory.getServerLogger(theLoggerName);

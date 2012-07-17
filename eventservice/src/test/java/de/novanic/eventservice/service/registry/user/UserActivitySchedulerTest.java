@@ -21,19 +21,26 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.service.UserTimeoutListener;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 25.01.2009
  *         <br>Time: 17:09:43
  */
-public class UserActivitySchedulerTest extends TestCase
+@RunWith(JUnit4.class)
+public class UserActivitySchedulerTest
 {
     private static final String TEST_USER_ID = "test_user_id";
     private static final String TEST_USER_ID_2 = "test_user_id_2";
@@ -43,16 +50,19 @@ public class UserActivitySchedulerTest extends TestCase
     private Collection<UserInfo> myUserInfoCollection;
     private UserActivityScheduler myUserActivityScheduler;
 
+    @Before
     public void setUp() {
         myUserInfoCollection = createUserInfoCollection();
         myUserActivityScheduler = createUserActivityScheduler(myUserInfoCollection);
     }
 
+    @After
     public void tearDown() {
         myUserActivityScheduler.removeTimeoutListeners();
         myUserActivityScheduler.stop();
     }
 
+    @Test
     public void testSchedule() throws Exception {
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
@@ -68,6 +78,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(2, theTimeoutListener.getTimeoutCount());
     }
 
+    @Test
     public void testSchedule_2() throws Exception {
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
@@ -87,6 +98,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(0, theTimeoutListener.getTimeoutCount());
     }
 
+    @Test
     public void testSchedule_3() throws Exception {
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
@@ -106,6 +118,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(0, theTimeoutListener.getTimeoutCount());
     }
 
+    @Test
     public void testSchedule_4() throws Exception {
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
@@ -125,6 +138,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(0, theTimeoutListener.getTimeoutCount());
     }
 
+    @Test
     public void testSchedule_5() throws Exception {
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
@@ -146,6 +160,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(2, theTimeoutListener.getTimeoutCount());
     }
 
+    @Test
     public void testSchedule_6() throws Exception {
         final TestUserTimeoutListener theTimeoutListener = new TestUserTimeoutListener();
         myUserActivityScheduler.addTimeoutListener(theTimeoutListener);
@@ -180,6 +195,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(2, theTimeoutListener.getTimeoutCount());
     }
 
+    @Test
     public void testSchedule_WithAutoClean() throws Exception {
         myUserActivityScheduler.start(true);
         Thread.sleep(200);
@@ -201,6 +217,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertEquals(0, myUserInfoCollection.size());
     }
 
+    @Test
     public void testIsActive() {
         assertFalse(myUserActivityScheduler.isActive());
         assertFalse(myUserActivityScheduler.isActive());
@@ -226,6 +243,7 @@ public class UserActivitySchedulerTest extends TestCase
         assertTrue(myUserActivityScheduler.isActive());
     }
 
+    @Test
     public void testGetTimeoutInterval() {
         assertEquals(400, myUserActivityScheduler.getTimeoutInterval());
         assertEquals(500, new UserActivityScheduler(new ConcurrentLinkedQueue<UserInfo>(), 500).getTimeoutInterval());

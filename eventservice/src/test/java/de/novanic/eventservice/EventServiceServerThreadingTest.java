@@ -31,10 +31,13 @@ import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.util.PlatformUtil;
+import org.junit.After;
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
@@ -67,6 +70,7 @@ public abstract class EventServiceServerThreadingTest extends EventServiceTestCa
         myEventRegistry = anEventRegistry;
     }
 
+    @After
     public void tearDown() throws Exception {
         //Join all threads to ensure that the next test doesn't collidate with other threads.
         joinThreads();

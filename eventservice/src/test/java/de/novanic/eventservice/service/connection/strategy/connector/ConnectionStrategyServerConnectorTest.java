@@ -32,6 +32,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * @author sstrohschein
  *         <br>Date: 16.03.2010

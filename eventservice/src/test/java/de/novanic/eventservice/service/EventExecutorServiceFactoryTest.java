@@ -21,7 +21,6 @@
  */
 package de.novanic.eventservice.service;
 
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,16 +29,23 @@ import javax.servlet.http.HttpSession;
 import de.novanic.eventservice.service.exception.NoSessionAvailableException;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.Event;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 05.08.2008
  * <br>Time: 10:52:26
  */
-public class EventExecutorServiceFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class EventExecutorServiceFactoryTest
 {
     private static final String TEST_USER_ID = "test_user_id";
 
+    @Test
     public void testFactory() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -57,6 +63,7 @@ public class EventExecutorServiceFactoryTest extends TestCase
         assertFalse(theEventExecutorService.isUserRegistered());
     }
 
+    @Test
     public void testFactory_2() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -76,6 +83,7 @@ public class EventExecutorServiceFactoryTest extends TestCase
         assertFalse(theEventExecutorService.isUserRegistered());
     }
 
+    @Test
     public void testFactory_3() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -86,6 +94,7 @@ public class EventExecutorServiceFactoryTest extends TestCase
         assertFalse(theEventExecutorService.isUserRegistered());
     }
 
+    @Test
     public void testFactory_SessionLess() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -110,6 +119,7 @@ public class EventExecutorServiceFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testFactory_SessionLess_2() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -134,6 +144,7 @@ public class EventExecutorServiceFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testFactory_SessionLess_3() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());

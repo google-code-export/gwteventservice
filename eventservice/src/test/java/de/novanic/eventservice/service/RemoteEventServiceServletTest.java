@@ -36,12 +36,20 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 05.10.2008
  *         <br>Time: 00:17:08
  */
+@RunWith(JUnit4.class)
 public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
 {
     private HttpServletRequest myRequestMock;
@@ -51,16 +59,19 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         return setUpRemoteEventServiceServlet();
     }
 
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         setUpRemoteEventServiceServlet();
     }
 
+    @After
     public void tearDown() throws Exception {
         tearDownRemoteEventServiceServlet();
         super.tearDown();
     }
 
+    @Test
     public void testInit_SessionLess() {
         final DummyRemoteEventServiceServletOriginal theServletOriginal = new DummyRemoteEventServiceServletOriginal();
         try {
@@ -75,6 +86,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         }
     }
 
+    @Test
     public void testInit_SessionDummy() {
         RemoteEventServiceServlet theRemoteEventServiceServlet = setUpRemoteEventServiceServlet();
         assertFalse(theRemoteEventServiceServlet.isUserRegistered());
@@ -98,6 +110,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         EasyMock.reset(myRequestMock, mySessionMock);
     }
 
+    @Test
     public void testAddEvent_Init_WithoutSession() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("X");
         final String theUserId = "test_user";
@@ -116,6 +129,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         assertSame(theEvent, theEvents.get(0).getEvent());
     }
 
+    @Test
     public void testAddEvent_WithoutSession() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("X");
         final String theUserId = "test_user";
@@ -134,6 +148,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         assertSame(theEvent, theEvents.get(0).getEvent());
     }
 
+    @Test
     public void testAddEventUserSpecific_WithoutSession() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("X");
         final String theUserId = "test_user";
@@ -153,6 +168,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
         assertTrue(theEvents.isEmpty());
     }
 
+    @Test
     public void testCheckPermutationStrongName() {
         RemoteEventServiceServlet theRemoteEventServiceServlet = setUpRemoteEventServiceServlet();
         boolean isSuccessful = false;
