@@ -36,8 +36,9 @@ import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.test.testhelper.DummyDomainEvent;
 import de.novanic.eventservice.test.testhelper.EventServiceAsyncSuccessDummy;
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -49,6 +50,8 @@ import java.util.List;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 
+import static org.junit.Assert.*;
+
 /**
  * @author sstrohschein
  *         <br>Date: 24.10.2010
@@ -56,7 +59,7 @@ import static org.powermock.api.support.membermodification.MemberModifier.suppre
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({GWTStreamingClientConnectorGecko.class, RootPanel.class, Element.class, GWT.class})
-public class GWTStreamingClientConnectorGeckoTest extends TestCase
+public class GWTStreamingClientConnectorGeckoTest
 {
     private GWTStreamingClientConnectorGecko myGWTStreamingClientConnector;
 
@@ -64,10 +67,12 @@ public class GWTStreamingClientConnectorGeckoTest extends TestCase
         suppress(method(GWTStreamingClientConnectorGecko.class, "createFrameElement"));
     }
 
+    @Before
     public void setUp() {
         myGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
     }
 
+    @Test
     public void testInit() throws Exception {
         mockInitJS();
 
@@ -76,6 +81,7 @@ public class GWTStreamingClientConnectorGeckoTest extends TestCase
         assertTrue(myGWTStreamingClientConnector.isInitialized());
     }
 
+    @Test
     public void testReceiveEvent() throws Exception {
         mockInitJS();
 

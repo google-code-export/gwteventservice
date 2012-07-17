@@ -24,6 +24,9 @@ package de.novanic.eventservice.clientmock.event.command;
 import de.novanic.eventservice.client.event.command.DeactivationCommand;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -33,8 +36,10 @@ import java.util.HashSet;
  *         <br>Date: 31.03.2009
  *         <br>Time: 19:58:30
  */
+@RunWith(JUnit4.class)
 public class DeactivationCommandTest extends ClientCommandTestCase
 {
+    @Test
     public void testExecute() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
 
@@ -43,6 +48,7 @@ public class DeactivationCommandTest extends ClientCommandTestCase
         testExecute(new DeactivationCommand(getRemoteEventConnectorMock(), theTestDomain, getCommandCallback()));
     }
 
+    @Test
     public void testExecute_2() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
         final Set<Domain> theDomains = new HashSet<Domain>(1);
