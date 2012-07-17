@@ -32,7 +32,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
@@ -43,21 +42,25 @@ import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedu
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import org.easymock.IAnswer;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author sstrohschein
  *         <br>Date: 21.10.2008
  *         <br>Time: 21:06:10
  */
-public abstract class AbstractRemoteEventServiceMockTest extends TestCase
+public abstract class AbstractRemoteEventServiceMockTest
 {
     protected EventServiceAsync myEventServiceAsyncMock;
 
+    @Before
     public void setUp() {
         myEventServiceAsyncMock = EasyMock.createMock(EventServiceAsync.class);
         ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DirectCommandScheduler());
     }
 
+    @After
     public void tearDown() {
         ClientCommandSchedulerFactory.getInstance().reset();
         ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration()).reset(getDefaultConfiguration());

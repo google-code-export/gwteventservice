@@ -30,21 +30,30 @@ import de.novanic.eventservice.client.connection.strategy.connector.ConnectionSt
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.DefaultStreamingClientConnector;
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 25.04.2010
  *         <br>Time: 12:24:26
  */
-public class ConfigurationTransferableDependentFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class ConfigurationTransferableDependentFactoryTest
 {
     private EventServiceConfigurationTransferable myConfigurationBackup;
 
+    @Before
     public void setUp() {
         myConfigurationBackup = ConfigurationTransferableDependentFactory.getConfiguration();
     }
 
+    @After
     public void tearDown() {
         //reset for the old configuration
         if(myConfigurationBackup != null) {
@@ -52,6 +61,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "12345678", DefaultClientConnector.class.getName());
 
@@ -60,6 +70,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertSame(theConfigurationTransferableDependentFactory, ConfigurationTransferableDependentFactory.getInstance(theEventServiceConfiguration));
     }
 
+    @Test
     public void testGetInstance_2() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "12345678", DefaultClientConnector.class.getName());
 
@@ -68,6 +79,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertSame(theConfigurationTransferableDependentFactory, ConfigurationTransferableDependentFactory.getInstance());
     }
 
+    @Test
     public void testGetInstance_3() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "12345678", DefaultClientConnector.class.getName());
 
@@ -77,6 +89,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertSame(theConfigurationTransferableDependentFactory, ConfigurationTransferableDependentFactory.getInstance());
     }
 
+    @Test
     public void testGetInstance_Error() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "12345678", String.class.getName());
         try {
@@ -87,6 +100,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testGetInstance_Error_2() {
         try {
             ConfigurationTransferableDependentFactory.getInstance(null).reset(null);
@@ -96,6 +110,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testGetInstance_Error_3() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "12345678", "NotExistingClassXY");
         try {
@@ -109,6 +124,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance_Error_4() {
         try {
             ConfigurationTransferableDependentFactory.getInstance(null).reset(null, false);
@@ -119,6 +135,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testGetConnectionStrategyClientConnector() {
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(DefaultClientConnector.class.getName());
@@ -131,6 +148,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertTrue(theConnectionStrategyClientConnector instanceof DefaultClientConnector);
     }
 
+    @Test
     public void testGetConnectionStrategyClientConnector_Default() {
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(null);
@@ -143,6 +161,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertTrue(theConnectionStrategyClientConnector instanceof DefaultClientConnector);
     }
 
+    @Test
     public void testGetConnectionStrategyClientConnector_Streaming() {
         final EventServiceConfigurationTransferable theEventServiceConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "12345678", GWTStreamingClientConnector.class.getName());
 
@@ -160,6 +179,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         assertNull(theConfigurationTransferableDependentFactory.getConnectionStrategyClientConnector());
     }
 
+    @Test
     public void testGetConnectionStrategyClientConnector_Error() {
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(String.class.getName());
@@ -174,6 +194,7 @@ public class ConfigurationTransferableDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetConnectionStrategyClientConnector_Error_2() {
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(DefaultStreamingClientConnector.class.getName());

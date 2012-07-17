@@ -28,14 +28,21 @@ import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.command.ActivationCommand;
 import de.novanic.eventservice.client.event.filter.EventFilter;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 30.03.2009
  *         <br>Time: 23:24:18
  */
+@RunWith(JUnit4.class)
 public class ActivationCommandTest extends ClientCommandTestCase
 {
+    @Test
     public void testExecute() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
         final EventFilter theEventFilter = new TypeEventFilterTestMode();

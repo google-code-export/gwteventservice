@@ -36,8 +36,9 @@ import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.test.testhelper.DummyDomainEvent;
 import de.novanic.eventservice.test.testhelper.EventServiceAsyncSuccessDummy;
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -49,6 +50,8 @@ import java.util.List;
 import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
+import static org.junit.Assert.*;
+
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2010
@@ -56,14 +59,16 @@ import static org.powermock.api.support.membermodification.MemberMatcher.method;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({GWTStreamingClientConnector.class, RootPanel.class, GWT.class})
-public class GWTStreamingClientConnectorTest extends TestCase
+public class GWTStreamingClientConnectorTest
 {
     private GWTStreamingClientConnector myGWTStreamingClientConnector;
 
+    @Before
     public void setUp() {
         myGWTStreamingClientConnector = new GWTStreamingClientConnector();
     }
 
+    @Test
     public void testInit() {
         mockInitJS();
 
@@ -72,6 +77,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertTrue(myGWTStreamingClientConnector.isInitialized());
     }
 
+    @Test
     public void testListen() throws Exception {
         mockInitJS();
 
@@ -93,6 +99,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testReceiveEvent() throws Exception {
         mockInitJS();
 
@@ -130,6 +137,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertSame(theDomainEvent, theEventNotification.myDomainEvents.get(0));
     }
 
+    @Test
     public void testReceiveEvent_2() throws Exception {
         mockInitJS();
 
@@ -174,6 +182,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
     }
 
+    @Test
     public void testReceiveEvent_Error() throws Exception {
         mockInitJS();
 
@@ -212,6 +221,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate() throws Exception {
         mockInitJS();
 
@@ -242,6 +252,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate_2() throws Exception {
         mockInitJS();
 
@@ -275,6 +286,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate_and_ReInit() throws Exception {
         mockInitJS();
 
@@ -321,6 +333,7 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate_and_ReInit_2() throws Exception {
         mockInitJS();
 

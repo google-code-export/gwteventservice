@@ -36,15 +36,23 @@ import de.novanic.eventservice.client.logger.AbstractClientLogger;
 import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
 import de.novanic.eventservice.test.testhelper.EventServiceAsyncSuccessDummy;
 import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 21.10.2008
  *         <br>Time: 20:56:53
  */
+@RunWith(JUnit4.class)
 public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockTest
 {
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test-domain");
@@ -53,6 +61,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
     private RemoteEventConnector myRemoteEventConnector;
     private GWTRemoteEventConnectorTest.DummyClientLogger myClientLogger;
 
+    @Before
     public void setUp() {
         super.setUp();
         myClientLogger = new DummyClientLogger();
@@ -62,12 +71,14 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         myRemoteEventConnector.initListen(new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 2, "dummy-connection-id", DefaultClientConnector.class.getName()));
     }
 
+    @After
     public void tearDown() {
         super.tearDown();
         myClientLogger.clearLogMessages();
         ClientLoggerFactory.getClientLogger().detach(myClientLogger);
     }
 
+    @Test
     public void testInit() {
         assertFalse(myRemoteEventConnector.isActive());
 
@@ -88,6 +99,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         assertFalse(myRemoteEventConnector.isActive()); //false because an exception is occurred while the initialization / refreshing of the EventService
     }
 
+    @Test
     public void testInit_2() {
         assertFalse(myRemoteEventConnector.isActive());
 
@@ -108,6 +120,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         assertFalse(myRemoteEventConnector.isActive());
     }
 
+    @Test
     public void testInit_3() {
         DefaultRemoteEventServiceFactoryTestMode theEventServiceFactoryTestMode = DefaultRemoteEventServiceFactoryTestMode.getInstance();
 
@@ -121,6 +134,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         });
     }
 
+    @Test
     public void testActivate() {
         assertFalse(myRemoteEventConnector.isActive());
 
@@ -147,6 +161,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         myClientLogger.clearLogMessages();
     }
 
+    @Test
     public void testActivate_Error() {
         assertFalse(myRemoteEventConnector.isActive());
         try {
@@ -156,6 +171,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         assertFalse(myRemoteEventConnector.isActive());
     }
 
+    @Test
     public void testActivate_Error_2() {
         assertFalse(myRemoteEventConnector.isActive());
 
@@ -190,6 +206,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         }
     }
 
+    @Test
     public void testDeactivate() {
         assertFalse(myRemoteEventConnector.isActive());
 
@@ -227,6 +244,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         assertEquals("Log: RemoteEventConnector deactivated.", theLogMessages.get(0));
     }
 
+    @Test
     public void testDeactivate_2() {
         assertFalse(myRemoteEventConnector.isActive());
 
@@ -266,6 +284,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         assertEquals("Log: RemoteEventConnector deactivated.", theLogMessages.get(0));
     }
 
+    @Test
     public void testDeactivate_3() {
         assertFalse(myRemoteEventConnector.isActive());
 
@@ -306,6 +325,7 @@ public class GWTRemoteEventConnectorTest extends AbstractRemoteEventServiceMockT
         assertEquals("Log: RemoteEventConnector deactivated.", theLogMessages.get(0));
     }
 
+    @Test
     public void testDeactivate_After_Timeout() {
         assertFalse(myRemoteEventConnector.isActive());
 

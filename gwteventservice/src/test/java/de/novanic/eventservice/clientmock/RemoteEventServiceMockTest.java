@@ -35,14 +35,21 @@ import de.novanic.eventservice.test.testhelper.DummyDomainEvent;
 import de.novanic.eventservice.test.testhelper.EventListenerTestMode;
 import de.novanic.eventservice.test.testhelper.UnlistenEventListenerTestMode;
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 03.08.2008
  * Time: 22:55:08
  */
+@RunWith(JUnit4.class)
 public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTest
 {
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
@@ -50,11 +57,13 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
 
     private RemoteEventService myRemoteEventService;
 
+    @Before
     public void setUp() {
         super.setUp();
         myRemoteEventService = DefaultRemoteEventServiceFactoryTestMode.getInstance().getDefaultRemoteEventService(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testInit_Error() {
         try {
             DefaultRemoteEventServiceFactoryTestMode.getInstance().getDefaultRemoteEventService();
@@ -62,6 +71,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         } catch(Throwable e) {}
     }
 
+    @Test
     public void testAddListener() {
         mockInit();
 
@@ -86,6 +96,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testAddListener_Error() {
         mockInit();
 
@@ -103,6 +114,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testAddListener_Error_2() {
         //onFailure throws a runtime exception, when the init call to the RemoteEventService fails. No following commands should be executed in that case.
         mockInit(new TestException());
@@ -121,6 +133,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 2);
     }
 
+    @Test
     public void testAddListener_Callback() {
         mockInit();
 
@@ -163,6 +176,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 1);
     }
 
+    @Test
     public void testAddListener_Callback_Failure() {
         mockInit();
 
@@ -183,6 +197,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testAddListener_EventFilter() {
         mockInit();
 
@@ -210,6 +225,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 2);
     }
 
+    @Test
     public void testAddListener_EventFilter_Callback() {
         mockInit();
 
@@ -256,6 +272,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 1);
     }
 
+    @Test
     public void testAddListener_EventFilter_Callback_Failure() {
         mockInit();
 
@@ -277,6 +294,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testAddListener_DomainLess() {
         mockInit();
 
@@ -302,6 +320,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testAddUnlistenListener() {
         mockInit();
 
@@ -333,6 +352,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
+    @Test
     public void testAddUnlistenListener_2() {
         mockInit();
 
@@ -365,6 +385,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
+    @Test
     public void testAddUnlistenListener_Local() {
         mockInit();
 
@@ -392,6 +413,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
+    @Test
     public void testAddUnlistenListener_Local_2() {
         mockInit();
 
@@ -420,6 +442,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 1);
     }
 
+    @Test
     public void testRemoveListener() {
         mockInit();
 
@@ -451,6 +474,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveListener_2() {
         mockInit();
 
@@ -483,6 +507,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 1);
     }
 
+    @Test
     public void testRemoveListener_3() {
         mockInit();
         //caused by new activation after complete deactivation
@@ -522,6 +547,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveListener_4() {
         mockInit();
 
@@ -556,6 +582,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveListener_Error() {
         mockInit();
 
@@ -584,6 +611,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testRemoveListener_Callback() {
         mockInit();
 
@@ -627,6 +655,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListener_Callback_Failure() {
         mockInit();
 
@@ -657,6 +686,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveListeners() {
         mockInit();
 
@@ -691,6 +721,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domain() {
         mockInit();
 
@@ -735,6 +766,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domains() {
         mockInit();
 
@@ -769,6 +801,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domains_2() {
         mockInit();
 
@@ -817,6 +850,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Callback() {
         mockInit();
 
@@ -854,6 +888,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Callback_Failure() {
         mockInit();
 
@@ -886,6 +921,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domain_Callback() {
         mockInit();
 
@@ -928,6 +964,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domain_Callback_2() {
         mockInit();
 
@@ -976,6 +1013,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domain_Callback_Failure() {
         mockInit();
 
@@ -1006,6 +1044,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domains_Callback() {
         mockInit();
 
@@ -1043,6 +1082,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domains_Callback_2() {
         mockInit();
 
@@ -1090,6 +1130,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRemoveListeners_Domains_Callback_Failure() {
         mockInit();
 
@@ -1122,6 +1163,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveUnlistenListener() {
         mockInit();
 
@@ -1153,6 +1195,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveUnlistenListener_2() {
         mockInit();
 
@@ -1194,6 +1237,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveUnlistenListeners() {
         mockInit();
 
@@ -1224,6 +1268,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
+    @Test
     public void testRemoveUnlistenListeners_2() {
         mockInit();
 
@@ -1258,6 +1303,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(DomainFactory.UNLISTEN_DOMAIN, 0);
     }
 
+    @Test
     public void testUnlisten() {
         mockInit();
 
@@ -1295,6 +1341,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testUnlisten_2() {
         mockInit();
 
@@ -1332,6 +1379,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testUnlisten_Error() {
         mockInit();
 
@@ -1359,6 +1407,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testListen() {
         mockInit();
 
@@ -1385,6 +1434,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testListen_UserSpecific() {
         mockInit();
 
@@ -1411,6 +1461,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(null, 1);
     }
 
+    @Test
     public void testListen_Error() {
         mockInit();
 
@@ -1438,6 +1489,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testListen_Error_2() {
         mockInit();
 
@@ -1466,6 +1518,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 0);
     }
 
+    @Test
     public void testListen_Error_3() {
         mockInit();
 
@@ -1492,6 +1545,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testListen_Error_4() {
         mockInit();
 
@@ -1519,6 +1573,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testAddEvent() {
         mockInit();
 
@@ -1551,6 +1606,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testAddEventUserSpecific() {
         mockInit();
 
@@ -1583,6 +1639,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testAddEventUserSpecific_NULL_Domain() {
         mockInit();
 
@@ -1615,6 +1672,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN_2, 0);
     }
 
+    @Test
     public void testRegisterEventFilter() {
         mockInit();
 
@@ -1654,6 +1712,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testRegisterEventFilter_Callback() {
         mockInit();
 
@@ -1699,6 +1758,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testRegisterEventFilter_Callback_Failure() {
         mockInit();
 
@@ -1744,6 +1804,7 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 1);
     }
 
+    @Test
     public void testDeregisterEventFilter_Callback_Failure() {
         mockInit();
 

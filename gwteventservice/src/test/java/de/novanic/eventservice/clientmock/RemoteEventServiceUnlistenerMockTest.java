@@ -33,28 +33,37 @@ import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryT
 import de.novanic.eventservice.test.testhelper.EventListenerTestMode;
 import de.novanic.eventservice.test.testhelper.UnlistenEventListenerTestMode;
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 
+import static org.junit.Assert.*;
+
 /**
  * @author sstrohschein
  *         <br>Date: 31.10.2009
  *         <br>Time: 00:25:38
  */
+@RunWith(JUnit4.class)
 public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventServiceMockTest
 {
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
 
     private RemoteEventService myRemoteEventService;
 
+    @Before
     public void setUp() {
         super.setUp();
         myRemoteEventService = DefaultRemoteEventServiceFactoryTestMode.getInstance().getDefaultRemoteEventService(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Local() {
         final RemoteEventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 0, null, DefaultClientConnector.class.getName());
         mockInit(theConfiguration);
@@ -94,6 +103,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Local_2() {
         final RemoteEventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(0, 20000, 90000, 0, null, DefaultClientConnector.class.getName());
         mockInit(theConfiguration);
@@ -130,6 +140,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Local_3() {
         mockInit();
 
@@ -161,6 +172,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Local_Reconnect() {
         mockInit();
 
@@ -199,6 +211,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Local_Reconnect_2() {
         mockInit();
 
@@ -234,6 +247,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Unlisten() {
         mockInit();
 
@@ -268,6 +282,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Unlisten_2() {
         mockInit();
 
@@ -304,6 +319,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Unlisten_3() {
         mockInit();
 
@@ -335,6 +351,7 @@ public class RemoteEventServiceUnlistenerMockTest extends AbstractRemoteEventSer
         EasyMock.reset(myEventServiceAsyncMock);
     }
 
+    @Test
     public void testAddUnlistenListener_Timeout() {
         mockInit();
 
