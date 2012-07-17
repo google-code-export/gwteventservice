@@ -26,26 +26,35 @@ import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 /**
  * @author sstrohschein
  *         <br>Date: 05.04.2010
  *         <br>Time: 14:12:21
  */
-public class ConfigurationDependentFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class ConfigurationDependentFactoryTest
 {
     private EventServiceConfiguration myConfigurationBackup;
 
+    @Before
     public void setUp() {
         myConfigurationBackup = ConfigurationDependentFactory.getConfiguration();
     }
 
+    @After
     public void tearDown() {
         //reset for the old configuration
         if(myConfigurationBackup != null) {
@@ -53,6 +62,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, SessionConnectionIdGenerator.class.getName(), null, LongPollingServerConnector.class.getName(), "utf-8");
 
@@ -61,6 +71,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance(theEventServiceConfiguration));
     }
 
+    @Test
     public void testGetInstance_2() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, SessionConnectionIdGenerator.class.getName(), null, null, "utf-8");
 
@@ -69,6 +80,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance());
     }
 
+    @Test
     public void testGetInstance_3() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, SessionConnectionIdGenerator.class.getName(), null, null, "utf-8");
 
@@ -78,6 +90,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         assertSame(theConfigurationDependentFactory, ConfigurationDependentFactory.getInstance());
     }
 
+    @Test
     public void testGetInstance_Error() {
         try {
             ConfigurationDependentFactory theConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(null);
@@ -90,6 +103,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testGetInstance_Error_2() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, String.class.getName(), null, null, "utf-8");
         try {
@@ -100,6 +114,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testGetInstance_Error_3() {
         try {
             ConfigurationDependentFactory.getInstance(null).reset(null);
@@ -109,6 +124,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testGetInstance_Error_4() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, "NotExistingClassXY", null, null, "utf-8");
         try {
@@ -122,6 +138,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance_Error_5() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, DummyConnectionIdGeneratorAbstract.class.getName(), null, null, "utf-8");
         try {
@@ -135,6 +152,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance_Error_6() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, DummyConnectionIdGenerator.class.getName(), null, null, "utf-8");
         try {
@@ -148,6 +166,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance_Error_7() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, DummyConnectionIdGenerator_2.class.getName(), null, null, "utf-8");
         try {
@@ -161,6 +180,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance_Error_9() {
         final EventServiceConfiguration theEventServiceConfiguration = new RemoteEventServiceConfiguration("Test-Config", null, null, null, null, DummyConnectionIdGenerator_3.class.getName(), null, null, "utf-8");
         try {
@@ -174,6 +194,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetConnectionIdGenerator() {
         final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
         theConfig.setConnectionIdGeneratorClassName(SessionConnectionIdGenerator.class.getName());
@@ -186,6 +207,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         assertTrue(theConnectionIdGenerator instanceof SessionConnectionIdGenerator);
     }
 
+    @Test
     public void testGetConnectionIdGenerator_Error() {
         final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
         theConfig.setConnectionIdGeneratorClassName(String.class.getName());
@@ -200,6 +222,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetConnectionStrategyServerConnector() {
         final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
         theConfig.setConnectionStrategyServerConnectorClassName(LongPollingServerConnector.class.getName());
@@ -212,6 +235,7 @@ public class ConfigurationDependentFactoryTest extends TestCase
         assertTrue(theConnectionStrategyServerConnector instanceof LongPollingServerConnector);
     }
 
+    @Test
     public void testGetConnectionStrategyServerConnector_Error() {
         final TestEventServiceConfiguration theConfig = new TestEventServiceConfiguration();
         theConfig.setConnectionStrategyServerConnectorClassName(String.class.getName());

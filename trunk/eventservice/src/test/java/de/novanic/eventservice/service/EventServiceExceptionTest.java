@@ -21,15 +21,21 @@
  */
 package de.novanic.eventservice.service;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 07.04.2010
  *         <br>Time: 23:17:55
  */
-public class EventServiceExceptionTest extends TestCase
+@RunWith(JUnit4.class)
+public class EventServiceExceptionTest
 {
+    @Test
     public void testInit() {
         final String theErrorMessage = "testMessage";
         try {
@@ -40,6 +46,7 @@ public class EventServiceExceptionTest extends TestCase
         }
     }
 
+    @Test
     public void testInit_2() {
         final String theErrorMessage = "testMessage";
         try {

@@ -21,21 +21,28 @@
  */
 package de.novanic.eventservice.client.event.domain;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 16.08.2008
  * Time: 18:40:33
  */
-public class DomainFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class DomainFactoryTest
 {
+    @Test
     public void testConstructor() {
         PrivateMethodExecutor<DomainFactory> thePrivateMethodExecutor = new PrivateMethodExecutor<DomainFactory>(DomainFactory.class);
         thePrivateMethodExecutor.executePrivateConstructor();
     }
 
+    @Test
     public void testFactory() {
         final String TEST_DOMAIN = "testDomain";
         Domain theDomain = DomainFactory.getDomain(TEST_DOMAIN);
@@ -45,6 +52,7 @@ public class DomainFactoryTest extends TestCase
         assertEquals(theDomain.hashCode(), theDomain_2.hashCode());
     }
 
+    @Test
     public void testFactory_2() {
         final String TEST_DOMAIN = "testDomain";
         final String TEST_DOMAIN_2 = "testDomain2";

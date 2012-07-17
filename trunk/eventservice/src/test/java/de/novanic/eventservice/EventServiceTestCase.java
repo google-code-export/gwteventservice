@@ -25,7 +25,6 @@ import de.novanic.eventservice.config.ConfigurationDependentFactory;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
-import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
@@ -36,6 +35,7 @@ import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.service.DefaultEventExecutorService;
 import de.novanic.eventservice.util.LoggingConfiguratorTestMode;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import org.junit.After;
 
 import java.io.IOException;
 
@@ -44,7 +44,7 @@ import java.io.IOException;
  *         <br>Date: 23.10.2008
  *         <br>Time: 20:57:44
  */
-public abstract class EventServiceTestCase extends TestCase
+public abstract class EventServiceTestCase
 {
     public void setUp(EventServiceConfiguration anEventServiceConfiguration) {
         ConfigurationLoader theConfigurationLoader = new CustomConfigurationLoaderTestMode(anEventServiceConfiguration);
@@ -55,6 +55,7 @@ public abstract class EventServiceTestCase extends TestCase
         ConfigurationDependentFactory.getInstance(anEventServiceConfiguration).reset(anEventServiceConfiguration);
     }
 
+    @After
     public void tearDown() throws Exception {
         tearDownEventServiceConfiguration();
         FactoryResetService.resetFactory(UserManagerFactory.class);

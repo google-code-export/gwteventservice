@@ -21,16 +21,22 @@
  */
 package de.novanic.eventservice.client.event.listener.unlisten;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.Event;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 16.08.2009
  *         <br>Time: 01:49:33
  */
-public class UnlistenEventListenerAdapterTest extends TestCase
+@RunWith(JUnit4.class)
+public class UnlistenEventListenerAdapterTest
 {
+    @Test
     public void testApply() {
         DummyUnlistenEventListener theUnlistenEventListenerAdapter = new DummyUnlistenEventListener();
 
@@ -44,6 +50,7 @@ public class UnlistenEventListenerAdapterTest extends TestCase
         assertTrue(theUnlistenEventListenerAdapter.isOnUnlistenCalled);
     }
 
+    @Test
     public void testScopes() {
         assertEquals("LOCAL", UnlistenEventListener.Scope.LOCAL.name());
         assertEquals("LOCAL", UnlistenEventListener.Scope.LOCAL.toString());

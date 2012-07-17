@@ -21,21 +21,28 @@
  */
 package de.novanic.eventservice.util;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 02.07.2009
  *         <br>Time: 21:46:57
  */
-public class StringUtilTest extends TestCase
+@RunWith(JUnit4.class)
+public class StringUtilTest
 {
+    @Test
     public void testConstructor() {
         PrivateMethodExecutor<StringUtil> thePrivateMethodExecutor = new PrivateMethodExecutor<StringUtil>(StringUtil.class);
         thePrivateMethodExecutor.executePrivateConstructor();
     }
 
+    @Test
     public void testIsNumeric() {
         assertTrue(StringUtil.isNumeric("1234567890"));
         assertFalse(StringUtil.isNumeric("1234567890XY"));
@@ -53,12 +60,14 @@ public class StringUtilTest extends TestCase
         assertFalse(StringUtil.isNumeric(null));
     }
 
+    @Test
     public void testReadIntegerChecked() throws ServiceUtilException {
         assertEquals(0, StringUtil.readIntegerChecked("0"));
         assertEquals(12, StringUtil.readIntegerChecked("12"));
         assertEquals(1234567890, StringUtil.readIntegerChecked("1234567890"));
     }
 
+    @Test
     public void testReadIntegerChecked_Error() {
         try {
             StringUtil.readIntegerChecked("XYZ");
@@ -68,6 +77,7 @@ public class StringUtilTest extends TestCase
         }
     }
 
+    @Test
     public void testServiceUtilException() {
         try {
             throw new ServiceUtilException("aMessage");

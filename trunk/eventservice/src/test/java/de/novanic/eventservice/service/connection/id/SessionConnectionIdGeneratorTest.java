@@ -22,19 +22,25 @@
 package de.novanic.eventservice.service.connection.id;
 
 import de.novanic.eventservice.service.exception.NoSessionAvailableException;
-import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 30.03.2010
  *         <br>Time: 14:28:17
  */
-public class SessionConnectionIdGeneratorTest extends TestCase
+@RunWith(JUnit4.class)
+public class SessionConnectionIdGeneratorTest
 {
+    @Test
     public void testGenerateConnectionId() {
         HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
         HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
@@ -51,6 +57,7 @@ public class SessionConnectionIdGeneratorTest extends TestCase
         EasyMock.reset(theRequestMock, theSessionMock);
     }
 
+    @Test
     public void testGetConnectionId() {
         HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
         HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
@@ -67,6 +74,7 @@ public class SessionConnectionIdGeneratorTest extends TestCase
         EasyMock.reset(theRequestMock, theSessionMock);
     }
 
+    @Test
     public void testGetConnectionId_2() {
         HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
         HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);

@@ -21,29 +21,37 @@
  */
 package de.novanic.eventservice.client.event.listener.unlisten;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 28.07.2008
  * <br>Time: 21:49:29
  */
-public class UnlistenEventTest extends TestCase
+@RunWith(JUnit4.class)
+public class UnlistenEventTest
 {
     private Domain myTestDomain;
     private Domain myTestDomain_2;
 
+    @Before
     public void setUp() {
         myTestDomain = DomainFactory.getDomain("testDomain");
         myTestDomain_2 = DomainFactory.getDomain("testDomain_2");
     }
 
+    @Test
     public void testInit() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         theUnlistenEvent.setDomains(new HashSet<Domain>(Arrays.asList(myTestDomain)));
@@ -62,6 +70,7 @@ public class UnlistenEventTest extends TestCase
         assertTrue(theUnlistenEvent.toString().contains("timeout"));
     }
 
+    @Test
     public void testInit_2() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(myTestDomain)), "XY", true);
         assertEquals(1, theUnlistenEvent.getDomains().size());
@@ -76,6 +85,7 @@ public class UnlistenEventTest extends TestCase
         assertTrue(theUnlistenEvent.toString().contains("timeout"));
     }
 
+    @Test
     public void testInit_3() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(Arrays.asList(myTestDomain)), "XY", true, true);
         assertEquals(1, theUnlistenEvent.getDomains().size());
@@ -90,6 +100,7 @@ public class UnlistenEventTest extends TestCase
         assertTrue(theUnlistenEvent.toString().contains("timeout"));
     }
 
+    @Test
     public void testInit_4() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         assertNull(theUnlistenEvent.getDomains());
@@ -103,6 +114,7 @@ public class UnlistenEventTest extends TestCase
         assertFalse(theUnlistenEvent.toString().contains("timeout"));
     }
 
+    @Test
     public void testEquals() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         UnlistenEvent theUnlistenEvent_2 = new DefaultUnlistenEvent();
@@ -120,6 +132,7 @@ public class UnlistenEventTest extends TestCase
         assertFalse(theUnlistenEvent.equals(theUnlistenEventNull));
     }
 
+    @Test
     public void testEquals_2() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         UnlistenEvent theUnlistenEvent_2 = new DefaultUnlistenEvent();
@@ -141,6 +154,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals(theUnlistenEvent, theUnlistenEvent_2);
     }
 
+    @Test
     public void testEquals_3() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         UnlistenEvent theUnlistenEvent_2 = new DefaultUnlistenEvent();
@@ -166,6 +180,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals(theUnlistenEvent, theUnlistenEvent_2);
     }
 
+    @Test
     public void testEquals_4() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent();
         UnlistenEvent theUnlistenEvent_2 = new DefaultUnlistenEvent();
@@ -183,6 +198,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals(theUnlistenEvent, theUnlistenEvent_2);
     }
 
+    @Test
     public void testToString() {
         Set<Domain> theDomains = new HashSet<Domain>(1);
         theDomains.add(myTestDomain);
@@ -191,6 +207,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals("Event: Unlisten (user \"XY\" for domain \"testDomain\")", theUnlistenEvent.toString());
     }
 
+    @Test
     public void testToString_MultiDomain() {
         Set<Domain> theDomains = new HashSet<Domain>(2);
         theDomains.add(myTestDomain);
@@ -200,6 +217,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals("Event: Unlisten (user \"XY\" for 2 domains)", theUnlistenEvent.toString());
     }
 
+    @Test
     public void testToString_Timeout() {
         Set<Domain> theDomains = new HashSet<Domain>(1);
         theDomains.add(myTestDomain);
@@ -208,6 +226,7 @@ public class UnlistenEventTest extends TestCase
         assertEquals("Event: Unlisten(timeout) (user \"XY\" for domain \"testDomain\")", theUnlistenEvent.toString());
     }
 
+    @Test
     public void testToString_Local() {
         Set<Domain> theDomains = new HashSet<Domain>(1);
         theDomains.add(myTestDomain);
@@ -216,16 +235,19 @@ public class UnlistenEventTest extends TestCase
         assertEquals("Event: Unlisten(local) (user \"XY\" for domain \"testDomain\")", theUnlistenEvent.toString());
     }
 
+    @Test
     public void testToString_DomainLess() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(null, "XY", false);
         assertEquals("Event: Unlisten (user \"XY\")", theUnlistenEvent.toString());
     }
 
+    @Test
     public void testToString_DomainLess_2() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(new HashSet<Domain>(0), "XY", false);
         assertEquals("Event: Unlisten (user \"XY\")", theUnlistenEvent.toString());
     }
 
+    @Test
     public void testToString_UserLess() {
         UnlistenEvent theUnlistenEvent = new DefaultUnlistenEvent(null, null, false);
         assertEquals("Event: Unlisten (user not available)", theUnlistenEvent.toString());

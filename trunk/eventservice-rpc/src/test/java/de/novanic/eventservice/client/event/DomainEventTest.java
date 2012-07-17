@@ -21,19 +21,25 @@
  */
 package de.novanic.eventservice.client.event;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 05.08.2008
  * Time: 18:15:20
  */
-public class DomainEventTest extends TestCase
+@RunWith(JUnit4.class)
+public class DomainEventTest
 {
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
 
+    @Test
     public void testInit_1() {
         final Event theEmptyEvent = new EmptyEvent_1("key_1");
         DomainEvent theDomainEvent = new DefaultDomainEvent(theEmptyEvent, TEST_DOMAIN);
@@ -45,6 +51,7 @@ public class DomainEventTest extends TestCase
         assertFalse(theDomainEvent.isUserSpecific());
     }
 
+    @Test
     public void testInit_2() {
         final Event theEmptyEvent = new EmptyEvent_1("key_1"){};
         DomainEvent theDomainEvent = new DefaultDomainEvent(theEmptyEvent);
@@ -55,18 +62,21 @@ public class DomainEventTest extends TestCase
         assertTrue(theDomainEvent.isUserSpecific());
     }
 
+    @Test
     public void testInit_Error() {
         DomainEvent theDomainEvent = new DefaultDomainEvent(null);
         assertNull(theDomainEvent.getDomain());
         assertNull(theDomainEvent.getEvent());
     }
 
+    @Test
     public void testInit_Error_2() {
         DomainEvent theDomainEvent = createDefaultDomainEvent();
         assertNull(theDomainEvent.getDomain());
         assertNull(theDomainEvent.getEvent());
     }
 
+    @Test
     public void testEquals() {
         final Event theEmptyEvent = new EmptyEvent_1("key_1"){};
         DomainEvent theDomainEvent = new DefaultDomainEvent(theEmptyEvent, TEST_DOMAIN);
@@ -94,6 +104,7 @@ public class DomainEventTest extends TestCase
         assertEquals(0, createDefaultDomainEvent().hashCode());
     }
 
+    @Test
     public void testCompareTo() {
         final Comparable<DomainEvent> theDomainEvent = createDefaultDomainEvent();
 
@@ -102,6 +113,7 @@ public class DomainEventTest extends TestCase
         assertEquals(-1, theDomainEvent.compareTo(new DefaultDomainEvent(new EmptyEvent_1("key"), TEST_DOMAIN)));
     }
 
+    @Test
     public void testCompareTo_2() {
         final DefaultDomainEvent theDomainEvent = new DefaultDomainEvent(new EmptyEvent_1("key"));
 
@@ -117,6 +129,7 @@ public class DomainEventTest extends TestCase
         assertEquals(1, theDomainEvent.compareTo(new DefaultDomainEvent(null)));
     }
 
+    @Test
     public void testCompareTo_3() {
         final DefaultDomainEvent theDomainEvent = new DefaultDomainEvent(new EmptyEvent_1("key"), TEST_DOMAIN);
 
@@ -150,6 +163,7 @@ public class DomainEventTest extends TestCase
                 new DefaultDomainEvent(new EmptyEvent_1("key"), DomainFactory.getDomain("test_1"))));
     }
 
+    @Test
     public void testToString() {
         assertEquals("DomainEvent ()", new DefaultDomainEvent(null).toString());
         assertEquals("DomainEvent (test_domain)", new DefaultDomainEvent(null, TEST_DOMAIN).toString());

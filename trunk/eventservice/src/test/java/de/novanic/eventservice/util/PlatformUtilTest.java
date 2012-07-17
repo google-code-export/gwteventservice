@@ -21,23 +21,29 @@
  */
 package de.novanic.eventservice.util;
 
-import junit.framework.TestCase;
-
 import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 11.01.2009
  *         <br>Time: 15:33:06
  */
-public class PlatformUtilTest extends TestCase
+@RunWith(JUnit4.class)
+public class PlatformUtilTest
 {
     private static final String LINE_SEPARATOR_PROPERTY = "line.separator";
 
+    @Test
     public void testPrivateConstructor() {
         assertNotNull(new PrivateMethodExecutor<PlatformUtil>(PlatformUtil.class).executePrivateConstructor());
     }
 
+    @Test
     public void testGetNewLine() {
         final String theNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
         if(theNewLineChar != null) {
@@ -45,6 +51,7 @@ public class PlatformUtilTest extends TestCase
         }
     }
 
+    @Test
     public void testGetNewLine_2() {
         final String theCreateNewLineCharMethodName = "createNewLineChar";
         final String theOldNewLineChar = System.getProperty(LINE_SEPARATOR_PROPERTY);
@@ -59,6 +66,7 @@ public class PlatformUtilTest extends TestCase
         }
     }
 
+    @Test
     public void testGetCurrentTime() throws Exception {
         long theCurrentTime = PlatformUtil.getCurrentTime();
         assertTrue(theCurrentTime > 0);
