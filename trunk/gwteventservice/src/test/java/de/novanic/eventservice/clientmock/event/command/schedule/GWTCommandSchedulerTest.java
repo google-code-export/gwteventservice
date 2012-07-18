@@ -26,7 +26,7 @@ import de.novanic.eventservice.client.event.command.ClientCommand;
 import de.novanic.eventservice.client.event.command.schedule.GWTCommandScheduler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -50,16 +50,11 @@ public class GWTCommandSchedulerTest
         final ClientCommandDummy theClientCommand = new ClientCommandDummy();
 
         final GWTCommandScheduler.GWTCommandTimer theTimerDummy = new GWTCommandTimerDummy(theClientCommand);
-        PowerMock.expectNew(GWTCommandScheduler.GWTCommandTimer.class, theClientCommand).andReturn(theTimerDummy);
+        PowerMockito.whenNew(GWTCommandScheduler.GWTCommandTimer.class).withArguments(theClientCommand).thenReturn(theTimerDummy);
 
         assertFalse(theClientCommand.isExecuted);
 
-        PowerMock.replay(GWTCommandScheduler.GWTCommandTimer.class);
-
-            theGWTCommandScheduler.schedule(theClientCommand);
-
-        PowerMock.verify(GWTCommandScheduler.GWTCommandTimer.class);
-        PowerMock.reset(GWTCommandScheduler.GWTCommandTimer.class);
+        theGWTCommandScheduler.schedule(theClientCommand);
 
         assertTrue(theClientCommand.isExecuted);
     }

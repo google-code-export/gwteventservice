@@ -26,13 +26,14 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Frame;
 import de.novanic.eventservice.client.connection.strategy.connector.streaming.specific.GWTStreamingClientConnectorGecko;
 import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
@@ -46,31 +47,24 @@ public class GWTStreamingClientConnectorGeckoInitializationTest
 {
     @Test
     public void testCreateFrameElement() throws Exception {
-        PowerMock.mockStatic(Element.class);
-        Element theElementMock = PowerMock.createMock(Element.class);
-        theElementMock.setId("gwteventservice_dummy_frame");
-        
+        PowerMockito.mockStatic(Element.class);
+        Element theElementMock = PowerMockito.mock(Element.class);
+
         Frame theFrameMock = mockInitFrame();
-        EasyMock.expect(theFrameMock.getElement()).andReturn(theElementMock);
+        when(theFrameMock.getElement()).thenReturn(theElementMock);
 
-        PowerMock.replay(Frame.class, theFrameMock, Element.class, theElementMock);
-
-            PrivateMethodExecutor<GWTStreamingClientConnectorGecko> thePrivateMethodExecutor = new PrivateMethodExecutor<GWTStreamingClientConnectorGecko>(GWTStreamingClientConnectorGecko.class);
-            thePrivateMethodExecutor.executePrivateMethod("createFrameElement");
-
-        PowerMock.verify(Frame.class, theFrameMock, Element.class, theElementMock);
-        PowerMock.reset(Frame.class, theFrameMock, Element.class, theElementMock);
+        PrivateMethodExecutor<GWTStreamingClientConnectorGecko> thePrivateMethodExecutor = new PrivateMethodExecutor<GWTStreamingClientConnectorGecko>(GWTStreamingClientConnectorGecko.class);
+        thePrivateMethodExecutor.executePrivateMethod("createFrameElement");
     }
 
     private static Frame mockInitFrame() throws Exception {
         GWTMockUtilities.disarm();
 
-        Frame theFrameMock = PowerMock.createMock(Frame.class);
-        PowerMock.expectNew(Frame.class).andReturn(theFrameMock);
+        Frame theFrameMock = mock(Frame.class);
+        PowerMockito.whenNew(Frame.class).withNoArguments().thenReturn(theFrameMock);
 
         GWTMockUtilities.restore();
 
-        theFrameMock.setVisible(false);
         return theFrameMock;
     }
 }

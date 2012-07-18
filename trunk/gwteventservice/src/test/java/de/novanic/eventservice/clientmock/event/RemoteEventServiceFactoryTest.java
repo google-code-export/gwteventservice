@@ -39,7 +39,6 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
 import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +46,7 @@ import org.junit.Test;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
@@ -176,19 +176,14 @@ public class RemoteEventServiceFactoryTest
     public void testMapEventExecutionService() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
 
-        ServiceDefTarget theServiceDefTargetMock = EasyMock.createMock(ServiceDefTarget.class);
+        ServiceDefTarget theServiceDefTargetMock = mock(ServiceDefTarget.class);
         
-        EasyMock.expect(theServiceDefTargetMock.getServiceEntryPoint()).andReturn("Test-URL");
-        theServiceDefTargetMock.setServiceEntryPoint("Test-URL?id=ABC123");
+        when(theServiceDefTargetMock.getServiceEntryPoint()).thenReturn("Test-URL");
 
         ClientHandler theClientHandler = new DefaultClientHandler("ABC123");
-
-        EasyMock.replay(theServiceDefTargetMock);
-        
         theRemoteEventServiceFactory.registerClientSpecificHandler(theServiceDefTargetMock, theClientHandler);
 
-        EasyMock.verify(theServiceDefTargetMock);
-        EasyMock.reset(theServiceDefTargetMock);
+        verify(theServiceDefTargetMock, times(1)).getServiceEntryPoint();
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {
