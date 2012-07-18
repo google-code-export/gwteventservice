@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +42,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
@@ -67,8 +67,7 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
 
     @After
     public void tearDown() throws Exception {
-        tearDownRemoteEventServiceServlet();
-        super.tearDown();
+        reset(myRequestMock, mySessionMock);
     }
 
     @Test
@@ -93,21 +92,13 @@ public class RemoteEventServiceServletTest extends EventExecutorServiceTest_A
     }
 
     private RemoteEventServiceServlet setUpRemoteEventServiceServlet() {
-        myRequestMock = EasyMock.createMock(HttpServletRequest.class);
-        mySessionMock = EasyMock.createMock(HttpSession.class);
+        myRequestMock = mock(HttpServletRequest.class);
+        mySessionMock = mock(HttpSession.class);
 
-        EasyMock.expect(myRequestMock.getSession(false)).andReturn(mySessionMock).anyTimes();
-
-        EasyMock.expect(mySessionMock.getId()).andReturn(TEST_USER_ID).anyTimes();
-
-        EasyMock.replay(myRequestMock, mySessionMock);
+        when(myRequestMock.getSession(false)).thenReturn(mySessionMock);
+        when(mySessionMock.getId()).thenReturn(TEST_USER_ID);
 
         return new DummyRemoteEventServiceServlet_Request(myRequestMock);
-    }
-
-    private void tearDownRemoteEventServiceServlet() {
-        EasyMock.verify(myRequestMock, mySessionMock);
-        EasyMock.reset(myRequestMock, mySessionMock);
     }
 
     @Test

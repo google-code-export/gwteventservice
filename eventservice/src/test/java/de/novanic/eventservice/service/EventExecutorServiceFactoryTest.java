@@ -21,8 +21,6 @@
  */
 package de.novanic.eventservice.service;
 
-import org.easymock.EasyMock;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -34,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
@@ -50,15 +49,14 @@ public class EventExecutorServiceFactoryTest
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
-        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
+        HttpSession theSessionMock = mock(HttpSession.class);
 
-        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID).times(2);
+        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
 
-        EasyMock.replay(theSessionMock);
-            EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theSessionMock);
-            assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theSessionMock));
-        EasyMock.verify(theSessionMock);
-        EasyMock.reset(theSessionMock);
+        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theSessionMock);
+        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theSessionMock));
+
+        verify(theSessionMock, times(2)).getId();
 
         assertFalse(theEventExecutorService.isUserRegistered());
     }
@@ -68,17 +66,17 @@ public class EventExecutorServiceFactoryTest
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
-        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
-        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID).times(2);
+        HttpSession theSessionMock = mock(HttpSession.class);
+        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
 
-        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(theRequestMock.getSession(EasyMock.anyBoolean())).andReturn(theSessionMock).times(2);
+        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
+        when(theRequestMock.getSession(any(Boolean.class))).thenReturn(theSessionMock);
 
-        EasyMock.replay(theRequestMock, theSessionMock);
-            EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theRequestMock);
-            assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theRequestMock));
-        EasyMock.verify(theRequestMock, theSessionMock);
-        EasyMock.reset(theRequestMock, theSessionMock);
+        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theRequestMock);
+        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theRequestMock));
+
+        verify(theSessionMock, times(2)).getId();
+        verify(theRequestMock, times(2)).getSession(any(Boolean.class));
 
         assertFalse(theEventExecutorService.isUserRegistered());
     }
