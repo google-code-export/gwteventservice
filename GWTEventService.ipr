@@ -22,7 +22,6 @@
             <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
             <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="conversation-rpc" />
-              <element id="module-output" name="gwteventservice" />
             </element>
             <element id="archive" name="eventservice-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice-rpc" />
@@ -32,6 +31,9 @@
             </element>
             <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
+            </element>
+            <element id="archive" name="gwteventservice-1.3.0-SNAPSHOT.jar">
+              <element id="module-output" name="gwteventservice" />
             </element>
           </element>
         </element>

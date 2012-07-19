@@ -9,42 +9,6 @@
 	<artifactId>zip</artifactId>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
-				<executions>
-					<execution>
-						<id>core</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/assemble/core.xml</descriptor>
-							</descriptors>
-							<finalName>gwteventservice-${project.version}</finalName>
-						</configuration>
-					</execution>					
-					<execution>
-						<id>developer</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/assemble/developer.xml</descriptor>
-							</descriptors>
-							<finalName>gwteventservice-${project.version}</finalName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencies>
         <!-- GWTEventService libraries / dependencies -->
         <!-- GWTEventService - EventService-RPC (rpc / communication module) -->
@@ -102,4 +66,40 @@
 			<classifier>javadoc</classifier>
 		</dependency>
 	</dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <id>core</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assemble/core.xml</descriptor>
+                            </descriptors>
+                            <finalName>gwteventservice-${project.version}</finalName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>developer</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assemble/developer.xml</descriptor>
+                            </descriptors>
+                            <finalName>gwteventservice-${project.version}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
