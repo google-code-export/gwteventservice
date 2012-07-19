@@ -18,7 +18,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="eventservice-rpc" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.1.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.4.0" level="project" />
     <orderEntry type="module" module-name="eventservice-rpc" />
     <orderEntry type="module" module-name="eventservice-rpc" />
     <orderEntry type="module" module-name="eventservice" />

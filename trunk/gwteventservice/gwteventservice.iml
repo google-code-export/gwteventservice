@@ -25,8 +25,10 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-servlet:2.0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.0.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.5.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.1.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.4.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.4.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:1.0.0.GA" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:sources:1.0.0.GA" level="project" />
     <orderEntry type="module" module-name="eventservice-rpc" />
     <orderEntry type="module" module-name="eventservice" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
@@ -41,7 +43,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-api-mockito:1.4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-all:1.9.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-api-support:1.4.12" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.google.gwt:gwt-dev:2.1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.gwt:gwt-dev:2.4.0" level="project" />
   </component>
 </module>
 
