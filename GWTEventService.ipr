@@ -19,9 +19,10 @@
             <element id="module-output" name="conversation-ui" />
           </element>
           <element id="directory" name="lib">
-            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.1.0" />
-            <element id="archive" name="conversation-rpc-1.3.0-SNAPSHOT.jar">
+            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
+            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="conversation-rpc" />
+              <element id="module-output" name="gwteventservice" />
             </element>
             <element id="archive" name="eventservice-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice-rpc" />
@@ -31,9 +32,6 @@
             </element>
             <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
-            </element>
-            <element id="archive" name="gwteventservice-1.3.0-SNAPSHOT.jar">
-              <element id="module-output" name="gwteventservice" />
             </element>
           </element>
         </element>
@@ -55,14 +53,10 @@
             <element id="module-output" name="hellogwteventservice" />
           </element>
           <element id="directory" name="lib">
-            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.1.0" />
-            <element id="archive" name="gwteventservice-1.3.0-SNAPSHOT.jar">
+            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
+            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="gwteventservice" />
-            </element>
-            <element id="archive" name="eventservice-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice-rpc" />
-            </element>
-            <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
             </element>
           </element>
@@ -597,37 +591,59 @@
         <root url="jar://$PROJECT_DIR$/../../lib/gwt-2.1.0/gwt-user.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.gwt:gwt-dev:2.1.0">
+    <library name="Maven: com.google.gwt:gwt-dev:2.4.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.1.0/gwt-dev-2.1.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.1.0/gwt-dev-2.1.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.1.0/gwt-dev-2.1.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.gwt:gwt-servlet:2.1.0">
+    <library name="Maven: com.google.gwt:gwt-servlet:2.4.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.gwt:gwt-user:2.1.0">
+    <library name="Maven: com.google.gwt:gwt-user:2.4.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: javax.validation:validation-api:1.0.0.GA">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: javax.validation:validation-api:sources:1.0.0.GA">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: junit:junit:4.10">
