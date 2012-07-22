@@ -47,6 +47,16 @@ public class ServerMessageGeneratorServiceImpl extends RemoteEventServiceServlet
         }
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        if(myEventGeneratorTimer != null) {
+            //clean-up
+            myEventGeneratorTimer.cancel();
+            myEventGeneratorTimer.purge();
+        }
+    }
+
     private class ServerMessageGeneratorTimerTask extends TimerTask
     {
         public void run() {
