@@ -32,6 +32,8 @@ import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerato
 import de.novanic.eventservice.service.connection.id.SessionExtendedConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
+import de.novanic.eventservice.service.registry.EventRegistry;
+import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.test.testhelper.*;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
@@ -153,6 +155,21 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
             myEventService.initEventService();
             fail("Exception expected, because no session / request is available!");
         } catch(Exception e) {}
+    }
+
+    @Test
+    public void testDestroyEventService() throws Exception {
+        final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+        //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
+        theEventServiceConfigurationFactory.removeConfigurationLoader(new PropertyConfigurationLoader());
+
+        myEventService = new DummyEventServiceImpl(new DummyServletConfig(SessionConnectionIdGenerator.class.getName()));
+        super.setUp(myEventService);
+
+        EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
+        assertSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
+        myEventService.destroy();
+        assertNotSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
     }
 
     @Test
