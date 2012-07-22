@@ -26,6 +26,8 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.EventServiceTestCase;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.util.PlatformUtil;
 import org.junit.After;
@@ -53,6 +55,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         tearDownEventServiceConfiguration();
 
         FactoryResetService.resetFactory(EventRegistryFactory.class);
+        FactoryResetService.resetFactory(UserManagerFactory.class);
     }
 
     @Test
@@ -66,12 +69,34 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
     }
 
     @Test
-    public void testResetEventRegistry() {
+    public void testResetEventRegistryFactory() {
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         assertSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
 
         FactoryResetService.resetFactory(EventRegistryFactory.class);
         assertNotSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
+    }
+
+    @Test
+    public void testResetEventRegistry() throws Exception {
+        final String theTestUserId = "TestUser1";
+
+        UserManager theUserManager = UserManagerFactory.getInstance().getUserManager(100);
+        theUserManager.getUserActivityScheduler().stop();
+
+        theUserManager.addUser(theTestUserId);
+        assertNotNull(theUserManager.getUser(theTestUserId));
+
+        EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
+        assertNotNull(theEventRegistry);
+        Thread.sleep(400);
+        assertNull(theUserManager.getUser(theTestUserId)); //cleaned-up by the user-activity scheduler which is activated by the EventRegistry
+
+        EventRegistryFactory.getInstance().resetEventRegistry();
+        theUserManager.addUser(theTestUserId);
+
+        Thread.sleep(400);
+        assertNotNull(theUserManager.getUser(theTestUserId)); //not cleaned-up by the user-activity scheduler, because the EventRegistry got stopped
     }
 
     @Test
