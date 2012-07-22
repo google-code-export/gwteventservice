@@ -18,9 +18,6 @@
         <setting name="gwtSdkUrl" value="file://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/" />
         <setting name="gwtSdkType" value="maven" />
         <setting name="webFacet" value="Web" />
-        <packaging>
-          <module name="de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI" path="/de.novanic.gwteventservice.demo.conversationapp.DemoConversationAppUI" />
-        </packaging>
       </configuration>
     </facet>
   </component>
@@ -43,8 +40,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.0.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.4.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.gwt:gwt-user:2.4.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:1.0.0.GA" level="project" />

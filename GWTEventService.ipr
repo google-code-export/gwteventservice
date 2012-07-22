@@ -17,6 +17,7 @@
         <element id="directory" name="WEB-INF">
           <element id="directory" name="classes">
             <element id="module-output" name="conversation-ui" />
+            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
           </element>
           <element id="directory" name="lib">
             <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
@@ -53,6 +54,7 @@
         <element id="directory" name="WEB-INF">
           <element id="directory" name="classes">
             <element id="module-output" name="hellogwteventservice" />
+            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
           </element>
           <element id="directory" name="lib">
             <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
