@@ -55,6 +55,14 @@ public abstract class ConnectionStrategyServerConnectorAdapter implements Connec
     }
 
     /**
+     * Returns the configuration which was provided to this connector adapter.
+     * @return configuration
+     */
+    protected EventServiceConfiguration getConfiguration() {
+        return myConfiguration;
+    }
+
+    /**
      * Waits for the configured min. waiting time.
      * @see de.novanic.eventservice.config.ConfigParameter#MIN_WAITING_TIME_TAG
      * @throws EventServiceException
@@ -107,6 +115,11 @@ public abstract class ConnectionStrategyServerConnectorAdapter implements Connec
         }
     }
 
+    /**
+     * Returns the configured encoding.
+     * @return configured encoding
+     * @throws EventServiceException
+     */
     protected static String getEncoding() throws EventServiceException {
         if(ENCODING != null) {
             return ENCODING;
@@ -114,6 +127,12 @@ public abstract class ConnectionStrategyServerConnectorAdapter implements Connec
         throw new EventServiceException("The encoding property wasn't initialized. It is initialized with the configuration at the time of object construction.");
     }
 
+    /**
+     * Encodes an string with the configured encoding.
+     * @param aString String to encode
+     * @return encoded string
+     * @throws EventServiceException
+     */
     protected static byte[] encode(String aString) throws EventServiceException {
         try {
             return aString.getBytes(getEncoding());
