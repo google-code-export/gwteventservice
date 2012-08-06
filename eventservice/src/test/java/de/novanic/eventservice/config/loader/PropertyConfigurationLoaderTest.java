@@ -77,6 +77,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertNull(theConfiguration.getConnectionStrategyEncoding());
+        assertNull(theConfiguration.getMaxEvents());
     }
 
     @Test
@@ -93,6 +94,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals("de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector", theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(StreamingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxEvents());
     }
 
     @Test
@@ -111,6 +113,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertNull(theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertNull(theConfiguration.getMaxEvents());
     }
 
     @Test
@@ -123,6 +126,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
+        assertEquals(Integer.valueOf(1000), theConfiguration.getMaxEvents());
     }
 
     @Test

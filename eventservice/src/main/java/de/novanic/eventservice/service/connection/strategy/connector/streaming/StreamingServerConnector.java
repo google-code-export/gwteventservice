@@ -106,7 +106,7 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
 
     /**
      * Listens for occurring events (can be retrieved from the {@link de.novanic.eventservice.service.registry.user.UserInfo} with
-     * {@link de.novanic.eventservice.service.registry.user.UserInfo#retrieveEvents()}) and should prepare or transfer the retrieved events
+     * {@link de.novanic.eventservice.service.registry.user.UserInfo#retrieveEvents(int)}) and should prepare or transfer the retrieved events
      * directly. The reason for the listen and transfer preparation within one single method is, that the {@link de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector}
      * should have the control about listening and transfer of the occurred events.
      * The streaming implementation needs a response to stream the events to the clients. That can be prepared with
@@ -120,7 +120,7 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
         try {
             //loops until the max. waiting time is exceed
             do {
-                List<DomainEvent> theCurrentEvents = aUserInfo.retrieveEvents();
+                List<DomainEvent> theCurrentEvents = aUserInfo.retrieveEvents(getConfiguration().getMaxEvents());
                 if(!theCurrentEvents.isEmpty()) {
                     aUserInfo.reportUserActivity();
                     theEvents.addAll(theCurrentEvents);

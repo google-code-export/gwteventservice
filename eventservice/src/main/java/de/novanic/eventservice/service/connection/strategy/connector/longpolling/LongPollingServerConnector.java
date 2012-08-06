@@ -62,6 +62,6 @@ public class LongPollingServerConnector extends ConnectionStrategyServerConnecto
     public List<DomainEvent> listen(UserInfo aUserInfo) throws EventServiceException {
         waitMinWaitingTime();
         waitMaxWaitingTime(aUserInfo);
-        return aUserInfo.retrieveEvents();
+        return aUserInfo.retrieveEvents(getConfiguration().getMaxEvents());
     }
 }
