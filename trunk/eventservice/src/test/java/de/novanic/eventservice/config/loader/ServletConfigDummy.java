@@ -82,6 +82,10 @@ public class ServletConfigDummy implements ServletConfig
         return Collections.enumeration(myInitParameters.keySet());
     }
 
+    public void addParameter(ConfigParameter aParameter, String aValue) {
+        myInitParameters.put(aParameter.declaration(), aValue);
+    }
+
     public boolean removeParameter(ConfigParameter aParameter) {
         return myInitParameters.remove(aParameter.declaration()) != null;
     }
