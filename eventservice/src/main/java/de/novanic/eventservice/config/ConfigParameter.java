@@ -72,6 +72,7 @@ public enum ConfigParameter
 
     /**
      * Maximum amount of events which should be transferred to the client at once.
+     * The maximum amount of events prevents the listening logic from endless seeking of events (for example when more events are concurrently added than the listen thread can process).
      */
     MAX_EVENTS("events.max", false),
 
