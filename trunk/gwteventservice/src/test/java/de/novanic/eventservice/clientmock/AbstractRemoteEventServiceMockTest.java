@@ -21,6 +21,7 @@
  */
 package de.novanic.eventservice.clientmock;
 
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
@@ -59,7 +60,7 @@ public abstract class AbstractRemoteEventServiceMockTest
 
     @Before
     public void setUp() {
-        myEventServiceAsyncMock = mock(EventServiceAsync.class);
+        myEventServiceAsyncMock = mock(EventServiceAsync.class, withSettings().extraInterfaces(ServiceDefTarget.class));
         ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DirectCommandScheduler());
     }
 
@@ -254,9 +255,9 @@ public abstract class AbstractRemoteEventServiceMockTest
         public Object answer(InvocationOnMock anInvocation) throws Throwable {
             final Object[] theArguments = anInvocation.getArguments();
             AsyncCallback<R> theAsyncCallback = (AsyncCallback<R>)theArguments[theArguments.length - 1];
-            try {
+            if(theAsyncCallback != null) {
                 theAsyncCallback.onSuccess(myCallbackResult);
-            } catch(Throwable e) { /* do nothing, because the matcher wouldn't work, when the answer is aborted by an exception */ }
+            }
             return null;
         }
     }
@@ -272,9 +273,9 @@ public abstract class AbstractRemoteEventServiceMockTest
         public Object answer(InvocationOnMock anInvocation) throws Throwable {
             final Object[] theArguments = anInvocation.getArguments();
             AsyncCallback<?> theAsyncCallback = (AsyncCallback<?>)theArguments[theArguments.length - 1];
-            try {
+            if(theAsyncCallback != null) {
                 theAsyncCallback.onFailure(myThrowable);
-            } catch(Throwable e) { /* do nothing, because the matcher wouldn't work, when the answer is aborted by an exception */ }
+            }
             return null;
         }
     }
