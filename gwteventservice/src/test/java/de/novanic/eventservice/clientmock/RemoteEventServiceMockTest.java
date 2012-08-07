@@ -1511,19 +1511,16 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
             }
         };
         assertFalse(myRemoteEventService.isActive());
-        try {
-            myRemoteEventService.addListener(TEST_DOMAIN, theListener);
-            fail(ConcurrentModificationException.class.getName() + " was expected, because the listeners were modified while notifying the listeners!");
-        } catch(ConcurrentModificationException e) {}
+        myRemoteEventService.addListener(TEST_DOMAIN, theListener);
         assertTrue(myRemoteEventService.isActive());
 
-        assertEquals(1, theListener.getEventCount(DummyEvent.class));
+        assertEquals(3, theListener.getEventCount(DummyEvent.class));
         assertTrue(myRemoteEventService.isActive());
 
         assertEqualsActiveDomains(TEST_DOMAIN);
-        assertContainsListeners(TEST_DOMAIN, 2);
+        assertContainsListeners(TEST_DOMAIN, 4); //first time and with every occurred event (three events) again
 
-        verify(myEventServiceAsyncMock, times(1)).listen(any(AsyncCallback.class));
+        verify(myEventServiceAsyncMock, times(4)).listen(any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Set.class), any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Domain.class), any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(AsyncCallback.class));
