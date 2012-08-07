@@ -108,10 +108,33 @@ public class WebDescriptorConfigurationLoaderTest
     }
 
     @Test
+    public void testLoad_IncompleteConfiguration_2() {
+        ServletConfigDummy theServletConfig = new ServletConfigDummy(true, false);
+        theServletConfig.addParameter(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG, "");
+        theServletConfig.addParameter(ConfigParameter.CONNECTION_ID_GENERATOR, "");
+
+        ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
+
+        assertTrue(theConfigurationLoader.isAvailable());
+
+        EventServiceConfiguration theConfiguration = theConfigurationLoader.load();
+        assertEquals(Integer.valueOf(30000), theConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
+        assertNull(theConfiguration.getReconnectAttemptCount());
+        assertNull(theConfiguration.getConnectionIdGeneratorClassName());
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
+        assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
+        assertEquals(Integer.valueOf(7000), theConfiguration.getMaxEvents());
+    }
+
+    @Test
     public void testLoad_Error() {
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(null);
 
         assertFalse(theConfigurationLoader.isAvailable());
+        assertNull(theConfigurationLoader.load());
     }
 
     @Test
