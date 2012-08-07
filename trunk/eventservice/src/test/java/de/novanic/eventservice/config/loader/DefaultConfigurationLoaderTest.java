@@ -21,6 +21,7 @@
  */
 package de.novanic.eventservice.config.loader;
 
+import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import de.novanic.eventservice.config.EventServiceConfiguration;
@@ -59,7 +60,7 @@ public class DefaultConfigurationLoaderTest
         assertEquals(Integer.valueOf(20000), theEventServiceConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theEventServiceConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theEventServiceConfiguration.getConnectionIdGeneratorClassName());
-        assertNull(theEventServiceConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(DefaultClientConnector.class.getName(), theEventServiceConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theEventServiceConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theEventServiceConfiguration.getConnectionStrategyEncoding());
         assertEquals(Integer.valueOf(1000), theEventServiceConfiguration.getMaxEvents());
