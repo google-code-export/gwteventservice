@@ -13,6 +13,7 @@
     <name>${project.artifactId}</name>
     <modules>
         <module>hellogwteventservice</module>
+		<module>rapidevents</module>
         <module>conversation</module>
     </modules>
 </project>
