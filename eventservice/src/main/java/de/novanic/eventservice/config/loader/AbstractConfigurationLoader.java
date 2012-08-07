@@ -60,11 +60,19 @@ public abstract class AbstractConfigurationLoader implements ConfigurationLoader
     protected abstract String getConfigDescription();
 
     /**
-     * Returns the parameter value of the configuration parameter.
+     * Returns the parameter value of the configuration parameter (searches for the short and the full-qualified parameter declaration).
      * @param aConfigParameter config parameter
      * @return value of the config parameter, NULL when the parameter isn't configured
      */
-    protected abstract String readParameterValue(ConfigParameter aConfigParameter);
+    protected String readParameterValue(ConfigParameter aConfigParameter) {
+        String theValue = readParameterValue(aConfigParameter.declarationFQ());
+        if(theValue == null) {
+            theValue = readParameterValue(aConfigParameter.declaration());
+        }
+        return theValue;
+    }
+
+    protected abstract String readParameterValue(String aConfigParameterDeclaration);
 
     /**
      * Reads the numeric value of the parameter. When the value isn't numeric, an {@link de.novanic.eventservice.client.config.ConfigurationException} is thrown.
