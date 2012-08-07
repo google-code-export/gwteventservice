@@ -190,7 +190,15 @@
   <component name="DevPartner.ProjectProperties">
     <option name="dpjConfigurationName" value="gwteventservice" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$PROJECT_DIR$/demo" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/demo/conversation" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/demo/conversation/conversation-rpc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/demo/conversation/conversation-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/demo/conversation/conversation-ui" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/demo/hellogwteventservice" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/demo/rapidevents" charset="UTF-8" />
+  </component>
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
