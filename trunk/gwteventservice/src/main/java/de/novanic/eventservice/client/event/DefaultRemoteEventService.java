@@ -135,11 +135,11 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
         final boolean isNewDomain = theListeners == null;
         if(isNewDomain) {
             theListeners = new ArrayList<RemoteEventListener>();
-            myDomainListenerMapping.put(aDomain, theListeners);
         } else if(anEventFilter != null) {
             registerEventFilter(aDomain, anEventFilter);
         }
-        theListeners.add(aRemoteListener);
+        theListeners = addOnCopy(theListeners, aRemoteListener);
+        myDomainListenerMapping.put(aDomain, theListeners);
         return isNewDomain;
     }
 
@@ -474,6 +474,21 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
             }
         }
         return isRemoved;
+    }
+
+    /**
+     * Adds an entry to a list and avoids {@link ConcurrentModificationException} when an entry is added while iterating.
+     * @param aList list to add an entry to
+     * @param anEntry entry to add
+     * @param <CT> type of the contained objects
+     * @return new list instance with the added entry
+     */
+    private static <CT> List<CT> addOnCopy(List<CT> aList, CT anEntry) {
+        List<CT> theCollectionCopy = new ArrayList<CT>(aList);
+        if(theCollectionCopy.add(anEntry)) {
+            return theCollectionCopy;
+        }
+        return aList;
     }
 
     /**
