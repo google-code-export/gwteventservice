@@ -24,7 +24,7 @@ public abstract class AbstractConfigurationLoader implements ConfigurationLoader
         //The configuration is available when at least one parameter is configured.
         for(ConfigParameter theConfigParameter: ConfigParameter.values()) {
             final String theParameterValue = readParameterValue(theConfigParameter);
-            if(theParameterValue != null) {
+            if(isParameterValueDefined(theParameterValue)) {
                 return true;
             }
         }
@@ -66,8 +66,11 @@ public abstract class AbstractConfigurationLoader implements ConfigurationLoader
      */
     protected String readParameterValue(ConfigParameter aConfigParameter) {
         String theValue = readParameterValue(aConfigParameter.declarationFQ());
-        if(theValue == null) {
+        if(!isParameterValueDefined(theValue)) {
             theValue = readParameterValue(aConfigParameter.declaration());
+            if(!isParameterValueDefined(theValue)) {
+                theValue = null; //it could be an empty string which isn't desired
+            }
         }
         return theValue;
     }
@@ -82,7 +85,7 @@ public abstract class AbstractConfigurationLoader implements ConfigurationLoader
      */
     private Integer readIntParameterValue(ConfigParameter aConfigParameter) {
         final String theParameterValue = readParameterValue(aConfigParameter);
-        if(theParameterValue != null) {
+        if(isParameterValueDefined(theParameterValue)) {
             try {
                 return StringUtil.readInteger(theParameterValue);
             } catch(ServiceUtilException e) {
@@ -98,7 +101,7 @@ public abstract class AbstractConfigurationLoader implements ConfigurationLoader
      * @param aParameterValue value to check
      * @return true when it is available, otherwise false
      */
-    protected boolean isParameterAvailable(String aParameterValue) {
+    protected boolean isParameterValueDefined(String aParameterValue) {
         return aParameterValue != null && aParameterValue.trim().length() > 0;
     }
 
