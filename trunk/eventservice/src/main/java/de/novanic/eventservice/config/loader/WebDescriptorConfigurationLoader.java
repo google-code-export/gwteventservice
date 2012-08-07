@@ -21,8 +21,6 @@
  */
 package de.novanic.eventservice.config.loader;
 
-import de.novanic.eventservice.config.ConfigParameter;
-
 import javax.servlet.ServletConfig;
 
 /**
@@ -60,20 +58,6 @@ public class WebDescriptorConfigurationLoader extends AbstractConfigurationLoade
     }
 
     /**
-     * Reads the value of a config parameter from the servlet configuration / web descriptor.
-     * @param aConfigParameter config parameter
-     * @return red parameter value
-     */
-    @Override
-    protected String readParameterValue(ConfigParameter aConfigParameter) {
-        String theValue = myServletConfig.getInitParameter(aConfigParameter.declarationFQ());
-        if(!isParameterAvailable(theValue)) {
-            theValue = myServletConfig.getInitParameter(aConfigParameter.declaration());
-        }
-        return theValue;
-    }
-
-    /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
      * {@link ConfigurationLoader#load()} shouldn't called. In the case of {@link WebDescriptorConfigurationLoader} the method
      * returns true when the init-parameters for the servlet are registered in the web-descriptor.
@@ -82,5 +66,15 @@ public class WebDescriptorConfigurationLoader extends AbstractConfigurationLoade
     @Override
     public boolean isAvailable() {
         return myServletConfig != null && super.isAvailable();
+    }
+
+    /**
+     * Reads the value of a config parameter from the servlet configuration / web descriptor.
+     * @param aConfigParameterDeclaration config parameter
+     * @return red parameter value
+     */
+    @Override
+    protected String readParameterValue(String aConfigParameterDeclaration) {
+        return myServletConfig.getInitParameter(aConfigParameterDeclaration);
     }
 }

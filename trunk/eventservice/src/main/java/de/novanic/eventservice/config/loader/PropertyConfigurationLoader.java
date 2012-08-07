@@ -23,7 +23,6 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.logger.ServerLogger;
 import de.novanic.eventservice.logger.ServerLoggerFactory;
 
@@ -81,16 +80,6 @@ public class PropertyConfigurationLoader extends AbstractConfigurationLoader
     }
 
     /**
-     * Reads the value for a config parameter from the properties (file).
-     * @param aConfigParameter config parameter
-     * @return red parameter value
-     */
-    @Override
-    protected String readParameterValue(ConfigParameter aConfigParameter) {
-        return getPropertyValue(aConfigParameter, myProperties);
-    }
-
-    /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
      * {@link ConfigurationLoader#load()} shouldn't called. In the case of {@link PropertyConfigurationLoader} the method
      * returns true when the location of the properties file is attached to the classpath.
@@ -128,24 +117,20 @@ public class PropertyConfigurationLoader extends AbstractConfigurationLoader
     }
 
     /**
+     * Reads the value for a config parameter from the properties (file).
+     * @param aConfigParameterDeclaration config parameter
+     * @return red parameter value
+     */
+    @Override
+    protected String readParameterValue(String aConfigParameterDeclaration) {
+        return myProperties.getProperty(aConfigParameterDeclaration);
+    }
+
+    /**
      * Returns the properties file as a stream ({@link java.io.InputStream}).
      * @return properties file as a stream ({@link java.io.InputStream})
      */
     private InputStream getPropertiesStream() {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(myPropertyName);
-    }
-
-    /**
-     * Returns the best property value. The specified properties are checked in sequence and the value of the first available property is returned.
-     * @param aConfigParameter config parameter to get the value for
-     * @param aProperties properties
-     * @return return the value of the best / first available property
-     */
-    private String getPropertyValue(ConfigParameter aConfigParameter, Properties aProperties) {
-        String theValue = aProperties.getProperty(aConfigParameter.declarationFQ());
-        if(theValue == null) {
-            theValue = aProperties.getProperty(aConfigParameter.declaration());
-        }
-        return theValue;
     }
 }
