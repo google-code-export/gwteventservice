@@ -22,6 +22,7 @@
 package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
+import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
@@ -123,7 +124,7 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
-        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertEquals(DefaultClientConnector.class.getName(), theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
         assertEquals(Integer.valueOf(1000), theConfiguration.getMaxEvents());
