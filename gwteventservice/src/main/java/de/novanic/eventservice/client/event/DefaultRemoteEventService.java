@@ -119,16 +119,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @return true, when it is a new / unregistered domain for the client, otherwise false
      */
     private boolean addListenerLocal(Domain aDomain, RemoteEventListener aRemoteListener) {
-        List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
-        final boolean isNewDomain = theListeners == null;
-        if(theListeners == null) {
-            theListeners = new ArrayList<RemoteEventListener>();
-            myDomainListenerMapping.put(aDomain, theListeners);
-            theListeners.add(aRemoteListener);
-        } else {
-            theListeners.add(aRemoteListener);
-        }
-        return isNewDomain;
+        return addListenerLocal(aDomain, aRemoteListener, null);
     }
 
     /**
@@ -145,7 +136,7 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
         if(isNewDomain) {
             theListeners = new ArrayList<RemoteEventListener>();
             myDomainListenerMapping.put(aDomain, theListeners);
-        } else {
+        } else if(anEventFilter != null) {
             registerEventFilter(aDomain, anEventFilter);
         }
         theListeners.add(aRemoteListener);
