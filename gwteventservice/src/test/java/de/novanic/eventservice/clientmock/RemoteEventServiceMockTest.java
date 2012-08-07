@@ -31,10 +31,7 @@ import de.novanic.eventservice.client.event.listener.RemoteEventListener;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
-import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
-import de.novanic.eventservice.test.testhelper.DummyDomainEvent;
-import de.novanic.eventservice.test.testhelper.EventListenerTestMode;
-import de.novanic.eventservice.test.testhelper.UnlistenEventListenerTestMode;
+import de.novanic.eventservice.test.testhelper.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -124,7 +121,13 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         mockInit(new TestException());
 
         assertFalse(myRemoteEventService.isActive());
-        myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
+        try {
+            myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
+            fail(RemoteEventServiceRuntimeException.class.getName() + " was expected because an exception was thrown when the init logic was called!");
+        } catch(RemoteEventServiceRuntimeException e) {
+            assertTrue(e.getMessage().contains("Error"));
+            assertTrue(e.getMessage().contains("activating"));
+        }
         assertFalse(myRemoteEventService.isActive());
         //a second time
         myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
@@ -1484,6 +1487,80 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         verify(myEventServiceAsyncMock, times(4)).listen(any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Set.class), any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Domain.class), any(AsyncCallback.class));
+        verify(myEventServiceAsyncMock, times(0)).unlisten(any(AsyncCallback.class));
+    }
+
+    @Test
+    public void testListen_Concurrent_AddListener() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN);
+
+        //caused by callback of register
+        List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
+        theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
+        mockListen(theEvents, 3);
+
+        final EventListenerTestMode theListener = new EventListenerTestMode() {
+            @Override
+            public void apply(Event anEvent) {
+                super.apply(anEvent);
+                //A listeners get added while processing the received events...
+                myRemoteEventService.addListener(TEST_DOMAIN, new EventListenerTestMode());
+            }
+        };
+        assertFalse(myRemoteEventService.isActive());
+        try {
+            myRemoteEventService.addListener(TEST_DOMAIN, theListener);
+            fail(ConcurrentModificationException.class.getName() + " was expected, because the listeners were modified while notifying the listeners!");
+        } catch(ConcurrentModificationException e) {}
+        assertTrue(myRemoteEventService.isActive());
+
+        assertEquals(1, theListener.getEventCount(DummyEvent.class));
+        assertTrue(myRemoteEventService.isActive());
+
+        assertEqualsActiveDomains(TEST_DOMAIN);
+        assertContainsListeners(TEST_DOMAIN, 2);
+
+        verify(myEventServiceAsyncMock, times(1)).listen(any(AsyncCallback.class));
+        verify(myEventServiceAsyncMock, times(0)).unlisten(any(Set.class), any(AsyncCallback.class));
+        verify(myEventServiceAsyncMock, times(0)).unlisten(any(Domain.class), any(AsyncCallback.class));
+        verify(myEventServiceAsyncMock, times(0)).unlisten(any(AsyncCallback.class));
+    }
+
+    @Test
+    public void testListen_Concurrent_RemoveListener() {
+        mockInit();
+
+        //caused by first addListener / activate
+        mockRegister(TEST_DOMAIN);
+
+        //caused by callback of register
+        List<DomainEvent> theEvents = new ArrayList<DomainEvent>();
+        theEvents.add(new DummyDomainEvent(TEST_DOMAIN));
+        mockListen(theEvents, 3);
+
+        final EventListenerTestMode theListener = new EventListenerTestMode() {
+            @Override
+            public void apply(Event anEvent) {
+                super.apply(anEvent);
+                //All listeners get removed while processing the received events...
+                myRemoteEventService.removeListeners(TEST_DOMAIN);
+            }
+        };
+        assertFalse(myRemoteEventService.isActive());
+        myRemoteEventService.addListener(TEST_DOMAIN, theListener);
+        assertFalse(myRemoteEventService.isActive());
+
+        assertEquals(1, theListener.getEventCount(DummyEvent.class));
+        assertFalse(myRemoteEventService.isActive());
+
+        assertContainsListeners(TEST_DOMAIN, 0);
+
+        verify(myEventServiceAsyncMock, times(1)).listen(any(AsyncCallback.class));
+        verify(myEventServiceAsyncMock, times(0)).unlisten(any(Set.class), any(AsyncCallback.class));
+        verify(myEventServiceAsyncMock, times(1)).unlisten(any(Domain.class), any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(AsyncCallback.class));
     }
 
