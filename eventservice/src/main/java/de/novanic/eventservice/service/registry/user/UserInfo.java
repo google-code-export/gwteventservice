@@ -78,13 +78,13 @@ public class UserInfo implements Comparable<UserInfo>
     public void addEvent(Domain aDomain, Event anEvent) {
         DomainEvent theDomainEvent = new DefaultDomainEvent(anEvent, aDomain);
         myEvents.add(theDomainEvent);
-        doNotifyAll();
+        notifyEventListening();
     }
 
     /**
      * doNotifyAll informs all waiting Threads for new events.
      */
-    private synchronized void doNotifyAll() {
+    public synchronized void notifyEventListening() {
         notifyAll();
     }
 
