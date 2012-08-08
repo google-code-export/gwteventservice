@@ -120,4 +120,9 @@ public interface UserManager
      * @return the {@link UserActivityScheduler} which is instantiated with the UserManager
      */
     UserActivityScheduler getUserActivityScheduler();
+
+    /**
+     * Resets the UserManager (removes all users, stops the user activity scheduler, etc.)
+     */
+    void reset();
 }
