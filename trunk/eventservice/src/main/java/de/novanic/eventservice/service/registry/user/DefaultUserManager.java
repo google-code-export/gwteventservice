@@ -178,4 +178,17 @@ public class DefaultUserManager implements UserManager
     public UserActivityScheduler getUserActivityScheduler() {
         return myUserActivityScheduler;
     }
+
+    /**
+     * Resets the UserManager (removes all users, stops the user activity scheduler, etc.)
+     */
+    public void reset() {
+        deactivateUserActivityScheduler();
+        for(UserInfo theUserInfo: myUserMap.values()) {
+            synchronized(theUserInfo) {
+                theUserInfo.notifyAll();
+            }
+        }
+        myUserMap.clear();
+    }
 }

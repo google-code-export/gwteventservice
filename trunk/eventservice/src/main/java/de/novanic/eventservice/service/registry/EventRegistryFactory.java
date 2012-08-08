@@ -80,7 +80,7 @@ public class EventRegistryFactory
     public void resetEventRegistry() {
         synchronized(this) {
             myEventRegistry = null;
-            UserManagerFactory.getInstance().getUserManager().deactivateUserActivityScheduler();
+            UserManagerFactory.getInstance().getUserManager().reset();
         }
     }
 
