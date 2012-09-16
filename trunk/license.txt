@@ -2,18 +2,18 @@ GWTEventService License Information
 
 
 	The documentation and the source code of GWTEventService including the demo applications is licensed under the
-	GNU Lesser General Public Licence (LGPL) v3.0.
+	GNU Lesser General Public License (LGPL) v3.0.
 	http://www.gnu.org/licenses/lgpl.html
 
 	The source code of GWTEventService included in this distribution is available from the GWTEventService project.
 	http://gwteventservice.googlecode.com/
 
-	The product/project owner of GWTEventService is strawbill UG (haftungsbeschränkt).
+	The product/project owner of GWTEventService is strawbill UG (haftungsbeschrï¿½nkt).
 	Other licensing for GWTEventService may also be possible on request. If you have questions regarding the licensing please ask/request via
 	licensing@strawbill.com
 
 
-Licence information regarding related third party software
+License information regarding related third party software
 
 	The GWTEventService library uses and needs the following third party software/libraries to build.
 
@@ -21,12 +21,16 @@ Licence information regarding related third party software
 		License:	Apache License v2.0
 		URL:		http://code.google.com/webtoolkit/
 
+	-	Name:		SLF4J
+		License:	MIT License
+		URL:		http://www.slf4j.org/
+		
 	-	Name:		JUnit
-		Licence:	Common Public Licence v1.0
+		License:	Common Public License v1.0
 		URL:		http://www.junit.org/
 	
 	-	Name:		EasyMock
-		Licence:	MIT Licence
+		License:	MIT License
 		URL:		http://www.easymock.org/
 		
 	-	Name:		PowerMock

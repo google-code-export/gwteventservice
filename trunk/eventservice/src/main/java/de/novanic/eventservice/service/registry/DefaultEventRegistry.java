@@ -29,14 +29,14 @@ import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
-import de.novanic.eventservice.logger.ServerLogger;
-import de.novanic.eventservice.logger.ServerLoggerFactory;
 import de.novanic.eventservice.service.EventServiceException;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 import de.novanic.eventservice.service.registry.user.*;
 import de.novanic.eventservice.service.registry.domain.ListenDomainAccessor;
 import de.novanic.eventservice.service.UserTimeoutListener;
 import de.novanic.eventservice.event.listener.unlisten.UnlistenEventFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -56,7 +56,7 @@ import java.util.*;
  */
 public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
 {
-    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(DefaultEventRegistry.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultEventRegistry.class);
 
     private final EventServiceConfiguration myConfiguration;
     private final DomainUserMapping myDomainUserMapping;
@@ -77,7 +77,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
         myUserActivityScheduler.addTimeoutListener(new TimeoutListener());
         myUserManager.activateUserActivityScheduler();
 
-        LOG.info("Configuration changed - " + aConfiguration.toString());
+        LOG.info("Configuration changed - {}", aConfiguration.toString());
     }
 
     /**
@@ -136,12 +136,12 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
         if(aDomain != null) {
             myDomainUserMapping.addUser(aDomain, theUserInfo);
 
-            LOG.debug("User \"" + aUserId + "\" registered for domain \"" + aDomain + "\".");
+            LOG.debug("User \"{}\" registered for domain \"{}\".", aUserId, aDomain);
 
             //set EventFilter
             setEventFilter(aDomain, theUserInfo, anEventFilter);
         } else {
-            LOG.debug("User \"" + aUserId + "\" registered.");
+            LOG.debug("User \"{}\" registered.", aUserId);
         }
     }
 
@@ -173,11 +173,11 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     private void setEventFilter(final Domain aDomain, final UserInfo aUserInfo, EventFilter anEventFilter) {
         if(aUserInfo != null) {
             if(anEventFilter != null) {
-                LOG.debug(aUserInfo.getUserId() + ": EventFilter changed for domain \"" + aDomain + "\".");
+                LOG.debug("{}: EventFilter changed for domain \"{}\".", aUserInfo.getUserId(), aDomain);
                 aUserInfo.setEventFilter(aDomain, anEventFilter);
             } else {
                 if(aUserInfo.removeEventFilter(aDomain)) {
-                    LOG.debug(aUserInfo.getUserId() + ": EventFilter removed from domain \"" + aDomain + "\".");
+                    LOG.debug("{}: EventFilter removed from domain \"{}\".", aUserInfo.getUserId(), aDomain);
                 }
             }
         }
@@ -218,13 +218,15 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
      */
     public List<DomainEvent> listen(ConnectionStrategyServerConnector aServerEventListener, String aUserId) {
         UserInfo theUserInfo = getUserInfo(aUserId);
-        LOG.debug(aUserId + ": listen (UserInfo " + theUserInfo + ").");
+        LOG.debug("{}: listen (UserInfo {}).", aUserId, theUserInfo);
         if(theUserInfo != null) {
             myUserActivityScheduler.reportUserActivity(theUserInfo);
             try {
                 return aServerEventListener.listen(theUserInfo);
             } catch(EventServiceException e) {
-                LOG.error("Error on listening for user \"" + theUserInfo + "\" with \"" + aServerEventListener.getClass().getName() + "\"!", e);
+                if(LOG.isErrorEnabled()) {
+                    LOG.error("Error on listening for user \"" + theUserInfo + "\" with \"" + aServerEventListener.getClass().getName() + "\"!", e);
+                }
             } finally {
                 myUserActivityScheduler.reportUserActivity(theUserInfo);
             }
@@ -241,7 +243,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
         UserInfo theUserInfo = getUserInfo(aUserId);
         if(theUserInfo != null) {
             if(aDomain != null) {
-                LOG.debug(aUserId + ": unlisten (domain \"" + aDomain + "\").");
+                LOG.debug("{}: unlisten (domain \"{}\").", aUserId, aDomain);
                 if(isUserRegistered(aDomain, theUserInfo)) {
                     Set<Domain> theDomains = new HashSet<Domain>(1);
                     theDomains.add(aDomain);
@@ -274,7 +276,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     private void unlisten(UserInfo aUserInfo, boolean isTimeout) {
         if(aUserInfo != null) {
             final String theUserId = aUserInfo.getUserId();
-            LOG.debug(theUserId + ": unlisten.");
+            LOG.debug("{}: unlisten.", theUserId);
             Set<Domain> theDomains = myDomainUserMapping.getDomains(aUserInfo);
             addEvent(DomainFactory.UNLISTEN_DOMAIN, produceUnlistenEvent(aUserInfo, theDomains, isTimeout));
             removeUser(aUserInfo);
@@ -290,7 +292,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     private boolean removeUser(Domain aDomain, UserInfo aUserInfo) {
         boolean isUserRemoved = myDomainUserMapping.removeUser(aDomain, aUserInfo);
         if(isUserRemoved) {
-            LOG.debug("User \"" + aUserInfo + "\" removed from domain \"" + aDomain + "\".");
+            LOG.debug("User \"{}\" removed from domain \"{}\".", aUserInfo, aDomain);
         }
 
         if(!myDomainUserMapping.isUserContained(aUserInfo)) {
@@ -310,7 +312,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     private void removeUser(UserInfo aUserInfo) {
         myDomainUserMapping.removeUser(aUserInfo);
         if(myUserManager.removeUser(aUserInfo.getUserId()) != null) {
-            LOG.debug("User \"" + aUserInfo + "\" removed.");
+            LOG.debug("User \"{}\" removed.", aUserInfo);
         }
     }
 
@@ -369,7 +371,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
      * @param anEvent event to add
      */
     public void addEvent(Domain aDomain, Event anEvent) {
-        LOG.debug("Event \"" + anEvent + "\" added to domain \"" + aDomain + "\".");
+        LOG.debug("Event \"{}\" added to domain \"{}\".", anEvent, aDomain);
         final Set<UserInfo> theDomainUsers = myDomainUserMapping.getUsers(aDomain);
         //if the domain doesn't exist/no users assigned, no users must be notified for the event...
         if(theDomainUsers != null) {
@@ -396,7 +398,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
      */
     private void addEventUserSpecific(UserInfo aUserInfo, Event anEvent) {
         if(aUserInfo != null) {
-            LOG.debug("User specific event \"" + anEvent + "\" added to client id \"" + aUserInfo + "\".");
+            LOG.debug("User specific event \"{}\" added to client id \"{}\".", anEvent, aUserInfo);
             addEvent(DomainFactory.USER_SPECIFIC_DOMAIN, aUserInfo, anEvent);
         }
     }
@@ -434,7 +436,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
     private void addEvent(Domain aDomain, UserInfo aUserInfo, Event anEvent) {
         if(isEventValid(anEvent, aUserInfo.getEventFilter(aDomain))) {
             aUserInfo.addEvent(aDomain, anEvent);
-            LOG.debug(anEvent + " for user \"" + aUserInfo + "\".");
+            LOG.debug("{} for user \"{}\".", anEvent, aUserInfo);
         }
     }
 
@@ -504,7 +506,7 @@ public class DefaultEventRegistry implements EventRegistry, ListenDomainAccessor
          * @param aUserInfo the inactive user
          */
         public void onTimeout(UserInfo aUserInfo) {
-            LOG.debug(aUserInfo.getUserId() + ": timeout.");
+            LOG.debug("{}: timeout.", aUserInfo.getUserId());
             unlisten(aUserInfo, true);
         }
     }
