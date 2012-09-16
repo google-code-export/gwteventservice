@@ -1,3 +1,4 @@
+
 GWTEventService License Information
 
 
@@ -29,9 +30,9 @@ License information regarding related third party software
 		License:	Common Public License v1.0
 		URL:		http://www.junit.org/
 	
-	-	Name:		EasyMock
+	-	Name:		Mockito
 		License:	MIT License
-		URL:		http://www.easymock.org/
+		URL:		http://code.google.com/p/mockito/
 		
 	-	Name:		PowerMock
 		License:	Apache License v2.0
