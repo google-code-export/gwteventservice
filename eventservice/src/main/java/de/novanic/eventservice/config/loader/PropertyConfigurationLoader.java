@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -23,8 +23,8 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.logger.ServerLogger;
-import de.novanic.eventservice.logger.ServerLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.io.InputStream;
@@ -41,7 +41,7 @@ import java.io.IOException;
  */
 public class PropertyConfigurationLoader extends AbstractConfigurationLoader
 {
-    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(PropertyConfigurationLoader.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PropertyConfigurationLoader.class);
     private static final String DEFAULT_PROPERTY_NAME = "eventservice.properties";
 
     private final String myPropertyName;

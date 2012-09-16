@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -115,7 +115,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
+        checkLog(1, "User \"test_user_id\" registered for domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -134,8 +134,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -154,7 +154,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(null, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered.");
+        checkLog(1, "User \"test_user_id\" registered.");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -169,8 +169,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -183,7 +183,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.get(0));
 
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
-        checkLog(3, "Server: User \"test_user_id\" registered for domain \"test_domain_2\".");
+        checkLog(3, "User \"test_user_id\" registered for domain \"test_domain_2\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -206,8 +206,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -223,7 +223,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID_2));
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
-        checkLog(3, "Server: User \"test_user_id_2\" registered for domain \"test_domain_2\".");
+        checkLog(3, "User \"test_user_id_2\" registered for domain \"test_domain_2\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -256,8 +256,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -272,7 +272,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         //unlisten for a false domain
         myEventRegistry.unlisten(TEST_DOMAIN_2, TEST_USER_ID);
-        checkLog(3, "Server: test_user_id: unlisten (domain \"test_domain_2\")."); //no event is send to the domain (the user wasn't removed)
+        checkLog(3, "test_user_id: unlisten (domain \"test_domain_2\")."); //no event is send to the domain (the user wasn't removed)
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertNotNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
@@ -282,9 +282,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         //unlisten
         myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
-        checkLog(6, "Server: test_user_id: unlisten (domain \"test_domain\").",
-                "Server: User \"test_user_id\" removed from domain \"test_domain\".",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".");
+        checkLog(6, "test_user_id: unlisten (domain \"test_domain\").",
+                "User \"test_user_id\" removed from domain \"test_domain\".",
+                "Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".");
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
@@ -300,8 +300,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -314,7 +314,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.get(0));
 
         myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID, null);
-        checkLog(3, "Server: User \"test_user_id\" registered.");
+        checkLog(3, "User \"test_user_id\" registered.");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -618,8 +618,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
         assertNotNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -636,10 +636,10 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(2, theListenDomains.size());
 
         myEventRegistry.unlisten(TEST_USER_ID);
-        checkLog(8, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\" for 2 domains)\" added to domain \"service_unlisten_domain\".",
-                "Server: Event: Unlisten (user \"test_user_id\" for 2 domains) for user \"test_user_id\".",
-                "Server: User \"test_user_id\" removed.");
+        checkLog(8, "test_user_id: unlisten.",
+                "Event \"Event: Unlisten (user \"test_user_id\" for 2 domains)\" added to domain \"service_unlisten_domain\".",
+                "Event: Unlisten (user \"test_user_id\" for 2 domains) for user \"test_user_id\".",
+                "User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -657,10 +657,10 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
+        checkLog(1, "User \"test_user_id\" registered for domain \"test_domain\".");
 
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain_2\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain_2\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -673,9 +673,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.contains(TEST_DOMAIN_2));
 
         myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
-        checkLog(5, "Server: test_user_id: unlisten (domain \"test_domain\").",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
-                "Server: User \"test_user_id\" removed from domain \"test_domain\".");
+        checkLog(5, "test_user_id: unlisten (domain \"test_domain\").",
+                "Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
+                "User \"test_user_id\" removed from domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -693,9 +693,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.contains(TEST_DOMAIN_2));
 
         myEventRegistry.unlisten(TEST_DOMAIN_2, TEST_USER_ID);
-        checkLog(8, "Server: test_user_id: unlisten (domain \"test_domain_2\").",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain_2\")\" added to domain \"service_unlisten_domain\".",
-                "Server: User \"test_user_id\" removed from domain \"test_domain_2\".");
+        checkLog(8, "test_user_id: unlisten (domain \"test_domain_2\").",
+                "Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain_2\")\" added to domain \"service_unlisten_domain\".",
+                "User \"test_user_id\" removed from domain \"test_domain_2\".");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
@@ -713,10 +713,10 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
+        checkLog(1, "User \"test_user_id\" registered for domain \"test_domain\".");
 
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain_2\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain_2\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -729,9 +729,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.contains(TEST_DOMAIN_2));
 
         myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID);
-        checkLog(5, "Server: test_user_id: unlisten (domain \"test_domain\").",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
-                "Server: User \"test_user_id\" removed from domain \"test_domain\".");
+        checkLog(5, "test_user_id: unlisten (domain \"test_domain\").",
+                "Event \"Event: Unlisten (user \"test_user_id\" for domain \"test_domain\")\" added to domain \"service_unlisten_domain\".",
+                "User \"test_user_id\" removed from domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1068,7 +1068,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered.");
+        checkLog(1, "User \"test_user_id\" registered.");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID)); //can't be checked for the NULL-domain
@@ -1077,9 +1077,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.isEmpty());
 
         myEventRegistry.unlisten(TEST_USER_ID);
-        checkLog(4, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
-                "Server: User \"test_user_id\" removed.");
+        checkLog(4, "test_user_id: unlisten.",
+                "Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
+                "User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -1095,7 +1095,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered.");
+        checkLog(1, "User \"test_user_id\" registered.");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID)); //can't be checked for the NULL-domain
@@ -1104,9 +1104,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.isEmpty());
 
         myEventRegistry.unlisten(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID);
-        checkLog(4, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
-                "Server: User \"test_user_id\" removed.");
+        checkLog(4, "test_user_id: unlisten.",
+                "Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
+                "User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
@@ -1248,7 +1248,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
+        checkLog(1, "User \"test_user_id\" registered for domain \"test_domain\".");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
@@ -1261,7 +1261,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 
         //The log "... removed from domain ..." is missing, because the user is registered for a other domain.
         myEventRegistry.unlisten(TEST_DOMAIN_2, TEST_USER_ID);
-        checkLog(2, "Server: test_user_id: unlisten (domain \"test_domain_2\")."); //only the unlisten call is logged. No effect is logged, because the user is already removed from the domain.
+        checkLog(2, "test_user_id: unlisten (domain \"test_domain_2\")."); //only the unlisten call is logged. No effect is logged, because the user is already removed from the domain.
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN_2, TEST_USER_ID));
@@ -1280,7 +1280,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(null, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered.");
+        checkLog(1, "User \"test_user_id\" registered.");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1288,9 +1288,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.unlisten(TEST_USER_ID);
-        checkLog(4, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
-                "Server: User \"test_user_id\" removed.");
+        checkLog(4, "test_user_id: unlisten.",
+                "Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
+                "User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1305,7 +1305,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.registerUser(null, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered.");
+        checkLog(1, "User \"test_user_id\" registered.");
 
         assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1313,9 +1313,9 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
 
         myEventRegistry.unlisten(null, TEST_USER_ID);
-        checkLog(4, "Server: test_user_id: unlisten.",
-                "Server: Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
-                "Server: User \"test_user_id\" removed.");
+        checkLog(4, "test_user_id: unlisten.",
+                "Event \"Event: Unlisten (user \"test_user_id\")\" added to domain \"service_unlisten_domain\".",
+                "User \"test_user_id\" removed.");
 
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1326,7 +1326,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     @Test
     public void testListen() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
+        checkLog(1, "User \"test_user_id\" registered for domain \"test_domain\".");
 
         startAddEvent(TEST_DOMAIN, 200);
         assertEquals(1, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
@@ -1346,8 +1346,8 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         setUp(myEventRegistry);
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                    "Server: Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                    "Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
                         "  Min.: 500ms; Max.: 1500ms; Timeout: 9999ms");
 
         long theStartTime = PlatformUtil.getCurrentTime();
@@ -1704,12 +1704,12 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
 
         myEventRegistry.addEventUserSpecific(TEST_USER_ID, new DummyEvent());
-        checkLog(4, "Server: User specific event \"DummyEvent (id 1)\" added to client id \"test_user_id\".",
-                "Server: DummyEvent (id 1) for user \"test_user_id\".");
+        checkLog(4, "User specific event \"DummyEvent (id 1)\" added to client id \"test_user_id\".",
+                "DummyEvent (id 1) for user \"test_user_id\".");
 
         myEventRegistry.addEventUserSpecific(TEST_USER_ID_2, new DummyEvent());
-        checkLog(6, "Server: User specific event \"DummyEvent (id 2)\" added to client id \"test_user_id_2\".",
-                "Server: DummyEvent (id 2) for user \"test_user_id_2\".");
+        checkLog(6, "User specific event \"DummyEvent (id 2)\" added to client id \"test_user_id_2\".",
+                "DummyEvent (id 2) for user \"test_user_id_2\".");
     }
 
     @Test
@@ -1985,27 +1985,27 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     @Test
     public void testChangeEventFilter() {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
+        checkLog(1, "User \"test_user_id\" registered for domain \"test_domain\".");
 
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "test_user_id: EventFilter changed for domain \"test_domain\".");
         assertNotNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(3, "Server: test_user_id: EventFilter removed from domain \"test_domain\".");
+        checkLog(3, "test_user_id: EventFilter removed from domain \"test_domain\".");
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
     }
 
     @Test
     public void testChangeEventFilter_2() {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
 
         assertNotNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(3, "Server: test_user_id: EventFilter removed from domain \"test_domain\".");
+        checkLog(3, "test_user_id: EventFilter removed from domain \"test_domain\".");
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
     }
 
@@ -2020,18 +2020,18 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     @Test
     public void testRemoveEventFilter() {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain\".");
+        checkLog(2, "User \"test_user_id\" registered for domain \"test_domain\".",
+                "test_user_id: EventFilter changed for domain \"test_domain\".");
 
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, new EventFilterTestMode());
-        checkLog(4, "Server: User \"test_user_id\" registered for domain \"test_domain_2\".",
-                "Server: test_user_id: EventFilter changed for domain \"test_domain_2\".");
+        checkLog(4, "User \"test_user_id\" registered for domain \"test_domain_2\".",
+                "test_user_id: EventFilter changed for domain \"test_domain_2\".");
 
         myEventRegistry.removeEventFilter(TEST_DOMAIN_2, TEST_USER_ID);
-        checkLog(5, "Server: test_user_id: EventFilter removed from domain \"test_domain_2\".");
+        checkLog(5, "test_user_id: EventFilter removed from domain \"test_domain_2\".");
 
         myEventRegistry.setEventFilter(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(6, "Server: test_user_id: EventFilter removed from domain \"test_domain\".");
+        checkLog(6, "test_user_id: EventFilter removed from domain \"test_domain\".");
     }
 
     @Test
@@ -2042,7 +2042,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         checkLog(0);
 
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
-        checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
+        checkLog(1, "User \"test_user_id\" registered for domain \"test_domain\".");
 
         myEventRegistry.removeEventFilter(TEST_DOMAIN, TEST_USER_ID);
         checkLog(1);
