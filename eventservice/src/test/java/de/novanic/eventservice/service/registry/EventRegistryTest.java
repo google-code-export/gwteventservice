@@ -1732,6 +1732,53 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     }
 
     @Test
+    public void testAddUserSpecificEvent_3() throws Exception {
+        myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID, null);
+        myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID_2, null);
+
+        startAddEvent(TEST_USER_ID, 100);
+        joinThreads();
+
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+        //only User 1 should get the event
+        assertEquals(1, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+
+        //all events got
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+
+        //deregister test user 1
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+
+        startAddEvent(TEST_USER_ID, 100);
+        joinThreads();
+
+        //no events received, because test user 1 was deregistered
+        assertNull(myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID));
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+
+        //re-register test user 1
+        myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID, null);
+
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+
+        startAddEvent(TEST_USER_ID, 100);
+        joinThreads();
+
+        //no events received, because test user 1 was deregistered
+        assertEquals(1, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+    }
+
+    @Test
     public void testAddUserSpecificEvent_Isolation() throws Exception {
         EventServiceConfiguration theEventServiceConfiguration = createConfiguration(0, 2000, 9999);
         tearDownEventServiceConfiguration();
