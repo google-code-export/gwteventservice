@@ -29,7 +29,7 @@
             <element id="archive" name="conversation-server-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="conversation-server" />
             </element>
-            <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
+            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
@@ -64,7 +64,7 @@
             <element id="archive" name="eventservice-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice-rpc" />
             </element>
-            <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
+            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
@@ -95,7 +95,7 @@
             <element id="archive" name="eventservice-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice-rpc" />
             </element>
-            <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
+            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
@@ -131,45 +131,6 @@
   <component name="CopyrightManager" default="">
     <module2copyright />
   </component>
-  <component name="DaemonCodeAnalyzer">
-    <disable_hints />
-  </component>
-  <component name="DebuggerManager">
-    <breakpoint_any>
-      <breakpoint>
-        <option name="NOTIFY_CAUGHT" value="true" />
-        <option name="NOTIFY_UNCAUGHT" value="true" />
-        <option name="ENABLED" value="false" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint>
-        <option name="NOTIFY_CAUGHT" value="true" />
-        <option name="NOTIFY_UNCAUGHT" value="true" />
-        <option name="ENABLED" value="false" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-    </breakpoint_any>
-    <breakpoint_rules />
-    <ui_properties />
-  </component>
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -177,17 +138,6 @@
     <option name="dpjConfigurationName" value="gwteventservice" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
-    <file url="file://$PROJECT_DIR$/../branch1.2" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/demo" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/demo/conversation" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/demo/conversation/conversation-rpc" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/demo/conversation/conversation-server" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/demo/conversation/conversation-ui" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/demo/hellogwteventservice" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/eventservice" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/eventservice-rpc" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/gwteventservice" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../branch1.2/zip" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/demo" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/demo/conversation" charset="UTF-8" />
@@ -205,9 +155,6 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="gwt" url="file://$PROJECT_DIR$/demo/conversation/conversation-ui" />
-    <file type="gwt" url="file://$PROJECT_DIR$/demo/hellogwteventservice" />
-    <file type="gwt" url="file://$PROJECT_DIR$/demo/rapidevents" />
     <file type="web" url="file://$PROJECT_DIR$/demo/conversation/conversation-ui" />
     <file type="web" url="file://$PROJECT_DIR$/demo/hellogwteventservice" />
     <file type="web" url="file://$PROJECT_DIR$/demo/rapidevents" />
@@ -215,6 +162,7 @@
     <file type="web" url="file://$PROJECT_DIR$/gwteventservice/tomcat/webapps/ROOT/WEB-INF/web.xml" />
     <file type="web" url="file://$PROJECT_DIR$/tomcat/conf/web.xml" />
     <file type="web" url="file://$PROJECT_DIR$/tomcat/webapps/ROOT/WEB-INF/web.xml" />
+    <type id="gwt" />
   </component>
   <component name="IdProvider" IDEtalkID="334A1611FD212B1AA75EE88ACA83162D" />
   <component name="InspectionProjectProfileManager">
@@ -491,16 +439,6 @@
   <component name="ProjectKey">
     <option name="state" value="project://default" />
   </component>
-  <component name="ProjectLevelVcsManager">
-    <OptionsSetting value="true" id="Add" />
-    <OptionsSetting value="true" id="Remove" />
-    <OptionsSetting value="true" id="Checkout" />
-    <OptionsSetting value="true" id="Update" />
-    <OptionsSetting value="true" id="Status" />
-    <OptionsSetting value="true" id="Edit" />
-    <ConfirmationsSetting value="0" id="Add" />
-    <ConfirmationsSetting value="0" id="Remove" />
-  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/demo/conversation/conversation.iml" filepath="$PROJECT_DIR$/demo/conversation/conversation.iml" />
@@ -517,13 +455,10 @@
       <module fileurl="file://$PROJECT_DIR$/zip/zip.iml" filepath="$PROJECT_DIR$/zip/zip.iml" />
     </modules>
   </component>
-  <component name="ProjectReloadState">
-    <option name="STATE" value="0" />
-  </component>
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ResourceManagerContainer">
@@ -533,91 +468,6 @@
       </value>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" runner="emma" />
-      <extension name="snapshooter" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
-      <envs />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit">
-      <extension name="coverage" enabled="false" merge="false" runner="emma" />
-      <extension name="snapshooter" />
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="moduleWithDependencies" />
-      </option>
-      <envs />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <list size="0" />
-    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
-      <Host>localhost</Host>
-      <Port>5050</Port>
-    </configuration>
-  </component>
-  <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
@@ -651,13 +501,9 @@
   </component>
   <component name="libraryTable">
     <library name="gwt-user">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/../../lib/gwt-2.1.0/gwt-user.jar!/" />
-      </CLASSES>
+      <CLASSES />
       <JAVADOC />
-      <SOURCES>
-        <root url="jar://$PROJECT_DIR$/../../lib/gwt-2.1.0/gwt-user.jar!/" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="Maven: com.google.gwt:gwt-dev:2.4.0">
       <CLASSES>
@@ -670,6 +516,17 @@
         <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="Maven: com.google.gwt:gwt-servlet:2.1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Maven: com.google.gwt:gwt-servlet:2.4.0">
       <CLASSES>
         <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0.jar!/" />
@@ -679,6 +536,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: com.google.gwt:gwt-user:2.1.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.google.gwt:gwt-user:2.4.0">
