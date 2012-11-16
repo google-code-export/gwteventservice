@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -67,7 +67,8 @@ public abstract class AbstractRemoteEventServiceMockTest
     @After
     public void tearDown() {
         ClientCommandSchedulerFactory.getInstance().reset();
-        ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration()).reset(getDefaultConfiguration());
+        ConfigurationTransferableDependentFactory.reset();
+        ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration());
         reset(myEventServiceAsyncMock);
     }
 
