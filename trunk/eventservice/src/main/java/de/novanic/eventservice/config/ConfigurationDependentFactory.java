@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr‰nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr√§nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -129,6 +129,7 @@ public final class ConfigurationDependentFactory
     /**
      * Creates and initializes an object of a specific type.
      */
+    @SuppressWarnings("unchecked")
     private static <T> T createObject(String aClassName) {
         //when no class is configured, no object is created
         if(aClassName == null) {
