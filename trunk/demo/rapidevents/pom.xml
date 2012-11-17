@@ -28,14 +28,20 @@
 			<artifactId>gwteventservice</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-		</dependency>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.6.6</version>
+            <scope>runtime</scope>
+        </dependency>
 	</dependencies>
 	<build>
+        <resources>
+            <resource>
+                <directory>../conf</directory>
+            </resource>
+        </resources>
 		<outputDirectory>war/WEB-INF/classes</outputDirectory>
 		<plugins>
 			<plugin>

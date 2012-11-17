@@ -8,11 +8,6 @@
       <output-path>$PROJECT_DIR$/demo/conversation/conversation-ui/target</output-path>
       <root id="archive" name="conversation-ui-1.3.0-SNAPSHOT.war">
         <element id="artifact" artifact-name="conversation-ui:war exploded" />
-        <element id="directory" name="WEB-INF">
-          <element id="directory" name="classes">
-            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
-          </element>
-        </element>
       </root>
     </artifact>
     <artifact type="exploded-war" name="conversation-ui:war exploded">
@@ -22,7 +17,6 @@
         <element id="directory" name="WEB-INF">
           <element id="directory" name="classes">
             <element id="module-output" name="conversation-ui" />
-            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
           </element>
           <element id="directory" name="lib">
             <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
@@ -52,11 +46,6 @@
       <output-path>$PROJECT_DIR$/demo/hellogwteventservice/target</output-path>
       <root id="archive" name="hellogwteventservice-1.3.0-SNAPSHOT.war">
         <element id="artifact" artifact-name="hellogwteventservice:war exploded" />
-        <element id="directory" name="WEB-INF">
-          <element id="directory" name="classes">
-            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
-          </element>
-        </element>
       </root>
     </artifact>
     <artifact type="exploded-war" name="hellogwteventservice:war exploded">
@@ -66,7 +55,6 @@
         <element id="directory" name="WEB-INF">
           <element id="directory" name="classes">
             <element id="module-output" name="hellogwteventservice" />
-            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
           </element>
           <element id="directory" name="lib">
             <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
@@ -80,6 +68,7 @@
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
+            <element id="library" level="project" name="Maven: org.slf4j:slf4j-jdk14:1.6.6" />
           </element>
         </element>
         <element id="gwt-compiler-output" facet="hellogwteventservice/gwt/GWT" />
@@ -89,11 +78,6 @@
       <output-path>$PROJECT_DIR$/demo/rapidevents/target</output-path>
       <root id="archive" name="rapidevents-1.3.0-SNAPSHOT.war">
         <element id="artifact" artifact-name="rapidevents:war exploded" />
-        <element id="directory" name="WEB-INF">
-          <element id="directory" name="classes">
-            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
-          </element>
-        </element>
       </root>
     </artifact>
     <artifact type="exploded-war" name="rapidevents:war exploded">
@@ -103,7 +87,6 @@
         <element id="directory" name="WEB-INF">
           <element id="directory" name="classes">
             <element id="module-output" name="rapidevents" />
-            <element id="dir-copy" path="$PROJECT_DIR$/demo/conf" />
           </element>
           <element id="directory" name="lib">
             <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
@@ -117,6 +100,7 @@
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
+            <element id="library" level="project" name="Maven: org.slf4j:slf4j-jdk14:1.6.6" />
           </element>
         </element>
         <element id="gwt-compiler-output" facet="rapidevents/gwt/GWT" />
@@ -609,17 +593,6 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.10/junit-4.10-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: junit:junit:4.7">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.7/junit-4.7.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.7/junit-4.7-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.7/junit-4.7-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.hamcrest:hamcrest-core:1.1">
