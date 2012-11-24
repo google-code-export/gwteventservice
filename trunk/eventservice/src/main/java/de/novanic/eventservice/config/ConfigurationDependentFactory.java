@@ -95,10 +95,14 @@ public final class ConfigurationDependentFactory
      */
     public ConnectionIdGenerator getConnectionIdGenerator() {
         if(myConnectionIdGenerator == null) {
-            try {
-                myConnectionIdGenerator = createObject(myConfiguration.getConnectionIdGeneratorClassName());
-            } catch(ClassCastException e) {
-                throw new ConfigurationException(myConfiguration.getConnectionIdGeneratorClassName() + " should have another type!", e);
+            synchronized(this) {
+                if(myConnectionIdGenerator == null) {
+                    try {
+                        myConnectionIdGenerator = createObject(myConfiguration.getConnectionIdGeneratorClassName());
+                    } catch(ClassCastException e) {
+                        throw new ConfigurationException(myConfiguration.getConnectionIdGeneratorClassName() + " should have another type!", e);
+                    }
+                }
             }
         }
         return myConnectionIdGenerator;
@@ -111,10 +115,14 @@ public final class ConfigurationDependentFactory
      */
     public ConnectionStrategyServerConnector getConnectionStrategyServerConnector() {
         if(myConnectionStrategyServerConnector == null) {
-            try {
-                myConnectionStrategyServerConnector = createObject(myConfiguration.getConnectionStrategyServerConnectorClassName());
-            } catch(ClassCastException e) {
-                throw new ConfigurationException(myConfiguration.getConnectionStrategyServerConnectorClassName() + " should have another type!", e);
+            synchronized(this) {
+                if(myConnectionStrategyServerConnector == null) {
+                    try {
+                        myConnectionStrategyServerConnector = createObject(myConfiguration.getConnectionStrategyServerConnectorClassName());
+                    } catch(ClassCastException e) {
+                        throw new ConfigurationException(myConfiguration.getConnectionStrategyServerConnectorClassName() + " should have another type!", e);
+                    }
+                }
             }
         }
         return myConnectionStrategyServerConnector;
