@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr‰nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr√§nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -28,10 +28,8 @@ import de.novanic.eventservice.config.loader.DefaultConfigurationLoader;
 import de.novanic.eventservice.config.level.ConfigLevel;
 import de.novanic.eventservice.config.level.ConfigLevelFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * EventServiceConfigurationFactory can be used to create an instance of {@link EventServiceConfiguration}. There a
@@ -56,14 +54,14 @@ import java.util.TreeMap;
  */
 public class EventServiceConfigurationFactory
 {
-    private final Map<ConfigLevel, List<ConfigurationLoader>> myConfigurationLoaders;
+    private final Map<ConfigLevel, Queue<ConfigurationLoader>> myConfigurationLoaders;
 
     /**
      * The EventServiceConfigurationFactory should be created via the getInstance method.
      * @see EventServiceConfigurationFactory#getInstance()
      */
     private EventServiceConfigurationFactory() {
-        myConfigurationLoaders = new TreeMap<ConfigLevel, List<ConfigurationLoader>>();
+        myConfigurationLoaders = new TreeMap<ConfigLevel, Queue<ConfigurationLoader>>();
         initConfigurationLoaders();
     }
 
@@ -106,7 +104,7 @@ public class EventServiceConfigurationFactory
      * @throws de.novanic.eventservice.client.config.ConfigurationException thrown when a configuration is available, but can't be loaded
      */
     public EventServiceConfiguration loadEventServiceConfiguration() {
-        for(List<ConfigurationLoader> theConfigLoaders: myConfigurationLoaders.values()) {
+        for(Queue<ConfigurationLoader> theConfigLoaders: myConfigurationLoaders.values()) {
             for(ConfigurationLoader theConfigLoader: theConfigLoaders) {
                 if(theConfigLoader.isAvailable()) {
                     return enrich(theConfigLoader.load());
@@ -133,9 +131,9 @@ public class EventServiceConfigurationFactory
      * @param aConfigurationLoader custom {@link de.novanic.eventservice.config.loader.ConfigurationLoader}
      */
     public void addConfigurationLoader(ConfigLevel aLevel, ConfigurationLoader aConfigurationLoader) {
-        List<ConfigurationLoader> theConfigLoaders = myConfigurationLoaders.get(aLevel);
+        Queue<ConfigurationLoader> theConfigLoaders = myConfigurationLoaders.get(aLevel);
         if(theConfigLoaders == null) {
-            theConfigLoaders = new ArrayList<ConfigurationLoader>();
+            theConfigLoaders = new ConcurrentLinkedQueue<ConfigurationLoader>();
             myConfigurationLoaders.put(aLevel, theConfigLoaders);
         }
         theConfigLoaders.add(aConfigurationLoader);
@@ -146,7 +144,7 @@ public class EventServiceConfigurationFactory
      * @param aConfigurationLoader {@link de.novanic.eventservice.config.loader.ConfigurationLoader} to remove from the queue
      */
     public void removeConfigurationLoader(ConfigurationLoader aConfigurationLoader) {
-        for(List<ConfigurationLoader> theConfigLoaders: myConfigurationLoaders.values()) {
+        for(Queue<ConfigurationLoader> theConfigLoaders: myConfigurationLoaders.values()) {
             theConfigLoaders.remove(aConfigurationLoader);
         }
     }
