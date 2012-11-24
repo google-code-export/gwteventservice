@@ -20,7 +20,7 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 		</dependency>
-		<!-- test -->
+		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -29,6 +29,10 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+        </dependency>
 	</dependencies>
 	<build>
 		<!-- The GWT compiler needs src in the produced jar -->

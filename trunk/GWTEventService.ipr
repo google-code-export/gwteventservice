@@ -19,7 +19,7 @@
             <element id="module-output" name="conversation-ui" />
           </element>
           <element id="directory" name="lib">
-            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
+            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.5.0" />
             <element id="archive" name="conversation-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="conversation-rpc" />
             </element>
@@ -29,7 +29,7 @@
             <element id="archive" name="conversation-server-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="conversation-server" />
             </element>
-            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
+            <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
@@ -57,14 +57,14 @@
             <element id="module-output" name="hellogwteventservice" />
           </element>
           <element id="directory" name="lib">
-            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
+            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.5.0" />
             <element id="archive" name="gwteventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="gwteventservice" />
             </element>
             <element id="archive" name="eventservice-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice-rpc" />
             </element>
-            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
+            <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
@@ -89,14 +89,14 @@
             <element id="module-output" name="rapidevents" />
           </element>
           <element id="directory" name="lib">
-            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.4.0" />
+            <element id="library" level="project" name="Maven: com.google.gwt:gwt-servlet:2.5.0" />
             <element id="archive" name="gwteventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="gwteventservice" />
             </element>
             <element id="archive" name="eventservice-rpc-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice-rpc" />
             </element>
-            <element id="archive" name="parent-1.3.0-SNAPSHOT.jar">
+            <element id="archive" name="eventservice-1.3.0-SNAPSHOT.jar">
               <element id="module-output" name="eventservice" />
             </element>
             <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.6.6" />
@@ -430,9 +430,9 @@
       <entry facet-type="gwt">
         <default-facet-configuration>
           <configuration>
-            <setting name="compilerMaxHeapSize" value="256" />
+            <setting name="compilerMaxHeapSize" value="768" />
             <setting name="gwtScriptOutputStyle" value="DETAILED" />
-            <setting name="gwtSdkUrl" value="file://$PROJECT_DIR$/../../lib/gwt-2.1.0" />
+            <setting name="gwtSdkUrl" value="file://" />
           </configuration>
         </default-facet-configuration>
       </entry>
@@ -507,59 +507,37 @@
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="Maven: com.google.gwt:gwt-dev:2.4.0">
+    <library name="Maven: com.google.gwt:gwt-dev:2.5.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.5.0/gwt-dev-2.5.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.5.0/gwt-dev-2.5.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.4.0/gwt-dev-2.4.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.5.0/gwt-dev-2.5.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.gwt:gwt-servlet:2.1.0">
+    <library name="Maven: com.google.gwt:gwt-servlet:2.5.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.5.0/gwt-servlet-2.5.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.5.0/gwt-servlet-2.5.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.1.0/gwt-servlet-2.1.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.5.0/gwt-servlet-2.5.0-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Maven: com.google.gwt:gwt-servlet:2.4.0">
+    <library name="Maven: com.google.gwt:gwt-user:2.5.0">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.5.0/gwt-user-2.5.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.5.0/gwt-user-2.5.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.4.0/gwt-servlet-2.4.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.gwt:gwt-user:2.1.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.1.0/gwt-user-2.1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.gwt:gwt-user:2.4.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.4.0/gwt-user-2.4.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.5.0/gwt-user-2.5.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: javax.validation:validation-api:1.0.0.GA">
@@ -615,6 +593,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.json:json:20090211">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/json/json/20090211/json-20090211.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/json/json/20090211/json-20090211-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/json/json/20090211/json-20090211-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.mockito:mockito-all:1.9.0">
