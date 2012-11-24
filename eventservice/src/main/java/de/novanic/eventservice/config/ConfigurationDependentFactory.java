@@ -48,9 +48,7 @@ public final class ConfigurationDependentFactory
      * Initializes the {@link de.novanic.eventservice.config.ConfigurationDependentFactory}. That constructor is only called one time,
      * because the factory is created as a singleton.
      */
-    private ConfigurationDependentFactory() {
-        init();
-    }
+    private ConfigurationDependentFactory() {}
 
     /**
      * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
@@ -68,6 +66,9 @@ public final class ConfigurationDependentFactory
      * @return {@link de.novanic.eventservice.config.ConfigurationDependentFactory} (singleton)
      */
     public static ConfigurationDependentFactory getInstance(EventServiceConfiguration aConfiguration) {
+        if(aConfiguration == null) {
+            throw new ConfigurationException(ConfigurationDependentFactory.class.getName() + " was initialized without a configuration!");
+        }
         if(myConfiguration == null) {
             myConfiguration = aConfiguration;
         }
@@ -88,32 +89,18 @@ public final class ConfigurationDependentFactory
     }
 
     /**
-     * Creates the configured instances from the configuration.
-     */
-    private void init() {
-        if(myConfiguration != null) {
-            //TODO optimize the class cast handling
-            try {
-                myConnectionIdGenerator = createObject(myConfiguration.getConnectionIdGeneratorClassName());
-            } catch(ClassCastException e) {
-                throw new ConfigurationException(myConfiguration.getConnectionIdGeneratorClassName() + " should have another type!", e);
-            }
-            try {
-                myConnectionStrategyServerConnector = createObject(myConfiguration.getConnectionStrategyServerConnectorClassName());
-            } catch(ClassCastException e) {
-                throw new ConfigurationException(myConfiguration.getConnectionStrategyServerConnectorClassName() + " should have another type!", e);
-            }
-        } else {
-            throw new ConfigurationException(ConfigurationDependentFactory.class.getName() + " was initialized without a configuration!");
-        }
-    }
-
-    /**
      * Returns the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}.
      * @see de.novanic.eventservice.config.ConfigParameter#CONNECTION_ID_GENERATOR
      * @return the configured {@link de.novanic.eventservice.service.connection.id.ConnectionIdGenerator}
      */
     public ConnectionIdGenerator getConnectionIdGenerator() {
+        if(myConnectionIdGenerator == null) {
+            try {
+                myConnectionIdGenerator = createObject(myConfiguration.getConnectionIdGeneratorClassName());
+            } catch(ClassCastException e) {
+                throw new ConfigurationException(myConfiguration.getConnectionIdGeneratorClassName() + " should have another type!", e);
+            }
+        }
         return myConnectionIdGenerator;
     }
 
@@ -123,6 +110,13 @@ public final class ConfigurationDependentFactory
      * @return server side part / connector of the configured connection strategy
      */
     public ConnectionStrategyServerConnector getConnectionStrategyServerConnector() {
+        if(myConnectionStrategyServerConnector == null) {
+            try {
+                myConnectionStrategyServerConnector = createObject(myConfiguration.getConnectionStrategyServerConnectorClassName());
+            } catch(ClassCastException e) {
+                throw new ConfigurationException(myConfiguration.getConnectionStrategyServerConnectorClassName() + " should have another type!", e);
+            }
+        }
         return myConnectionStrategyServerConnector;
     }
 
@@ -177,25 +171,9 @@ public final class ConfigurationDependentFactory
         return myConfiguration;
     }
 
-    /**
-     * Resets the {@link de.novanic.eventservice.config.ConfigurationDependentFactory} and re-initialize it
-     * with a new configuration.
-     * @param aConfiguration new configuration
-     */
-    public void reset(EventServiceConfiguration aConfiguration) {
-        reset(aConfiguration, true);
-    }
-
-    /**
-     * Resets the {@link de.novanic.eventservice.config.ConfigurationDependentFactory} and can automatically re-initialize it
-     * with a new configuration.
-     * @param aConfiguration new configuration
-     * @param isReInit if is the factory should be re-initialized with the new factory
-     */
-    protected void reset(EventServiceConfiguration aConfiguration, boolean isReInit) {
-        myConfiguration = aConfiguration;
-        if(isReInit) {
-            init();
-        }
+    public static void reset() {
+        myConfiguration = null;
+        ConfigurationDependentFactoryHolder.INSTANCE.myConnectionIdGenerator = null;
+        ConfigurationDependentFactoryHolder.INSTANCE.myConnectionStrategyServerConnector = null;
     }
 }
