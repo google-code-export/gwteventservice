@@ -89,7 +89,7 @@ public final class ConfigurationTransferableDependentFactory
      */
     private void init() {
         if(myConfiguration != null) {
-            myConnectionStrategyClientConnector = createObject(myConfiguration.getConnectionStrategyClientConnector(), new DefaultClientConnector());
+            myConnectionStrategyClientConnector = createObject(myConfiguration.getConnectionStrategyClientConnector());
         } else {
             throw new ConfigurationException(ConfigurationTransferableDependentFactory.class.getName() + " was initialized without a configuration!");
         }
@@ -106,13 +106,8 @@ public final class ConfigurationTransferableDependentFactory
     /**
      * Creates and initializes an object of a specific type.
      */
-    private static <T> T createObject(String aClassName, T aDefaultImplementation) {
-        //when no class is configured, the default implementation is returned, when a default implementation is defined
-        if(aClassName == null) {
-            return aDefaultImplementation;
-        }
-
-        //GWT doesn't seem to support instance creation from a String (via reflection)
+    private static <T> T createObject(String aClassName) {
+        //GWT doesn't support instance creation from a String (via reflection)
         if(aClassName.equals(DefaultClientConnector.class.getName())) {
             return (T)new DefaultClientConnector();
         } else if(aClassName.equals(GWTStreamingClientConnector.class.getName())) {
