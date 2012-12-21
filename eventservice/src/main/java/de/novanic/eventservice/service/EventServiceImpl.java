@@ -82,6 +82,12 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
         myConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfiguration);
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        EventRegistryFactory.getInstance().resetEventRegistry();
+    }
+
     /**
      * The GET method is used to stream data to the clients.
      * @param aRequest request
