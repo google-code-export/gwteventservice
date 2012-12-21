@@ -35,6 +35,33 @@
 			<table width="99%">
 				<tr bgcolor="#0099ff">
 					<td>
+						<span class="version">GWTEventService 1.2.1</span>
+					</td>
+				</tr>
+			</table>
+			<table width="99%">
+				<tr>
+					<td>
+						<ul>
+							<li>The maximum amount of events which is processed at once (within one call/request) can now be configured/limited and is set to 1.000 by default. Property: "eventservice.events.max"</li>
+							<li>Configuration dependent factories optimized and introduced lazy-loading</li>
+							<li>Various optimizations and fixes for the configuration loading mechanizm</li>
+							<li>Various code optimizations</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=33">Issue33</a>: The waiting user threads were not terminated directly when the user were removed by an unlisten call.</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=42">Issue42</a>: Client-side concurrency problem fixed which could occur when a listener gets added while received events are concurrently processed.</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=49">Issue49</a>: The daemon thread to detect user/client timeouts is now stopped automatically when the EventService-Servlet gets deregistered.</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=52">Issue52</a>: The waiting user threads were not terminated directly on server shutdown (when the JVM were not terminated).</li>
+							<li><a href="http://code.google.com/p/gwteventservice/issues/detail?id=52">Issue55</a>: Concurrency problem fixed which could occur when GWTEventService is deployed on GlassFish.</li>
+							<li>(Tests revised with JUnit 4 and Mockito)</li>
+						</ul>			
+					</td>
+				</tr>
+			</table>
+		</table>
+		<table width="99%">
+			<table width="99%">
+				<tr bgcolor="#0099ff">
+					<td>
 						<span class="version">GWTEventService 1.2</span>
 					</td>
 				</tr>
