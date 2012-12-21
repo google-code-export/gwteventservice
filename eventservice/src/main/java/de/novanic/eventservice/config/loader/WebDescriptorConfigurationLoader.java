@@ -59,13 +59,16 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
      * @return true when available, otherwise false
      */
     public boolean isAvailable() {
-        return  myServletConfig != null &&
-                (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration()))
-                        || isAvailable(myServletConfig.getInitParameter(ConfigParameter.MAX_WAITING_TIME_TAG.declaration())))
-                && (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration()))
-                        || isAvailable(myServletConfig.getInitParameter(ConfigParameter.MIN_WAITING_TIME_TAG.declaration())))
-                && (isAvailable(myServletConfig.getInitParameter(ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration()))
-                        || isAvailable(myServletConfig.getInitParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration())));
+        if(myServletConfig != null) {
+            //The configuration is available when at least one parameter is configured.
+            for(ConfigParameter theConfigParameter: ConfigParameter.values()) {
+                final String theParameterValue = myServletConfig.getInitParameter(theConfigParameter.declaration());
+                if(theParameterValue != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -74,16 +77,19 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
      * @throws ConfigurationException occurs when the configuration can't be loaded or if it contains unreadable values.
      */
     public EventServiceConfiguration load() {
-        return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration",
-                readIntParameterChecked(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration()),
-                readIntParameterChecked(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration()),
-                readIntParameterChecked(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration()),
-                readIntParameter(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG.declaration(), ConfigParameter.FQ_RECONNECT_ATTEMPT_COUNT_TAG.declaration()),
-				readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration()),
-				readParameter(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR.declaration()),
-				readParameter(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration()),
-                readParameter(ConfigParameter.CONNECTION_STRATEGY_ENCODING.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING.declaration()),
-                readIntParameter(ConfigParameter.MAX_EVENTS.declaration(), ConfigParameter.FQ_MAX_EVENTS.declaration()));
+        if(isAvailable()) {
+            return new RemoteEventServiceConfiguration("Web-Descriptor-Configuration",
+                    readIntParameter(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration()),
+                    readIntParameter(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration()),
+                    readIntParameter(ConfigParameter.TIMEOUT_TIME_TAG.declaration(), ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration()),
+                    readIntParameter(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG.declaration(), ConfigParameter.FQ_RECONNECT_ATTEMPT_COUNT_TAG.declaration()),
+                    readParameter(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration()),
+                    readParameter(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR.declaration()),
+                    readParameter(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration()),
+                    readParameter(ConfigParameter.CONNECTION_STRATEGY_ENCODING.declaration(), ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING.declaration()),
+                    readIntParameter(ConfigParameter.MAX_EVENTS.declaration(), ConfigParameter.FQ_MAX_EVENTS.declaration()));
+        }
+        return null;
     }
 
     /**
@@ -100,26 +106,19 @@ public class WebDescriptorConfigurationLoader implements ConfigurationLoader
 	 * @param aParameterName parameter
 	 * @param aParameterNameFQ parameter (full-qualified variant)
      * @return numeric parameter value
+     * @throws ConfigurationException (when the value isn't numeric)
      */
     private Integer readIntParameter(String aParameterName, String aParameterNameFQ) {
         final String theParameterValue = readParameter(aParameterName, aParameterNameFQ);
         if(theParameterValue != null) {
             try {
-                return StringUtil.readIntegerChecked(theParameterValue);
+                return StringUtil.readInteger(theParameterValue);
             } catch(ServiceUtilException e) {
                 throw new ConfigurationException("The value of the parameter \"" + aParameterName
                         + "\" was expected to be numeric, but was \"" + theParameterValue + "\"!", e);
             }
         }
         return null;
-    }
-
-    private int readIntParameterChecked(String aParameterName, String aParameterNameFQ) {
-        Integer theValue = readIntParameter(aParameterName, aParameterNameFQ);
-        if(theValue == null) {
-            throw new ConfigurationException("The value of the parameter \"" + aParameterName + "\" was expected, but is not available!");
-        }
-        return theValue;
     }
 
     /**

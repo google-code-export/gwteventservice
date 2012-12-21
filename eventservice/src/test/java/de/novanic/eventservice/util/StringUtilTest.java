@@ -43,34 +43,16 @@ public class StringUtilTest
     }
 
     @Test
-    public void testIsNumeric() {
-        assertTrue(StringUtil.isNumeric("1234567890"));
-        assertFalse(StringUtil.isNumeric("1234567890XY"));
-        assertFalse(StringUtil.isNumeric("X"));
-
-        assertTrue(StringUtil.isNumeric("12"));
-        assertFalse(StringUtil.isNumeric("12 X"));
-        assertFalse(StringUtil.isNumeric("12 1"));
-        assertFalse(StringUtil.isNumeric("12X"));
-
-        assertTrue(StringUtil.isNumeric("0"));
-        assertTrue(StringUtil.isNumeric("000"));
-        assertTrue(StringUtil.isNumeric("012"));
-        assertFalse(StringUtil.isNumeric(""));
-        assertFalse(StringUtil.isNumeric(null));
+    public void testReadInteger() throws ServiceUtilException {
+        assertEquals(Integer.valueOf(0), StringUtil.readInteger("0"));
+        assertEquals(Integer.valueOf(12), StringUtil.readInteger("12"));
+        assertEquals(Integer.valueOf(1234567890), StringUtil.readInteger("1234567890"));
     }
 
     @Test
-    public void testReadIntegerChecked() throws ServiceUtilException {
-        assertEquals(0, StringUtil.readIntegerChecked("0"));
-        assertEquals(12, StringUtil.readIntegerChecked("12"));
-        assertEquals(1234567890, StringUtil.readIntegerChecked("1234567890"));
-    }
-
-    @Test
-    public void testReadIntegerChecked_Error() {
+    public void testReadInteger_Error() {
         try {
-            StringUtil.readIntegerChecked("XYZ");
+            StringUtil.readInteger("XYZ");
             fail(ServiceUtilException.class.getName() + " expected!");
         } catch(ServiceUtilException e) {
             assertTrue(e.getMessage().contains("XYZ"));
@@ -88,7 +70,7 @@ public class StringUtilTest
 
         try {
             try {
-                StringUtil.readIntegerChecked("XYZ");
+                StringUtil.readInteger("XYZ");
             } catch(ServiceUtilException e) {
                 throw new ServiceUtilException("aMessage", e);
             }
