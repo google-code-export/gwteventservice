@@ -21,15 +21,21 @@
  */
 package de.novanic.eventservice.client.event.domain;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 16.08.2008
  * Time: 18:44:37
  */
-public class DefaultDomainTest extends TestCase
+@RunWith(JUnit4.class)
+public class DefaultDomainTest
 {
+    @Test
     public void testInit() {
         final String theName = "testName";
         Domain theDomain = new DefaultDomain(theName);
@@ -56,6 +62,7 @@ public class DefaultDomainTest extends TestCase
         assertFalse(theDomain.compareTo(theDomain_3) == 0);
     }
 
+    @Test
     public void testCompareTo() {
         final String theName = "testName1";
         Domain theDomain = new DefaultDomain(theName);
@@ -67,6 +74,7 @@ public class DefaultDomainTest extends TestCase
         assertEquals(1, theDomain.compareTo(null));
     }
 
+    @Test
     public void testInit_Error() {
         Domain theDomain = new DefaultDomain();
         assertNull(theDomain.getName());

@@ -21,21 +21,28 @@
  */
 package de.novanic.eventservice.config.level;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 01.07.2009
  *         <br>Time: 22:00:43
  */
-public class ConfigLevelFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class ConfigLevelFactoryTest
 {
+    @Test
     public void testConstructor() {
         PrivateMethodExecutor<ConfigLevelFactory> thePrivateMethodExecutor = new PrivateMethodExecutor<ConfigLevelFactory>(ConfigLevelFactory.class);
         thePrivateMethodExecutor.executePrivateConstructor();
     }
 
+    @Test
     public void testCompareTo() {
         ConfigLevel theNullableConfigLevel = null;
         assertFalse(ConfigLevelFactory.LOWEST.equals(theNullableConfigLevel));
@@ -76,6 +83,7 @@ public class ConfigLevelFactoryTest extends TestCase
         assertEquals(-1, ConfigLevelFactory.LOWEST.compareTo(ConfigLevelFactory.HIGHEST));
     }
 
+    @Test
     public void testCompareTo_toString() {
         assertEquals(ConfigLevelFactory.LOWEST.toString(), ConfigLevelFactory.LOWEST.toString());
         assertEquals(ConfigLevelFactory.LOWEST.toString().hashCode(), ConfigLevelFactory.LOWEST.toString().hashCode());

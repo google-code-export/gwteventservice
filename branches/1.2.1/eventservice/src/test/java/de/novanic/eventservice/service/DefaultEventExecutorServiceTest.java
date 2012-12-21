@@ -25,18 +25,25 @@ import de.novanic.eventservice.service.exception.NoSessionAvailableException;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.filter.EventFilter;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 05.08.2008
  * <br>Time: 11:15:02
  */
+@RunWith(JUnit4.class)
 public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
 {
     public EventExecutorService initEventExecutorService() {
         return new DefaultEventExecutorService(TEST_USER_ID);
     }
 
+    @Test
     public void testAddEvent_SessionLess() {
         EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
         try {
@@ -46,6 +53,7 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         }
     }
 
+    @Test
     public void testIsUserRegistered_Error() {
         EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
         try {
@@ -57,6 +65,7 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         }
     }
 
+    @Test
     public void testIsUserRegistered_2_Error() {
         EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
         try {
@@ -68,6 +77,7 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         }
     }
 
+    @Test
     public void testAddEventUserSpecific_Error() {
         EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
         try {
@@ -79,6 +89,7 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         }
     }
 
+    @Test
     public void testSetEventFilter_Error() {
         EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
         try {
@@ -90,6 +101,7 @@ public class DefaultEventExecutorServiceTest extends EventExecutorServiceTest_A
         }
     }
 
+    @Test
     public void testRemoveEventFilter_Error() {
         EventExecutorService theEventExecutorService = new DefaultEventExecutorService(null);
         try {

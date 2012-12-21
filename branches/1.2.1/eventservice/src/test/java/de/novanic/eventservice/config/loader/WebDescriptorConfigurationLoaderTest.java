@@ -25,19 +25,25 @@ import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
-import junit.framework.TestCase;
 
 import javax.servlet.ServletConfig;
 
 import de.novanic.eventservice.config.EventServiceConfiguration;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 01.07.2009
  *         <br>Time: 22:17:37
  */
-public class WebDescriptorConfigurationLoaderTest extends TestCase
+@RunWith(JUnit4.class)
+public class WebDescriptorConfigurationLoaderTest
 {
+    @Test
     public void testLoad() {
         ServletConfig theServletConfig = new ServletConfigDummy(true, false);
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
@@ -55,6 +61,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
     }
 
+    @Test
 	public void testLoad_FQ() {
         ServletConfig theServletConfig = new ServletConfigDummy(true, true);
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
@@ -72,6 +79,7 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
     }
 
+    @Test
     public void testLoad_IncompleteConfiguration() {
         ServletConfigDummy theServletConfig = new ServletConfigDummy(true, false);
         assertTrue(theServletConfig.removeParameter(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG));
@@ -95,12 +103,14 @@ public class WebDescriptorConfigurationLoaderTest extends TestCase
         assertNull(theConfiguration.getConnectionStrategyEncoding());
     }
 
+    @Test
     public void testLoad_Error() {
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(null);
 
         assertFalse(theConfigurationLoader.isAvailable());
     }
 
+    @Test
     public void testLoad_Error_2() {
         ServletConfig theServletConfig = new ServletConfigDummy(false, false);
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);

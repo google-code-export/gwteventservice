@@ -26,13 +26,11 @@ import de.novanic.eventservice.client.config.EventServiceConfigurationTransferab
 import de.novanic.eventservice.client.config.RemoteEventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.client.event.Event;
-import org.easymock.EasyMock;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
@@ -42,25 +40,34 @@ import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListe
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
 import de.novanic.eventservice.client.event.command.ClientCommand;
-import org.easymock.IAnswer;
+import org.junit.After;
+import org.junit.Before;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.Stubber;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 21.10.2008
  *         <br>Time: 21:06:10
  */
-public abstract class AbstractRemoteEventServiceMockTest extends TestCase
+public abstract class AbstractRemoteEventServiceMockTest
 {
     protected EventServiceAsync myEventServiceAsyncMock;
 
+    @Before
     public void setUp() {
-        myEventServiceAsyncMock = EasyMock.createMock(EventServiceAsync.class);
+        myEventServiceAsyncMock = mock(EventServiceAsync.class);
         ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DirectCommandScheduler());
     }
 
+    @After
     public void tearDown() {
         ClientCommandSchedulerFactory.getInstance().reset();
         ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration()).reset(getDefaultConfiguration());
+        reset(myEventServiceAsyncMock);
     }
 
     protected void mockInit() {
@@ -68,13 +75,11 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
     }
 
     protected void mockInit(final EventServiceConfigurationTransferable aConfiguration) {
-        myEventServiceAsyncMock.initEventService(EasyMock.<AsyncCallback<EventServiceConfigurationTransferable>>anyObject());
-        EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<EventServiceConfigurationTransferable>(aConfiguration));
+        doAnswer(new AsyncCallbackAnswer<EventServiceConfigurationTransferable>(aConfiguration)).when(myEventServiceAsyncMock).initEventService(any(AsyncCallback.class));
     }
 
     protected void mockInit(Throwable aThrowable) {
-        myEventServiceAsyncMock.initEventService(EasyMock.<AsyncCallback<EventServiceConfigurationTransferable>>anyObject());
-        EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aThrowable));
+        doAnswer(new AsyncCallbackThrowableAnswer(aThrowable)).when(myEventServiceAsyncMock).initEventService(any(AsyncCallback.class));
     }
 
     protected void mockRegister(Domain aDomain) {
@@ -91,11 +96,9 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     protected void mockRegister(Domain aDomain, EventFilter anEventFilter, Throwable aThrowable) {
         if(aThrowable != null) {
-            myEventServiceAsyncMock.register(EasyMock.eq(aDomain), EasyMock.eq(anEventFilter), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aThrowable));
+            doAnswer(new AsyncCallbackThrowableAnswer(aThrowable)).when(myEventServiceAsyncMock).register(eq(aDomain), eq(anEventFilter), any(AsyncCallback.class));
         } else {
-            myEventServiceAsyncMock.register(EasyMock.eq(aDomain), EasyMock.eq(anEventFilter), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+            doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).register(eq(aDomain), eq(anEventFilter), any(AsyncCallback.class));
         }
     }
 
@@ -105,58 +108,52 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     protected void mockRegisterEventFilter(Domain aDomain, EventFilter anEventFilter, Throwable aThrowable) {
         if(aThrowable != null) {
-            myEventServiceAsyncMock.registerEventFilter(EasyMock.eq(aDomain), EasyMock.eq(anEventFilter), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aThrowable));
+            doAnswer(new AsyncCallbackThrowableAnswer(aThrowable)).when(myEventServiceAsyncMock).registerEventFilter(eq(aDomain), eq(anEventFilter), any(AsyncCallback.class));
         } else {
-            myEventServiceAsyncMock.registerEventFilter(EasyMock.eq(aDomain), EasyMock.eq(anEventFilter), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+            doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).registerEventFilter(eq(aDomain), eq(anEventFilter), any(AsyncCallback.class));
         }
     }
 
     protected void mockDeregisterEventFilter(Domain aDomain) {
-        myEventServiceAsyncMock.deregisterEventFilter(EasyMock.eq(aDomain), EasyMock.<AsyncCallback<Void>>anyObject());
-        EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+        doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).deregisterEventFilter(eq(aDomain), any(AsyncCallback.class));
     }
 
     protected void mockDeregisterEventFilter(Domain aDomain, Throwable aThrowable) {
         if(aThrowable != null) {
-            myEventServiceAsyncMock.deregisterEventFilter(EasyMock.eq(aDomain), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aThrowable));
+            doAnswer(new AsyncCallbackThrowableAnswer(aThrowable)).when(myEventServiceAsyncMock).deregisterEventFilter(eq(aDomain), any(AsyncCallback.class));
         } else {
-            myEventServiceAsyncMock.deregisterEventFilter(EasyMock.eq(aDomain), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+            doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).deregisterEventFilter(eq(aDomain), any(AsyncCallback.class));
         }
-    }
-
-    protected void mockListen() {
-        myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
     }
 
     protected void mockListen(List<DomainEvent> anEvents, int aLoops) {
         int i = 0;
+        Stubber theStubber = null;
         do {
-            myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<List<DomainEvent>>(anEvents));
+            if(theStubber == null) {
+                theStubber = doAnswer(new AsyncCallbackAnswer<List<DomainEvent>>(anEvents));
+            } else {
+                theStubber.doAnswer(new AsyncCallbackAnswer<List<DomainEvent>>(anEvents));
+            }
         } while(++i < aLoops);
-
-        if(aLoops > 0 && anEvents != null) {
-            myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
-        }
+        theStubber.doNothing().when(myEventServiceAsyncMock).listen(any(AsyncCallback.class));
     }
 
     protected void mockListen(List<DomainEvent> anEvents, int aLoops, Throwable aTestException) {
         int i = 0;
+        Stubber theStubber = null;
         do {
-            myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aTestException));
+            if(theStubber == null) {
+                theStubber = doAnswer(new AsyncCallbackThrowableAnswer(aTestException));
+            } else {
+                theStubber.doAnswer(new AsyncCallbackThrowableAnswer(aTestException));
+            }
         } while(++i < aLoops);
+        theStubber.doNothing().when(myEventServiceAsyncMock).listen(any(AsyncCallback.class));
 
         //When no events are available, there will not follow a successful call.
         if(aLoops > 0 && anEvents != null && !anEvents.isEmpty()) {
-            myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer(anEvents));
-
-            myEventServiceAsyncMock.listen(EasyMock.<AsyncCallback<List<DomainEvent>>>anyObject());
+            doAnswer(new AsyncCallbackAnswer(anEvents)).doNothing().when(myEventServiceAsyncMock).listen(any(AsyncCallback.class));
         }
     }
 
@@ -166,11 +163,9 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     protected void mockUnlisten(Set<Domain> aDomains, Throwable aThrowable) {
         if(aThrowable != null) {
-            myEventServiceAsyncMock.unlisten(EasyMock.eq(aDomains), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aThrowable));
+            doAnswer(new AsyncCallbackThrowableAnswer(aThrowable)).when(myEventServiceAsyncMock).unlisten(eq(aDomains), any(AsyncCallback.class));
         } else {
-            myEventServiceAsyncMock.unlisten(EasyMock.eq(aDomains), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+            doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).unlisten(eq(aDomains), any(AsyncCallback.class));
         }
     }
 
@@ -180,22 +175,18 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
 
     protected void mockUnlisten(Domain aDomain, Throwable aThrowable) {
         if(aThrowable != null) {
-            myEventServiceAsyncMock.unlisten(EasyMock.eq(aDomain), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackThrowableAnswer(aThrowable));
+            doAnswer(new AsyncCallbackThrowableAnswer(aThrowable)).when(myEventServiceAsyncMock).unlisten(eq(aDomain), any(AsyncCallback.class));
         } else {
-            myEventServiceAsyncMock.unlisten(EasyMock.eq(aDomain), EasyMock.<AsyncCallback<Void>>anyObject());
-            EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+            doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).unlisten(eq(aDomain), any(AsyncCallback.class));
         }
     }
 
     protected void mockRegisterUnlistenEvent(UnlistenEvent anUnlistenEvent) {
-        myEventServiceAsyncMock.registerUnlistenEvent(EasyMock.eq(UnlistenEventListener.Scope.UNLISTEN), EasyMock.eq(anUnlistenEvent), EasyMock.<AsyncCallback<Void>>anyObject());
-        EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+        doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).registerUnlistenEvent(eq(UnlistenEventListener.Scope.UNLISTEN), eq(anUnlistenEvent), any(AsyncCallback.class));
     }
 
     protected void mockAddEvent(Domain aDomain) {
-        myEventServiceAsyncMock.addEvent(EasyMock.eq(aDomain), EasyMock.<Event>anyObject(), EasyMock.<AsyncCallback<Void>>anyObject());
-        EasyMock.expectLastCall().andAnswer(new AsyncCallbackAnswer<Void>(null));
+        doAnswer(new AsyncCallbackAnswer<Void>(null)).when(myEventServiceAsyncMock).addEvent(eq(aDomain), any(Event.class), any(AsyncCallback.class));
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {
@@ -252,7 +243,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         }
     }
 
-    private class AsyncCallbackAnswer<R> implements IAnswer
+    private class AsyncCallbackAnswer<R> implements Answer
     {
         private R myCallbackResult;
 
@@ -260,8 +251,8 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
             myCallbackResult = aCallbackResult;
         }
 
-        public Object answer() throws Throwable {
-            final Object[] theArguments = EasyMock.getCurrentArguments();
+        public Object answer(InvocationOnMock anInvocation) throws Throwable {
+            final Object[] theArguments = anInvocation.getArguments();
             AsyncCallback<R> theAsyncCallback = (AsyncCallback<R>)theArguments[theArguments.length - 1];
             try {
                 theAsyncCallback.onSuccess(myCallbackResult);
@@ -270,7 +261,7 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
         }
     }
 
-    private class AsyncCallbackThrowableAnswer implements IAnswer
+    private class AsyncCallbackThrowableAnswer implements Answer
     {
         private Throwable myThrowable;
 
@@ -278,8 +269,8 @@ public abstract class AbstractRemoteEventServiceMockTest extends TestCase
             myThrowable = aThrowable;
         }
 
-        public Object answer() throws Throwable {
-            final Object[] theArguments = EasyMock.getCurrentArguments();
+        public Object answer(InvocationOnMock anInvocation) throws Throwable {
+            final Object[] theArguments = anInvocation.getArguments();
             AsyncCallback<?> theAsyncCallback = (AsyncCallback<?>)theArguments[theArguments.length - 1];
             try {
                 theAsyncCallback.onFailure(myThrowable);

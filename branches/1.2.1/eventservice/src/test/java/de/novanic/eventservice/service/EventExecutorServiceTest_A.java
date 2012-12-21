@@ -30,8 +30,13 @@ import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
@@ -47,6 +52,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
 
     private EventExecutorService myEventExecutorService;
 
+    @Before
     public void setUp() throws Exception {
         setUp(createConfiguration(0, 1, 9999));
 
@@ -55,17 +61,20 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
 
     public abstract EventExecutorService initEventExecutorService();
 
+    @After
     public void tearDown() throws Exception {
         tearDownEventServiceConfiguration();
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
+    @Test
     public void testIsUserRegistered() {
         assertFalse(myEventExecutorService.isUserRegistered());
         EventRegistryFactory.getInstance().getEventRegistry().registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         assertTrue(myEventExecutorService.isUserRegistered());
     }
 
+    @Test
     public void testIsUserRegistered_2() {
         assertFalse(myEventExecutorService.isUserRegistered(TEST_DOMAIN));
         assertFalse(myEventExecutorService.isUserRegistered(TEST_DOMAIN_2));
@@ -75,6 +84,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertFalse(myEventExecutorService.isUserRegistered(TEST_DOMAIN_2));
     }
 
+    @Test
     public void testAddEvent() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -90,6 +100,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEvents.size());
     }
 
+    @Test
     public void testAddEvent_2() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -104,6 +115,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertTrue(theEvents.isEmpty());
     }
 
+    @Test
     public void testAddEventUserSpecific() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -119,6 +131,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEvents.size());
     }
 
+    @Test
     public void testAddEventUserSpecific_2() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
@@ -130,6 +143,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertNull(theEvents);
     }
 
+    @Test
     public void testAddEventUserSpecific_3() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -145,6 +159,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertTrue(theEvents.isEmpty());
     }
 
+    @Test
     public void testAddEventUserSpecific_4() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -160,6 +175,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEvents.size());
     }
 
+    @Test
     public void testSetEventFilter() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -179,6 +195,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(0, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testRemoveEventFilter() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
@@ -203,6 +220,7 @@ public abstract class EventExecutorServiceTest_A extends EventServiceTestCase
         assertEquals(1, theEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testRemoveEventFilter_2() {
         final EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         theEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);

@@ -39,28 +39,35 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
 import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Set;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  * Date: 16.08.2008
  * Time: 20:37:44
  */
-public class RemoteEventServiceFactoryTest extends TestCase
+public class RemoteEventServiceFactoryTest
 {
+    @Before
     public void setUp() {
         ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration()).reset(getDefaultConfiguration());
         ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DummyClientCommandScheduler());
     }
 
+    @After
     public void tearDown() {
         ClientCommandSchedulerFactory.getInstance().reset();
         RemoteEventServiceFactory.reset();
     }
 
+    @Test
     public void testReset() {
         boolean isThrowableOccurred = false;
         try {
@@ -86,11 +93,13 @@ public class RemoteEventServiceFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testFactory() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
     }
 
+    @Test
     public void testGetInstance() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
@@ -108,6 +117,7 @@ public class RemoteEventServiceFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance_2() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = new RemoteEventServiceFactoryTestMode();
         try {
@@ -118,6 +128,7 @@ public class RemoteEventServiceFactoryTest extends TestCase
         }
     }
 
+    @Test
     public void testGetInstance_3() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
@@ -136,6 +147,7 @@ public class RemoteEventServiceFactoryTest extends TestCase
         assertSame(theRemoteEventService, theRemoteEventServiceFactory.getRemoteEventService());
     }
 
+    @Test
     public void testRequestClientHandler() throws Exception {
         RemoteEventServiceFactory theRemoteEventServiceFactory = new RemoteEventServiceFactoryTestMode();
 
@@ -160,22 +172,18 @@ public class RemoteEventServiceFactoryTest extends TestCase
         assertTrue(theClientHandlerAsyncCallback.isExecuted);
     }
 
+    @Test
     public void testMapEventExecutionService() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
 
-        ServiceDefTarget theServiceDefTargetMock = EasyMock.createMock(ServiceDefTarget.class);
+        ServiceDefTarget theServiceDefTargetMock = mock(ServiceDefTarget.class);
         
-        EasyMock.expect(theServiceDefTargetMock.getServiceEntryPoint()).andReturn("Test-URL");
-        theServiceDefTargetMock.setServiceEntryPoint("Test-URL?id=ABC123");
+        when(theServiceDefTargetMock.getServiceEntryPoint()).thenReturn("Test-URL");
 
         ClientHandler theClientHandler = new DefaultClientHandler("ABC123");
-
-        EasyMock.replay(theServiceDefTargetMock);
-        
         theRemoteEventServiceFactory.registerClientSpecificHandler(theServiceDefTargetMock, theClientHandler);
 
-        EasyMock.verify(theServiceDefTargetMock);
-        EasyMock.reset(theServiceDefTargetMock);
+        verify(theServiceDefTargetMock, times(1)).getServiceEntryPoint();
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {

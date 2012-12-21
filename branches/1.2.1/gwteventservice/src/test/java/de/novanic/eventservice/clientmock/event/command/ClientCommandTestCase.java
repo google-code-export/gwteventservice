@@ -23,39 +23,41 @@ package de.novanic.eventservice.clientmock.event.command;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.connection.strategy.connector.RemoteEventConnector;
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.command.ClientCommand;
-import org.easymock.EasyMock;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.junit.After;
+import org.junit.Before;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 31.03.2009
  *         <br>Time: 20:50:05
  */
-public abstract class ClientCommandTestCase extends TestCase
+public abstract class ClientCommandTestCase
 {
     private RemoteEventConnector myRemoteEventConnectorMock;
     private TestAsyncCallback myTestAsyncCallback;
 
+    @Before
     public void setUp() {
-        myRemoteEventConnectorMock = EasyMock.createMock(RemoteEventConnector.class);
+        myRemoteEventConnectorMock = mock(RemoteEventConnector.class);
         myTestAsyncCallback = null;
     }
 
+    @After
     public void tearDown() {
-        EasyMock.reset(myRemoteEventConnectorMock);
+        reset(myRemoteEventConnectorMock);
     }
 
-    public void testExecute(ClientCommand aClientCommand) {
+    protected void testExecute(ClientCommand aClientCommand) {
         checkInit(aClientCommand);
-
-        EasyMock.replay(myRemoteEventConnectorMock);
 
         aClientCommand.execute();
 
-        EasyMock.verify(myRemoteEventConnectorMock);
-        EasyMock.reset(myRemoteEventConnectorMock);
+        reset(myRemoteEventConnectorMock);
     }
 
     private void checkInit(ClientCommand aClientCommand) {

@@ -23,26 +23,35 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
-import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 15:43:54
  */
-public class DefaultConfigurationLoaderTest extends TestCase
+@RunWith(JUnit4.class)
+public class DefaultConfigurationLoaderTest
 {
     private ConfigurationLoader myConfigurationLoader;
 
+    @Before
     public void setUp() {
         myConfigurationLoader = new DefaultConfigurationLoader();
     }
 
+    @Test
     public void testIsAvailable() {
         assertTrue(myConfigurationLoader.isAvailable());
     }
 
+    @Test
     public void testLoad() {
         EventServiceConfiguration theEventServiceConfiguration = myConfigurationLoader.load();
         assertEquals("Default Configuration", theEventServiceConfiguration.getConfigDescription());

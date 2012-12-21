@@ -36,10 +36,10 @@ import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.test.testhelper.DummyDomainEvent;
 import de.novanic.eventservice.test.testhelper.EventServiceAsyncSuccessDummy;
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -49,6 +49,9 @@ import java.util.List;
 import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2010
@@ -56,14 +59,16 @@ import static org.powermock.api.support.membermodification.MemberMatcher.method;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({GWTStreamingClientConnector.class, RootPanel.class, GWT.class})
-public class GWTStreamingClientConnectorTest extends TestCase
+public class GWTStreamingClientConnectorTest
 {
     private GWTStreamingClientConnector myGWTStreamingClientConnector;
 
+    @Before
     public void setUp() {
         myGWTStreamingClientConnector = new GWTStreamingClientConnector();
     }
 
+    @Test
     public void testInit() {
         mockInitJS();
 
@@ -72,34 +77,31 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertTrue(myGWTStreamingClientConnector.isInitialized());
     }
 
+    @Test
     public void testListen() throws Exception {
         mockInitJS();
 
         myGWTStreamingClientConnector.init(new EventServiceAsyncSuccessDummy());
 
         Frame theFrameMock = mockInitFrame();
-        RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
+        mockInitRootPanel(theFrameMock);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock);
-
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock);
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testReceiveEvent() throws Exception {
         mockInitJS();
 
         myGWTStreamingClientConnector.init(new EventServiceAsyncSuccessDummy());
 
         Frame theFrameMock = mockInitFrame();
-        RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
+        mockInitRootPanel(theFrameMock);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
@@ -107,21 +109,16 @@ public class GWTStreamingClientConnectorTest extends TestCase
 
         DomainEvent theDomainEvent = new DummyDomainEvent();
 
-        SerializationStreamReader theSerializationStreamReaderMock = EasyMock.createMock(SerializationStreamReader.class);
-        EasyMock.expect(theSerializationStreamReaderMock.readObject()).andReturn(theDomainEvent);
+        SerializationStreamReader theSerializationStreamReaderMock = mock(SerializationStreamReader.class);
+        when(theSerializationStreamReaderMock.readObject()).thenReturn(theDomainEvent);
 
-        SerializationStreamFactory theSerializationStreamFactoryMock = mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
+        mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
-
-            myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
+        myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
 
         assertTrue(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
@@ -130,13 +127,14 @@ public class GWTStreamingClientConnectorTest extends TestCase
         assertSame(theDomainEvent, theEventNotification.myDomainEvents.get(0));
     }
 
+    @Test
     public void testReceiveEvent_2() throws Exception {
         mockInitJS();
 
         myGWTStreamingClientConnector.init(new EventServiceAsyncSuccessDummy());
 
         Frame theFrameMock = mockInitFrame();
-        RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
+        mockInitRootPanel(theFrameMock);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
@@ -144,74 +142,64 @@ public class GWTStreamingClientConnectorTest extends TestCase
 
         DomainEvent theDomainEvent = new DummyDomainEvent();
 
-        SerializationStreamReader theSerializationStreamReaderMock = EasyMock.createMock(SerializationStreamReader.class);
-        EasyMock.expect(theSerializationStreamReaderMock.readObject()).andReturn(theDomainEvent);
+        SerializationStreamReader theSerializationStreamReaderMock = mock(SerializationStreamReader.class);
+        when(theSerializationStreamReaderMock.readObject()).thenReturn(theDomainEvent);
 
-        SerializationStreamFactory theSerializationStreamFactoryMock = mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
+        mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
 
-        theFrameMock.setUrl("dummyurl"); //re-init of the frame (caused by the second listen call)
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
+        myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
 
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
+        assertTrue(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
+        assertEquals(1, theEventNotification.myDomainEvents.size());
+        assertSame(theDomainEvent, theEventNotification.myDomainEvents.get(0));
 
-            assertTrue(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
 
-            assertEquals(1, theEventNotification.myDomainEvents.size());
-            assertSame(theDomainEvent, theEventNotification.myDomainEvents.get(0));
-
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-
-            assertEquals(1, theEventNotification.myDomainEvents.size()); //the earlier received event is still contained within the dummy notification...
-            assertSame(theDomainEvent, theEventNotification.myDomainEvents.get(0)); //..., but no new event
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
+        assertEquals(1, theEventNotification.myDomainEvents.size()); //the earlier received event is still contained within the dummy notification...
+        assertSame(theDomainEvent, theEventNotification.myDomainEvents.get(0)); //..., but no new event
     }
 
+    @Test
     public void testReceiveEvent_Error() throws Exception {
         mockInitJS();
 
         myGWTStreamingClientConnector.init(new EventServiceAsyncSuccessDummy());
 
         Frame theFrameMock = mockInitFrame();
-        RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
+        mockInitRootPanel(theFrameMock);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
         final String theSerializedEvent = "corrupt_serialized_event";
 
-        SerializationStreamReader theSerializationStreamReaderMock = EasyMock.createMock(SerializationStreamReader.class);
-        EasyMock.expect(theSerializationStreamReaderMock.readObject()).andThrow(new SerializationException("The event is corrupt and can not be deserialized!"));
+        SerializationStreamReader theSerializationStreamReaderMock = mock(SerializationStreamReader.class);
+        when(theSerializationStreamReaderMock.readObject()).thenThrow(new SerializationException("The event is corrupt and can not be deserialized!"));
 
-        SerializationStreamFactory theSerializationStreamFactoryMock = mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
+        mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
-
-            try {
-                myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
-                fail("Exception expected, because the event is corrupt and can not be deserialized!");
-            } catch(RemoteEventServiceRuntimeException e) {
-                assertNotNull(e.getCause());
-                assertTrue(e.getCause() instanceof SerializationException);
-            }
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
+        try {
+            myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
+            fail("Exception expected, because the event is corrupt and can not be deserialized!");
+        } catch(RemoteEventServiceRuntimeException e) {
+            assertNotNull(e.getCause());
+            assertTrue(e.getCause() instanceof SerializationException);
+        }
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate() throws Exception {
         mockInitJS();
 
@@ -221,27 +209,23 @@ public class GWTStreamingClientConnectorTest extends TestCase
         RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
 
         //RootPanel reset caused by the deactivation
-        EasyMock.expect(theRootPanelMock.remove(theFrameMock)).andReturn(Boolean.TRUE);
+        when(theRootPanelMock.remove(theFrameMock)).thenReturn(Boolean.TRUE);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //initializes the streaming frame
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            //initializes the streaming frame
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
-
-            //deactivate / remove the streaming frame
-            myGWTStreamingClientConnector.deactivate();
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //deactivate / remove the streaming frame
+        myGWTStreamingClientConnector.deactivate();
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate_2() throws Exception {
         mockInitJS();
 
@@ -251,30 +235,26 @@ public class GWTStreamingClientConnectorTest extends TestCase
         RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
 
         //RootPanel reset caused by the deactivation
-        EasyMock.expect(theRootPanelMock.remove(theFrameMock)).andReturn(Boolean.TRUE);
+        when(theRootPanelMock.remove(theFrameMock)).thenReturn(Boolean.TRUE);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //initializes the streaming frame
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            //initializes the streaming frame
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
+        //deactivate / remove the streaming frame
+        myGWTStreamingClientConnector.deactivate();
 
-            //deactivate / remove the streaming frame
-            myGWTStreamingClientConnector.deactivate();
-
-            //deactivate / remove the streaming frame again
-            myGWTStreamingClientConnector.deactivate();
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //deactivate / remove the streaming frame again
+        myGWTStreamingClientConnector.deactivate();
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate_and_ReInit() throws Exception {
         mockInitJS();
 
@@ -284,43 +264,34 @@ public class GWTStreamingClientConnectorTest extends TestCase
         RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
 
         //RootPanel reset caused by the deactivation
-        EasyMock.expect(theRootPanelMock.remove(theFrameMock)).andReturn(Boolean.TRUE);
+        when(theRootPanelMock.remove(theFrameMock)).thenReturn(Boolean.TRUE);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //initializes the streaming frame
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            //initializes the streaming frame
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
-
-            //deactivate / remove the streaming frame
-            myGWTStreamingClientConnector.deactivate();
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //deactivate / remove the streaming frame
+        myGWTStreamingClientConnector.deactivate();
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
 
         theFrameMock = mockInitFrame();
-        theRootPanelMock = mockInitRootPanel(theFrameMock);
+        mockInitRootPanel(theFrameMock);
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
-
-            //re-initializes the streaming frame
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //re-initializes the streaming frame
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
     }
 
+    @Test
     public void testDeactivate_and_ReInit_2() throws Exception {
         mockInitJS();
 
@@ -330,22 +301,17 @@ public class GWTStreamingClientConnectorTest extends TestCase
         RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
 
         //RootPanel reset caused by the deactivation
-        EasyMock.expect(theRootPanelMock.remove(theFrameMock)).andReturn(Boolean.TRUE);
+        when(theRootPanelMock.remove(theFrameMock)).thenReturn(Boolean.TRUE);
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //initializes the streaming frame
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            //initializes the streaming frame
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
-
-            //deactivate / remove the streaming frame
-            myGWTStreamingClientConnector.deactivate();
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //deactivate / remove the streaming frame
+        myGWTStreamingClientConnector.deactivate();
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
@@ -354,20 +320,15 @@ public class GWTStreamingClientConnectorTest extends TestCase
         theRootPanelMock = mockInitRootPanel(theFrameMock);
 
         //RootPanel reset caused by the deactivation
-        EasyMock.expect(theRootPanelMock.remove(theFrameMock)).andReturn(Boolean.TRUE);
+        when(theRootPanelMock.remove(theFrameMock)).thenReturn(Boolean.TRUE);
 
-        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //re-initializes the streaming frame
+        myGWTStreamingClientConnector.listen(theEventNotification, null);
+        assertFalse(theEventNotification.isNotified());
+        assertFalse(theEventNotification.isAborted);
 
-            //re-initializes the streaming frame
-            myGWTStreamingClientConnector.listen(theEventNotification, null);
-            assertFalse(theEventNotification.isNotified());
-            assertFalse(theEventNotification.isAborted);
-
-            //deactivate / remove the streaming frame
-            myGWTStreamingClientConnector.deactivate();
-
-        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
-        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, GWT.class);
+        //deactivate / remove the streaming frame
+        myGWTStreamingClientConnector.deactivate();
 
         assertFalse(theEventNotification.isNotified());
         assertFalse(theEventNotification.isAborted);
@@ -380,31 +341,30 @@ public class GWTStreamingClientConnectorTest extends TestCase
     private static Frame mockInitFrame() throws Exception {
         GWTMockUtilities.disarm();
 
-        Frame theFrameMock = PowerMock.createMock(Frame.class);
-        PowerMock.expectNew(Frame.class, "dummyurl").andReturn(theFrameMock);
+        Frame theFrameMock = mock(Frame.class);
+        PowerMockito.whenNew(Frame.class).withArguments("dummyurl").thenReturn(theFrameMock);
 
         GWTMockUtilities.restore();
 
-        theFrameMock.setVisible(false);
         return theFrameMock;
     }
 
     private static RootPanel mockInitRootPanel(Frame aFrame) {
-        RootPanel theRootPanelMock = EasyMock.createMock(RootPanel.class);
+        RootPanel theRootPanelMock = mock(RootPanel.class);
         theRootPanelMock.add(aFrame);
 
-        PowerMock.mockStatic(RootPanel.class);
-        EasyMock.expect(RootPanel.get()).andReturn(theRootPanelMock).anyTimes();
+        PowerMockito.mockStatic(RootPanel.class);
+        when(RootPanel.get()).thenReturn(theRootPanelMock);
 
         return theRootPanelMock;
     }
 
     private static SerializationStreamFactory mockInitSerializationStreamFactory(SerializationStreamReader aSerializationStreamReader, String aSerializedEvent) throws Exception {
-        SerializationStreamFactory theSerializationStreamFactoryMock = EasyMock.createMock(SerializationStreamFactory.class);
-        EasyMock.expect(theSerializationStreamFactoryMock.createStreamReader(aSerializedEvent)).andReturn(aSerializationStreamReader);
+        SerializationStreamFactory theSerializationStreamFactoryMock = mock(SerializationStreamFactory.class);
+        when(theSerializationStreamFactoryMock.createStreamReader(aSerializedEvent)).thenReturn(aSerializationStreamReader);
 
-        PowerMock.mockStatic(GWT.class);
-        EasyMock.expect(GWT.create(EventService.class)).andReturn(theSerializationStreamFactoryMock);
+        PowerMockito.mockStatic(GWT.class);
+        when(GWT.create(EventService.class)).thenReturn(theSerializationStreamFactoryMock);
 
         return theSerializationStreamFactoryMock;
     }

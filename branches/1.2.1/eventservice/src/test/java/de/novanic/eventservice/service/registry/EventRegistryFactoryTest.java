@@ -28,25 +28,34 @@ import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.util.PlatformUtil;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.logging.Logger;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Level;
 
+import static org.junit.Assert.*;
+
 /**
  * @author sstrohschein
  * Date: 28.07.2008
  * <br>Time: 22:00:52
  */
+@RunWith(JUnit4.class)
 public class EventRegistryFactoryTest extends EventServiceTestCase
 {
+    @After
     public void tearDown() {
         tearDownEventServiceConfiguration();
 
         FactoryResetService.resetFactory(EventRegistryFactory.class);
     }
 
+    @Test
     public void testGetInstance() {
         EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
         assertSame(theEventRegistryFactory, EventRegistryFactory.getInstance());
@@ -56,6 +65,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         assertSame(theEventRegistry, theEventRegistryFactory.getEventRegistry());
     }
 
+    @Test
     public void testResetEventRegistry() {
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         assertSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
@@ -64,6 +74,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         assertNotSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
     }
 
+    @Test
     public void testInit() {
         EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
         EventRegistry theEventRegistry = theEventRegistryFactory.getEventRegistry();
@@ -82,6 +93,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         assertSame(theNewConfiguration, theEventRegistryFactory.getEventRegistry().getConfiguration());
     }
 
+    @Test
     public void testInit_Log() {
         EventServiceConfiguration theNewConfiguration = createConfiguration(0, 1, 2);
 
@@ -107,6 +119,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         }
     }
 
+    @Test
     public void testGetEventRegistryError() {
         EventServiceConfigurationFactory.getInstance().addCustomConfigurationLoader(new TestErrorConfigurationLoader());
 

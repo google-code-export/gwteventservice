@@ -24,12 +24,20 @@ package de.novanic.eventservice.logger;
 import java.util.logging.*;
 
 import de.novanic.eventservice.EventServiceTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 15.08.2008
  * <br>Time: 22:12:59
  */
+@RunWith(JUnit4.class)
 public class DefaultServerLoggerTest extends EventServiceTestCase
 {
     private static final String LOGGER_NAME = "testLogger";
@@ -37,12 +45,14 @@ public class DefaultServerLoggerTest extends EventServiceTestCase
     private TestLoggerHandler myLoggerHandler;
     private Logger myRealLogger;
 
+    @Before
     public void setUp() throws Exception {
         logOff();
 
         myRealLogger = Logger.getLogger(LOGGER_NAME);
     }
 
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
         logOn();
@@ -50,6 +60,7 @@ public class DefaultServerLoggerTest extends EventServiceTestCase
         myRealLogger.removeHandler(myLoggerHandler);
     }
 
+    @Test
     public void testLogging_Debug() {
         final String theMessage = "testDebug";
 
@@ -57,6 +68,7 @@ public class DefaultServerLoggerTest extends EventServiceTestCase
         theServerLogger.debug(theMessage);
     }
 
+    @Test
     public void testLogging_Info() {
         final String theMessage = "testInfo";
 
@@ -64,6 +76,7 @@ public class DefaultServerLoggerTest extends EventServiceTestCase
         theServerLogger.info(theMessage);
     }
 
+    @Test
     public void testLogging_OwnLevel() {
         final String theMessage = "testConfigMessage";
 
@@ -71,6 +84,7 @@ public class DefaultServerLoggerTest extends EventServiceTestCase
         theServerLogger.log(Level.CONFIG, theMessage);
     }
 
+    @Test
     public void testLogging_Error() {
         final String theMessage = "testError";
 
@@ -78,6 +92,7 @@ public class DefaultServerLoggerTest extends EventServiceTestCase
         theServerLogger.error(theMessage);
     }
 
+    @Test
     public void testLogging_ExceptionError() {
         final String theMessage = "testError";
 
