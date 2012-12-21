@@ -32,58 +32,85 @@ public enum ConfigParameter
 {
     /**
      * Max waiting time - Listening shouldn't hold longer than max waiting time.
-     * <br>Default value: {@value de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_MAX_WAITING_TIME}
      */
-    MAX_WAITING_TIME_TAG("time.waiting.max"),
+    MAX_WAITING_TIME_TAG("time.waiting.max", false),
 
     /**
      * Min waiting time - Listening should hold at least for min waiting time.
-     * <br>Default value: {@value de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_MIN_WAITING_TIME}
      */
-    MIN_WAITING_TIME_TAG("time.waiting.min"),
+    MIN_WAITING_TIME_TAG("time.waiting.min", false),
 
     /**
      * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
-     * <br>Default value: {@value de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_TIME_OUT}
      */
-    TIMEOUT_TIME_TAG("time.timeout"),
+    TIMEOUT_TIME_TAG("time.timeout", false),
 
     /**
      * Reconnect attempts count - Number of reconnect attempts to execute
-     * <br>Default value: {@value de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_RECONNECT_ATTEMPTS}
      */
-    RECONNECT_ATTEMPT_COUNT_TAG("reconnect.attempt.count"),
+    RECONNECT_ATTEMPT_COUNT_TAG("reconnect.attempt.count", false),
 
     /**
      * Connection id generator - Generates unique ids to identify the clients.
-     * <br>Default value: {@link de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_CONNECTION_ID_GENERATOR_CLASS_NAME}
      */
-    CONNECTION_ID_GENERATOR("connection.id.generator"),
+    CONNECTION_ID_GENERATOR("connection.id.generator", false),
 
     /**
      * Connection strategy (client side part / connector) - Connection strategies are used to define the communication between the client and the server side
-     * <br>Default value: {@link de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR}
      */
-    CONNECTION_STRATEGY_CLIENT_CONNECTOR("connection.strategy.client.connector"),
+    CONNECTION_STRATEGY_CLIENT_CONNECTOR("connection.strategy.client.connector", false),
 
     /**
      * Connection strategy (server side part / connector) - Connection strategies are used to define the communication between the client and the server side
-     * <br>Default value: {@link de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR}
      */
-    CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector"),
+    CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector", false),
 
     /**
      * Connection strategy encoding - Encoding / charset for the connection strategy
-     * <br>Default value: {@value de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_CONNECTION_STRATEGY_ENCODING}
      */
-    CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding"),
+    CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding", false),
+
+    // --- Full-qualified declarations ---
 
     /**
-     * Maximum amount of events which should be transferred to the client at once.
-     * The maximum amount of events prevents the listening logic from endless seeking of events (for example when more events are concurrently added than the listen thread can process).
-     * <br>Default value: {@value de.novanic.eventservice.config.loader.DefaultConfigurationLoader#DEFAULT_MAX_EVENTS}
+     * Max waiting time - Listening shouldn't hold longer than max waiting time.
      */
-    MAX_EVENTS("events.max");
+    FQ_MAX_WAITING_TIME_TAG("time.waiting.max", true),
+
+    /**
+     * Min waiting time - Listening should hold at least for min waiting time.
+     */
+    FQ_MIN_WAITING_TIME_TAG("time.waiting.min", true),
+
+    /**
+     * Timeout time - Max time for a listen cycle. If the timeout time is exceeded, the client will be deregistered.
+     */
+    FQ_TIMEOUT_TIME_TAG("time.timeout", true),
+
+    /**
+     * Reconnect attempts count - Number of reconnect attempts to execute
+     */
+    FQ_RECONNECT_ATTEMPT_COUNT_TAG("reconnect.attempt.count", true),
+
+    /**
+     * Connection id generator - Generates unique ids to identify the clients.
+     */
+    FQ_CONNECTION_ID_GENERATOR("connection.id.generator", true),
+
+    /**
+     * Connection strategy (client side part / connector) - Connection strategies are used to define the communication between the client and the server side
+     */
+    FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR("connection.strategy.client.connector", true),
+
+    /**
+     * Connection strategy (server side part / connector) - Connection strategies are used to define the communication between the client and the server side
+     */
+    FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR("connection.strategy.server.connector", true),
+
+    /**
+     * Connection strategy encoding - Encoding / charset for the connection strategy
+     */
+    FQ_CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding", true);
 
     // --- Constants ---
 
@@ -93,16 +120,19 @@ public enum ConfigParameter
     public static final String FULLY_QUALIFIED_TAG_PREFIX = "eventservice.";
 
     private String myDeclaration;
-    private String myDeclarationFQ;
 
     /**
      * Creates a new {@link de.novanic.eventservice.config.ConfigParameter} with a declaration.
      * When the flag isFQ / isFullQualified is set, the full-qualified prefix is attached to the declaration.
      * @param aDeclaration declaration of the configuration parameter (name of the configuration entry)
+     * @param isFQ When the flag isFQ / isFullQualified is set, the full-qualified prefix is attached to the declaration.
      */
-    private ConfigParameter(String aDeclaration) {
-        myDeclaration = aDeclaration;
-        myDeclarationFQ = FULLY_QUALIFIED_TAG_PREFIX + aDeclaration;
+    private ConfigParameter(String aDeclaration, boolean isFQ) {
+        if(isFQ) {
+            myDeclaration = FULLY_QUALIFIED_TAG_PREFIX + aDeclaration;
+        } else {
+            myDeclaration = aDeclaration;
+        }
     }
 
     /**
@@ -111,13 +141,5 @@ public enum ConfigParameter
      */
     public String declaration() {
         return myDeclaration;
-    }
-
-    /**
-     * Returns the full-qualified declaration (name of the configuration entry) of the {@link de.novanic.eventservice.config.ConfigParameter}.
-     * @return full-qualified declaration (name of the configuration entry) of the {@link de.novanic.eventservice.config.ConfigParameter}
-     */
-    public String declarationFQ() {
-        return myDeclarationFQ;
     }
 }

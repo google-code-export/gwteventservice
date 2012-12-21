@@ -39,7 +39,7 @@ public interface ConfigurationLoader
 {
     /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
-     * {@link ConfigurationLoader#load()} shouldn't be called.
+     * {@link ConfigurationLoader#load()} shouldn't called.
      * @return true when available, otherwise false
      */
     boolean isAvailable();
@@ -47,7 +47,7 @@ public interface ConfigurationLoader
     /**
      * Loads the configuration with the loader.
      * @return {@link de.novanic.eventservice.config.EventServiceConfiguration} the loaded configuration
-     * @throws de.novanic.eventservice.client.config.ConfigurationException occurs when an loading error occurs or if it contains unreadable values.
+     * @throws de.novanic.eventservice.client.config.ConfigurationException occurs when the configuration can't be loaded or if it contains unreadable values.
      */
     EventServiceConfiguration load();
 }

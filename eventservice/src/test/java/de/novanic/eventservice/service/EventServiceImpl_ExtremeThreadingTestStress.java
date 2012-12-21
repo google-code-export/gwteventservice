@@ -28,20 +28,12 @@ import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.ListenCycleCancelEvent;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * <br>Date: 17.08.2008
  * <br>Time: 21:35:19
  */
-@RunWith(JUnit4.class)
 public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceServerThreadingTest
 {
     private static final String TEST_USER_ID = "test_user_id";
@@ -51,7 +43,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
 
     private DummyEventServiceImpl myEventService;
 
-    @Before
     public void setUp() throws Exception {
         setUp(createConfiguration(0, 30000, 90000));
 
@@ -60,7 +51,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
         super.setUp(myEventService);
     }
 
-    @After
     public void tearDown() throws Exception {
         super.tearDown();
         tearDownEventServiceConfiguration();
@@ -71,7 +61,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
         System.gc();
     }
 
-    @Test
     public void testListen() throws Exception {
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
@@ -100,7 +89,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
      * Adding 15000 events and a single listen at the end (without threads).
      * @throws Exception
      */
-    @Test
     public void testListen_Extreme() throws Exception {
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
@@ -132,7 +120,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
      * Adding 4500 events with multi-threading and a single listen at the end.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading() throws Exception {
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
@@ -171,7 +158,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
      * Adding 2100 events (without multi-threading) and a listen thread at every third event.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_2() throws Exception {
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
@@ -216,7 +202,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
      * Adding 2100 events with multi-threading and a listen thread at every third event.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_3() throws Exception {
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
@@ -262,7 +247,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
      * Adding 4500 events with multi-threading (one event per millisecond) and a single listen at the end.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_4() throws Exception {
         assertEquals(0, myEventService.getActiveListenDomains().size());
 
@@ -292,7 +276,6 @@ public class EventServiceImpl_ExtremeThreadingTestStress extends EventServiceSer
      * Adding 2000 events with multi-threading (one event per millisecond) and a listen thread after every event.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_5() throws Exception {
         assertEquals(0, myEventService.getActiveListenDomains().size());
 

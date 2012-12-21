@@ -26,19 +26,14 @@ import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.command.EventExecutionCommand;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * @author sstrohschein
  *         <br>Date: 18.07.2010
  *         <br>Time: 12:39:06
  */
-@RunWith(JUnit4.class)
 public class EventExecutionCommandTest extends ClientCommandTestCase
 {
-    @Test
     public void testExecute() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
         final Event theTestEvent = new DummyEvent();
@@ -48,7 +43,6 @@ public class EventExecutionCommandTest extends ClientCommandTestCase
         testExecute(new EventExecutionCommand(getRemoteEventConnectorMock(), theTestDomain, theTestEvent, getCommandCallback()));
     }
 
-    @Test
     public void testExecute_2() {
         final Domain theUserSpecificDomain = DomainFactory.USER_SPECIFIC_DOMAIN;
         final Event theTestEvent = new DummyEvent();

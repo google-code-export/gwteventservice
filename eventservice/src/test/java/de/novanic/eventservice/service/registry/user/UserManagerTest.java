@@ -21,26 +21,18 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
+import junit.framework.TestCase;
+
 import java.util.Iterator;
 
 import de.novanic.eventservice.service.UserTimeoutListener;
-import de.novanic.eventservice.util.PlatformUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 29.01.2009
  *         <br>Time: 20:15:01
  */
-@RunWith(JUnit4.class)
-public class UserManagerTest
+public class UserManagerTest extends TestCase
 {
     private static final String TEST_USER_ID = "test_user_id";
     private static final String TEST_USER_ID_2 = "test_user_id_2";
@@ -49,18 +41,15 @@ public class UserManagerTest
 
     private DefaultUserManager myUserManager;
 
-    @Before
     public void setUp() {
         myUserManager = new DefaultUserManager(99999);
     }
 
-    @After
     public void tearDown() {
         myUserManager.getUserActivityScheduler().stop();
         myUserManager.removeUsers();
     }
 
-    @Test
     public void testAddUser() {
         assertEquals(0, myUserManager.getUserCount());
 
@@ -71,7 +60,6 @@ public class UserManagerTest
         assertEquals(1, myUserManager.getUserCount());
     }
 
-    @Test
     public void testAddUser_2() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -86,7 +74,6 @@ public class UserManagerTest
         assertEquals(1, myUserManager.getUserCount());
     }
 
-    @Test
     public void testAddUser_3() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -114,7 +101,6 @@ public class UserManagerTest
         assertEquals(2, myUserManager.getUserCount());
     }
 
-    @Test
     public void testAddUser_4() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -137,33 +123,30 @@ public class UserManagerTest
         assertNotSame(theUserInfo, myUserManager.getUser(TEST_USER_ID_2));
     }
 
-    @Test
     public void testAddUser_Error() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
         assertEquals(0, myUserManager.getUserCount());
-
+        
         myUserManager.addUser((UserInfo)null);
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
         assertEquals(0, myUserManager.getUserCount());
     }
 
-    @Test
     public void testAddUser_Error_2() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
         assertEquals(0, myUserManager.getUserCount());
-
+        
         myUserManager.addUser((String)null);
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
         assertEquals(0, myUserManager.getUserCount());
     }
 
-    @Test
     public void testRemoveUser() {
         //test remove without users
         assertEquals(0, myUserManager.getUserCount());
@@ -207,7 +190,6 @@ public class UserManagerTest
         assertEquals(0, myUserManager.getUserCount());
     }
 
-    @Test
     public void testRemoveUser_2() {
         //test remove without users
         assertEquals(0, myUserManager.getUserCount());
@@ -247,40 +229,6 @@ public class UserManagerTest
         assertEquals(0, myUserManager.getUserCount());
     }
 
-    @Test
-    public void testRemoveUser_3() {
-        UserInfo theTestUser_1 = mock(UserInfo.class, TEST_USER_ID);
-        when(theTestUser_1.getUserId()).thenReturn(TEST_USER_ID);
-        when(theTestUser_1.getLastActivityTime()).thenReturn(PlatformUtil.getCurrentTime());
-
-        UserInfo theTestUser_2 = mock(UserInfo.class, TEST_USER_ID_2);
-        when(theTestUser_2.getUserId()).thenReturn(TEST_USER_ID_2);
-        when(theTestUser_2.getLastActivityTime()).thenReturn(PlatformUtil.getCurrentTime());
-
-        myUserManager.addUser(theTestUser_1);
-        myUserManager.addUser(theTestUser_2);
-        assertEquals(2, myUserManager.getUserCount());
-        assertTrue(myUserManager.isUserContained(theTestUser_1));
-        assertTrue(myUserManager.isUserContained(theTestUser_2));
-        verify(theTestUser_1, times(0)).notifyEventListening();
-        verify(theTestUser_2, times(0)).notifyEventListening();
-
-        myUserManager.removeUser(theTestUser_1);
-        assertEquals(1, myUserManager.getUserCount());
-        assertFalse(myUserManager.isUserContained(theTestUser_1));
-        assertTrue(myUserManager.isUserContained(theTestUser_2));
-        verify(theTestUser_1, times(1)).notifyEventListening();
-        verify(theTestUser_2, times(0)).notifyEventListening();
-
-        myUserManager.removeUser(TEST_USER_ID_2);
-        assertEquals(0, myUserManager.getUserCount());
-        assertFalse(myUserManager.isUserContained(theTestUser_1));
-        assertFalse(myUserManager.isUserContained(theTestUser_2));
-        verify(theTestUser_1, times(1)).notifyEventListening(); //still from the previous remove (mock isn't reset)
-        verify(theTestUser_2, times(1)).notifyEventListening();
-    }
-
-    @Test
     public void testRemoveUser_Error() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -294,7 +242,6 @@ public class UserManagerTest
         assertNull(myUserManager.getUser(null));
     }
 
-    @Test
     public void testRemoveUser_Error_2() {
         assertEquals(0, myUserManager.getUserCount());
         assertNull(myUserManager.getUser(TEST_USER_ID));
@@ -308,7 +255,6 @@ public class UserManagerTest
         assertNull(myUserManager.getUser(null));
     }
 
-    @Test
     public void testRemoveUsers() {
         assertEquals(0, myUserManager.getUserCount());
         myUserManager.removeUsers();
@@ -323,47 +269,19 @@ public class UserManagerTest
         assertEquals(0, myUserManager.getUserCount());
     }
 
-    @Test
-    public void testRemoveUsers_2() {
-        UserInfo theTestUser_1 = mock(UserInfo.class, TEST_USER_ID);
-        when(theTestUser_1.getUserId()).thenReturn(TEST_USER_ID);
-        when(theTestUser_1.getLastActivityTime()).thenReturn(PlatformUtil.getCurrentTime());
-
-        UserInfo theTestUser_2 = mock(UserInfo.class, TEST_USER_ID_2);
-        when(theTestUser_2.getUserId()).thenReturn(TEST_USER_ID_2);
-        when(theTestUser_2.getLastActivityTime()).thenReturn(PlatformUtil.getCurrentTime());
-
-        myUserManager.addUser(theTestUser_1);
-        myUserManager.addUser(theTestUser_2);
-        assertEquals(2, myUserManager.getUserCount());
-        assertTrue(myUserManager.isUserContained(theTestUser_1));
-        assertTrue(myUserManager.isUserContained(theTestUser_2));
-        verify(theTestUser_1, times(0)).notifyEventListening();
-        verify(theTestUser_2, times(0)).notifyEventListening();
-
-        myUserManager.removeUsers();
-        assertEquals(0, myUserManager.getUserCount());
-        assertFalse(myUserManager.isUserContained(theTestUser_1));
-        assertFalse(myUserManager.isUserContained(theTestUser_2));
-        verify(theTestUser_1, times(1)).notifyEventListening();
-        verify(theTestUser_2, times(1)).notifyEventListening();
-    }
-
-    @Test
     public void testGetUser() {
         assertNull(myUserManager.getUser("unknownUser"));
         assertNull(myUserManager.getUser(null));
 
         UserInfo theAddedUser = myUserManager.addUser(TEST_USER_ID);
         assertEquals(TEST_USER_ID, theAddedUser.getUserId());
-
+        
         UserInfo theReturnedUser = myUserManager.getUser(TEST_USER_ID);
         assertNotNull(theReturnedUser);
         assertEquals(theAddedUser.getUserId(), theReturnedUser.getUserId());
         assertEquals(theAddedUser, theReturnedUser);
     }
 
-    @Test
     public void testGetUsers() {
         assertNotNull(myUserManager.getUsers());
         assertEquals(0, myUserManager.getUsers().size());
@@ -393,7 +311,6 @@ public class UserManagerTest
         assertFalse(theUserInfo_1.equals(theUserInfo_2));
     }
 
-    @Test
     public void testGetUserActivityScheduler() {
         UserActivityScheduler theUserActivityScheduler = myUserManager.getUserActivityScheduler();
         assertNotNull(theUserActivityScheduler);
@@ -401,7 +318,6 @@ public class UserManagerTest
         assertFalse(theUserActivityScheduler.equals(new DefaultUserManager(99999).getUserActivityScheduler()));
     }
 
-    @Test
     public void testActivateUserActivityScheduler() throws Exception {
         myUserManager = new DefaultUserManager(400);
 
@@ -435,7 +351,6 @@ public class UserManagerTest
         myUserManager.deactivateUserActivityScheduler();
     }
 
-    @Test
     public void testActivateUserActivityScheduler_WithAutoClean() throws Exception {
         myUserManager = new DefaultUserManager(400);
 
@@ -468,36 +383,6 @@ public class UserManagerTest
 
         myUserManager.activateUserActivityScheduler(false);
         myUserManager.deactivateUserActivityScheduler();
-    }
-
-    @Test
-    public void testReset() throws Exception {
-        final String theTestUserId = "TestUser1";
-        final UserInfo theTestUser = new UserInfo(theTestUserId);
-
-        UserManager theUserManager = UserManagerFactory.getInstance().getUserManager(99999);
-        theUserManager.addUser(theTestUser);
-
-        assertNotNull(theUserManager.getUser(theTestUserId));
-        theUserManager.reset();
-        assertNull(theUserManager.getUser(theTestUserId));
-    }
-
-    @Test
-    public void testReset_2() throws Exception {
-        final String theTestUserId = "TestUser1";
-        final UserInfo theTestUser = mock(UserInfo.class);
-        when(theTestUser.getUserId()).thenReturn(theTestUserId);
-        when(theTestUser.getLastActivityTime()).thenReturn(PlatformUtil.getCurrentTime());
-
-        UserManager theUserManager = UserManagerFactory.getInstance().getUserManager(99999);
-        theUserManager.addUser(theTestUser);
-
-        assertNotNull(theUserManager.getUser(theTestUserId));
-        theUserManager.reset();
-        assertNull(theUserManager.getUser(theTestUserId));
-
-        verify(theTestUser, times(1)).notifyEventListening();
     }
 
     private class TestUserTimeoutListener implements UserTimeoutListener

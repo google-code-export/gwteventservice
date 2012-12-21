@@ -21,21 +21,15 @@
  */
 package de.novanic.eventservice.client.config;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
 /**
  * @author sstrohschein
  *         <br>Date: 30.03.2010
  *         <br>Time: 13:42:18
  */
-@RunWith(JUnit4.class)
-public class RemoteEventServiceConfigurationTransferableTest
+public class RemoteEventServiceConfigurationTransferableTest extends TestCase
 {
-    @Test
     public void testInit() {
         EventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable();
         assertNull(theConfiguration.getMinWaitingTime());
@@ -46,7 +40,6 @@ public class RemoteEventServiceConfigurationTransferableTest
         assertNull(theConfiguration.getConnectionStrategyClientConnector());
     }
 
-    @Test
     public void testInit_2() {
         EventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "5", "client_connector");
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
@@ -57,7 +50,6 @@ public class RemoteEventServiceConfigurationTransferableTest
         assertEquals("client_connector", theConfiguration.getConnectionStrategyClientConnector());
     }
 
-    @Test
     public void testEquals() {
         EventServiceConfigurationTransferable theConfiguration = new RemoteEventServiceConfigurationTransferable(1, 2, 3, 4, "5", null);
         assertEquals(theConfiguration, theConfiguration);

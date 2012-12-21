@@ -22,34 +22,24 @@
 package de.novanic.eventservice.util;
 
 import de.novanic.eventservice.EventServiceTestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.logging.LogManager;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 14.01.2009
  *         <br>Time: 23:42:36
  */
-@RunWith(JUnit4.class)
 public class LoggingConfiguratorTestModeTest extends EventServiceTestCase
 {
     private static final String LOGGING_FILE_PROPERTY = "java.util.logging.config.file";
 
     private String myLoggingFilePropertyBackup;
 
-    @Before
     public void setUp() {
         myLoggingFilePropertyBackup = System.getProperty(LOGGING_FILE_PROPERTY);
     }
 
-    @After
     public void tearDown() throws Exception {
         if(myLoggingFilePropertyBackup != null) {
             System.setProperty(LOGGING_FILE_PROPERTY, myLoggingFilePropertyBackup);
@@ -60,7 +50,6 @@ public class LoggingConfiguratorTestModeTest extends EventServiceTestCase
         LoggingConfiguratorTestMode.reset();
     }
 
-    @Test
     public void testConfigureLogging() throws Exception {
         LoggingConfiguratorTestMode.configureLogging();
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("testlogging.properties"));
@@ -69,7 +58,6 @@ public class LoggingConfiguratorTestModeTest extends EventServiceTestCase
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("testlogging.properties"));
     }
 
-    @Test
     public void testLogOff() throws Exception {
         LoggingConfiguratorTestMode.logOff();
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("empty.properties"));
@@ -78,7 +66,6 @@ public class LoggingConfiguratorTestModeTest extends EventServiceTestCase
         assertTrue(System.getProperty(LOGGING_FILE_PROPERTY).contains("empty.properties"));
     }
 
-    @Test
     public void testLogOn() throws Exception {
         LoggingConfiguratorTestMode.logOn();
         assertEquals(myLoggingFilePropertyBackup, System.getProperty(LOGGING_FILE_PROPERTY));

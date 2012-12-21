@@ -35,20 +35,32 @@ public final class StringUtil
     private StringUtil() {}
 
     /**
-     * Returns the integer of the value and throws a {@link de.novanic.eventservice.util.ServiceUtilException} when it isn't numeric (integer).
+     * Checks if the String is numeric (integer / long and comma or point separated).
+     * @param aString String to check
+     * @return true when it is numeric (integer / long and comma or point separated), otherwise false
+     */
+    public static boolean isNumeric(String aString) {
+        if(aString != null) {
+            Scanner theScanner = new Scanner(aString.trim());
+            if(theScanner.hasNextLong()) {
+                theScanner.nextLong();
+                return !theScanner.hasNext();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the integer of the value and throws a {@link de.novanic.eventservice.util.ServiceUtilException} when it isn't numeric
+     * (integer / long and comma or point separated).
      * @param aValue value to parse
      * @return parsed integer
      * @throws ServiceUtilException thrown when the value isn't numeric
      */
-    public static Integer readInteger(String aValue) throws ServiceUtilException {
-        if(aValue != null) {
-            Scanner theScanner = new Scanner(aValue.trim());
-            if(theScanner.hasNextInt()) {
-                return theScanner.nextInt();
-            } else {
-                throw new ServiceUtilException("The value \"" + aValue + "\" couldn't parsed to an integer!");
-            }
+    public static int readIntegerChecked(String aValue) throws ServiceUtilException {
+        if(aValue == null || !(isNumeric(aValue))) {
+            throw new ServiceUtilException("The value \"" + aValue + "\" was expected to be numeric!");
         }
-        return null;
+        return Integer.parseInt(aValue);
     }
 }

@@ -29,25 +29,17 @@ import de.novanic.eventservice.service.DefaultEventExecutorService;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
-
 /**
  * @author sstrohschein
  * <br>Date: 23.08.2008
  * <br>Time: 00:35:00
  */
-@RunWith(JUnit4.class)
 public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServerThreadingTest
 {
     private static final String TEST_USER_ID = "test_user_id";
@@ -58,7 +50,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
 
     private EventRegistry myEventRegistry;
 
-    @Before
     public void setUp() {
         setUp(createConfiguration(0, 30000, 90000));
         FactoryResetService.resetFactory(EventRegistryFactory.class);
@@ -67,7 +58,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
         super.setUp(myEventRegistry);
     }
 
-    @After
     public void tearDown() throws Exception {
         super.tearDown();
         tearDownEventServiceConfiguration();
@@ -82,7 +72,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * Adding 15000 events and a single listen at the end (without threads).
      * @throws Exception
      */
-    @Test
     public void testListen_Extreme() throws Exception {
         checkListen_Extreme(false);
         assertEquals(5000, getEventCount(TEST_DOMAIN));
@@ -95,7 +84,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_Extreme_UserSpecific() throws Exception {
         checkListen_Extreme(true);
         assertEquals(15000, getEventCount(TEST_USER_ID));
@@ -138,7 +126,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * Adding 10000 events and a single listen at the end (without threads). The user is not registered for all domains.
      * @throws Exception
      */
-    @Test
     public void testListen_Extreme_2() throws Exception {
         checkListen_Extreme_2(false);
         assertEquals(10000, getEventCount());
@@ -152,7 +139,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_Extreme_2_UserSpecific() throws Exception {
         checkListen_Extreme_2(true);
         //more events than checkListen_Extreme_2, because the user isn't registered for TEST_DOMAIN_3, but unimportant
@@ -194,7 +180,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * Adding 4500 events with multithreading and a single listen at the end.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading() throws Exception {
         checkListen_ExtremeThreading(false);
         assertEquals(1500, getEventCount(TEST_DOMAIN));
@@ -207,7 +192,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_UserSpecific() throws Exception {
         checkListen_ExtremeThreading(true);
         assertEquals(4500, getEventCount(TEST_USER_ID));
@@ -255,7 +239,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * Adding 4500 events with multithreading and a single listen at the end. Test with different users.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_2() throws Exception {
         checkListen_ExtremeThreading_2(false);
         assertEquals(1500, getEventCount(TEST_DOMAIN));
@@ -267,7 +250,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_2_UserSpecific() throws Exception {
         checkListen_ExtremeThreading_2(true);
         assertEquals(3000, getEventCount(TEST_USER_ID));
@@ -326,7 +308,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * will be tested that the listen thread will not be aborted when other events received.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_3() throws Exception {
         checkListen_ExtremeThreading_3(false);
         assertEquals(900, getEventCount(TEST_DOMAIN));
@@ -340,7 +321,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_3_UserSpecific() throws Exception {
         checkListen_ExtremeThreading_3(true);
         assertEquals(1500, getEventCount(TEST_USER_ID));
@@ -411,7 +391,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * Adding 2100 events with multithreading and a listen thread at every third event.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_4() throws Exception {
         checkListen_ExtremeThreading_4(false);
 
@@ -425,7 +404,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_4_UserSpecific() throws Exception {
         checkListen_ExtremeThreading_4(true);
 
@@ -488,7 +466,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * Adding 2000 events with multithreading and a listen thread to one of three registered domains.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_5() throws Exception {
         checkListen_ExtremeThreading_5(false);
 
@@ -503,7 +480,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_5_UserSpecific() throws Exception {
         checkListen_ExtremeThreading_5(true);
 
@@ -548,7 +524,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * Adding 4500 events with multithreading and a single listen at the end. 750 events should be filtered.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_EventFilter() throws Exception {
         checkListen_ExtremeThreading_EventFilter(false);
 
@@ -563,7 +538,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_EventFilter_UserSpecific() throws Exception {
         checkListen_ExtremeThreading_EventFilter(true);
 
@@ -616,7 +590,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * for another user.
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_EventFilter_2() throws Exception {
         checkListen_ExtremeThreading_EventFilter_2(false);
         
@@ -635,7 +608,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
      * That test is executed user-specific (events are registered for single users and not for domains).
      * @throws Exception
      */
-    @Test
     public void testListen_ExtremeThreading_EventFilter_2_UserSpecific() throws Exception {
         checkListen_ExtremeThreading_EventFilter_2(true);
 
@@ -694,7 +666,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
         assertEquals(4500, getEventCount());
     }
 
-    @Test
     public void testRegisterUser_ExtremeThreading() throws EventServiceServerThreadingTestException {
         final String theUserIdKey = "USER_NUMBER_KEY";
         final String theUserIdPrefix = "UserId_";
@@ -729,7 +700,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
         assertEquals(theUserCount, UserManagerFactory.getInstance().getUserManager().getUserCount());
     }
 
-    @Test
     public void testRegisterUser_ExtremeThreading_2() throws EventServiceServerThreadingTestException {
         final String theUserIdKey = "USER_NUMBER_KEY";
         final String theUserIdPrefix = "UserId_";
@@ -774,7 +744,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
         assertEquals(theUserCount, UserManagerFactory.getInstance().getUserManager().getUserCount());
     }
 
-    @Test
     public void testDeregisterUser_ExtremeThreading_1() throws EventServiceServerThreadingTestException {
         final String theUserIdKey = "USER_NUMBER_KEY";
         final String theUserIdPrefix = "UserId_";
@@ -820,7 +789,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
         assertEquals(0, myEventRegistry.getListenDomains().size());
     }
 
-    @Test
     public void testDeregisterUser_ExtremeThreading_2() throws EventServiceServerThreadingTestException {
         final String theUserIdKey = "USER_NUMBER_KEY";
         final String theUserIdPrefix = "UserId_";
@@ -866,7 +834,6 @@ public class EventRegistry_ExtremeThreadingTestStress extends EventServiceServer
         assertEquals(0, myEventRegistry.getListenDomains().size());
     }
 
-    @Test
     public void testDeregisterUser_ExtremeThreading_3() throws EventServiceServerThreadingTestException {
         final String theUserIdKey = "USER_NUMBER_KEY";
         final String theUserIdPrefix = "UserId_";

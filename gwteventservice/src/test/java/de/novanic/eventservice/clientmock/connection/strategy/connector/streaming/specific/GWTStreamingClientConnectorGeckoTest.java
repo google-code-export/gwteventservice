@@ -22,6 +22,7 @@
 package de.novanic.eventservice.clientmock.connection.strategy.connector.streaming.specific;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.SerializationStreamFactory;
@@ -35,10 +36,10 @@ import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventService;
 import de.novanic.eventservice.test.testhelper.DummyDomainEvent;
 import de.novanic.eventservice.test.testhelper.EventServiceAsyncSuccessDummy;
-import org.junit.Before;
-import org.junit.Test;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -48,10 +49,6 @@ import java.util.List;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 import static org.powermock.api.support.membermodification.MemberModifier.suppress;
 
-import static org.mockito.Mockito.*;
-
-import static org.junit.Assert.*;
-
 /**
  * @author sstrohschein
  *         <br>Date: 24.10.2010
@@ -59,7 +56,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({GWTStreamingClientConnectorGecko.class, RootPanel.class, Element.class, GWT.class})
-public class GWTStreamingClientConnectorGeckoTest
+public class GWTStreamingClientConnectorGeckoTest extends TestCase
 {
     private GWTStreamingClientConnectorGecko myGWTStreamingClientConnector;
 
@@ -67,12 +64,10 @@ public class GWTStreamingClientConnectorGeckoTest
         suppress(method(GWTStreamingClientConnectorGecko.class, "createFrameElement"));
     }
 
-    @Before
     public void setUp() {
         myGWTStreamingClientConnector = new GWTStreamingClientConnectorGecko();
     }
 
-    @Test
     public void testInit() throws Exception {
         mockInitJS();
 
@@ -81,7 +76,6 @@ public class GWTStreamingClientConnectorGeckoTest
         assertTrue(myGWTStreamingClientConnector.isInitialized());
     }
 
-    @Test
     public void testReceiveEvent() throws Exception {
         mockInitJS();
 
@@ -91,32 +85,39 @@ public class GWTStreamingClientConnectorGeckoTest
 
         EventNotificationTestHandler theEventNotification = new EventNotificationTestHandler();
 
-        PowerMockito.mockStatic(Element.class);
-        Element theElementMock = PowerMockito.mock(Element.class);
+        PowerMock.mockStatic(Element.class);
+        Element theElementMock = PowerMock.createMock(Element.class);
+        EasyMock.expect(theElementMock.appendChild(EasyMock.<Node>anyObject())).andReturn(null);
+        EasyMock.expect(theElementMock.removeChild(EasyMock.<Node>anyObject())).andReturn(null);
 
         GWTMockUtilities.disarm();
 
-        mockInitFrame();
-        mockInitRootPanel();
-        when(RootPanel.getBodyElement()).thenReturn(theElementMock);
+        Frame theFrameMock = mockInitFrame();
+        RootPanel theRootPanelMock = mockInitRootPanel(theFrameMock);
+        EasyMock.expect(RootPanel.getBodyElement()).andReturn(theElementMock).times(2);
 
         GWTMockUtilities.restore();
 
         DomainEvent theDomainEvent = new DummyDomainEvent();
         final String theSerializedEvent = "[4,3,2,1,[\"de.novanic.eventservice.client.event.DefaultDomainEvent/3924906731\",\"de.novanic.eventservice.client.event.domain.DefaultDomain/240262385\",\"test_domain\",null],0,5]";
 
-        SerializationStreamReader theSerializationStreamReaderMock = mock(SerializationStreamReader.class);
-        when(theSerializationStreamReaderMock.readObject()).thenReturn(theDomainEvent);
+        SerializationStreamReader theSerializationStreamReaderMock = EasyMock.createMock(SerializationStreamReader.class);
+        EasyMock.expect(theSerializationStreamReaderMock.readObject()).andReturn(theDomainEvent);
 
-        mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
+        SerializationStreamFactory theSerializationStreamFactoryMock = mockInitSerializationStreamFactory(theSerializationStreamReaderMock, theSerializedEvent);
 
-        myGWTStreamingClientConnector.listen(theEventNotification, null);
-        assertFalse(theEventNotification.isNotified());
-        assertFalse(theEventNotification.isAborted);
+        PowerMock.replay(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, theElementMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
 
-        myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
-        assertTrue(theEventNotification.isNotified());
-        assertFalse(theEventNotification.isAborted);
+            myGWTStreamingClientConnector.listen(theEventNotification, null);
+            assertFalse(theEventNotification.isNotified());
+            assertFalse(theEventNotification.isAborted);
+
+            myGWTStreamingClientConnector.receiveEvent(theSerializedEvent);
+            assertTrue(theEventNotification.isNotified());
+            assertFalse(theEventNotification.isAborted);
+
+        PowerMock.verify(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, theElementMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
+        PowerMock.reset(Frame.class, theFrameMock, RootPanel.class, theRootPanelMock, theElementMock, GWT.class, theSerializationStreamFactoryMock, theSerializationStreamReaderMock);
     }
 
     private static void mockInitJS() {
@@ -126,29 +127,31 @@ public class GWTStreamingClientConnectorGeckoTest
     private static Frame mockInitFrame() throws Exception {
         GWTMockUtilities.disarm();
 
-        Frame theFrameMock = mock(Frame.class);
-        PowerMockito.whenNew(Frame.class).withArguments("dummyurl").thenReturn(theFrameMock);
+        Frame theFrameMock = PowerMock.createMock(Frame.class);
+        PowerMock.expectNew(Frame.class, "dummyurl").andReturn(theFrameMock);
 
         GWTMockUtilities.restore();
 
+        theFrameMock.setVisible(false);
         return theFrameMock;
     }
 
-    private static RootPanel mockInitRootPanel() {
-        RootPanel theRootPanelMock = mock(RootPanel.class);
+    private static RootPanel mockInitRootPanel(Frame aFrame) {
+        RootPanel theRootPanelMock = EasyMock.createMock(RootPanel.class);
+        theRootPanelMock.add(aFrame);
 
-        PowerMockito.mockStatic(RootPanel.class);
-        when(RootPanel.get()).thenReturn(theRootPanelMock);
+        PowerMock.mockStatic(RootPanel.class);
+        EasyMock.expect(RootPanel.get()).andReturn(theRootPanelMock).anyTimes();
 
         return theRootPanelMock;
     }
 
     private static SerializationStreamFactory mockInitSerializationStreamFactory(SerializationStreamReader aSerializationStreamReader, String aSerializedEvent) throws Exception {
-        SerializationStreamFactory theSerializationStreamFactoryMock = mock(SerializationStreamFactory.class);
-        when(theSerializationStreamFactoryMock.createStreamReader(aSerializedEvent)).thenReturn(aSerializationStreamReader);
+        SerializationStreamFactory theSerializationStreamFactoryMock = EasyMock.createMock(SerializationStreamFactory.class);
+        EasyMock.expect(theSerializationStreamFactoryMock.createStreamReader(aSerializedEvent)).andReturn(aSerializationStreamReader);
 
-        PowerMockito.mockStatic(GWT.class);
-        when(GWT.create(EventService.class)).thenReturn(theSerializationStreamFactoryMock);
+        PowerMock.mockStatic(GWT.class);
+        EasyMock.expect(GWT.create(EventService.class)).andReturn(theSerializationStreamFactoryMock);
 
         return theSerializationStreamFactoryMock;
     }

@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr√§nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr‰nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -150,76 +150,6 @@ public class GwtTestRemoteEventService extends RemoteEventServiceLiveTest
             public void execute() {
                 assertTrue(myRemoteEventService.isActive());
                 assertEquals(1, getEventCount());
-                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(2, getEventCount());
-            }
-        });
-
-        executeActions();
-    }
-
-    public void testAddListener_UserSpecific_2() {
-        assertFalse(myRemoteEventService.isActive());
-
-        //add listener (start listen)
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(DomainFactory.USER_SPECIFIC_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(0, getEventCount());
-            }
-        });
-
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-            }
-        });
-
-        //remove listener
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.removeListener(DomainFactory.USER_SPECIFIC_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //re-register listener (start listening again)
-        addAction(new TestAction() {
-            public void execute() {
-                myRemoteEventService.addListener(DomainFactory.USER_SPECIFIC_DOMAIN, getListener(), getCallback());
-            }
-        });
-        //check result
-        addAction(new TestAction() {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
-                assertEquals(1, getEventCount());
-            }
-        });
-
-        //add event
-        addAction(new TestAction(true) {
-            public void execute() {
-                assertTrue(myRemoteEventService.isActive());
                 myEventService.addEventUserSpecific(new DummyEvent(), getCallback());
             }
         });

@@ -21,35 +21,27 @@
  */
 package de.novanic.eventservice.client.logger;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import junit.framework.TestCase;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 15.08.2008
  * Time: 22:29:52
  */
-@RunWith(JUnit4.class)
-public class GWTClientLoggerTest
+public class GWTClientLoggerTest extends TestCase
 {
     private ClientLogger myClientLogger;
     private DummyClientLogger myAttachedDummyClientLogger;
 
-    @Before
     public void setUp() {
         myClientLogger = new GWTClientLogger();
         myAttachedDummyClientLogger = new DummyClientLogger();
         myClientLogger.attach(myAttachedDummyClientLogger);
     }
 
-    @Test
     public void testLogging() {
         myClientLogger.log("testLog");
         List<String> theLogMessages = myAttachedDummyClientLogger.getLogMessages();
@@ -72,7 +64,6 @@ public class GWTClientLoggerTest
         assertEquals("Error-Exception: testError2", theLogMessages.get(2));
     }
 
-    @Test
     public void testLogging_Detached() {
         myClientLogger.detach(myAttachedDummyClientLogger);
 
@@ -126,6 +117,10 @@ public class GWTClientLoggerTest
 
         public List<String> getLogMessages() {
             return myLogMessages;
+        }
+
+        public void clearLogMessages() {
+            myLogMessages.clear();
         }
     }
 }

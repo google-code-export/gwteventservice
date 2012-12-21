@@ -24,25 +24,18 @@ package de.novanic.eventservice.config;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
 import de.novanic.eventservice.util.PlatformUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 10.08.2008
  * Time: 23:01:56
  */
-@RunWith(JUnit4.class)
 public class RemoteEventServiceConfigurationTest extends EventServiceTestCase
 {
     private static final String TEST_CONFIG_DESCRIPTION = "TestConfig";
 
-    @Test
     public void testInit() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, 4, SessionConnectionIdGeneratorTest.class.getName(), "client_connector", "server_connector", "utf-8", 1000);
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, 4, SessionConnectionIdGeneratorTest.class.getName(), "client_connector", "server_connector", "utf-8");
         assertEquals(TEST_CONFIG_DESCRIPTION, theConfiguration.getConfigDescription());
         assertEquals(Integer.valueOf(1), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(2), theConfiguration.getMaxWaitingTime());
@@ -52,50 +45,46 @@ public class RemoteEventServiceConfigurationTest extends EventServiceTestCase
         assertEquals("server_connector", theConfiguration.getConnectionStrategyServerConnectorClassName());
     }
 
-    @Test
     public void testEquals() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000);
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8");
         assertEquals(theConfiguration, theConfiguration);
-        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000));
-        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000));
-        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000).hashCode());
+        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8"));
+        assertEquals(theConfiguration, new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8"));
+        assertEquals(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8").hashCode());
 
         EventServiceConfiguration theConfiguration_2 = null;
         assertFalse(theConfiguration.equals(theConfiguration_2));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000)));
-        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000).hashCode());
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 9, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000)));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 9, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000)));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 9, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000)));
-        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1001)));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8")));
+        assertNotSame(theConfiguration.hashCode(), new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 9, 1, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8").hashCode());
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 9, 2, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8")));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 9, 3, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8")));
+        assertFalse(theConfiguration.equals(new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 0, 1, 2, 9, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8")));
     }
 
-    @Test
     public void testToString() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, 4, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8", 1000);
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, 3, 4, SessionConnectionIdGeneratorTest.class.getName(), null, null, "utf-8");
         final String theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: 1ms; Max.: 2ms; Timeout: 3ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
     }
 
-    @Test
     public void testToString_2() {
-        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, 2, 3, 4, null, null, null, "utf-8", 1000);
+        EventServiceConfiguration theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, 2, 3, 4, null, null, null, "utf-8");
         String theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: <undefined>ms; Max.: 2ms; Timeout: 3ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
         
-        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, null, 3, 4, null, null, null, "utf-8", 1000);
+        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, null, 3, 4, null, null, null, "utf-8");
         theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: 1ms; Max.: <undefined>ms; Timeout: 3ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
 
-        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, null, null, null, null, null, "utf-8", 1000);
+        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, 1, 2, null, null, null, null, null, "utf-8");
         theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: 1ms; Max.: 2ms; Timeout: <undefined>ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());
 
-        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, null, null, null, null, null, null, "utf-8", 1000);
+        theConfiguration = new RemoteEventServiceConfiguration(TEST_CONFIG_DESCRIPTION, null, null, null, null, null, null, null, "utf-8");
         theExpectedRepresentation = "EventServiceConfiguration (TestConfig)" + PlatformUtil.getNewLine()
                 + "  Min.: <undefined>ms; Max.: <undefined>ms; Timeout: <undefined>ms";
         assertEquals(theExpectedRepresentation, theConfiguration.toString());

@@ -21,28 +21,21 @@
  */
 package de.novanic.eventservice.client.event.filter;
 
+import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.Event;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 03.08.2008
  * Time: 21:13:14
  */
-@RunWith(JUnit4.class)
-public class DefaultEventFilterTest
+public class DefaultEventFilterTest extends TestCase
 {
-    @Test
     public void testMatch() {
         EventFilter theEventFilter = new DefaultEventFilter();
         assertFalse(theEventFilter.match(new Event() {}));
     }
 
-    @Test
     public void testAppend() {
         AppendableEventFilter theEventFilter = new DefaultEventFilter() {
             public boolean match(Event anEvent) {
@@ -65,7 +58,6 @@ public class DefaultEventFilterTest
         assertFalse(theEventFilter.match(new TestEvent(3)));
     }
 
-    @Test
     public void testAppend_2() {
         AppendableEventFilter theEventFilter = new DefaultEventFilter() {
             public boolean match(Event anEvent) {
@@ -88,7 +80,6 @@ public class DefaultEventFilterTest
         assertFalse(theEventFilter.match(new TestEvent(3)));
     }
 
-    @Test
     public void testAppend_3() {
         AppendableEventFilter theEventFilter = new DefaultEventFilter(new DefaultEventFilter(new DefaultEventFilter() {
             public boolean match(Event anEvent) {
@@ -111,7 +102,6 @@ public class DefaultEventFilterTest
         assertFalse(theEventFilter.match(new TestEvent(3)));
     }
 
-    @Test
     public void testDetach() {
         CascadingEventFilter theCascadingEventFilter = new DefaultEventFilter();
         assertNull(theCascadingEventFilter.getAttachedEventFilter());

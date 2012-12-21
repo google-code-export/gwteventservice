@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -66,8 +66,8 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
         final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
         theConfig.setConnectionStrategyClientConnector(GWTStreamingClientConnector.class.getName());
 
-        ConfigurationTransferableDependentFactory.reset();
         ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(theConfig);
+        theConfigurationTransferableDependentFactory.reset(theConfig);
 
         final ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigurationTransferableDependentFactory.getConnectionStrategyClientConnector();
         assertNotNull(theConnectionStrategyClientConnector);
@@ -126,7 +126,7 @@ public class GwtTestGWTStreamingClientConnector extends GWTTestCase
 
         assertEquals(0, theDummyEventNotification.getOccurredDomainEvents().size());
 
-        theGWTStreamingClientConnector.receiveEvent("[0,3,2,1,[\"de.novanic.eventservice.client.event.DefaultDomainEvent/3924906731\",\"de.novanic.eventservice.client.event.domain.DefaultDomain/240262385\",\"test_domain\"],0," + ClientSerializationStreamReader.SERIALIZATION_STREAM_VERSION + "]");
+        theGWTStreamingClientConnector.receiveEvent("[4,3,2,1,[\"de.novanic.eventservice.client.event.DefaultDomainEvent/3924906731\",\"de.novanic.eventservice.client.event.domain.DefaultDomain/240262385\",\"test_domain\",null],0," + ClientSerializationStreamReader.SERIALIZATION_STREAM_VERSION + "]");
         theGWTStreamingClientConnector.listen(theDummyEventNotification, new DummyListenAsyncCallback());
 
         assertEquals(1, theDummyEventNotification.getOccurredDomainEvents().size());

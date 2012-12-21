@@ -27,23 +27,17 @@ import de.novanic.eventservice.client.event.DefaultDomainEvent;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.listener.EventNotification;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import junit.framework.TestCase;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 25.04.2010
  *         <br>Time: 19:58:30
  */
-@RunWith(JUnit4.class)
-public class DefaultStreamingClientConnectorTest
+public class DefaultStreamingClientConnectorTest extends TestCase
 {
-    @Test
     public void testInit() {
         final ConnectionStrategyClientConnector theStreamingClientConnector = new DummyStreamingClientConnector();
         assertFalse(theStreamingClientConnector.isInitialized());
@@ -51,7 +45,6 @@ public class DefaultStreamingClientConnectorTest
         assertTrue(theStreamingClientConnector.isInitialized());
     }
 
-    @Test
     public void testDeactivate() {
         final ConnectionStrategyClientConnector theStreamingClientConnector = new DummyStreamingClientConnector();
 
@@ -64,7 +57,6 @@ public class DefaultStreamingClientConnectorTest
         assertTrue(theStreamingClientConnector.isInitialized());//it is deactivated, but still initialized
     }
 
-    @Test
     public void testListen() {
         final DummyStreamingClientConnector theStreamingClientConnector = new DummyStreamingClientConnector();
         theStreamingClientConnector.init(null);
@@ -79,7 +71,6 @@ public class DefaultStreamingClientConnectorTest
         assertSame(theStreamingClientConnector.myDummyEvent, theEventNotification.myNotifiedEvent);
     }
 
-    @Test
     public void testListen_2() {
         final DummyStreamingClientConnector theStreamingClientConnector = new DummyStreamingClientConnectorCycle();
         theStreamingClientConnector.init(null);

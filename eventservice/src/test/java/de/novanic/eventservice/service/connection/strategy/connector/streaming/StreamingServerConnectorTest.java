@@ -32,9 +32,7 @@ import de.novanic.eventservice.service.connection.strategy.connector.ConnectionS
 import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.DummyServletOutputStream;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.easymock.EasyMock;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -43,41 +41,45 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 /**
  * @author sstrohschein
  *         <br>Date: 25.04.2010
  *         <br>Time: 15:56:39
  */
-@RunWith(JUnit4.class)
 public class StreamingServerConnectorTest extends ConnectionStrategyServerConnectorTest
 {
-    @Test
     public void testPrepare() throws Exception {
-        HttpServletResponse theResponseMock = mock(HttpServletResponse.class);
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
 
-        when(theResponseMock.getOutputStream()).thenReturn(new DummyServletOutputStream(new ByteArrayOutputStream()));
+        theResponseMock.setContentType(EasyMock.<String>anyObject());
 
-        StreamingServerConnector theStreamingServerConnector = new StreamingServerConnector(createConfiguration(0, 700, 90000));
-        theStreamingServerConnector.prepare(theResponseMock);
-    }
+        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
+        EasyMock.expectLastCall().anyTimes();
 
-    @Test
-    public void testPrepare_Error() throws Exception {
-        HttpServletResponse theResponseMock = mock(HttpServletResponse.class);
+        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(new DummyServletOutputStream(new ByteArrayOutputStream()));
 
-        when(theResponseMock.getOutputStream()).thenThrow(new IOException("Test-Exception"));
-
-        StreamingServerConnector theStreamingServerConnector = new StreamingServerConnector(createConfiguration(0, 700, 90000));
-        try {
+        EasyMock.replay(theResponseMock);
+            StreamingServerConnector theStreamingServerConnector = new StreamingServerConnector(createConfiguration(0, 700, 90000));
             theStreamingServerConnector.prepare(theResponseMock);
-            fail("EventServiceException expected!");
-        } catch(EventServiceException e) {}
+        EasyMock.verify(theResponseMock);
+        EasyMock.reset(theResponseMock);
     }
 
-    @Test
+    public void testPrepare_Error() throws Exception {
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
+
+        EasyMock.expect(theResponseMock.getOutputStream()).andThrow(new IOException("Test-Exception"));
+
+        EasyMock.replay(theResponseMock);
+            StreamingServerConnector theStreamingServerConnector = new StreamingServerConnector(createConfiguration(0, 700, 90000));
+            try {
+                theStreamingServerConnector.prepare(theResponseMock);
+                fail("EventServiceException expected!");
+            } catch(EventServiceException e) {}
+        EasyMock.verify(theResponseMock);
+        EasyMock.reset(theResponseMock);
+    }
+
     public void testListen() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -109,7 +111,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertContainsScriptCycle(theOutput);
     }
 
-    @Test
     public void testListen_2() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final Domain theDomain_2 = DomainFactory.getDomain("test_domain_2");
@@ -141,7 +142,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertTrue(theByteArrayOutputStream.toString().contains("test_domain_2"));
     }
 
-    @Test
     public void testListen_Error() throws Exception {
         final UserInfo theUserInfo = new UserInfo("test_user");
 
@@ -168,7 +168,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         }
     }
 
-    @Test
     public void testListen_Error_2() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -199,7 +198,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         }
     }
 
-    @Test
     public void testListen_Error_3() throws Exception {
         final UserInfo theUserInfo = new UserInfo("test_user");
 
@@ -215,7 +213,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertTrue(theOccurredException.getCause() instanceof IOException);
     }
 
-    @Test
     public void testListen_Error_4() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -238,7 +235,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertTrue(theOccurredException.getCause() instanceof SerializationException);
     }
 
-    @Test
     public void testListen_Error_5() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -247,6 +243,7 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
 
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 700, 90000);
         theConfiguration.getConfigMap().put(ConfigParameter.CONNECTION_STRATEGY_ENCODING, "XYZ");
+        theConfiguration.getConfigMap().put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, "XYZ");
         StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(theByteArrayOutputStream, new EventSerializationPolicy(), theConfiguration);
 
         ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);
@@ -266,7 +263,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
      * Min. waiting has no effect for streaming, because the connection is always still opened for the max. waiting time.
      * @throws Exception exception
      */
-    @Test
     public void testListen_Min_Waiting() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -296,7 +292,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
      * Min. waiting has no effect for streaming, because the connection is always still opened for the max. waiting time.
      * @throws Exception exception
      */
-    @Test
     public void testListen_Min_Waiting_2() throws Exception {
         final Domain theDomain = DomainFactory.getDomain("test_domain");
         final UserInfo theUserInfo = new UserInfo("test_user");
@@ -322,7 +317,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertContainsScriptCycle(theOutput);
     }
 
-    @Test
     public void testListen_Max_Waiting() throws Exception {
         final UserInfo theUserInfo = new UserInfo("test_user");
 
@@ -343,7 +337,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertContainsScriptCycle(theByteArrayOutputStream.toString());
     }
 
-    @Test
     public void testListen_Max_Waiting_Concurrency() throws Exception {
         final UserInfo theUserInfo = new UserInfo("test_user") {
             private boolean isFirstCall = true;
@@ -374,7 +367,6 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertEquals(theLastActivationTime, theUserInfo.getLastActivityTime()); //..., but no user activity was reported, caused by the failed double-check
     }
 
-    @Test
     public void testClone() throws Exception {
         ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -390,12 +382,10 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
         assertNotSame(theStreamingServerConnector, theClone_2);
     }
 
-    @Test
     public void testGetEncoding() throws Exception {
         testGetEncoding(StreamingServerConnector.class);
     }
 
-    @Test
     public void testGetEncoding_Error() throws Exception {
         testGetEncoding_Error(StreamingServerConnector.class);
     }
@@ -406,17 +396,25 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
     }
 
     private StreamingServerConnector createStreamingServerConnector(OutputStream anOutputStream, SerializationPolicy aSerializationPolicy, EventServiceConfiguration aConfiguration) throws EventServiceException, IOException {
-        HttpServletResponse theResponseMock = mock(HttpServletResponse.class);
+        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
 
-        when(theResponseMock.getOutputStream()).thenReturn(new DummyServletOutputStream(anOutputStream));
+        theResponseMock.setContentType(EasyMock.<String>anyObject());
 
-        final StreamingServerConnector theStreamingServerConnector;
-        if(aSerializationPolicy != null) {
-            theStreamingServerConnector = new StreamingServerConnector(aConfiguration, aSerializationPolicy);
-        } else {
-            theStreamingServerConnector = new StreamingServerConnector(aConfiguration);
-        }
-        theStreamingServerConnector.prepare(theResponseMock);
+        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
+        EasyMock.expectLastCall().anyTimes();
+
+        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(new DummyServletOutputStream(anOutputStream));
+
+        EasyMock.replay(theResponseMock);
+            final StreamingServerConnector theStreamingServerConnector;
+            if(aSerializationPolicy != null) {
+                theStreamingServerConnector = new StreamingServerConnector(aConfiguration, aSerializationPolicy);
+            } else {
+                theStreamingServerConnector = new StreamingServerConnector(aConfiguration);
+            }
+            theStreamingServerConnector.prepare(theResponseMock);
+        EasyMock.verify(theResponseMock);
+        EasyMock.reset(theResponseMock);
 
         return theStreamingServerConnector;
     }

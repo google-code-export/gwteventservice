@@ -43,11 +43,11 @@ import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerato
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.logger.ServerLogger;
+import de.novanic.eventservice.logger.ServerLoggerFactory;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.level.ConfigLevelFactory;
 import de.novanic.eventservice.config.loader.WebDescriptorConfigurationLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class EventServiceImpl extends RemoteServiceServlet implements EventService
 {
-    private static final Logger LOG = LoggerFactory.getLogger(EventServiceImpl.class);
+    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(EventServiceImpl.class.getName());
     private EventRegistry myEventRegistry;
     private ConfigurationDependentFactory myConfigurationDependentFactory;
 
@@ -80,12 +80,6 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
         myEventRegistry = initEventRegistry(aConfig);
         EventServiceConfiguration theConfiguration = myEventRegistry.getConfiguration();
         myConfigurationDependentFactory = ConfigurationDependentFactory.getInstance(theConfiguration);
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-        EventRegistryFactory.getInstance().resetEventRegistry();
     }
 
     /**
@@ -130,7 +124,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
         } else {
             theClientIdTransferable = theClientId;
         }
-        LOG.info("Client \"{}\" initialized.", theClientId);
+        LOG.info("Client \"" + theClientId + "\" initialized.");
         return new RemoteEventServiceConfigurationTransferable(theConfiguration.getMinWaitingTime(), theConfiguration.getMaxWaitingTime(),
                 theConfiguration.getTimeoutTime(), theConfiguration.getReconnectAttemptCount(), theClientIdTransferable, theConfiguration.getConnectionStrategyClientConnectorClassName());
     }
@@ -231,7 +225,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
     public List<DomainEvent> listen() {
         final String theClientId = getClientId();
         ConnectionStrategyServerConnector theConnectionStrategyServerConnector = myConfigurationDependentFactory.getConnectionStrategyServerConnector();
-        LOG.debug("Listen (client id \"{}\").", theClientId);
+        LOG.debug("Listen (client id \"" + theClientId + "\").");
         return listen(theConnectionStrategyServerConnector, theClientId);
     }
 
@@ -246,7 +240,7 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      * @return list of events
      */
     private List<DomainEvent> listen(ConnectionStrategyServerConnector aServerEventListener, String aClientId) {
-        LOG.debug("Listen (client id \"{}\").", aClientId);
+        LOG.debug("Listen (client id \"" + aClientId + "\").");
         return myEventRegistry.listen(aServerEventListener, aClientId);
     }    
 
@@ -255,9 +249,9 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      */
     public void unlisten() {
         final String theClientId = getClientId();
-        LOG.debug("Unlisten (client id \"{}\").", theClientId);
+        LOG.debug("Unlisten (client id \"" + theClientId + "\").");
         myEventRegistry.unlisten(theClientId);
-        LOG.debug("Unlisten finished (client id \"{}\").", theClientId);
+        LOG.debug("Unlisten finished (client id \"" + theClientId + "\").");
     }
 
     /**
@@ -266,9 +260,9 @@ public class EventServiceImpl extends RemoteServiceServlet implements EventServi
      */
     public void unlisten(Domain aDomain) {
         final String theClientId = getClientId();
-        LOG.debug("Unlisten (client id \"{}\").", theClientId);
+        LOG.debug("Unlisten (client id \"" + theClientId + "\").");
         myEventRegistry.unlisten(aDomain, theClientId);
-        LOG.debug("Unlisten finished (client id \"{}\").", theClientId);
+        LOG.debug("Unlisten finished (client id \"" + theClientId + "\").");
     }
 
     /**

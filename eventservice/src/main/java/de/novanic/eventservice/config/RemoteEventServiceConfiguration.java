@@ -58,8 +58,7 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      */
     public RemoteEventServiceConfiguration(String aConfigDescription, Integer aMinWaitingTime, Integer aMaxWaitingTime, Integer aTimeoutTime,
                                            Integer aReconnectAttemptCount,
-                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClientClassName, String aConnectionStrategyServerClassName, String aConnectionStrategyEncoding,
-                                           Integer aMaxEvents) {
+                                           String aConnectionIdGeneratorClassName, String aConnectionStrategyClientClassName, String aConnectionStrategyServerClassName, String aConnectionStrategyEncoding) {
         myConfigDescription = aConfigDescription;
         myConfigMap = new HashMap<ConfigParameter, Object>();
         myConfigMap.put(ConfigParameter.MIN_WAITING_TIME_TAG, aMinWaitingTime);
@@ -70,7 +69,6 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
         myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR, aConnectionStrategyClientClassName);
         myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR, aConnectionStrategyServerClassName);
         myConfigMap.put(ConfigParameter.CONNECTION_STRATEGY_ENCODING, aConnectionStrategyEncoding);
-        myConfigMap.put(ConfigParameter.MAX_EVENTS, aMaxEvents);
     }
 
     /**
@@ -152,14 +150,6 @@ public class RemoteEventServiceConfiguration implements EventServiceConfiguratio
      */
     public String getConnectionStrategyEncoding() {
         return (String)myConfigMap.get(ConfigParameter.CONNECTION_STRATEGY_ENCODING);
-    }
-
-    /**
-     * Returns the configured maximum amount of events which should be transferred to the client at once.
-     * @return configured maximum amount of events at once
-     */
-    public Integer getMaxEvents() {
-        return (Integer)myConfigMap.get(ConfigParameter.MAX_EVENTS);
     }
 
     /**

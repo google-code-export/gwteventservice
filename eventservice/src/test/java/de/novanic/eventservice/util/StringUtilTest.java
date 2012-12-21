@@ -21,45 +21,53 @@
  */
 package de.novanic.eventservice.util;
 
+import junit.framework.TestCase;
 import de.novanic.eventservice.test.testhelper.PrivateMethodExecutor;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 02.07.2009
  *         <br>Time: 21:46:57
  */
-@RunWith(JUnit4.class)
-public class StringUtilTest
+public class StringUtilTest extends TestCase
 {
-    @Test
     public void testConstructor() {
         PrivateMethodExecutor<StringUtil> thePrivateMethodExecutor = new PrivateMethodExecutor<StringUtil>(StringUtil.class);
         thePrivateMethodExecutor.executePrivateConstructor();
     }
 
-    @Test
-    public void testReadInteger() throws ServiceUtilException {
-        assertEquals(Integer.valueOf(0), StringUtil.readInteger("0"));
-        assertEquals(Integer.valueOf(12), StringUtil.readInteger("12"));
-        assertEquals(Integer.valueOf(1234567890), StringUtil.readInteger("1234567890"));
+    public void testIsNumeric() {
+        assertTrue(StringUtil.isNumeric("1234567890"));
+        assertFalse(StringUtil.isNumeric("1234567890XY"));
+        assertFalse(StringUtil.isNumeric("X"));
+
+        assertTrue(StringUtil.isNumeric("12"));
+        assertFalse(StringUtil.isNumeric("12 X"));
+        assertFalse(StringUtil.isNumeric("12 1"));
+        assertFalse(StringUtil.isNumeric("12X"));
+
+        assertTrue(StringUtil.isNumeric("0"));
+        assertTrue(StringUtil.isNumeric("000"));
+        assertTrue(StringUtil.isNumeric("012"));
+        assertFalse(StringUtil.isNumeric(""));
+        assertFalse(StringUtil.isNumeric(null));
     }
 
-    @Test
-    public void testReadInteger_Error() {
+    public void testReadIntegerChecked() throws ServiceUtilException {
+        assertEquals(0, StringUtil.readIntegerChecked("0"));
+        assertEquals(12, StringUtil.readIntegerChecked("12"));
+        assertEquals(1234567890, StringUtil.readIntegerChecked("1234567890"));
+    }
+
+    public void testReadIntegerChecked_Error() {
         try {
-            StringUtil.readInteger("XYZ");
+            StringUtil.readIntegerChecked("XYZ");
             fail(ServiceUtilException.class.getName() + " expected!");
         } catch(ServiceUtilException e) {
             assertTrue(e.getMessage().contains("XYZ"));
         }
     }
 
-    @Test
     public void testServiceUtilException() {
         try {
             throw new ServiceUtilException("aMessage");
@@ -70,7 +78,7 @@ public class StringUtilTest
 
         try {
             try {
-                StringUtil.readInteger("XYZ");
+                StringUtil.readIntegerChecked("XYZ");
             } catch(ServiceUtilException e) {
                 throw new ServiceUtilException("aMessage", e);
             }

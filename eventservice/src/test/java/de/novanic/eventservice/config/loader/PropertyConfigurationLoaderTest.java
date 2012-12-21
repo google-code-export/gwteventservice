@@ -22,50 +22,39 @@
 package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
-import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
 import de.novanic.eventservice.service.connection.strategy.connector.streaming.StreamingServerConnector;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.InputStream;
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 15:46:58
  */
-@RunWith(JUnit4.class)
 public class PropertyConfigurationLoaderTest extends EventServiceTestCase
 {
-    @Test
     public void testAvailable() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
         assertTrue(theConfigurationLoader.isAvailable());
     }
 
-    @Test
     public void testAvailable_2() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice_error.properties");
         assertTrue(theConfigurationLoader.isAvailable());
     }
 
-    @Test
     public void testAvailable_Error() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("notAnExistingFile");
         assertFalse(theConfigurationLoader.isAvailable());
         assertNull(theConfigurationLoader.load());
     }
 
-    @Test
     public void testLoad() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
         assertTrue(theConfigurationLoader.isAvailable());
@@ -78,10 +67,8 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertNull(theConfiguration.getConnectionStrategyEncoding());
-        assertNull(theConfiguration.getMaxEvents());
     }
 
-    @Test
     public void testLoad_2() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice.bak.properties");
         assertTrue(theConfigurationLoader.isAvailable());
@@ -95,10 +82,8 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertEquals("de.novanic.eventservice.client.connection.strategy.connector.streaming.GWTStreamingClientConnector", theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(StreamingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
-        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxEvents());
     }
 
-    @Test
     public void testLoad_3() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("empty.properties");
         assertTrue(theConfigurationLoader.isAvailable());
@@ -114,23 +99,19 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         assertNull(theConfiguration.getConnectionIdGeneratorClassName());
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertNull(theConfiguration.getConnectionStrategyServerConnectorClassName());
-        assertNull(theConfiguration.getMaxEvents());
     }
 
-    @Test
     public void testLoad_With_Defaults() {
         EventServiceConfiguration theConfiguration = EventServiceConfigurationFactory.getInstance().loadEventServiceConfiguration();
         assertEquals("Properties \"eventservice.properties\"", theConfiguration.getConfigDescription());
         assertEquals(Integer.valueOf(0), theConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(20000), theConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
-        assertEquals(DefaultClientConnector.class.getName(), theConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
-        assertEquals(Integer.valueOf(1000), theConfiguration.getMaxEvents());
     }
 
-    @Test
     public void testLoad_Failure() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader("eventservice_error.properties");
         try {
@@ -139,7 +120,6 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         } catch(ConfigurationException e) {}
     }
 
-    @Test
     public void testLoad_ClassLoaderError() throws Exception {
         ClassLoader theDefaultClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(new DummyClassLoader(new DummyInputStream()));
@@ -157,7 +137,6 @@ public class PropertyConfigurationLoaderTest extends EventServiceTestCase
         }
     }
 
-    @Test
     public void testEquals() {
         ConfigurationLoader theConfigurationLoader = new PropertyConfigurationLoader();
         ConfigurationLoader theConfigurationLoader_2 = new PropertyConfigurationLoader("eventservice_error.properties");

@@ -24,14 +24,12 @@ package de.novanic.eventservice.clientmock.event.command.schedule;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import de.novanic.eventservice.client.event.command.schedule.GWTCommandScheduler;
-import org.junit.Test;
+import junit.framework.TestCase;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
@@ -41,20 +39,24 @@ import static org.junit.Assert.*;
 @RunWith(PowerMockRunner.class)
 @SuppressStaticInitializationFor("com.google.gwt.user.client.Timer")
 @PrepareForTest({GWTCommandScheduler.class, GWTCommandScheduler.GWTCommandTimer.class})
-public class GWTCommandSchedulerTest
+public class GWTCommandSchedulerTest extends TestCase
 {
-    @Test
     public void testSchedule() throws Exception {
         GWTCommandScheduler theGWTCommandScheduler = new GWTCommandScheduler();
 
         final ClientCommandDummy theClientCommand = new ClientCommandDummy();
 
         final GWTCommandScheduler.GWTCommandTimer theTimerDummy = new GWTCommandTimerDummy(theClientCommand);
-        PowerMockito.whenNew(GWTCommandScheduler.GWTCommandTimer.class).withArguments(theClientCommand).thenReturn(theTimerDummy);
+        PowerMock.expectNew(GWTCommandScheduler.GWTCommandTimer.class, theClientCommand).andReturn(theTimerDummy);
 
         assertFalse(theClientCommand.isExecuted);
 
-        theGWTCommandScheduler.schedule(theClientCommand);
+        PowerMock.replay(GWTCommandScheduler.GWTCommandTimer.class);
+
+            theGWTCommandScheduler.schedule(theClientCommand);
+
+        PowerMock.verify(GWTCommandScheduler.GWTCommandTimer.class);
+        PowerMock.reset(GWTCommandScheduler.GWTCommandTimer.class);
 
         assertTrue(theClientCommand.isExecuted);
     }

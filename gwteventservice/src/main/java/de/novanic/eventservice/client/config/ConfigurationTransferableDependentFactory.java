@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -42,9 +42,12 @@ public final class ConfigurationTransferableDependentFactory
     private ConnectionStrategyClientConnector myConnectionStrategyClientConnector;
 
     /**
-     * That constructor is only called one time, because the factory is created as a singleton.
+     * Initializes the {@link ConfigurationTransferableDependentFactory}. That constructor is only called one time,
+     * because the factory is created as a singleton.
      */
-    private ConfigurationTransferableDependentFactory() {}
+    private ConfigurationTransferableDependentFactory() {
+        init();
+    }
 
     /**
      * Factory-Holder class to ensure thread-safe lazy-loading with IODH.
@@ -62,21 +65,10 @@ public final class ConfigurationTransferableDependentFactory
      * @return {@link ConfigurationTransferableDependentFactory} (singleton)
      */
     public static ConfigurationTransferableDependentFactory getInstance(EventServiceConfigurationTransferable aConfiguration) {
-        if(aConfiguration == null) {
-            throw new ConfigurationException(ConfigurationTransferableDependentFactory.class.getName() + " has to be initialized with a configuration!");
-        }
-        final boolean isReInit;
         if(myConfiguration == null) {
             myConfiguration = aConfiguration;
-            isReInit = true;
-        } else {
-            isReInit = false;
         }
-        ConfigurationTransferableDependentFactory theInstance = ConfigTransferableDependentFactoryHolder.INSTANCE;
-        if(isReInit) {
-            theInstance.init();
-        }
-        return theInstance;
+        return ConfigTransferableDependentFactoryHolder.INSTANCE;
     }
 
     /**
@@ -97,9 +89,9 @@ public final class ConfigurationTransferableDependentFactory
      */
     private void init() {
         if(myConfiguration != null) {
-            myConnectionStrategyClientConnector = createObject(myConfiguration.getConnectionStrategyClientConnector());
+            myConnectionStrategyClientConnector = createObject(myConfiguration.getConnectionStrategyClientConnector(), new DefaultClientConnector());
         } else {
-            myConnectionStrategyClientConnector = null;
+            throw new ConfigurationException(ConfigurationTransferableDependentFactory.class.getName() + " was initialized without a configuration!");
         }
     }
 
@@ -114,9 +106,13 @@ public final class ConfigurationTransferableDependentFactory
     /**
      * Creates and initializes an object of a specific type.
      */
-    @SuppressWarnings("unchecked")
-    private static <T> T createObject(String aClassName) {
-        //GWT doesn't support instance creation from a String (via reflection)
+    private static <T> T createObject(String aClassName, T aDefaultImplementation) {
+        //when no class is configured, the default implementation is returned, when a default implementation is defined
+        if(aClassName == null) {
+            return aDefaultImplementation;
+        }
+
+        //GWT doesn't seem to support instance creation from a String (via reflection)
         if(aClassName.equals(DefaultClientConnector.class.getName())) {
             return (T)new DefaultClientConnector();
         } else if(aClassName.equals(GWTStreamingClientConnector.class.getName())) {
@@ -136,12 +132,24 @@ public final class ConfigurationTransferableDependentFactory
     }
 
     /**
-     * Resets the {@link ConfigurationTransferableDependentFactory}.
-     * It has to be re-initialized with {@link #getInstance(EventServiceConfigurationTransferable)}.
+     * Resets the {@link ConfigurationTransferableDependentFactory} and re-initialize it
+     * with a new configuration.
+     * @param aConfiguration new configuration
      */
-    public static void reset() {
-        final ConfigurationTransferableDependentFactory theSingleton = ConfigTransferableDependentFactoryHolder.INSTANCE;
-        myConfiguration = null;
-        theSingleton.init();
+    public void reset(EventServiceConfigurationTransferable aConfiguration) {
+        reset(aConfiguration, true);
+    }
+
+    /**
+     * Resets the {@link de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory} and can automatically re-initialize it
+     * with a new configuration.
+     * @param aConfiguration new configuration
+     * @param isReInit if is the factory should be re-initialized with the new factory
+     */
+    public void reset(EventServiceConfigurationTransferable aConfiguration, boolean isReInit) {
+        myConfiguration = aConfiguration;
+        if(isReInit) {
+            init();
+        }
     }
 }

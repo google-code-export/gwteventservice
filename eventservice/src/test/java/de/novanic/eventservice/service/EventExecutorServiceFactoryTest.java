@@ -21,67 +21,61 @@
  */
 package de.novanic.eventservice.service;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import de.novanic.eventservice.service.exception.NoSessionAvailableException;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.Event;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  * Date: 05.08.2008
  * <br>Time: 10:52:26
  */
-@RunWith(JUnit4.class)
-public class EventExecutorServiceFactoryTest
+public class EventExecutorServiceFactoryTest extends TestCase
 {
     private static final String TEST_USER_ID = "test_user_id";
 
-    @Test
     public void testFactory() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
-        HttpSession theSessionMock = mock(HttpSession.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
+        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID).times(2);
 
-        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theSessionMock);
-        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theSessionMock));
-
-        verify(theSessionMock, times(2)).getId();
+        EasyMock.replay(theSessionMock);
+            EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theSessionMock);
+            assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theSessionMock));
+        EasyMock.verify(theSessionMock);
+        EasyMock.reset(theSessionMock);
 
         assertFalse(theEventExecutorService.isUserRegistered());
     }
 
-    @Test
     public void testFactory_2() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
 
-        HttpSession theSessionMock = mock(HttpSession.class);
-        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
+        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID).times(2);
 
-        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
-        when(theRequestMock.getSession(any(Boolean.class))).thenReturn(theSessionMock);
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(theRequestMock.getSession(EasyMock.anyBoolean())).andReturn(theSessionMock).times(2);
 
-        EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theRequestMock);
-        assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theRequestMock));
-
-        verify(theSessionMock, times(2)).getId();
-        verify(theRequestMock, times(2)).getSession(any(Boolean.class));
+        EasyMock.replay(theRequestMock, theSessionMock);
+            EventExecutorService theEventExecutorService = theEventExecutorServiceFactory.getEventExecutorService(theRequestMock);
+            assertNotSame(theEventExecutorService, theEventExecutorServiceFactory.getEventExecutorService(theRequestMock));
+        EasyMock.verify(theRequestMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theSessionMock);
 
         assertFalse(theEventExecutorService.isUserRegistered());
     }
 
-    @Test
     public void testFactory_3() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -92,7 +86,6 @@ public class EventExecutorServiceFactoryTest
         assertFalse(theEventExecutorService.isUserRegistered());
     }
 
-    @Test
     public void testFactory_SessionLess() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -117,7 +110,6 @@ public class EventExecutorServiceFactoryTest
         }
     }
 
-    @Test
     public void testFactory_SessionLess_2() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());
@@ -142,7 +134,6 @@ public class EventExecutorServiceFactoryTest
         }
     }
 
-    @Test
     public void testFactory_SessionLess_3() {
         EventExecutorServiceFactory theEventExecutorServiceFactory = EventExecutorServiceFactory.getInstance();
         assertSame(theEventExecutorServiceFactory, EventExecutorServiceFactory.getInstance());

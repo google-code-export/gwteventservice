@@ -24,19 +24,14 @@ package de.novanic.eventservice.clientmock.event.command;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.command.DeregistrationEventFilterCommand;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * @author sstrohschein
  *         <br>Date: 31.03.2009
  *         <br>Time: 20:46:42
  */
-@RunWith(JUnit4.class)
 public class DeregistrationEventFilterCommandTest extends ClientCommandTestCase
 {
-    @Test
     public void testExecute() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
 

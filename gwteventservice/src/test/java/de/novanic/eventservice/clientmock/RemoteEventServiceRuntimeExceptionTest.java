@@ -22,21 +22,15 @@
 package de.novanic.eventservice.clientmock;
 
 import de.novanic.eventservice.client.event.RemoteEventServiceRuntimeException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
 /**
  * @author sstrohschein
  *         <br>Date: 25.04.2010
  *         <br>Time: 14:11:25
  */
-@RunWith(JUnit4.class)
-public class RemoteEventServiceRuntimeExceptionTest
+public class RemoteEventServiceRuntimeExceptionTest extends TestCase
 {
-    @Test
     public void testInit() {
         final String theErrorMessage = "testMessage";
         try {
@@ -47,7 +41,6 @@ public class RemoteEventServiceRuntimeExceptionTest
         }
     }
 
-    @Test
     public void testInit_2() {
         final String theErrorMessage = "testMessage";
         try {

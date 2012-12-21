@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -39,36 +39,28 @@ import de.novanic.eventservice.client.event.filter.EventFilter;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.service.creator.EventServiceCreator;
 import de.novanic.eventservice.test.testhelper.DefaultRemoteEventServiceFactoryTestMode;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 import java.util.Set;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  * Date: 16.08.2008
  * Time: 20:37:44
  */
-public class RemoteEventServiceFactoryTest
+public class RemoteEventServiceFactoryTest extends TestCase
 {
-    @Before
     public void setUp() {
-        ConfigurationTransferableDependentFactory.reset();
-        ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration());
+        ConfigurationTransferableDependentFactory.getInstance(getDefaultConfiguration()).reset(getDefaultConfiguration());
         ClientCommandSchedulerFactory.getInstance().setClientCommandSchedulerInstance(new DummyClientCommandScheduler());
     }
 
-    @After
     public void tearDown() {
         ClientCommandSchedulerFactory.getInstance().reset();
         RemoteEventServiceFactory.reset();
     }
 
-    @Test
     public void testReset() {
         boolean isThrowableOccurred = false;
         try {
@@ -94,13 +86,11 @@ public class RemoteEventServiceFactoryTest
         }
     }
 
-    @Test
     public void testFactory() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
     }
 
-    @Test
     public void testGetInstance() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
@@ -118,7 +108,6 @@ public class RemoteEventServiceFactoryTest
         }
     }
 
-    @Test
     public void testGetInstance_2() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = new RemoteEventServiceFactoryTestMode();
         try {
@@ -129,7 +118,6 @@ public class RemoteEventServiceFactoryTest
         }
     }
 
-    @Test
     public void testGetInstance_3() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
         assertSame(theRemoteEventServiceFactory, RemoteEventServiceFactory.getInstance());
@@ -148,7 +136,6 @@ public class RemoteEventServiceFactoryTest
         assertSame(theRemoteEventService, theRemoteEventServiceFactory.getRemoteEventService());
     }
 
-    @Test
     public void testRequestClientHandler() throws Exception {
         RemoteEventServiceFactory theRemoteEventServiceFactory = new RemoteEventServiceFactoryTestMode();
 
@@ -173,18 +160,22 @@ public class RemoteEventServiceFactoryTest
         assertTrue(theClientHandlerAsyncCallback.isExecuted);
     }
 
-    @Test
     public void testMapEventExecutionService() {
         RemoteEventServiceFactory theRemoteEventServiceFactory = RemoteEventServiceFactory.getInstance();
 
-        ServiceDefTarget theServiceDefTargetMock = mock(ServiceDefTarget.class);
+        ServiceDefTarget theServiceDefTargetMock = EasyMock.createMock(ServiceDefTarget.class);
         
-        when(theServiceDefTargetMock.getServiceEntryPoint()).thenReturn("Test-URL");
+        EasyMock.expect(theServiceDefTargetMock.getServiceEntryPoint()).andReturn("Test-URL");
+        theServiceDefTargetMock.setServiceEntryPoint("Test-URL?id=ABC123");
 
         ClientHandler theClientHandler = new DefaultClientHandler("ABC123");
+
+        EasyMock.replay(theServiceDefTargetMock);
+        
         theRemoteEventServiceFactory.registerClientSpecificHandler(theServiceDefTargetMock, theClientHandler);
 
-        verify(theServiceDefTargetMock, times(1)).getServiceEntryPoint();
+        EasyMock.verify(theServiceDefTargetMock);
+        EasyMock.reset(theServiceDefTargetMock);
     }
 
     private EventServiceConfigurationTransferable getDefaultConfiguration() {

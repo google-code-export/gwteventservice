@@ -21,21 +21,15 @@
  */
 package de.novanic.eventservice.client.config;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 17:41:38
  */
-@RunWith(JUnit4.class)
-public class ConfigurationExceptionTest
+public class ConfigurationExceptionTest extends TestCase
 {
-    @Test
     public void testInit() {
         final String theErrorMessage = "testMessage";
         try {
@@ -46,7 +40,6 @@ public class ConfigurationExceptionTest
         }
     }
 
-    @Test
     public void testInit_2() {
         final String theErrorMessage = "testMessage";
         try {

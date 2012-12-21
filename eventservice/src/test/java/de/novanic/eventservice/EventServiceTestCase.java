@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr√§nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr‰nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import de.novanic.eventservice.config.ConfigurationDependentFactory;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnector;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
+import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
@@ -35,7 +36,6 @@ import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.service.DefaultEventExecutorService;
 import de.novanic.eventservice.util.LoggingConfiguratorTestMode;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
-import org.junit.After;
 
 import java.io.IOException;
 
@@ -44,7 +44,7 @@ import java.io.IOException;
  *         <br>Date: 23.10.2008
  *         <br>Time: 20:57:44
  */
-public abstract class EventServiceTestCase
+public abstract class EventServiceTestCase extends TestCase
 {
     public void setUp(EventServiceConfiguration anEventServiceConfiguration) {
         ConfigurationLoader theConfigurationLoader = new CustomConfigurationLoaderTestMode(anEventServiceConfiguration);
@@ -52,11 +52,9 @@ public abstract class EventServiceTestCase
         FactoryResetService.resetFactory(EventRegistryFactory.class);
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
         FactoryResetService.resetFactory(UserManagerFactory.class);
-        FactoryResetService.resetFactory(ConfigurationDependentFactory.class);
-        ConfigurationDependentFactory.getInstance(anEventServiceConfiguration); //re-init factory
+        ConfigurationDependentFactory.getInstance(anEventServiceConfiguration).reset(anEventServiceConfiguration);
     }
 
-    @After
     public void tearDown() throws Exception {
         tearDownEventServiceConfiguration();
         FactoryResetService.resetFactory(UserManagerFactory.class);
@@ -85,7 +83,7 @@ public abstract class EventServiceTestCase
     }
 
     protected EventServiceConfiguration createConfiguration(int aMinTime, int aMaxTime, int aTimeoutTime, String aConnectionIdGeneratorClassName, String aConnectionStrategyServerConnectorClassName) {
-        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, 0, aConnectionIdGeneratorClassName, null, aConnectionStrategyServerConnectorClassName, "utf-8", 100000);
+        return new RemoteEventServiceConfiguration("TestConfiguration", aMinTime, aMaxTime, aTimeoutTime, 0, aConnectionIdGeneratorClassName, null, aConnectionStrategyServerConnectorClassName, "utf-8");
     }
 
     protected ConnectionStrategyServerConnector getLongPollingListener() {

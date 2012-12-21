@@ -21,26 +21,20 @@
  */
 package de.novanic.eventservice.client.command;
 
+import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
 import de.novanic.eventservice.client.event.DomainEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  * Date: 03.08.2008
  * Time: 20:25:02
  */
-@RunWith(JUnit4.class)
-public class DefaultRemoteCommandTest
+public class DefaultRemoteCommandTest extends TestCase
 {
-    @Test
     public void testInit() {
         final RemoteCommand<List<DomainEvent>> theRemoteCommand = new DefaultRemoteCommand<List<DomainEvent>>() {
             public void execute(EventServiceAsync anEventServiceAsync) {}

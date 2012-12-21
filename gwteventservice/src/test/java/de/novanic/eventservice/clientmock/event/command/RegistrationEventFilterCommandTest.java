@@ -25,19 +25,14 @@ import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.TypeEventFilterTestMode;
 import de.novanic.eventservice.client.event.command.RegistrationEventFilterCommand;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * @author sstrohschein
  *         <br>Date: 31.03.2009
  *         <br>Time: 22:05:59
  */
-@RunWith(JUnit4.class)
 public class RegistrationEventFilterCommandTest extends ClientCommandTestCase
 {
-    @Test
     public void testExecute() {
         final Domain theTestDomain = DomainFactory.getDomain("test_domain");
         final TypeEventFilterTestMode theTestEventFilter = new TypeEventFilterTestMode();

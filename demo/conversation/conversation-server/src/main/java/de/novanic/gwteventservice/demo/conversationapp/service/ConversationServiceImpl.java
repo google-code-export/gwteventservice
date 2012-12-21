@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -29,8 +29,8 @@ import de.novanic.gwteventservice.demo.conversationapp.client.conversation.event
 import de.novanic.eventservice.service.RemoteEventServiceServlet;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.novanic.eventservice.logger.ServerLogger;
+import de.novanic.eventservice.logger.ServerLoggerFactory;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class ConversationServiceImpl extends RemoteEventServiceServlet implements ConversationService
 {
-    private static final Logger LOG = LoggerFactory.getLogger(ConversationServiceImpl.class);
+    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(ConversationServiceImpl.class.getName());
 
     private static final Domain CONVERSATION_DOMAIN;
     private static final String GLOBAL_CHANNEL = "GlobalChannel";
@@ -59,7 +59,7 @@ public class ConversationServiceImpl extends RemoteEventServiceServlet implement
         if(theChannel == null) {
             theChannel = myChannelManager.add(aChannelName);
             addEvent(CONVERSATION_DOMAIN, new NewChannelEvent(aContact, theChannel));
-            LOG.debug("{} created channel and joined", aContact);
+            LOG.debug(aContact + " created channel and joined");
             joinInternal(aChannelName, aContact);
         }
 
@@ -77,7 +77,7 @@ public class ConversationServiceImpl extends RemoteEventServiceServlet implement
     }
 
     public Channel join(String aContact, String aChannelName) {
-        LOG.debug("{} joined", aContact);
+        LOG.debug(aContact + " joined");
         joinInternal(aChannelName, aContact);
         return myChannelManager.getChannelByName(aChannelName);
     }
@@ -87,7 +87,7 @@ public class ConversationServiceImpl extends RemoteEventServiceServlet implement
     }
 
     public void sendMessage(String aContact, String aMessage) {
-        LOG.debug("Server-Message - {}: {}", aContact, aMessage);
+        LOG.debug("Server-Message - " + aContact + ": " + aMessage);
 
         Channel theChannel = myChannelManager.getChannel(aContact);
         addEvent(CONVERSATION_DOMAIN, new NewMessageEvent(aContact, theChannel, aMessage));

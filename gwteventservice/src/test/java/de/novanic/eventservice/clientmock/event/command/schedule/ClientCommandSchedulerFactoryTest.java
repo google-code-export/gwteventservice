@@ -21,24 +21,18 @@
  */
 package de.novanic.eventservice.clientmock.event.command.schedule;
 
+import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandSchedulerFactory;
 import de.novanic.eventservice.client.event.command.schedule.ClientCommandScheduler;
 import de.novanic.eventservice.client.event.command.ClientCommand;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 04.04.2009
  *         <br>Time: 23:01:17
  */
-@RunWith(JUnit4.class)
-public class ClientCommandSchedulerFactoryTest
+public class ClientCommandSchedulerFactoryTest extends TestCase
 {
-    @Test
     public void testGetClientCommandScheduler() {
         ClientCommandSchedulerFactory theClientCommandSchedulerFactory = ClientCommandSchedulerFactory.getInstance();
         ClientCommandScheduler theClientCommandScheduler = theClientCommandSchedulerFactory.getClientCommandScheduler();
@@ -49,7 +43,6 @@ public class ClientCommandSchedulerFactoryTest
         assertSame(theClientCommandScheduler, theClientCommandScheduler_2);
     }
 
-    @Test
     public void testGetClientCommandScheduler_2() {
         ClientCommandSchedulerFactory theClientCommandSchedulerFactory = ClientCommandSchedulerFactory.getInstance();
         ClientCommandScheduler theClientCommandScheduler = theClientCommandSchedulerFactory.getClientCommandScheduler();
@@ -70,7 +63,6 @@ public class ClientCommandSchedulerFactoryTest
         assertSame(theClientCommandScheduler_2, theClientCommandScheduler_3);
     }
 
-    @Test
     public void testReset() {
         ClientCommandSchedulerFactory theClientCommandSchedulerFactory = ClientCommandSchedulerFactory.getInstance();
         ClientCommandScheduler theClientCommandScheduler = theClientCommandSchedulerFactory.getClientCommandScheduler();

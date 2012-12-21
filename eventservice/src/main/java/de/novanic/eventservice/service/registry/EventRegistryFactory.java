@@ -23,7 +23,6 @@ package de.novanic.eventservice.service.registry;
 
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
 /**
  * The EventRegistryFactory is used to create the EventRegistry and to ensure that only one instance of
@@ -75,13 +74,6 @@ public class EventRegistryFactory
             }
         }
         return myEventRegistry;
-    }
-
-    public void resetEventRegistry() {
-        synchronized(this) {
-            myEventRegistry = null;
-            UserManagerFactory.getInstance().getUserManager().reset();
-        }
     }
 
     /**

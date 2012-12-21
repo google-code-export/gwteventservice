@@ -2,7 +2,7 @@
 GWTEventService
 
 
-Library:		GWTEventService 1.3
+Library:		GWTEventService 1.2
 Project home:	http://gwteventservice.googlecode.com/
 Project owner:	strawbill UG (haftungsbeschränkt)
 Contact:		info@strawbill.com

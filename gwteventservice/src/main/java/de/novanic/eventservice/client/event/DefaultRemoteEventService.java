@@ -119,7 +119,16 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
      * @return true, when it is a new / unregistered domain for the client, otherwise false
      */
     private boolean addListenerLocal(Domain aDomain, RemoteEventListener aRemoteListener) {
-        return addListenerLocal(aDomain, aRemoteListener, null);
+        List<RemoteEventListener> theListeners = myDomainListenerMapping.get(aDomain);
+        final boolean isNewDomain = theListeners == null;
+        if(theListeners == null) {
+            theListeners = new ArrayList<RemoteEventListener>();
+            myDomainListenerMapping.put(aDomain, theListeners);
+            theListeners.add(aRemoteListener);
+        } else {
+            theListeners.add(aRemoteListener);
+        }
+        return isNewDomain;
     }
 
     /**
@@ -135,11 +144,11 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
         final boolean isNewDomain = theListeners == null;
         if(isNewDomain) {
             theListeners = new ArrayList<RemoteEventListener>();
-        } else if(anEventFilter != null) {
+            myDomainListenerMapping.put(aDomain, theListeners);
+        } else {
             registerEventFilter(aDomain, anEventFilter);
         }
-        theListeners = addOnCopy(theListeners, aRemoteListener);
-        myDomainListenerMapping.put(aDomain, theListeners);
+        theListeners.add(aRemoteListener);
         return isNewDomain;
     }
 
@@ -474,21 +483,6 @@ public class DefaultRemoteEventService extends RemoteEventServiceAccessor implem
             }
         }
         return isRemoved;
-    }
-
-    /**
-     * Adds an entry to a list and avoids {@link ConcurrentModificationException} when an entry is added while iterating.
-     * @param aList list to add an entry to
-     * @param anEntry entry to add
-     * @param <CT> type of the contained objects
-     * @return new list instance with the added entry
-     */
-    private static <CT> List<CT> addOnCopy(List<CT> aList, CT anEntry) {
-        List<CT> theCollectionCopy = new ArrayList<CT>(aList);
-        if(theCollectionCopy.add(anEntry)) {
-            return theCollectionCopy;
-        }
-        return aList;
     }
 
     /**

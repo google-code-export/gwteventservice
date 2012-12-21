@@ -21,67 +21,56 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
+import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.EventFilterTestMode;
 import de.novanic.eventservice.util.PlatformUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 20.01.2009
  *         <br>Time: 22:04:44
  */
-@RunWith(JUnit4.class)
-public class UserInfoTest
+public class UserInfoTest extends TestCase
 {
     private static final Domain TEST_DOMAIN = DomainFactory.getDomain("test_domain");
     private static final Domain TEST_DOMAIN_2 = DomainFactory.getDomain("test_domain_2");
 
     private UserInfo myUserInfo;
 
-    @Before
     public void setUp() {
         myUserInfo = new UserInfo("test_user_id");
     }
 
-    @Test
     public void testGetUserId() {
         String theUserId = myUserInfo.getUserId();
         assertEquals("test_user_id", theUserId);
         assertEquals(theUserId, myUserInfo.toString());
     }
 
-    @Test
     public void testAddEvent() {
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty());
+        assertTrue(myUserInfo.retrieveEvents().isEmpty());
         myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        assertEquals(1, myUserInfo.retrieveEvents(1000).size());
+        assertEquals(1, myUserInfo.retrieveEvents().size());
     }
 
-    @Test
     public void testAddEvent_2() {
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty());
+        assertTrue(myUserInfo.retrieveEvents().isEmpty());
         myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        assertEquals(1, myUserInfo.retrieveEvents(1000).size());
+        assertEquals(1, myUserInfo.retrieveEvents().size());
         myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        assertEquals(1, myUserInfo.retrieveEvents(1000).size());
+        assertEquals(1, myUserInfo.retrieveEvents().size());
 
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty());
+        assertTrue(myUserInfo.retrieveEvents().isEmpty());
     }
 
-    @Test
     public void testAddEvent_3() {
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty());
+        assertTrue(myUserInfo.retrieveEvents().isEmpty());
         for(int i = 0; i < 100; i++) {
             myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
             myUserInfo.addEvent(TEST_DOMAIN_2, new DummyEvent());
@@ -91,9 +80,9 @@ public class UserInfoTest
             myUserInfo.addEvent(null, new DummyEvent());
         }
 
-        List<DomainEvent> theEvents = myUserInfo.retrieveEvents(1000);
+        List<DomainEvent> theEvents = myUserInfo.retrieveEvents();
         assertEquals(600, theEvents.size());
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty()); //all events got
+        assertTrue(myUserInfo.retrieveEvents().isEmpty()); //all events got
 
         int theDomainEventCount_1 = 0;
         int theDomainEventCount_2 = 0;
@@ -111,45 +100,23 @@ public class UserInfoTest
         assertEquals(200, theDomainEventCount_2);
         assertEquals(300, theUserSpecificEventCount);
 
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty()); //all events got
+        assertTrue(myUserInfo.retrieveEvents().isEmpty()); //all events got
         myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        assertEquals(1, myUserInfo.retrieveEvents(1000).size());
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty()); //all events got
+        assertEquals(1, myUserInfo.retrieveEvents().size());
+        assertTrue(myUserInfo.retrieveEvents().isEmpty()); //all events got
     }
 
-    @Test
-    public void testRetrieveEvents() {
-        assertEquals(0, myUserInfo.retrieveEvents(1).size());
-        myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        assertEquals(1, myUserInfo.retrieveEvents(1).size());
-        assertEquals(1, myUserInfo.retrieveEvents(1).size());
-        assertEquals(0, myUserInfo.retrieveEvents(1).size());
-
-        myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        assertEquals(2, myUserInfo.retrieveEvents(2).size());
-        assertEquals(0, myUserInfo.retrieveEvents(2).size());
-
-        myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
-        assertEquals(2, myUserInfo.retrieveEvents(3).size());
-        assertEquals(0, myUserInfo.retrieveEvents(3).size());
-    }
-
-    @Test
     public void testIsEventsEmpty() {
         assertTrue(myUserInfo.isEventsEmpty());
         myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
         assertFalse(myUserInfo.isEventsEmpty());
         assertFalse(myUserInfo.isEventsEmpty());
         
-        assertEquals(1, myUserInfo.retrieveEvents(1000).size());
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty()); //all events got
+        assertEquals(1, myUserInfo.retrieveEvents().size());
+        assertTrue(myUserInfo.retrieveEvents().isEmpty()); //all events got
         assertTrue(myUserInfo.isEventsEmpty());
     }
 
-    @Test
     public void testIsEventsEmpty_2() {
         assertTrue(myUserInfo.isEventsEmpty());
         myUserInfo.addEvent(TEST_DOMAIN, new DummyEvent());
@@ -158,12 +125,11 @@ public class UserInfoTest
         assertFalse(myUserInfo.isEventsEmpty());
         assertFalse(myUserInfo.isEventsEmpty());
 
-        assertEquals(3, myUserInfo.retrieveEvents(1000).size());
+        assertEquals(3, myUserInfo.retrieveEvents().size());
         assertTrue(myUserInfo.isEventsEmpty());
-        assertTrue(myUserInfo.retrieveEvents(1000).isEmpty()); //all events got
+        assertTrue(myUserInfo.retrieveEvents().isEmpty()); //all events got
     }
 
-    @Test
     public void testSetEventFilter() {
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertNull(myUserInfo.getEventFilter(DomainFactory.getDomain("otherDomain")));
@@ -176,7 +142,6 @@ public class UserInfoTest
         assertNull(myUserInfo.getEventFilter(DomainFactory.getDomain("otherDomain")));
     }
 
-    @Test
     public void testSetEventFilter_2() {
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         assertNull(myUserInfo.getEventFilter(DomainFactory.getDomain("otherDomain")));
@@ -195,20 +160,17 @@ public class UserInfoTest
         assertNull(myUserInfo.getEventFilter(DomainFactory.getDomain("otherDomain")));
     }
 
-    @Test
     public void testSetEventFilter_Error() {
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         myUserInfo.setEventFilter(TEST_DOMAIN, null);
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
     }
 
-    @Test
     public void testGetEventFilter_Error() {
         assertNull(myUserInfo.getEventFilter(null));
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
     }
 
-    @Test
     public void testRemoveEventFilter() {
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
 
@@ -225,7 +187,6 @@ public class UserInfoTest
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
     }
 
-    @Test
     public void testRemoveEventFilter_Error() {
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
         myUserInfo.removeEventFilter(null);
@@ -236,7 +197,6 @@ public class UserInfoTest
         assertNull(myUserInfo.getEventFilter(TEST_DOMAIN));
     }
 
-    @Test
     public void testSetGetLastActivityTime() {
         long theLastActivityTime = myUserInfo.getLastActivityTime();
         assertTrue(theLastActivityTime > 0);
@@ -246,7 +206,6 @@ public class UserInfoTest
         assertEquals(0, myUserInfo.getLastActivityTime());
     }
 
-    @Test
     public void testEquals() {
         UserInfo theOtherUserInfo = new UserInfo("test_user_id");
         assertEquals(myUserInfo, myUserInfo);
@@ -263,7 +222,6 @@ public class UserInfoTest
         assertFalse(myUserInfo.equals(theOtherUserInfo));
     }
 
-    @Test
     public void testCompareTo() {
         UserInfo theUserInfo = new UserInfo("1");
         UserInfo theUserInfo_2 = new UserInfo("2");

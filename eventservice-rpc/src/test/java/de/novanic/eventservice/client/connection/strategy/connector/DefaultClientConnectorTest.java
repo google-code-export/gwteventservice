@@ -25,37 +25,36 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.client.event.listener.EventNotification;
 import de.novanic.eventservice.client.event.service.EventServiceAsync;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
-
-import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 22.04.2010
  *         <br>Time: 00:14:17
  */
-@RunWith(JUnit4.class)
-public class DefaultClientConnectorTest
+public class DefaultClientConnectorTest extends TestCase
 {
-    @Test
     public void testInit() {
-        EventServiceAsync theEventServiceMock = mock(EventServiceAsync.class);
+        EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
+
+        EasyMock.replay(theEventServiceMock);
 
         ConnectionStrategyClientConnector theClientConnector = new DefaultClientConnector();
         assertFalse(theClientConnector.isInitialized());
         theClientConnector.init(theEventServiceMock);
         assertTrue(theClientConnector.isInitialized());
+
+        EasyMock.verify(theEventServiceMock);
+        EasyMock.reset(theEventServiceMock);
     }
 
-    @Test
     public void testDeactivate() {
-        EventServiceAsync theEventServiceMock = mock(EventServiceAsync.class);
+        EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
+
+        EasyMock.replay(theEventServiceMock);
 
         ConnectionStrategyClientConnector theClientConnector = new DefaultClientConnector();
 
@@ -66,9 +65,11 @@ public class DefaultClientConnectorTest
         assertTrue(theClientConnector.isInitialized());
         theClientConnector.deactivate();
         assertTrue(theClientConnector.isInitialized());//it is deactivated, but still initialized
+
+        EasyMock.verify(theEventServiceMock);
+        EasyMock.reset(theEventServiceMock);
     }
 
-    @Test
     public void testListen() {
         final AsyncCallback<List<DomainEvent>> theDummyAsyncCallback = new AsyncCallback<List<DomainEvent>>() {
             public void onFailure(Throwable aThrowable) {
@@ -78,13 +79,18 @@ public class DefaultClientConnectorTest
             }
         };
 
-        EventServiceAsync theEventServiceMock = mock(EventServiceAsync.class);
+        EventServiceAsync theEventServiceMock = EasyMock.createMock(EventServiceAsync.class);
 
         theEventServiceMock.listen(theDummyAsyncCallback);
+
+        EasyMock.replay(theEventServiceMock);
 
         ConnectionStrategyClientConnector theClientConnector = new DefaultClientConnector();
         theClientConnector.init(theEventServiceMock);
         theClientConnector.listen(new DummyEventNotification(), theDummyAsyncCallback);
+
+        EasyMock.verify(theEventServiceMock);
+        EasyMock.reset(theEventServiceMock);
     }
 
     private class DummyEventNotification implements EventNotification

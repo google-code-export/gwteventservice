@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -26,39 +26,27 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.loader.ConfigurationLoader;
 import de.novanic.eventservice.EventServiceTestCase;
-import de.novanic.eventservice.service.registry.user.UserManager;
-import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.util.PlatformUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.logging.Logger;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Level;
 
-import static org.junit.Assert.*;
-
 /**
  * @author sstrohschein
  * Date: 28.07.2008
  * <br>Time: 22:00:52
  */
-@RunWith(JUnit4.class)
 public class EventRegistryFactoryTest extends EventServiceTestCase
 {
-    @After
     public void tearDown() {
         tearDownEventServiceConfiguration();
 
         FactoryResetService.resetFactory(EventRegistryFactory.class);
-        FactoryResetService.resetFactory(UserManagerFactory.class);
     }
 
-    @Test
     public void testGetInstance() {
         EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
         assertSame(theEventRegistryFactory, EventRegistryFactory.getInstance());
@@ -68,8 +56,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         assertSame(theEventRegistry, theEventRegistryFactory.getEventRegistry());
     }
 
-    @Test
-    public void testResetEventRegistryFactory() {
+    public void testResetEventRegistry() {
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
         assertSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
 
@@ -77,29 +64,6 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         assertNotSame(theEventRegistry, EventRegistryFactory.getInstance().getEventRegistry());
     }
 
-    @Test
-    public void testResetEventRegistry() throws Exception {
-        final String theTestUserId = "TestUser1";
-
-        UserManager theUserManager = UserManagerFactory.getInstance().getUserManager(100);
-        theUserManager.getUserActivityScheduler().stop();
-
-        theUserManager.addUser(theTestUserId);
-        assertNotNull(theUserManager.getUser(theTestUserId));
-
-        EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
-        assertNotNull(theEventRegistry);
-        Thread.sleep(400);
-        assertNull(theUserManager.getUser(theTestUserId)); //cleaned-up by the user-activity scheduler which is activated by the EventRegistry
-
-        EventRegistryFactory.getInstance().resetEventRegistry();
-        theUserManager.addUser(theTestUserId);
-
-        Thread.sleep(400);
-        assertNotNull(theUserManager.getUser(theTestUserId)); //not cleaned-up by the user-activity scheduler, because the EventRegistry got stopped
-    }
-
-    @Test
     public void testInit() {
         EventRegistryFactory theEventRegistryFactory = EventRegistryFactory.getInstance();
         EventRegistry theEventRegistry = theEventRegistryFactory.getEventRegistry();
@@ -118,7 +82,6 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         assertSame(theNewConfiguration, theEventRegistryFactory.getEventRegistry().getConfiguration());
     }
 
-    @Test
     public void testInit_Log() {
         EventServiceConfiguration theNewConfiguration = createConfiguration(0, 1, 2);
 
@@ -136,7 +99,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
 
             EventRegistryFactory.getInstance().getEventRegistry();
 
-            assertEquals("Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
+            assertEquals("Server: Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
                     "  Min.: 0ms; Max.: 1ms; Timeout: 2ms", theTestLoggingHandler.getLastMessage());
         } finally {
             theLogger.setLevel(theOldLevel);
@@ -144,7 +107,6 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
         }
     }
 
-    @Test
     public void testGetEventRegistryError() {
         EventServiceConfigurationFactory.getInstance().addCustomConfigurationLoader(new TestErrorConfigurationLoader());
 

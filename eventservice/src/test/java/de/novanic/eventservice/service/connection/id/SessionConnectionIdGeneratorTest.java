@@ -22,57 +22,63 @@
 package de.novanic.eventservice.service.connection.id;
 
 import de.novanic.eventservice.service.exception.NoSessionAvailableException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 30.03.2010
  *         <br>Time: 14:28:17
  */
-@RunWith(JUnit4.class)
-public class SessionConnectionIdGeneratorTest
+public class SessionConnectionIdGeneratorTest extends TestCase
 {
-    @Test
     public void testGenerateConnectionId() {
-        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
-        HttpSession theSessionMock = mock(HttpSession.class);
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        when(theRequestMock.getSession(true)).thenReturn(theSessionMock);
-        when(theSessionMock.getId()).thenReturn("123b");
+        EasyMock.expect(theRequestMock.getSession(true)).andReturn(theSessionMock);
+
+        EasyMock.expect(theSessionMock.getId()).andReturn("123b");
 
         ConnectionIdGenerator theConnectionIdGenerator = new SessionConnectionIdGenerator();
-        assertEquals("123b", theConnectionIdGenerator.generateConnectionId(theRequestMock));
+
+        EasyMock.replay(theRequestMock, theSessionMock);
+            assertEquals("123b", theConnectionIdGenerator.generateConnectionId(theRequestMock));
+        EasyMock.verify(theRequestMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theSessionMock);
     }
 
-    @Test
     public void testGetConnectionId() {
-        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
-        HttpSession theSessionMock = mock(HttpSession.class);
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        when(theRequestMock.getSession(false)).thenReturn(theSessionMock);
-        when(theSessionMock.getId()).thenReturn("123b");
+        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
+
+        EasyMock.expect(theSessionMock.getId()).andReturn("123b");
 
         ConnectionIdGenerator theConnectionIdGenerator = new SessionConnectionIdGenerator();
-        assertEquals("123b", theConnectionIdGenerator.getConnectionId(theRequestMock));
+
+        EasyMock.replay(theRequestMock, theSessionMock);
+            assertEquals("123b", theConnectionIdGenerator.getConnectionId(theRequestMock));
+        EasyMock.verify(theRequestMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theSessionMock);
     }
 
-    @Test
     public void testGetConnectionId_2() {
-        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
+        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
+        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
 
-        when(theRequestMock.getSession(false)).thenReturn(null);
+        EasyMock.expect(theRequestMock.getSession(false)).andReturn(null);
 
-        try {
-            new SessionConnectionIdGenerator().getConnectionId(theRequestMock);
-            fail("An exception is expected, because the session is NULL!");
-        } catch(NoSessionAvailableException e) {}
+        EasyMock.replay(theRequestMock, theSessionMock);
+            try {
+                new SessionConnectionIdGenerator().getConnectionId(theRequestMock);
+                fail("An exception is expected, because the session is NULL!");
+            } catch(NoSessionAvailableException e) {}
+        EasyMock.verify(theRequestMock, theSessionMock);
+        EasyMock.reset(theRequestMock, theSessionMock);
     }
 }

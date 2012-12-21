@@ -21,21 +21,15 @@
  */
 package de.novanic.eventservice.service.exception;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.11.2008
  *         <br>Time: 22:34:40
  */
-@RunWith(JUnit4.class)
-public class NoSessionAvailableExceptionTest
+public class NoSessionAvailableExceptionTest extends TestCase
 {
-    @Test
     public void testInit() {
         try {
             throwNoSessionAvailableException_DefaultMessage();
@@ -46,7 +40,6 @@ public class NoSessionAvailableExceptionTest
         }
     }
 
-    @Test
     public void testInit_2() {
         final String theErrorMessage = "testNoSessionAvailableExceptionMessage";
         try {
@@ -58,7 +51,6 @@ public class NoSessionAvailableExceptionTest
         }
     }
 
-    @Test
     public void testInit_3() {
         final String theErrorMessage = "testNoSessionAvailableExceptionMessage";
         try {

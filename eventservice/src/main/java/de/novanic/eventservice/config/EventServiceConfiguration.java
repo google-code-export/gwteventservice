@@ -101,12 +101,6 @@ public interface EventServiceConfiguration
     String getConnectionStrategyEncoding();
 
     /**
-     * Returns the configured maximum amount of events which should be transferred to the client at once.
-     * @return configured maximum amount of events at once
-     */
-    Integer getMaxEvents();
-
-    /**
      * Returns the configurations as a {@link java.util.Map} with {@link de.novanic.eventservice.config.ConfigParameter}
      * instances as the key.
      * @return {@link java.util.Map} with the configurations with {@link de.novanic.eventservice.config.ConfigParameter}

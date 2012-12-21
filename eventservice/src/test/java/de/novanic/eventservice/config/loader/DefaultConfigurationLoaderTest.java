@@ -21,38 +21,28 @@
  */
 package de.novanic.eventservice.config.loader;
 
-import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
 import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
+import junit.framework.TestCase;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 15:43:54
  */
-@RunWith(JUnit4.class)
-public class DefaultConfigurationLoaderTest
+public class DefaultConfigurationLoaderTest extends TestCase
 {
     private ConfigurationLoader myConfigurationLoader;
 
-    @Before
     public void setUp() {
         myConfigurationLoader = new DefaultConfigurationLoader();
     }
 
-    @Test
     public void testIsAvailable() {
         assertTrue(myConfigurationLoader.isAvailable());
     }
 
-    @Test
     public void testLoad() {
         EventServiceConfiguration theEventServiceConfiguration = myConfigurationLoader.load();
         assertEquals("Default Configuration", theEventServiceConfiguration.getConfigDescription());
@@ -60,9 +50,8 @@ public class DefaultConfigurationLoaderTest
         assertEquals(Integer.valueOf(20000), theEventServiceConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theEventServiceConfiguration.getTimeoutTime());
         assertEquals(SessionConnectionIdGenerator.class.getName(), theEventServiceConfiguration.getConnectionIdGeneratorClassName());
-        assertEquals(DefaultClientConnector.class.getName(), theEventServiceConfiguration.getConnectionStrategyClientConnectorClassName());
+        assertNull(theEventServiceConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theEventServiceConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theEventServiceConfiguration.getConnectionStrategyEncoding());
-        assertEquals(Integer.valueOf(1000), theEventServiceConfiguration.getMaxEvents());
     }
 }

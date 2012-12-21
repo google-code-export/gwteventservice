@@ -23,19 +23,14 @@ package de.novanic.eventservice.clientmock.event.command;
 
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.command.InitEventServiceCommand;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * @author sstrohschein
  *         <br>Date: 04.04.2009
  *         <br>Time: 20:15:58
  */
-@RunWith(JUnit4.class)
 public class InitEventServiceCommandTest extends ClientCommandTestCase
 {
-    @Test
     public void testExecute() {
         getRemoteEventConnectorMock().init(getCommandCallback(EventServiceConfigurationTransferable.class));
 

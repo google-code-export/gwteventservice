@@ -78,27 +78,24 @@ public class UserInfo implements Comparable<UserInfo>
     public void addEvent(Domain aDomain, Event anEvent) {
         DomainEvent theDomainEvent = new DefaultDomainEvent(anEvent, aDomain);
         myEvents.add(theDomainEvent);
-        notifyEventListening();
+        doNotifyAll();
     }
 
     /**
      * doNotifyAll informs all waiting Threads for new events.
      */
-    public synchronized void notifyEventListening() {
+    private synchronized void doNotifyAll() {
         notifyAll();
     }
 
     /**
      * Returns and removes all recorded events.
-     * @param aMaxEvents maximum amount of events which should be processed (at once).
-     *                   The rest will be processed with the next call/request (again to the maximum amount, of course).
-     *                   The maximum amount of events prevents the logic from endless seeking of events (for example when more events are concurrently added than this logic/thread can process).
      * @return all events according to the user
      */
-    public List<DomainEvent> retrieveEvents(int aMaxEvents) {
+    public List<DomainEvent> retrieveEvents() {
         List<DomainEvent> theEventList = new ArrayList<DomainEvent>(myEvents.size());
         DomainEvent theEvent;
-        for(int i = 0; i < aMaxEvents && (theEvent = myEvents.poll()) != null; i++) {
+        while((theEvent = myEvents.poll()) != null) {
             theEventList.add(theEvent);
         }
         return theEventList;

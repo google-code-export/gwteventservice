@@ -85,18 +85,13 @@ public class DefaultUserManager implements UserManager
      */
     public UserInfo removeUser(String aUserId) {
         if(aUserId != null) {
-            final UserInfo theUserInfo = myUserMap.remove(aUserId);
-            if(theUserInfo != null) {
-                theUserInfo.notifyEventListening();
-            }
-            return theUserInfo;
+            return myUserMap.remove(aUserId);
         }
         return null;
     }
 
     /**
      * Removes the {@link de.novanic.eventservice.service.registry.user.UserInfo}.
-     * Observing threads get informed because it is not required to observe the removed user (anymore).
      * @param aUserInfo {@link de.novanic.eventservice.service.registry.user.UserInfo} to remove
      * @return true if it had an effect, otherwise false
      */
@@ -106,12 +101,8 @@ public class DefaultUserManager implements UserManager
 
     /**
      * Removes all added {@link UserInfo} objects.
-     * Observing threads get informed because it is not required to observe the removed users (anymore).
      */
     public void removeUsers() {
-        for(UserInfo theUserInfo: myUserMap.values()) {
-            theUserInfo.notifyEventListening();
-        }
         myUserMap.clear();
     }
 
@@ -186,14 +177,5 @@ public class DefaultUserManager implements UserManager
      */
     public UserActivityScheduler getUserActivityScheduler() {
         return myUserActivityScheduler;
-    }
-
-    /**
-     * Resets the UserManager (removes all users, stops the user activity scheduler, etc.)
-     * Observing threads get informed because it is not required to observe the removed users (anymore).
-     */
-    public void reset() {
-        deactivateUserActivityScheduler();
-        removeUsers();
     }
 }

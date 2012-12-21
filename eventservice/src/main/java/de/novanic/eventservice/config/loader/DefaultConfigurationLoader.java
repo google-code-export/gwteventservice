@@ -21,7 +21,6 @@
  */
 package de.novanic.eventservice.config.loader;
 
-import de.novanic.eventservice.client.connection.strategy.connector.DefaultClientConnector;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGenerator;
@@ -50,10 +49,9 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
     private static final int DEFAULT_TIME_OUT = 90000;
     private static final int DEFAULT_RECONNECT_ATTEMPTS = 0;
     private static final String DEFAULT_CONNECTION_ID_GENERATOR_CLASS_NAME = SessionConnectionIdGenerator.class.getName();
-    private static final String DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR = DefaultClientConnector.class.getName();
+    private static final String DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR = null;
     private static final String DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR = LongPollingServerConnector.class.getName();
     private static final String DEFAULT_CONNECTION_STRATEGY_ENCODING = "utf-8";
-    private static final int DEFAULT_MAX_EVENTS = 1000;
 
     /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
@@ -73,8 +71,7 @@ public class DefaultConfigurationLoader implements ConfigurationLoader
     public EventServiceConfiguration load() {
         return new RemoteEventServiceConfiguration(DEFAULT_CONFIG_DESCRIPTION, DEFAULT_MIN_WAITING_TIME, DEFAULT_MAX_WAITING_TIME, DEFAULT_TIME_OUT,
                 DEFAULT_RECONNECT_ATTEMPTS,
-                DEFAULT_CONNECTION_ID_GENERATOR_CLASS_NAME, DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR, DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR, DEFAULT_CONNECTION_STRATEGY_ENCODING,
-                DEFAULT_MAX_EVENTS);
+                DEFAULT_CONNECTION_ID_GENERATOR_CLASS_NAME, DEFAULT_CONNECTION_STRATEGY_CLIENT_CONNECTOR, DEFAULT_CONNECTION_STRATEGY_SERVER_CONNECTOR, DEFAULT_CONNECTION_STRATEGY_ENCODING);
     }
 
     public boolean equals(Object anObject) {

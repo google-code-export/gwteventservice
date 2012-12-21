@@ -21,21 +21,15 @@
  */
 package de.novanic.eventservice.client;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
 /**
  * @author sstrohschein
  *         <br>Date: 02.08.2010
  *         <br>Time: 19:20:26
  */
-@RunWith(JUnit4.class)
-public class DefaultClientHandlerTest
+public class DefaultClientHandlerTest extends TestCase
 {
-    @Test
     public void testGetConnectionId() {
         ClientHandler theClientHandler = new DefaultClientHandler("XY1234");
         assertEquals("XY1234", theClientHandler.getConnectionId());

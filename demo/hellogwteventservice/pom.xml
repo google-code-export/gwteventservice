@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.novanic.gwteventservice.demo</groupId>
 		<artifactId>demo</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.2.1-SNAPSHOT</version>
 	</parent>
 	<groupId>de.novanic.gwteventservice.demo.hellogwteventservice</groupId>
 	<artifactId>hellogwteventservice</artifactId>
@@ -28,31 +27,22 @@
 			<artifactId>gwteventservice</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.6.6</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+		</dependency>
 	</dependencies>
 	<build>
-        <resources>
-            <resource>
-                <directory>../conf</directory>
-            </resource>
-        </resources>
 		<outputDirectory>war/WEB-INF/classes</outputDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.5.0</version>
+				<version>2.1.0</version>
 				<executions>
 					<execution>
-                        <configuration>
-                            <extraJvmArgs>-Xms256M -Xmx768M -Xss1024k</extraJvmArgs>
-                        </configuration>
 						<goals>
 							<goal>compile</goal>
 							<goal>test</goal>

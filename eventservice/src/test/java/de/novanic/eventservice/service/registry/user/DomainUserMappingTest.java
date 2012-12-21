@@ -21,22 +21,16 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
+import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 09.09.2009
  *         <br>Time: 16:01:47
  */
-@RunWith(JUnit4.class)
-public class DomainUserMappingTest
+public class DomainUserMappingTest extends TestCase
 {
     private static final UserInfo TEST_USER_INFO = new UserInfo("test_user_id");
     private static final UserInfo TEST_USER_INFO_2 = new UserInfo("test_user_id_2");
@@ -45,12 +39,10 @@ public class DomainUserMappingTest
 
     private DomainUserMapping myDomainUserMapping;
 
-    @Before
     public void setUp() {
         myDomainUserMapping = new DomainUserMapping();
     }
 
-    @Test
     public void testAddUser() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
@@ -97,7 +89,6 @@ public class DomainUserMappingTest
         assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO_2));
     }
 
-    @Test
     public void testAddUser_2() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
@@ -133,7 +124,6 @@ public class DomainUserMappingTest
         assertTrue(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO_2));
     }
 
-    @Test
     public void testAddUser_3() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
@@ -168,7 +158,6 @@ public class DomainUserMappingTest
         assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO_2));
     }
 
-    @Test
     public void testAddUser_4() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertEquals(0, myDomainUserMapping.getDomains(TEST_USER_INFO).size());
@@ -213,7 +202,6 @@ public class DomainUserMappingTest
         assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO));
     }
 
-    @Test
     public void testRemoveUser() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO));
@@ -239,7 +227,6 @@ public class DomainUserMappingTest
         assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO_2));
     }
 
-    @Test
     public void testRemoveUser_2() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO));
@@ -293,7 +280,6 @@ public class DomainUserMappingTest
         assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO_2));
     }
 
-    @Test
     public void testRemoveUser_3() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO));
@@ -328,7 +314,6 @@ public class DomainUserMappingTest
         assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO_2));
     }
 
-    @Test
     public void testRemoveUser_4() {
         assertEquals(0, myDomainUserMapping.getDomains().size());
         assertFalse(myDomainUserMapping.isUserContained(TEST_USER_INFO));
@@ -373,7 +358,6 @@ public class DomainUserMappingTest
         assertFalse(myDomainUserMapping.isUserContained(TEST_DOMAIN_2, TEST_USER_INFO_2));
     }
 
-    @Test
     public void testGetDomains() {
         assertNull(myDomainUserMapping.getUsers(null));
 
