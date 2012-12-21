@@ -90,12 +90,15 @@ public class UserInfo implements Comparable<UserInfo>
 
     /**
      * Returns and removes all recorded events.
+     * @param aMaxEvents maximum amount of events which should be processed (at once).
+     *                   The rest will be processed with the next call/request (again to the maximum amount, of course).
+     *                   The maximum amount of events prevents the logic from endless seeking of events (for example when more events are concurrently added than this logic/thread can process).
      * @return all events according to the user
      */
-    public List<DomainEvent> retrieveEvents() {
+    public List<DomainEvent> retrieveEvents(int aMaxEvents) {
         List<DomainEvent> theEventList = new ArrayList<DomainEvent>(myEvents.size());
         DomainEvent theEvent;
-        while((theEvent = myEvents.poll()) != null) {
+        for(int i = 0; i < aMaxEvents && (theEvent = myEvents.poll()) != null; i++) {
             theEventList.add(theEvent);
         }
         return theEventList;

@@ -62,5 +62,6 @@ public class DefaultConfigurationLoaderTest
         assertNull(theEventServiceConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theEventServiceConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theEventServiceConfiguration.getConnectionStrategyEncoding());
+        assertEquals(Integer.valueOf(1000), theEventServiceConfiguration.getMaxEvents());
     }
 }
