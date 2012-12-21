@@ -1,0 +1,11 @@
+
+GWTEventService
+
+
+Library:		GWTEventService 1.2.1
+Project home:	http://gwteventservice.googlecode.com/
+Project owner:	strawbill UG (haftungsbeschränkt)
+Contact:		info@strawbill.com
+
+
+For license information and source code availability see "licence.txt".
