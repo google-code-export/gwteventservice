@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr‰nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr√§nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -167,6 +167,33 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
         assertEquals(Integer.valueOf(20000), theLoadedConfiguration.getMaxWaitingTime());
         assertEquals(Integer.valueOf(90000), theLoadedConfiguration.getTimeoutTime());
+    }
+
+    @Test
+    public void testAddCustomConfigurationLoader_Concurrent() {
+        ConfigurationLoader theTriggerConfigurationLoader = new ConfigurationLoader() {
+            public boolean isAvailable() {
+                //add another listener when the configuration loader is processed (within the configuration loader iteration of loadEventServiceConfiguration())
+                final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
+                final EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+                theConfigurationFactory.addCustomConfigurationLoader(new DummyConfigurationLoader(theConfiguration));
+                return true;
+            }
+
+            public EventServiceConfiguration load() {
+                return createConfiguration(0, 5000, 60000);
+            }
+        };
+
+        //add custom ConfigurationLoader
+        EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
+        theConfigurationFactory.addCustomConfigurationLoader(theTriggerConfigurationLoader);
+
+        //The configuration of the custom configuration loader is returned, but not the "dynamically" added configuration loader.
+        final EventServiceConfiguration theLoadedConfiguration = theConfigurationFactory.loadEventServiceConfiguration();
+        assertEquals(Integer.valueOf(0), theLoadedConfiguration.getMinWaitingTime());
+        assertEquals(Integer.valueOf(5000), theLoadedConfiguration.getMaxWaitingTime());
+        assertEquals(Integer.valueOf(60000), theLoadedConfiguration.getTimeoutTime());
     }
 
     @Test
