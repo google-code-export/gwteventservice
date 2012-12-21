@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>de.novanic.gwteventservice</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.2.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>eventservice-rpc</artifactId>
+	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
+	<dependencies>
+		<!--  GWT dependencies -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+		<!-- test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<!-- The GWT compiler needs src in the produced jar -->
+		<resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/client/**/*.java</include>
+                    <include>**/shared/**/*.java</include>
+                </includes>
+            </resource>
+        </resources>	
+	</build>
+</project>
