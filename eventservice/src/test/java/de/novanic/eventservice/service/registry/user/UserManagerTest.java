@@ -21,9 +21,16 @@
  */
 package de.novanic.eventservice.service.registry.user;
 
+import java.util.Calendar;
 import java.util.Iterator;
 
+import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
 import de.novanic.eventservice.service.UserTimeoutListener;
+import de.novanic.eventservice.service.connection.strategy.connector.longpolling.LongPollingServerConnector;
+import de.novanic.eventservice.service.registry.EventRegistry;
+import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.util.PlatformUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -141,7 +148,7 @@ public class UserManagerTest
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
         assertEquals(0, myUserManager.getUserCount());
-        
+
         myUserManager.addUser((UserInfo)null);
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
@@ -154,7 +161,7 @@ public class UserManagerTest
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
         assertEquals(0, myUserManager.getUserCount());
-        
+
         myUserManager.addUser((String)null);
         assertNull(myUserManager.getUser(TEST_USER_ID));
         assertNull(myUserManager.getUser(null));
@@ -295,7 +302,7 @@ public class UserManagerTest
 
         UserInfo theAddedUser = myUserManager.addUser(TEST_USER_ID);
         assertEquals(TEST_USER_ID, theAddedUser.getUserId());
-        
+
         UserInfo theReturnedUser = myUserManager.getUser(TEST_USER_ID);
         assertNotNull(theReturnedUser);
         assertEquals(theAddedUser.getUserId(), theReturnedUser.getUserId());
@@ -407,6 +414,19 @@ public class UserManagerTest
 
         myUserManager.activateUserActivityScheduler(false);
         myUserManager.deactivateUserActivityScheduler();
+    }
+
+    @Test
+    public void testReset() throws Exception {
+        final String theTestUserId = "TestUser1";
+        final UserInfo theTestUser = new UserInfo(theTestUserId);
+
+        UserManager theUserManager = UserManagerFactory.getInstance().getUserManager(99999);
+        theUserManager.addUser(theTestUser);
+
+        assertNotNull(theUserManager.getUser(theTestUserId));
+        theUserManager.reset();
+        assertNull(theUserManager.getUser(theTestUserId));
     }
 
     private class TestUserTimeoutListener implements UserTimeoutListener
