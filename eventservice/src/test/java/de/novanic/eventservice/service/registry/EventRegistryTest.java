@@ -36,6 +36,11 @@ import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
 import de.novanic.eventservice.service.DefaultEventExecutorService;
 import de.novanic.eventservice.EventServiceServerThreadingTest;
 import de.novanic.eventservice.util.PlatformUtil;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -46,11 +51,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static org.junit.Assert.*;
+
 /**
  * @author sstrohschein
  * Date: 28.07.2008
  * <br>Time: 22:49:33
  */
+@RunWith(JUnit4.class)
 public class EventRegistryTest extends EventServiceServerThreadingTest
 {
     private static final String TEST_USER_ID = "test_user_id";
@@ -65,6 +73,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
     private Level myOldLoggingLevel;
     private Logger myLogger;
 
+    @Before
     public void setUp() throws Exception {
         setUp(createConfiguration(0, 500, 99999999));
         myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
@@ -82,6 +91,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         myLogger.addHandler(myTestLoggingHandler);
     }
 
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
         tearDownEventServiceConfiguration();
@@ -94,6 +104,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
+    @Test
     public void testRegisterUser() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -112,6 +123,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.iterator().next());
     }
 
+    @Test
     public void testRegisterUser_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -131,6 +143,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.iterator().next());
     }
 
+    @Test
     public void testRegisterUser_DomainLess() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -145,6 +158,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
     }
 
+    @Test
     public void testIsUserRegistered() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -180,6 +194,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.contains(TEST_DOMAIN_2));
     }
 
+    @Test
     public void testIsUserRegistered_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -229,6 +244,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN_2, theListenDomains_2.get(0));
     }
 
+    @Test
     public void testIsUserRegistered_3() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -272,6 +288,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
     }
 
+    @Test
     public void testIsUserRegistered_UserSpecificDomain() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -306,6 +323,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.get(0));
     }
 
+    @Test
     public void testGetListenDomains() {
         Set<Domain> theDomains = myEventRegistry.getListenDomains();
         assertNotNull(theDomains);
@@ -332,6 +350,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theDomains.contains(TEST_DOMAIN_2));
     }
 
+    @Test
     public void testGetListenDomains_2() {
         Set<Domain> theDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
         assertNotNull(theDomains);
@@ -367,6 +386,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theDomains.contains(TEST_DOMAIN));
     }
 
+    @Test
     public void testGetListenDomains_3() {
         Set<Domain> theDomains = myEventRegistry.getListenDomains();
         assertNotNull(theDomains);
@@ -420,6 +440,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theDomains.contains(TEST_DOMAIN_2));
     }
 
+    @Test
     public void testGetRegisteredUsers() {
         Set<String> theUserIds = myEventRegistry.getRegisteredUserIds();
         assertNotNull(theUserIds);
@@ -443,6 +464,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theUserIds.contains(TEST_USER_ID_2));
     }
 
+    @Test
     public void testGetRegisteredUsers_2() {
         Set<String> theUserIds = myEventRegistry.getRegisteredUserIds();
         assertNotNull(theUserIds);
@@ -476,6 +498,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(theUserIds.contains(TEST_USER_ID_2));
     }
 
+    @Test
     public void testGetRegisteredUsers_2_1() {
         Set<String> theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
         assertNotNull(theUserIds);
@@ -513,6 +536,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theUserIds.contains(TEST_USER_ID_2));
     }
 
+    @Test
     public void testGetRegisteredUsers_2_2() {
         Set<String> theUserIds = myEventRegistry.getRegisteredUserIds(TEST_DOMAIN);
         assertNotNull(theUserIds);
@@ -551,6 +575,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, theUserIds.size());
     }
 
+    @Test
     public void testGetRegisteredUsers_UserSpecificDomain() {
         Set<String> theUserIds = myEventRegistry.getRegisteredUserIds();
         assertNotNull(theUserIds);
@@ -574,12 +599,14 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theUserIds.contains(TEST_USER_ID_2));
     }
 
+    @Test
     public void testGetRegisteredUsers_2_Error() {
         Set<String> theUserIds = myEventRegistry.getRegisteredUserIds(null);
         assertNotNull(theUserIds);
         assertEquals(0, theUserIds.size());
     }
 
+    @Test
     public void testUnlisten() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -618,6 +645,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
     }
 
+    @Test
     public void testUnlisten_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -673,6 +701,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.isEmpty());
     }
 
+    @Test
     public void testUnlisten_3() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -728,6 +757,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.contains(TEST_DOMAIN_2));
     }
 
+    @Test
     public void testUnlisten_ImportantDomain() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -751,6 +781,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
     }
 
+    @Test
     public void testUnlisten_ImportantDomain_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -783,6 +814,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(1).getEvent()).getDomains().iterator().next());
     }
 
+    @Test
     public void testUnlisten_ImportantDomain_3() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -819,6 +851,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN_2, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
     }
 
+    @Test
     public void testUnlisten_UnimportantDomain() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -839,6 +872,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, theEvents.size());
     }
 
+    @Test
     public void testUnlisten_UnimportantDomain_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -888,6 +922,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
     }
 
+    @Test
     public void testUnlisten_Global() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -911,6 +946,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, ((UnlistenEvent)theEvents.get(0).getEvent()).getDomains().iterator().next());
     }
 
+    @Test
     public void testUnlisten_Global_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -942,6 +978,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(theUnlistenedDomains.contains(TEST_DOMAIN_3));
     }
 
+    @Test
     public void testUnlisten_UnimportantDomain_Global() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -962,6 +999,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, theEvents.size());
     }
 
+    @Test
     public void testUnlisten_UnimportantDomain_Global_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
@@ -1019,6 +1057,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_USER_ID, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
     }
 
+    @Test
     public void testUnlisten_UserSpecificDomain() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID));
@@ -1045,6 +1084,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.isEmpty());
     }
 
+    @Test
     public void testUnlisten_UserSpecificDomain_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID));
@@ -1071,6 +1111,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theListenDomains.isEmpty());
     }
 
+    @Test
     public void testUnlisten_UserSpecificDomain_3() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1104,6 +1145,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.iterator().next());
     }
 
+//    @Test
 //    public void testUnlisten_UserSpecificDomain_4() {
 //        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
 //        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1136,6 +1178,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 //        assertTrue(theListenDomains.isEmpty());
 //    }
 
+    @Test
     public void testUnlisten_Error() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1151,6 +1194,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
     }
 
+    @Test
     public void testUnlisten_Error_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1183,6 +1227,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_DOMAIN, theListenDomains.iterator().next());
     }
 
+    @Test
     public void testUnlisten_DomainLess() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1207,6 +1252,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
     }
 
+    @Test
     public void testUnlisten_DomainLess_2() {
         assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
         assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
@@ -1231,6 +1277,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(myEventRegistry.getListenDomains(TEST_USER_ID).isEmpty());
     }
 
+    @Test
     public void testListen() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
@@ -1242,6 +1289,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(1, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_2() throws Exception {
         //Tests listen with a min. waiting time
         EventServiceConfiguration theEventServiceConfiguration = createConfiguration(500, 1500, 9999);
@@ -1269,10 +1317,12 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theRunTime < 1500);
     }
 
+    @Test
     public void testListenError() throws Exception {
         assertNull(myEventRegistry.listen(getLongPollingListener(), "noKnownUser"));
     }
 
+    @Test
     public void testListenError_2() throws Exception {
         assertNull(myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID));
 
@@ -1298,6 +1348,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse((theEndTime.getTime() - theStartTime.getTime()) >= 400);
     }
 
+    @Test
     public void testListen_Multi() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         startAddEvent(TEST_DOMAIN, 100);
@@ -1324,6 +1375,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_Domain() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         startAddEvent(TEST_DOMAIN_2, 200);
@@ -1335,6 +1387,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_Domain_Isolation() throws Exception {
         EventServiceConfiguration theEventServiceConfiguration = createConfiguration(0, 2000, 9999);
         tearDownEventServiceConfiguration();
@@ -1371,6 +1424,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theRunningTime_2 >= theEventServiceConfiguration.getMaxWaitingTime());
     }
 
+    @Test
     public void testListen_Domain_Multi() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID, null);
@@ -1394,6 +1448,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_Domain_Multi_2() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         startAddEvent(TEST_DOMAIN_2, 100);
@@ -1420,6 +1475,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_Domain_Multi_3() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         myEventRegistry.registerUser(TEST_DOMAIN_2, TEST_USER_ID_2, null);
@@ -1452,6 +1508,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
     }
 
+    @Test
     public void testListen_EventFilter() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
@@ -1474,6 +1531,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_EventFilter_2() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
@@ -1513,6 +1571,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_EventFilter_3() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
@@ -1552,6 +1611,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testListen_EventFilter_4() throws Exception {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
 
@@ -1592,6 +1652,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
     }
 
+    @Test
     public void testAddUserSpecificEvent() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
@@ -1605,6 +1666,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
                 "Server: DummyEvent (id 2) for user \"test_user_id_2\".");
     }
 
+    @Test
     public void testAddUserSpecificEvent_2() throws Exception {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
@@ -1623,6 +1685,54 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
     }
 
+    @Test
+    public void testAddUserSpecificEvent_3() throws Exception {
+        myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID, null);
+        myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID_2, null);
+
+        startAddEvent(TEST_USER_ID, 100);
+        joinThreads();
+
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+        //only User 1 should get the event
+        assertEquals(1, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+
+        //all events got
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+
+        //deregister test user 1
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+
+        assertFalse(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+
+        startAddEvent(TEST_USER_ID, 100);
+        joinThreads();
+
+        //no events received, because test user 1 was deregistered
+        assertNull(myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID));
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+
+        //re-register test user 1
+        myEventRegistry.registerUser(DomainFactory.USER_SPECIFIC_DOMAIN, TEST_USER_ID, null);
+
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+
+        startAddEvent(TEST_USER_ID, 100);
+        joinThreads();
+
+        //no events received, because test user 1 was deregistered
+        assertEquals(1, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID).size());
+        assertEquals(0, myEventRegistry.listen(getLongPollingListener(), TEST_USER_ID_2).size());
+    }
+
+    @Test
     public void testAddUserSpecificEvent_Isolation() throws Exception {
         EventServiceConfiguration theEventServiceConfiguration = createConfiguration(0, 2000, 9999);
         tearDownEventServiceConfiguration();
@@ -1658,6 +1768,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theRunningTime_2 >= theEventServiceConfiguration.getMaxWaitingTime());
     }
 
+    @Test
     public void testTimeOut() throws Exception {
         //set the default waiting time greater than time out time to produce a time out
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
@@ -1714,6 +1825,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(theEventRegistry.isUserRegistered(TEST_USER_ID));
     }
 
+    @Test
     public void testTimeOut_CustomUnlistenEvent() throws Exception {
         //set the default waiting time greater than time out time to produce a time out
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
@@ -1773,6 +1885,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertFalse(theEventRegistry.isUserRegistered(TEST_USER_ID));
     }
 
+    @Test
     public void testTimeOut_ImportantDomain() throws Exception {
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
@@ -1825,6 +1938,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertEquals(TEST_USER_ID_2, ((UnlistenEvent)theEvents.get(0).getEvent()).getUserId());
     }
 
+    @Test
     public void testTimeOut_UnimportantDomain() throws Exception {
         EventRegistry theEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
 
@@ -1869,6 +1983,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertTrue(theEvents.isEmpty());
     }
 
+    @Test
     public void testChangeEventFilter() {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
         checkLog(1, "Server: User \"test_user_id\" registered for domain \"test_domain\".");
@@ -1883,6 +1998,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
     }
 
+    @Test
     public void testChangeEventFilter_2() {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
@@ -1894,6 +2010,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, TEST_USER_ID));
     }
 
+    @Test
     public void testChangeEventFilter_Error() {
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, "noKnownUser"));
         myEventRegistry.setEventFilter(TEST_DOMAIN, "noKnownUser", new EventFilterTestMode());
@@ -1901,6 +2018,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         assertNull(myEventRegistry.getEventFilter(TEST_DOMAIN, "noKnownUser"));
     }
 
+    @Test
     public void testRemoveEventFilter() {
         myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, new EventFilterTestMode());
         checkLog(2, "Server: User \"test_user_id\" registered for domain \"test_domain\".",
@@ -1917,6 +2035,7 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
         checkLog(6, "Server: test_user_id: EventFilter removed from domain \"test_domain\".");
     }
 
+    @Test
     public void testRemoveEventFilter_2() {
         myEventRegistry.removeEventFilter(TEST_DOMAIN, TEST_USER_ID);
         checkLog(0);

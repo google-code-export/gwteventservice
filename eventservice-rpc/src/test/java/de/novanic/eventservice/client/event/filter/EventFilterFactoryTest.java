@@ -21,22 +21,29 @@
  */
 package de.novanic.eventservice.client.event.filter;
 
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.event.Event;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 04.03.2009
  *         <br>Time: 23:36:47
  */
-public class EventFilterFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class EventFilterFactoryTest
 {
+    @Test
     public void testGetInstance() {
         EventFilterFactory theEventRegistryFactory = EventFilterFactory.getInstance();
         assertSame(theEventRegistryFactory, EventFilterFactory.getInstance());
         assertSame(theEventRegistryFactory, EventFilterFactory.getInstance());
     }
 
+    @Test
     public void testConnect() {
         EventFilter theEventFilter_1 = new EventFilter() {
             public boolean match(Event anEvent) {

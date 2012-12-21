@@ -23,33 +23,43 @@ package de.novanic.eventservice.service.registry.user;
 
 import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.service.connection.id.SessionConnectionIdGeneratorTest;
-import junit.framework.TestCase;
 import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 01.02.2009
  *         <br>Time: 21:48:37
  */
-public class UserManagerFactoryTest extends TestCase
+@RunWith(JUnit4.class)
+public class UserManagerFactoryTest
 {
     private UserManagerFactory myUserManagerFactory;
 
+    @Before
     public void setUp() {
         FactoryResetService.resetFactory(UserManagerFactory.class);
         myUserManagerFactory = UserManagerFactory.getInstance();
     }
 
+    @After
     public void tearDown() {
         FactoryResetService.resetFactory(UserManagerFactory.class);
     }
 
+    @Test
     public void testGetInstance() {
         UserManagerFactory theEventRegistryFactory = UserManagerFactory.getInstance();
         assertSame(theEventRegistryFactory, UserManagerFactory.getInstance());
@@ -62,6 +72,7 @@ public class UserManagerFactoryTest extends TestCase
         assertSame(theEventRegistryFactory_2, UserManagerFactory.getInstance());
     }
 
+    @Test
     public void testGetUserManager() {
         try {
             myUserManagerFactory.getUserManager();
@@ -69,6 +80,7 @@ public class UserManagerFactoryTest extends TestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testGetUserManager_2() {
         final int theTimeoutInterval = 99999;
 
@@ -79,6 +91,7 @@ public class UserManagerFactoryTest extends TestCase
         checkUserManager(theTimeoutInterval);
     }
 
+    @Test
     public void testGetUserManager_3() {
         final int theTimeoutInterval = 77777;
 

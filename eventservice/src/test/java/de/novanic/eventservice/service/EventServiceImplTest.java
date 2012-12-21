@@ -39,7 +39,10 @@ import de.novanic.eventservice.config.ConfigParameter;
 import de.novanic.eventservice.config.EventServiceConfigurationFactory;
 import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.config.loader.PropertyConfigurationLoader;
-import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
@@ -53,11 +56,15 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 /**
  * @author sstrohschein
  * Date: 05.06.2008
  * <br>Time: 23:26:19
  */
+@RunWith(JUnit4.class)
 public class EventServiceImplTest extends EventServiceServerThreadingTest
 {
     private static final String TEST_USER_ID = "test_user_id";
@@ -67,6 +74,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
 
     private EventServiceImpl myEventService;
 
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
         tearDownEventServiceConfiguration();
@@ -77,6 +85,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         FactoryResetService.resetFactory(DefaultEventExecutorService.class);
     }
 
+    @Test
     public void testInit() throws Exception {
         initEventService();
 
@@ -91,6 +100,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, theEventService.getActiveListenDomains().size());
     }
 
+    @Test
     public void testInit_2() throws Exception {
         final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
@@ -109,6 +119,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(Integer.valueOf(120000), theConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testInitEventService() throws Exception {
         final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
@@ -121,6 +132,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertNull(theEventServiceConfigurationTransferable.getConnectionId());
     }
 
+    @Test
     public void testInitEventService_2() throws Exception {
         setUp(createConfiguration(0, 30000, 90000, SessionExtendedConnectionIdGenerator.class.getName(), LongPollingServerConnector.class.getName()));
 
@@ -131,6 +143,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals("test_user_id", theEventServiceConfigurationTransferable.getConnectionId());
     }
 
+    @Test
     public void testInitEventService_Error() throws Exception {
         setUp(createConfiguration(0, 30000, 90000, SessionExtendedConnectionIdGenerator.class.getName(), LongPollingServerConnector.class.getName()));
 
@@ -142,6 +155,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         } catch(Exception e) {}
     }
 
+    @Test
     public void testListen() throws Exception {
         initEventService();
 
@@ -183,6 +197,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.getActiveListenDomains().size());
     }
 
+    @Test
     public void testListen_2() throws Exception {
         initEventService();
 
@@ -210,6 +225,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.getActiveListenDomains().size());
     }
 
+    @Test
     public void testListen_3() throws Exception {
         initEventService();
 
@@ -232,6 +248,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(1, joinListen(theListenResult_1));
     }
 
+    @Test
     public void testListen_4() throws Exception {
         initEventService();
 
@@ -280,6 +297,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         }
     }
 
+    @Test
     public void testListen_5() throws Exception {
         initEventService();
 
@@ -308,6 +326,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         }
     }
 
+    @Test
     public void testListen_UserSpecific() throws Exception {
         initEventService();
 
@@ -373,6 +392,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
     }
 
+    @Test
     public void testRegisterMultiDomain() throws Exception {
         initEventService();
 
@@ -432,6 +452,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
     }
 
+    @Test
     public void testRegisterMultiDomain_2() throws Exception {
         initEventService();
 
@@ -516,6 +537,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertNotNull(myEventService.getEventFilter(TEST_DOMAIN_3));
     }
 
+    @Test
     public void testRegisterUnlistenEvent() throws Exception {
         initEventService();
 
@@ -556,6 +578,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertFalse(theUnlistenEvent.isTimeout());
     }
 
+    @Test
     public void testRegisterUnlistenEvent_FalseDomain() throws Exception {
         initEventService();
 
@@ -586,6 +609,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertTrue(myEventService.listen().isEmpty());
     }
 
+    @Test
     public void testRegisterEventFilter() throws Exception {
         initEventService();
 
@@ -684,6 +708,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.listen().size());
     }
 
+    @Test
     public void testUnlisten() throws Exception {
         initEventService();
 
@@ -702,6 +727,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.getActiveListenDomains().size());
     }
 
+    @Test
     public void testUnlisten_2() throws Exception {
         initEventService();
 
@@ -742,6 +768,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertEquals(0, myEventService.getActiveListenDomains().size());
     }
 
+    @Test
     public void testDoGet() throws Exception {
         initEventService();
 
@@ -749,21 +776,15 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
-        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
-        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
+        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = mock(HttpServletResponse.class);
+        HttpSession theSessionMock = mock(HttpSession.class);
 
-        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
-
-        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
+        when(theRequestMock.getSession(false)).thenReturn(theSessionMock);
+        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
 
         ServletOutputStream theOutputStream = new DummyServletOutputStream(new ByteArrayOutputStream());
-        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(theOutputStream).anyTimes();
-
-        theResponseMock.setContentType("text/html;charset=utf-8");
-
-        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
-        EasyMock.expectLastCall().anyTimes();
+        when(theResponseMock.getOutputStream()).thenReturn(theOutputStream);
 
         final EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         //remove the PropertyConfigurationLoaders, because there is a eventservice.properties in the classpath and that prevents the WebDescriptorConfigurationLoader from loading.
@@ -772,12 +793,10 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         myEventService = new DummyEventServiceImpl(new DummyServletConfig());
         super.setUp(myEventService);
 
-        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
-            myEventService.doGet(theRequestMock, theResponseMock);
-        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
-        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
+        myEventService.doGet(theRequestMock, theResponseMock);
     }
 
+    @Test
     public void testDoGet_Streaming() throws Exception {
         initEventService();
 
@@ -785,34 +804,22 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
-        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
-        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
+        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = mock(HttpServletResponse.class);
+        HttpSession theSessionMock = mock(HttpSession.class);
 
-        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
-
-        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
+        when(theRequestMock.getSession(false)).thenReturn(theSessionMock);
+        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
 
         final ByteArrayOutputStream theByteArrayOutputStream = new ByteArrayOutputStream();
         ServletOutputStream theOutputStream = new DummyServletOutputStream(theByteArrayOutputStream);
 
-        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(theOutputStream).anyTimes();
-
-        theResponseMock.setContentType("text/html;charset=utf-8");
-
-        theResponseMock.setHeader(EasyMock.<String>anyObject(), EasyMock.<String>anyObject());
-        EasyMock.expectLastCall().anyTimes();
-
-        theResponseMock.flushBuffer();
-        EasyMock.expectLastCall().anyTimes();
+        when(theResponseMock.getOutputStream()).thenReturn(theOutputStream);
 
         myEventService.register(TEST_DOMAIN);
         myEventService.addEvent(TEST_DOMAIN, new DummyEvent());
 
-        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
-            myEventService.doGet(theRequestMock, theResponseMock);
-        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
-        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
+        myEventService.doGet(theRequestMock, theResponseMock);
 
         myEventService.unlisten(TEST_DOMAIN);
 
@@ -821,6 +828,7 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         assertTrue(theStreamedEvents.contains("DummyEvent"));
     }
 
+    @Test
     public void testDoGet_Streaming_Error() throws Exception {
         initEventService();
 
@@ -828,26 +836,23 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, StreamingServerConnector.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
-        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
-        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
+        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = mock(HttpServletResponse.class);
+        HttpSession theSessionMock = mock(HttpSession.class);
 
-        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
+        when(theRequestMock.getSession(false)).thenReturn(theSessionMock);
+        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
 
-        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
+        when(theResponseMock.getOutputStream()).thenThrow(new IOException("Test-Exception"));
 
-        EasyMock.expect(theResponseMock.getOutputStream()).andThrow(new IOException("Test-Exception")).anyTimes();
-
-        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
-            try {
-                myEventService.doGet(theRequestMock, theResponseMock);
-                fail("Exception expected!");
-            } catch(ServletException e) {
-            } catch(IOException e) {}
-        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
-        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
+        try {
+            myEventService.doGet(theRequestMock, theResponseMock);
+            fail("Exception expected!");
+        } catch(ServletException e) {
+        } catch(IOException e) {}
     }
 
+    @Test
     public void testDoGet_Streaming_Error_2() throws Exception {
         initEventService();
 
@@ -855,29 +860,25 @@ public class EventServiceImplTest extends EventServiceServerThreadingTest
         setUp(createConfiguration(0, 500, 90000, DummyStreamingConnectorNotCloneable.class.getName()));
         myEventService = new DummyEventServiceImpl();
 
-        HttpServletRequest theRequestMock = EasyMock.createMock(HttpServletRequest.class);
-        HttpServletResponse theResponseMock = EasyMock.createMock(HttpServletResponse.class);
-        HttpSession theSessionMock = EasyMock.createMock(HttpSession.class);
+        HttpServletRequest theRequestMock = mock(HttpServletRequest.class);
+        HttpServletResponse theResponseMock = mock(HttpServletResponse.class);
+        HttpSession theSessionMock = mock(HttpSession.class);
 
-        EasyMock.expect(theRequestMock.getSession(false)).andReturn(theSessionMock);
+        when(theRequestMock.getSession(false)).thenReturn(theSessionMock);
+        when(theSessionMock.getId()).thenReturn(TEST_USER_ID);
+        when(theResponseMock.getOutputStream()).thenReturn(new DummyServletOutputStream(new ByteArrayOutputStream()));
 
-        EasyMock.expect(theSessionMock.getId()).andReturn(TEST_USER_ID);
-
-        EasyMock.expect(theResponseMock.getOutputStream()).andReturn(new DummyServletOutputStream(new ByteArrayOutputStream()));
-
-        EasyMock.replay(theRequestMock, theResponseMock, theSessionMock);
-            try {
-                myEventService.doGet(theRequestMock, theResponseMock);
-                fail("Exception expected!");
-            } catch(ServletException e) {
-                assertTrue(e.getCause() instanceof CloneNotSupportedException);
-            } catch(IOException e) {
-                assertTrue(e.getCause() instanceof CloneNotSupportedException);
-            }
-        EasyMock.verify(theRequestMock, theResponseMock, theSessionMock);
-        EasyMock.reset(theRequestMock, theResponseMock, theSessionMock);
+        try {
+            myEventService.doGet(theRequestMock, theResponseMock);
+            fail("Exception expected!");
+        } catch(ServletException e) {
+            assertTrue(e.getCause() instanceof CloneNotSupportedException);
+        } catch(IOException e) {
+            assertTrue(e.getCause() instanceof CloneNotSupportedException);
+        }
     }
 
+    @Test
     public void testCheckPermutationStrongName() throws Exception {
         initEventService();
         assertNotNull(myEventService);

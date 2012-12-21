@@ -26,19 +26,27 @@ import de.novanic.eventservice.config.loader.*;
 import de.novanic.eventservice.config.level.ConfigLevelFactory;
 import de.novanic.eventservice.EventServiceTestCase;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
  *         <br>Date: 23.10.2008
  *         <br>Time: 18:11:43
  */
+@RunWith(JUnit4.class)
 public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
 {
+    @Test
     public void testInit() {
         EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         assertSame(theEventServiceConfigurationFactory, EventServiceConfigurationFactory.getInstance());
     }
 
+    @Test
     public void testReset() {
         EventServiceConfigurationFactory theEventServiceConfigurationFactory = EventServiceConfigurationFactory.getInstance();
         assertSame(theEventServiceConfigurationFactory, EventServiceConfigurationFactory.getInstance());
@@ -50,6 +58,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertSame(theEventServiceConfigurationFactory, EventServiceConfigurationFactory.getInstance());
     }
 
+    @Test
     public void testLoadEventServiceConfiguration() {
         //loads eventservice.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -59,6 +68,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testLoadEventServiceConfiguration_2() {
         //loads eventservice.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -68,6 +78,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testLoadEventServiceConfiguration_3() {
         //loads eventservice.bak.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -77,6 +88,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testLoadEventServiceConfiguration_Multiple() {
         //loads the DefaultConfiguration at first and then loads the higher priorized PropertyConfiguration with eventservice.bak.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -102,6 +114,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(50000), theConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testLoadEventServiceConfiguration_Default() {
         //uses DefaultConfigurationLoader
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -111,6 +124,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(90000), theConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testLoadEventServiceConfiguration_Failure() {
         //loads eventservice_error.properties
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -120,6 +134,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testLoadEventServiceConfiguration_Failure_2() {
         //loads no configuration, because no configuration loader is attached
         EventServiceConfigurationFactory theConfigurationFactory = EventServiceConfigurationFactory.getInstance();
@@ -131,6 +146,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         } catch(ConfigurationException e) {}
     }
 
+    @Test
     public void testAddCustomConfigurationLoader() {
         //add custom ConfigurationLoader
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
@@ -153,6 +169,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(90000), theLoadedConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testAddCustomConfigurationLoader_WebDescriptor() {
         //add custom ConfigurationLoader
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
@@ -179,6 +196,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theLoadedConfiguration.getReconnectAttemptCount());
     }
 
+    @Test
     public void testAddCustomConfigurationLoader_WebDescriptor_Incomplete() {
         //add custom ConfigurationLoader
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
@@ -207,6 +225,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(0), theLoadedConfiguration.getReconnectAttemptCount());
     }
 
+    @Test
     public void testResetCustomConfigurationLoaders() {
         //add custom ConfigurationLoader
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);
@@ -230,6 +249,7 @@ public class EventServiceConfigurationFactoryTest extends EventServiceTestCase
         assertEquals(Integer.valueOf(90000), theLoadedConfiguration.getTimeoutTime());
     }
 
+    @Test
     public void testResetCustomConfigurationLoaders_2() {
         //add custom ConfigurationLoader
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 3000, 70000);

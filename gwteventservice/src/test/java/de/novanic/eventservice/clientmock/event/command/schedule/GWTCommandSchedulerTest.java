@@ -24,12 +24,14 @@ package de.novanic.eventservice.clientmock.event.command.schedule;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import de.novanic.eventservice.client.event.command.ClientCommand;
 import de.novanic.eventservice.client.event.command.schedule.GWTCommandScheduler;
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import static org.junit.Assert.*;
 
 /**
  * @author sstrohschein
@@ -39,24 +41,20 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @SuppressStaticInitializationFor("com.google.gwt.user.client.Timer")
 @PrepareForTest({GWTCommandScheduler.class, GWTCommandScheduler.GWTCommandTimer.class})
-public class GWTCommandSchedulerTest extends TestCase
+public class GWTCommandSchedulerTest
 {
+    @Test
     public void testSchedule() throws Exception {
         GWTCommandScheduler theGWTCommandScheduler = new GWTCommandScheduler();
 
         final ClientCommandDummy theClientCommand = new ClientCommandDummy();
 
         final GWTCommandScheduler.GWTCommandTimer theTimerDummy = new GWTCommandTimerDummy(theClientCommand);
-        PowerMock.expectNew(GWTCommandScheduler.GWTCommandTimer.class, theClientCommand).andReturn(theTimerDummy);
+        PowerMockito.whenNew(GWTCommandScheduler.GWTCommandTimer.class).withArguments(theClientCommand).thenReturn(theTimerDummy);
 
         assertFalse(theClientCommand.isExecuted);
 
-        PowerMock.replay(GWTCommandScheduler.GWTCommandTimer.class);
-
-            theGWTCommandScheduler.schedule(theClientCommand);
-
-        PowerMock.verify(GWTCommandScheduler.GWTCommandTimer.class);
-        PowerMock.reset(GWTCommandScheduler.GWTCommandTimer.class);
+        theGWTCommandScheduler.schedule(theClientCommand);
 
         assertTrue(theClientCommand.isExecuted);
     }
