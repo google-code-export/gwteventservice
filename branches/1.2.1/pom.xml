@@ -9,7 +9,7 @@
 	<groupId>de.novanic.gwteventservice</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.2.1</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<name>${project.artifactId}</name>
 	<description>GWTEventService</description>
 	<url>http://gwteventservice.googlecode.com</url>
@@ -94,9 +94,9 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/tags/1.2.1</connection>
-		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/tags/1.2.1</developerConnection>
-		<url>http://gwteventservice.googlecode.com/svn/tags/1.2.1</url>
+		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/branches/1.2.1</connection>
+		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/branches/1.2.1</developerConnection>
+		<url>http://gwteventservice.googlecode.com/svn/branches/1.2.1</url>
 	</scm>
     <profiles>
         <profile>
