@@ -226,6 +226,11 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertEqualsActiveDomains(TEST_DOMAIN);
         assertContainsListeners(TEST_DOMAIN, 2);
 
+        //when the first listener is added to a domain (TEST_DOMAIN), the EventFilter is transferred directly with the initial registration
+        verify(myEventServiceAsyncMock, times(1)).register(eq(TEST_DOMAIN), eq(theEventFilter), any(AsyncCallback.class));
+        //when the second listener is added to a domain (TEST_DOMAIN), the EventFilter is registered separately because the listening is already activated for that domain
+        // (The server-side doesn't know anything about listeners. Therefore the server-call is only required to register the EventFilter)
+        verify(myEventServiceAsyncMock, times(1)).registerEventFilter(eq(TEST_DOMAIN), eq(theEventFilter), any(AsyncCallback.class));
         //caused by callback of register
         verify(myEventServiceAsyncMock, times(1)).listen(any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Set.class), any(AsyncCallback.class));
@@ -273,6 +278,13 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertContainsListeners(TEST_DOMAIN, 2);
         assertContainsListeners(TEST_DOMAIN_2, 1);
 
+        //when the first listener is added to a domain (TEST_DOMAIN), the EventFilter is transferred directly with the initial registration
+        verify(myEventServiceAsyncMock, times(1)).register(eq(TEST_DOMAIN), eq(theEventFilter), any(AsyncCallback.class));
+        //when the second listener is added to a domain (TEST_DOMAIN), the EventFilter is registered separately because the listening is already activated for that domain
+        // (The server-side doesn't know anything about listeners. Therefore the server-call is only required to register the EventFilter)
+        verify(myEventServiceAsyncMock, times(1)).registerEventFilter(eq(TEST_DOMAIN), eq(theEventFilter), any(AsyncCallback.class));
+        //when the first listener is added to a domain (TEST_DOMAIN_2), the EventFilter is transferred directly with the initial registration
+        verify(myEventServiceAsyncMock, times(1)).register(eq(TEST_DOMAIN_2), eq(theEventFilter), any(AsyncCallback.class));
         //caused by callback of register
         verify(myEventServiceAsyncMock, times(1)).listen(any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Set.class), any(AsyncCallback.class));
@@ -298,6 +310,8 @@ public class RemoteEventServiceMockTest extends AbstractRemoteEventServiceMockTe
         assertEqualsActiveDomains(TEST_DOMAIN);
         assertContainsListeners(TEST_DOMAIN, 1);
 
+        //when the first listener is added to a domain (TEST_DOMAIN), the EventFilter is transferred directly with the initial registration
+        verify(myEventServiceAsyncMock, times(1)).register(eq(TEST_DOMAIN), eq(theEventFilter), any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).listen(any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Set.class), any(AsyncCallback.class));
         verify(myEventServiceAsyncMock, times(0)).unlisten(any(Domain.class), any(AsyncCallback.class));
