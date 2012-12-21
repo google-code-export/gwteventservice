@@ -137,21 +137,7 @@ public class ConfigurationTransferableDependentFactoryTest
 
     @Test
     public void testGetConnectionStrategyClientConnector() {
-        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
-        theConfig.setConnectionStrategyClientConnector(DefaultClientConnector.class.getName());
-
-        ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(theConfig);
-        theConfigurationTransferableDependentFactory.reset(theConfig);
-
-        final ConnectionStrategyClientConnector theConnectionStrategyClientConnector = theConfigurationTransferableDependentFactory.getConnectionStrategyClientConnector();
-        assertNotNull(theConnectionStrategyClientConnector);
-        assertTrue(theConnectionStrategyClientConnector instanceof DefaultClientConnector);
-    }
-
-    @Test
-    public void testGetConnectionStrategyClientConnector_Default() {
-        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
-        theConfig.setConnectionStrategyClientConnector(null);
+        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable(DefaultClientConnector.class.getName());
 
         ConfigurationTransferableDependentFactory theConfigurationTransferableDependentFactory = ConfigurationTransferableDependentFactory.getInstance(theConfig);
         theConfigurationTransferableDependentFactory.reset(theConfig);
@@ -181,8 +167,7 @@ public class ConfigurationTransferableDependentFactoryTest
 
     @Test
     public void testGetConnectionStrategyClientConnector_Error() {
-        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
-        theConfig.setConnectionStrategyClientConnector(String.class.getName());
+        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable(String.class.getName());
 
         try {
             ConfigurationTransferableDependentFactory.getInstance(theConfig).reset(theConfig);
@@ -196,8 +181,7 @@ public class ConfigurationTransferableDependentFactoryTest
 
     @Test
     public void testGetConnectionStrategyClientConnector_Error_2() {
-        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable();
-        theConfig.setConnectionStrategyClientConnector(DefaultStreamingClientConnector.class.getName());
+        final TestEventServiceConfigurationTransferable theConfig = new TestEventServiceConfigurationTransferable(DefaultStreamingClientConnector.class.getName());
 
         try {
             ConfigurationTransferableDependentFactory.getInstance(theConfig).reset(theConfig);
@@ -213,6 +197,10 @@ public class ConfigurationTransferableDependentFactoryTest
     private class TestEventServiceConfigurationTransferable implements EventServiceConfigurationTransferable
     {
         private String myConnectionStrategyClientConnectorClassName;
+
+        public TestEventServiceConfigurationTransferable(String aConnectionStrategyClientConnectorClassName) {
+            myConnectionStrategyClientConnectorClassName = aConnectionStrategyClientConnectorClassName;
+        }
 
         public Integer getMinWaitingTime() {
             return 0;
@@ -236,10 +224,6 @@ public class ConfigurationTransferableDependentFactoryTest
 
         public String getConnectionStrategyClientConnector() {
             return myConnectionStrategyClientConnectorClassName;
-        }
-
-        public void setConnectionStrategyClientConnector(String aConnectionStrategyClientConnectorClassName) {
-            myConnectionStrategyClientConnectorClassName = aConnectionStrategyClientConnectorClassName;
         }
     }
 }
