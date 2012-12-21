@@ -70,6 +70,11 @@ public enum ConfigParameter
      */
     CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding", false),
 
+    /**
+     * Maximum amount of events which should be transferred to the client at once.
+     */
+    MAX_EVENTS("events.max", false),
+
     // --- Full-qualified declarations ---
 
     /**
@@ -110,7 +115,13 @@ public enum ConfigParameter
     /**
      * Connection strategy encoding - Encoding / charset for the connection strategy
      */
-    FQ_CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding", true);
+    FQ_CONNECTION_STRATEGY_ENCODING("connection.strategy.encoding", true),
+
+    /**
+     * Maximum amount of events which should be transferred to the client at once.
+     * The maximum amount of events prevents the listening logic from endless seeking of events (for example when more events are concurrently added than the listen thread can process).
+     */
+    FQ_MAX_EVENTS("events.max", true);
 
     // --- Constants ---
 

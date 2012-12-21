@@ -52,6 +52,7 @@ public class ServletConfigDummy implements ServletConfig
                 myInitParameters.put(ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration(), SessionConnectionIdGenerator.class.getName());
                 myInitParameters.put(ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), LongPollingServerConnector.class.getName());
                 myInitParameters.put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING.declaration(), "utf-8");
+                myInitParameters.put(ConfigParameter.FQ_MAX_EVENTS.declaration(), "5000");
             } else {
                 myInitParameters.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), "30000");
                 myInitParameters.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), "000");
@@ -60,6 +61,7 @@ public class ServletConfigDummy implements ServletConfig
                 myInitParameters.put(ConfigParameter.CONNECTION_ID_GENERATOR.declaration(), SessionConnectionIdGenerator.class.getName());
                 myInitParameters.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), LongPollingServerConnector.class.getName());
                 myInitParameters.put(ConfigParameter.CONNECTION_STRATEGY_ENCODING.declaration(), "iso-8859-1");
+                myInitParameters.put(ConfigParameter.MAX_EVENTS.declaration(), "7000");
             }
         }
     }

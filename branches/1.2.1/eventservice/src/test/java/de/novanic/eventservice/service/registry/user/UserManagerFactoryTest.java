@@ -159,6 +159,10 @@ public class UserManagerFactoryTest
             return "utf-8";
         }
 
+        public Integer getMaxEvents() {
+            return 1000;
+        }
+
         public Map<ConfigParameter, Object> getConfigMap() {
             return new HashMap<ConfigParameter, Object>();
         }

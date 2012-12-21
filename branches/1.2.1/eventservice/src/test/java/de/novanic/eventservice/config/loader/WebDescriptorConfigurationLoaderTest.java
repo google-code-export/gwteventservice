@@ -59,6 +59,7 @@ public class WebDescriptorConfigurationLoaderTest
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("iso-8859-1", theConfiguration.getConnectionStrategyEncoding());
+        assertEquals(Integer.valueOf(7000), theConfiguration.getMaxEvents());
     }
 
     @Test
@@ -77,6 +78,7 @@ public class WebDescriptorConfigurationLoaderTest
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertEquals(LongPollingServerConnector.class.getName(), theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertEquals("utf-8", theConfiguration.getConnectionStrategyEncoding());
+        assertEquals(Integer.valueOf(5000), theConfiguration.getMaxEvents());
     }
 
     @Test
@@ -87,6 +89,7 @@ public class WebDescriptorConfigurationLoaderTest
         assertFalse(theServletConfig.removeParameter(ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR)); //isn't already configured
         assertTrue(theServletConfig.removeParameter(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR));
         assertTrue(theServletConfig.removeParameter(ConfigParameter.CONNECTION_STRATEGY_ENCODING));
+        assertTrue(theServletConfig.removeParameter(ConfigParameter.MAX_EVENTS));
 
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
 
@@ -101,6 +104,7 @@ public class WebDescriptorConfigurationLoaderTest
         assertNull(theConfiguration.getConnectionStrategyClientConnectorClassName());
         assertNull(theConfiguration.getConnectionStrategyServerConnectorClassName());
         assertNull(theConfiguration.getConnectionStrategyEncoding());
+        assertNull(theConfiguration.getMaxEvents());
     }
 
     @Test
