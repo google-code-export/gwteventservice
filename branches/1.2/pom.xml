@@ -94,9 +94,9 @@
 		</dependencies>
 	</dependencyManagement>
 	<scm>
-		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/branches/1.2.1</connection>
-		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/branches/1.2.1</developerConnection>
-		<url>http://gwteventservice.googlecode.com/svn/branches/1.2.1</url>
+		<connection>scm:svn:http://gwteventservice.googlecode.com/svn/branches/1.2/</connection>
+		<developerConnection>scm:svn:https://gwteventservice.googlecode.com/svn/branches/1.2/</developerConnection>
+		<url>http://gwteventservice.googlecode.com/svn/branches/1.2/</url>
 	</scm>
     <profiles>
         <profile>
