@@ -45,14 +45,14 @@ public class ServletConfigDummy implements ServletConfig
         myInitParameters = new HashMap<String, String>();
         if(isInit) {
             if(isFQ) {
-                myInitParameters.put(ConfigParameter.MAX_WAITING_TIME_TAG.declarationFQ(), "40000");
-                myInitParameters.put(ConfigParameter.MIN_WAITING_TIME_TAG.declarationFQ(), "001");
-                myInitParameters.put(ConfigParameter.TIMEOUT_TIME_TAG.declarationFQ(), "130000");
-                myInitParameters.put(ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG.declarationFQ(), "1");
-                myInitParameters.put(ConfigParameter.CONNECTION_ID_GENERATOR.declarationFQ(), SessionConnectionIdGenerator.class.getName());
-                myInitParameters.put(ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR.declarationFQ(), LongPollingServerConnector.class.getName());
-                myInitParameters.put(ConfigParameter.CONNECTION_STRATEGY_ENCODING.declarationFQ(), "utf-8");
-                myInitParameters.put(ConfigParameter.MAX_EVENTS.declarationFQ(), "5000");
+                myInitParameters.put(ConfigParameter.FQ_MAX_WAITING_TIME_TAG.declaration(), "40000");
+                myInitParameters.put(ConfigParameter.FQ_MIN_WAITING_TIME_TAG.declaration(), "001");
+                myInitParameters.put(ConfigParameter.FQ_TIMEOUT_TIME_TAG.declaration(), "130000");
+                myInitParameters.put(ConfigParameter.FQ_RECONNECT_ATTEMPT_COUNT_TAG.declaration(), "1");
+                myInitParameters.put(ConfigParameter.FQ_CONNECTION_ID_GENERATOR.declaration(), SessionConnectionIdGenerator.class.getName());
+                myInitParameters.put(ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR.declaration(), LongPollingServerConnector.class.getName());
+                myInitParameters.put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING.declaration(), "utf-8");
+                myInitParameters.put(ConfigParameter.FQ_MAX_EVENTS.declaration(), "5000");
             } else {
                 myInitParameters.put(ConfigParameter.MAX_WAITING_TIME_TAG.declaration(), "30000");
                 myInitParameters.put(ConfigParameter.MIN_WAITING_TIME_TAG.declaration(), "000");

@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -136,7 +136,7 @@ public class EventRegistryFactoryTest extends EventServiceTestCase
 
             EventRegistryFactory.getInstance().getEventRegistry();
 
-            assertEquals("Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
+            assertEquals("Server: Configuration changed - EventServiceConfiguration (TestConfiguration)" + PlatformUtil.getNewLine() +
                     "  Min.: 0ms; Max.: 1ms; Timeout: 2ms", theTestLoggingHandler.getLastMessage());
         } finally {
             theLogger.setLevel(theOldLevel);

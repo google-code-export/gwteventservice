@@ -50,6 +50,7 @@ public abstract class ConnectionStrategyServerConnectorTest extends EventService
     public void testGetEncoding_Error(Class<? extends ConnectionStrategyServerConnectorAdapter> aConnectorClass) throws Exception {
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 30000, 90000);
         theConfiguration.getConfigMap().put(ConfigParameter.CONNECTION_STRATEGY_ENCODING, null);
+        theConfiguration.getConfigMap().put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, null);
         try {
             Constructor<? extends ConnectionStrategyServerConnectorAdapter> theConstructor = aConnectorClass.getConstructor(EventServiceConfiguration.class);
             theConstructor.newInstance(theConfiguration);

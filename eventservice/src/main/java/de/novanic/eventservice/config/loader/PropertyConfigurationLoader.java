@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -23,10 +23,13 @@ package de.novanic.eventservice.config.loader;
 
 import de.novanic.eventservice.client.config.ConfigurationException;
 import de.novanic.eventservice.config.EventServiceConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.novanic.eventservice.config.RemoteEventServiceConfiguration;
+import de.novanic.eventservice.config.ConfigParameter;
+import de.novanic.eventservice.logger.ServerLogger;
+import de.novanic.eventservice.logger.ServerLoggerFactory;
 
 import java.util.Properties;
+import java.util.Scanner;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -39,13 +42,12 @@ import java.io.IOException;
  *         <br>Date: 23.10.2008
  *         <br>Time: 14:37:13
  */
-public class PropertyConfigurationLoader extends AbstractConfigurationLoader
+public class PropertyConfigurationLoader implements ConfigurationLoader
 {
-    private static final Logger LOG = LoggerFactory.getLogger(PropertyConfigurationLoader.class);
+    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(PropertyConfigurationLoader.class.getName());
     private static final String DEFAULT_PROPERTY_NAME = "eventservice.properties";
 
     private final String myPropertyName;
-    private Properties myProperties;
 
     /**
      * Creates a {@link PropertyConfigurationLoader} with the default properties ("eventservice.properties").
@@ -67,25 +69,11 @@ public class PropertyConfigurationLoader extends AbstractConfigurationLoader
     }
 
     /**
-     * Returns the description of the configuration (could for example contain the config file name).
-     * @return configuration description
-     */
-    @Override
-    protected String getConfigDescription() {
-        StringBuilder theConfigDescriptionBuffer = new StringBuilder(15 + myPropertyName.length());
-        theConfigDescriptionBuffer.append("Properties \"");
-        theConfigDescriptionBuffer.append(myPropertyName);
-        theConfigDescriptionBuffer.append('\"');
-        return theConfigDescriptionBuffer.toString();
-    }
-
-    /**
      * Checks if the configuration is available and can be loaded. If no configuration is available, the load method
      * {@link ConfigurationLoader#load()} shouldn't called. In the case of {@link PropertyConfigurationLoader} the method
      * returns true when the location of the properties file is attached to the classpath.
      * @return true when available, otherwise false
      */
-    @Override
     public boolean isAvailable() {
         return getPropertiesStream() != null;
     }
@@ -96,13 +84,13 @@ public class PropertyConfigurationLoader extends AbstractConfigurationLoader
      * properties file couldn't found with the classpath.
      * @throws ConfigurationException occurs when the configuration can't be loaded or if it contains unreadable values.
      */
-    @Override
     public EventServiceConfiguration load() {
         InputStream thePropertiesInputStream = getPropertiesStream();
         if(thePropertiesInputStream != null) {
             try {
-                myProperties = new Properties();
-                myProperties.load(thePropertiesInputStream);
+                Properties theProperties = new Properties();
+                theProperties.load(thePropertiesInputStream);
+                return load(theProperties);
             } catch(IOException e) {
                 throw new ConfigurationException("Error on loading \"" + myPropertyName + "\"!", e);
             } finally {
@@ -113,17 +101,7 @@ public class PropertyConfigurationLoader extends AbstractConfigurationLoader
                 }
             }
         }
-        return super.load();
-    }
-
-    /**
-     * Reads the value for a config parameter from the properties (file).
-     * @param aConfigParameterDeclaration config parameter
-     * @return red parameter value
-     */
-    @Override
-    protected String readParameterValue(String aConfigParameterDeclaration) {
-        return myProperties.getProperty(aConfigParameterDeclaration);
+        return null;
     }
 
     /**
@@ -132,5 +110,90 @@ public class PropertyConfigurationLoader extends AbstractConfigurationLoader
      */
     private InputStream getPropertiesStream() {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(myPropertyName);
+    }
+
+    /**
+     * Loads the {@link de.novanic.eventservice.config.EventServiceConfiguration} with the values of the properties file.
+     * @param aProperties properties to initialize the {@link de.novanic.eventservice.config.EventServiceConfiguration}
+     * @return initialized {@link de.novanic.eventservice.config.EventServiceConfiguration}
+     * @throws ConfigurationException thrown when the values aren't parsable to an integer
+     */
+    private EventServiceConfiguration load(Properties aProperties) {
+        final Integer theMaxWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MAX_WAITING_TIME_TAG, ConfigParameter.MAX_WAITING_TIME_TAG));
+        final Integer theMinWaitingTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MIN_WAITING_TIME_TAG, ConfigParameter.MIN_WAITING_TIME_TAG));
+        final Integer theTimeoutTime = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_TIMEOUT_TIME_TAG, ConfigParameter.TIMEOUT_TIME_TAG));
+        final Integer theReconnectAttemptCount = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_RECONNECT_ATTEMPT_COUNT_TAG, ConfigParameter.RECONNECT_ATTEMPT_COUNT_TAG));
+        final String theConnectionIdGenerator = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_ID_GENERATOR, ConfigParameter.CONNECTION_ID_GENERATOR);
+        final String theConnectionStrategyClientConnector = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_CLIENT_CONNECTOR, ConfigParameter.CONNECTION_STRATEGY_CLIENT_CONNECTOR);
+        final String theConnectionStrategyServerConnector = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_SERVER_CONNECTOR, ConfigParameter.CONNECTION_STRATEGY_SERVER_CONNECTOR);
+        final String theConnectionStrategyEncoding = getPropertyValue(aProperties, ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, ConfigParameter.CONNECTION_STRATEGY_ENCODING);
+        final Integer theMaxEvents = getIntValue(getPropertyValue(aProperties, ConfigParameter.FQ_MAX_EVENTS, ConfigParameter.MAX_EVENTS));
+
+        return new RemoteEventServiceConfiguration(getConfigDescription(), theMinWaitingTime, theMaxWaitingTime, theTimeoutTime,
+                theReconnectAttemptCount,
+                theConnectionIdGenerator, theConnectionStrategyClientConnector, theConnectionStrategyServerConnector, theConnectionStrategyEncoding,
+                theMaxEvents);
+    }
+
+    /**
+     * Parses the integer value from a {@link String}.
+     * @param aString {@link String} to parse the integer values
+     * @return integer value which is contained in the {@link String}
+     * @throws de.novanic.eventservice.client.config.ConfigurationException thrown when the {@link String} values isn't parsable to an integer value
+     */
+    private Integer getIntValue(String aString) {
+        if(aString != null) {
+            Scanner theScanner = new Scanner(aString);
+            if(theScanner.hasNextInt()) {
+                return theScanner.nextInt();
+            } else {
+                throw new ConfigurationException("Error on processing configuration \"" + myPropertyName + "\"! " +
+                        "The value \"" + aString + "\" couldn't parsed to an integer!");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the description of the configuration (could for example contain the config file name).
+     * @return configuration description
+     */
+    private String getConfigDescription() {
+        StringBuilder theConfigDescriptionBuffer = new StringBuilder(15 + myPropertyName.length());
+        theConfigDescriptionBuffer.append("Properties \"");
+        theConfigDescriptionBuffer.append(myPropertyName);
+        theConfigDescriptionBuffer.append('\"');
+        return theConfigDescriptionBuffer.toString();
+    }
+
+    /**
+     * Returns the best property value. The specified properties are checked in sequence and the value of the first available property is returned.
+     * @param aProperties properties
+     * @param aConfigParameters properties in sequence to check
+     * @return return the value of the best / first available property
+     */
+    private String getPropertyValue(Properties aProperties, ConfigParameter... aConfigParameters) {
+        for(ConfigParameter theConfigParameter: aConfigParameters) {
+            String theValue = aProperties.getProperty(theConfigParameter.declaration());
+            if(theValue != null) {
+                return theValue;
+            }
+        }
+        return null;
+    }
+
+    public boolean equals(Object anObject) {
+        if(this == anObject) {
+            return true;
+        }
+        if(anObject == null || getClass() != anObject.getClass()) {
+            return false;
+        }
+        PropertyConfigurationLoader theOtherLoader = (PropertyConfigurationLoader)anObject;
+        return myPropertyName.equals(theOtherLoader.myPropertyName);
+    }
+
+    public int hashCode() {
+        return myPropertyName.hashCode();
     }
 }

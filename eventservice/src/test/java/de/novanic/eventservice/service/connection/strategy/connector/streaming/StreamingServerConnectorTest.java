@@ -247,6 +247,7 @@ public class StreamingServerConnectorTest extends ConnectionStrategyServerConnec
 
         final EventServiceConfiguration theConfiguration = createConfiguration(0, 700, 90000);
         theConfiguration.getConfigMap().put(ConfigParameter.CONNECTION_STRATEGY_ENCODING, "XYZ");
+        theConfiguration.getConfigMap().put(ConfigParameter.FQ_CONNECTION_STRATEGY_ENCODING, "XYZ");
         StreamingServerConnector theStreamingServerConnector = createStreamingServerConnector(theByteArrayOutputStream, new EventSerializationPolicy(), theConfiguration);
 
         ListenRunnable theListenRunnable = new ListenRunnable(theStreamingServerConnector, theUserInfo);

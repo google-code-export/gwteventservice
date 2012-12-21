@@ -26,11 +26,11 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamWriter;
 import de.novanic.eventservice.client.event.DomainEvent;
 import de.novanic.eventservice.config.EventServiceConfiguration;
+import de.novanic.eventservice.logger.ServerLogger;
+import de.novanic.eventservice.logger.ServerLoggerFactory;
 import de.novanic.eventservice.service.EventServiceException;
 import de.novanic.eventservice.service.connection.strategy.connector.ConnectionStrategyServerConnectorAdapter;
 import de.novanic.eventservice.service.registry.user.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
     private static byte[] SCRIPT_TAG_SUFFIX;
     private static byte[] CYCLE_TAG;
 
-    private static final Logger LOG = LoggerFactory.getLogger(StreamingServerConnector.class);
+    private static final ServerLogger LOG = ServerLoggerFactory.getServerLogger(StreamingServerConnector.class.getName());
 
     private HttpServletResponse myResponse;
     private OutputStream myOutputStream;
@@ -139,12 +139,12 @@ public class StreamingServerConnector extends ConnectionStrategyServerConnectorA
             //writing cycle command to the stream
             printStatement(CYCLE_TAG, myOutputStream);
         } catch(FlushException e) {
-            LOG.debug("Error on flushing streaming output stream!", e);
+            LOG.debug(e.getMessage());
         } finally {
             try {
                 close(myOutputStream);
             } catch(CloseException e) {
-                LOG.debug("Error on closing streaming output stream!", e);
+                LOG.debug(e.getMessage());
             }
         }
         return theEvents;
