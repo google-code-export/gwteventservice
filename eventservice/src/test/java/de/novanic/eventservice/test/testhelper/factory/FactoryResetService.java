@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschrï¿½nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,10 @@
  */
 package de.novanic.eventservice.test.testhelper.factory;
 
+import de.novanic.eventservice.config.ConfigurationDependentFactory;
 import de.novanic.eventservice.service.DefaultEventExecutorService;
+
+import java.lang.reflect.Field;
 
 /**
  * @author sstrohschein
@@ -35,6 +38,8 @@ public final class FactoryResetService
     public static <F> void resetFactory(final Class<F> aFactoryClass) throws FactoryResetException {
         if(DefaultEventExecutorService.class.equals(aFactoryClass)) {
             EventExecutorServiceFactoryResetService.resetFactory();
+        } else if(ConfigurationDependentFactory.class.equals(aFactoryClass)) {
+            ConfigurationDependentFactoryResetService.resetFactory();
         } else {
             GenericFactoryResetService.resetFactory(aFactoryClass);
         }
