@@ -30,6 +30,9 @@ import de.novanic.eventservice.config.EventServiceConfiguration;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.DefaultUnlistenEvent;
 import de.novanic.eventservice.client.event.listener.unlisten.UnlistenEventListener;
+import de.novanic.eventservice.service.registry.user.UserInfo;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import de.novanic.eventservice.test.testhelper.DummyEvent;
 import de.novanic.eventservice.test.testhelper.EventFilterTestMode;
 import de.novanic.eventservice.test.testhelper.factory.FactoryResetService;
@@ -52,6 +55,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author sstrohschein
@@ -1177,6 +1181,48 @@ public class EventRegistryTest extends EventServiceServerThreadingTest
 //        theListenDomains = myEventRegistry.getListenDomains(TEST_USER_ID);
 //        assertTrue(theListenDomains.isEmpty());
 //    }
+
+    @Test
+    public void testUnlisten_Termination() {
+        UserInfo theTestUser_1 = mock(UserInfo.class, TEST_USER_ID);
+        when(theTestUser_1.getUserId()).thenReturn(TEST_USER_ID);
+        when(theTestUser_1.getLastActivityTime()).thenReturn(PlatformUtil.getCurrentTime());
+        when(theTestUser_1.getUnlistenEvent()).thenReturn(new DefaultUnlistenEvent());
+
+        UserInfo theTestUser_2 = mock(UserInfo.class, TEST_USER_ID_2);
+        when(theTestUser_2.getUserId()).thenReturn(TEST_USER_ID_2);
+        when(theTestUser_2.getLastActivityTime()).thenReturn(PlatformUtil.getCurrentTime());
+        when(theTestUser_2.getUnlistenEvent()).thenReturn(new DefaultUnlistenEvent());
+
+        UserManager theUserManager = UserManagerFactory.getInstance().getUserManager(99999);
+        theUserManager.addUser(theTestUser_1);
+        theUserManager.addUser(theTestUser_2);
+
+        setUp(createConfiguration(0, 90000, 99999999));
+        myEventRegistry = EventRegistryFactory.getInstance().getEventRegistry();
+        setUp(myEventRegistry);
+
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertFalse(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID, null);
+        myEventRegistry.registerUser(TEST_DOMAIN, TEST_USER_ID_2, null);
+
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_USER_ID_2));
+        assertTrue(myEventRegistry.isUserRegistered(TEST_DOMAIN, TEST_USER_ID_2));
+
+        myEventRegistry.unlisten(TEST_USER_ID);
+        verify(theTestUser_1, times(1)).notifyEventListening();
+        verify(theTestUser_2, times(0)).notifyEventListening();
+
+        myEventRegistry.unlisten(TEST_DOMAIN, TEST_USER_ID_2);
+        verify(theTestUser_1, times(1)).notifyEventListening(); //still from the previous unlisten call (mock isn't reset)
+        verify(theTestUser_2, times(1)).notifyEventListening();
+    }
 
     @Test
     public void testUnlisten_Error() {
