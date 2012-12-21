@@ -120,9 +120,20 @@ public class WebDescriptorConfigurationLoaderTest
         ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
 
         assertFalse(theConfigurationLoader.isAvailable());
+        assertNull(theConfigurationLoader.load());
+    }
+
+    @Test
+    public void testLoad_Error_3() {
+        ServletConfigDummy theServletConfig = new ServletConfigDummy(false, false);
+        theServletConfig.addParameter(ConfigParameter.MAX_EVENTS, "noNumber");
+
+        ConfigurationLoader theConfigurationLoader = new WebDescriptorConfigurationLoader(theServletConfig);
+
+        assertTrue(theConfigurationLoader.isAvailable());
         try {
             theConfigurationLoader.load();
-            fail(ConfigurationException.class.getName() + " expected!");
+            fail(ConfigurationException.class.getName() + " expected, because a numeric parameter is assigned with a string!");
         } catch(ConfigurationException e) {}
     }
 }
