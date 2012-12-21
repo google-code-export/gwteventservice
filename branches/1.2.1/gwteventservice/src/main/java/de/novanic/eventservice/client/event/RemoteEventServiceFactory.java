@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr‰nkt)
+ * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschr√§nkt)
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -185,7 +185,7 @@ public class RemoteEventServiceFactory
          * Returns the provided callback.
          * @return provided callback
          */
-        public AsyncCallback getCommandCallback() {
+        public AsyncCallback<ClientHandler> getCommandCallback() {
             return myCallback;
         }
     }
