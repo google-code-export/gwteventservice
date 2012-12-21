@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>de.novanic.gwteventservice.demo.conversation</groupId>
+		<artifactId>conversation</artifactId>
+		<version>1.2.1</version>
+	</parent>
+	<artifactId>conversation-rpc</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+	<dependencies>
+		<!--  GWT dependencies -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+		<!-- GWTEventService -->
+		<dependency>
+			<groupId>de.novanic.gwteventservice</groupId>
+			<artifactId>eventservice-rpc</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.gwt.xml</include>
+					<include>**/client/**/*.java</include>
+					<include>**/shared/**/*.java</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>
