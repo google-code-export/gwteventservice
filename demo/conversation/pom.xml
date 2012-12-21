@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.novanic.gwteventservice.demo</groupId>
         <artifactId>demo</artifactId>
-        <version>1.2.1-SNAPSHOT</version>
+        <version>1.2.1</version>
     </parent>
     <groupId>de.novanic.gwteventservice.demo.conversation</groupId>
     <artifactId>conversation</artifactId>
