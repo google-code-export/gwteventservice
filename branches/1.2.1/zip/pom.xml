@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>de.novanic.gwteventservice</groupId>
-		<version>1.2.1</version>
+		<version>1.2.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>zip</artifactId>
 	<packaging>pom</packaging>
