@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title></title>
+    <title>Source Repository</title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -47,8 +47,8 @@
                                 <h5>Contents</h5>
                   <ul>
                   <li class="none">
-            <strong>Welcome</strong>
-          </li>
+                          <a href="index.html" title="Welcome">Welcome</a>
+            </li>
           </ul>
                                  <h5>Modules</h5>
                   <ul>
@@ -74,8 +74,8 @@
                           <a href="project-info.html" title="Project Information">Project Information</a>
                     <ul>
                       <li class="none">
-            <strong>About</strong>
-          </li>
+                          <a href="index.html" title="About">About</a>
+            </li>
                       <li class="none">
                           <a href="team-list.html" title="Project Team">Project Team</a>
             </li>
@@ -98,8 +98,8 @@
                           <a href="issue-tracking.html" title="Issue Tracking">Issue Tracking</a>
             </li>
                       <li class="none">
-                          <a href="source-repository.html" title="Source Repository">Source Repository</a>
-            </li>
+            <strong>Source Repository</strong>
+          </li>
                       <li class="none">
                           <a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
             </li>
@@ -133,7 +133,10 @@
     </div>
     <div id="bodyColumn">
       <div id="contentBox">
-        <div class="section"><h2>Welcome to the Maven Site of GWTEventService &quot;parent&quot;<a name="Welcome_to_the_Maven_Site_of_GWTEventService_parent"></a></h2><p>GWTEventService</p></div>
+        <div class="section"><h2>Overview<a name="Overview"></a></h2><a name="Overview"></a><p>This project uses <a class="externalLink" href="http://subversion.apache.org/">Subversion</a> to manage its source code. Instructions on Subversion use can be found at <a class="externalLink" href="http://svnbook.red-bean.com/">http://svnbook.red-bean.com/</a>.</p></div><div class="section"><h2>Web Access<a name="Web_Access"></a></h2><a name="Web_Access"></a><p>The following is a link to the online source repository.</p><div class="source"><pre><a class="externalLink" href="http://gwteventservice.googlecode.com/svn/tags/1.2.1">http://gwteventservice.googlecode.com/svn/tags/1.2.1</a></pre></div></div><div class="section"><h2>Anonymous access<a name="Anonymous_access"></a></h2><a name="Anonymous_access"></a><p>The source can be checked out anonymously from SVN with this command:</p><div class="source"><pre>$ svn checkout http://gwteventservice.googlecode.com/svn/tags/1.2.1 parent</pre></div></div><div class="section"><h2>Developer access<a name="Developer_access"></a></h2><a name="Developer_access"></a><p>Everyone can access the Subversion repository via HTTP, but Committers must checkout the Subversion repository via HTTPS.</p><div class="source"><pre>$ svn checkout https://gwteventservice.googlecode.com/svn/tags/1.2.1 parent</pre></div><p>To commit changes to the repository, execute the following command to commit your changes (svn will prompt you for your password)</p><div class="source"><pre>$ svn commit --username your-username -m &quot;A message&quot;</pre></div></div><div class="section"><h2>Access from behind a firewall<a name="Access_from_behind_a_firewall"></a></h2><a name="Access_from_behind_a_firewall"></a><p>For those users who are stuck behind a corporate firewall which is blocking HTTP access to the Subversion repository, you can try to access it via the developer connection:</p><div class="source"><pre>$ svn checkout https://gwteventservice.googlecode.com/svn/tags/1.2.1 parent</pre></div></div><div class="section"><h2>Access through a proxy<a name="Access_through_a_proxy"></a></h2><a name="Access_through_a_proxy"></a><p>The Subversion client can go through a proxy, if you configure it to do so. First, edit your &quot;servers&quot; configuration file to indicate which proxy to use. The file's location depends on your operating system. On Linux or Unix it is located in the directory &quot;~/.subversion&quot;. On Windows it is in &quot;%APPDATA%\Subversion&quot;. (Try &quot;echo %APPDATA%&quot;, note this is a hidden directory.)</p><p>There are comments in the file explaining what to do. If you don't have that file, get the latest Subversion client and run any command; this will cause the configuration directory and template files to be created.</p><p>Example: Edit the 'servers' file and add something like:</p><div class="source"><pre>[global]
+http-proxy-host = your.proxy.name
+http-proxy-port = 3128
+</pre></div></div>
       </div>
     </div>
     <div class="clear">
