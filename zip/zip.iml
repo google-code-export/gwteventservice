@@ -11,14 +11,20 @@
     <orderEntry type="module" module-name="eventservice-rpc" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.5.0" level="project" />
     <orderEntry type="module" module-name="eventservice-rpc" />
+    <orderEntry type="library" name="Maven: de.novanic.gwteventservice:eventservice-rpc:sources:1.3.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="eventservice-rpc" />
+    <orderEntry type="library" name="Maven: de.novanic.gwteventservice:eventservice-rpc:javadoc:1.3.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="eventservice" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.6" level="project" />
     <orderEntry type="module" module-name="eventservice" />
+    <orderEntry type="library" name="Maven: de.novanic.gwteventservice:eventservice:sources:1.3.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="eventservice" />
+    <orderEntry type="library" name="Maven: de.novanic.gwteventservice:eventservice:javadoc:1.3.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="gwteventservice" />
     <orderEntry type="module" module-name="gwteventservice" />
+    <orderEntry type="library" name="Maven: de.novanic.gwteventservice:gwteventservice:sources:1.3.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="gwteventservice" />
+    <orderEntry type="library" name="Maven: de.novanic.gwteventservice:gwteventservice:javadoc:1.3.0-SNAPSHOT" level="project" />
   </component>
 </module>
 
