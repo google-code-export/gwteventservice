@@ -1,6 +1,6 @@
 /*
  * GWTEventService
- * Copyright (c) 2011 and beyond, strawbill UG (haftungsbeschränkt)
+ * Copyright (c) 2014 and beyond, GWTEventService Committers
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as

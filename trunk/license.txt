@@ -9,10 +9,6 @@ GWTEventService License Information
 	The source code of GWTEventService included in this distribution is available from the GWTEventService project.
 	http://gwteventservice.googlecode.com/
 
-	The product/project owner of GWTEventService is strawbill UG (haftungsbeschr�nkt).
-	Other licensing for GWTEventService may also be possible on request. If you have questions regarding the licensing please ask/request via
-	licensing@strawbill.com
-
 
 License information regarding related third party software
 

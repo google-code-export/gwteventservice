@@ -155,14 +155,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="conversation-rpc" />
-        <module name="conversation-server" />
-        <module name="conversation-ui" />
-        <module name="eventservice" />
-        <module name="eventservice-rpc" />
-        <module name="gwteventservice" />
-        <module name="hellogwteventservice" />
-        <module name="rapidevents" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -288,6 +280,21 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/demo/conversation/conversation-rpc/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/conversation/conversation-server/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/conversation/conversation-ui/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/conversation/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/hellogwteventservice/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/rapidevents/pom.xml" />
+        <option value="$PROJECT_DIR$/eventservice-rpc/pom.xml" />
+        <option value="$PROJECT_DIR$/eventservice/pom.xml" />
+        <option value="$PROJECT_DIR$/gwteventservice/pom.xml" />
+        <option value="$PROJECT_DIR$/zip/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ModuleEditorState">
@@ -468,18 +475,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/demo/conversation/conversation.iml" filepath="$PROJECT_DIR$/demo/conversation/conversation.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/conversation/conversation-rpc/conversation-rpc.iml" filepath="$PROJECT_DIR$/demo/conversation/conversation-rpc/conversation-rpc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/conversation/conversation-server/conversation-server.iml" filepath="$PROJECT_DIR$/demo/conversation/conversation-server/conversation-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/conversation/conversation-ui/conversation-ui.iml" filepath="$PROJECT_DIR$/demo/conversation/conversation-ui/conversation-ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/eventservice/eventservice.iml" filepath="$PROJECT_DIR$/eventservice/eventservice.iml" />
-      <module fileurl="file://$PROJECT_DIR$/eventservice-rpc/eventservice-rpc.iml" filepath="$PROJECT_DIR$/eventservice-rpc/eventservice-rpc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/gwteventservice/gwteventservice.iml" filepath="$PROJECT_DIR$/gwteventservice/gwteventservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/gwteventservice_root.iml" filepath="$PROJECT_DIR$/gwteventservice_root.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/hellogwteventservice/hellogwteventservice.iml" filepath="$PROJECT_DIR$/demo/hellogwteventservice/hellogwteventservice.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/rapidevents/rapidevents.iml" filepath="$PROJECT_DIR$/demo/rapidevents/rapidevents.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zip/zip.iml" filepath="$PROJECT_DIR$/zip/zip.iml" />
     </modules>
   </component>
   <component name="ProjectResources">
@@ -531,226 +527,6 @@
       <CLASSES />
       <JAVADOC />
       <SOURCES />
-    </library>
-    <library name="Maven: com.google.gwt:gwt-dev:2.5.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.5.0/gwt-dev-2.5.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.5.0/gwt-dev-2.5.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.5.0/gwt-dev-2.5.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.gwt:gwt-servlet:2.5.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.5.0/gwt-servlet-2.5.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.5.0/gwt-servlet-2.5.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-servlet/2.5.0/gwt-servlet-2.5.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: com.google.gwt:gwt-user:2.5.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.5.0/gwt-user-2.5.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.5.0/gwt-user-2.5.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/com/google/gwt/gwt-user/2.5.0/gwt-user-2.5.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: javax.validation:validation-api:1.0.0.GA">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: javax.validation:validation-api:sources:1.0.0.GA">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: junit:junit:4.10">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.10/junit-4.10.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.10/junit-4.10-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.10/junit-4.10-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.hamcrest:hamcrest-core:1.1">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.javassist:javassist:3.16.1-GA">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/javassist/javassist/3.16.1-GA/javassist-3.16.1-GA-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.json:json:20090211">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/json/json/20090211/json-20090211.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/json/json/20090211/json-20090211-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/json/json/20090211/json-20090211-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.mockito:mockito-all:1.9.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.9.0/mockito-all-1.9.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.9.0/mockito-all-1.9.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.9.0/mockito-all-1.9.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.mockito:mockito-core:1.9.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/1.9.0/mockito-core-1.9.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/1.9.0/mockito-core-1.9.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/1.9.0/mockito-core-1.9.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.objenesis:objenesis:1.0">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/1.0/objenesis-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/1.0/objenesis-1.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/objenesis/objenesis/1.0/objenesis-1.0-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.powermock:powermock-api-mockito:1.4.12">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-api-mockito/1.4.12/powermock-api-mockito-1.4.12.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-api-mockito/1.4.12/powermock-api-mockito-1.4.12-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-api-mockito/1.4.12/powermock-api-mockito-1.4.12-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.powermock:powermock-api-support:1.4.12">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-api-support/1.4.12/powermock-api-support-1.4.12.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-api-support/1.4.12/powermock-api-support-1.4.12-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-api-support/1.4.12/powermock-api-support-1.4.12-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.powermock:powermock-core:1.4.12">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-core/1.4.12/powermock-core-1.4.12.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-core/1.4.12/powermock-core-1.4.12-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-core/1.4.12/powermock-core-1.4.12-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.powermock:powermock-module-junit4-common:1.4.12">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4-common/1.4.12/powermock-module-junit4-common-1.4.12.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4-common/1.4.12/powermock-module-junit4-common-1.4.12-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4-common/1.4.12/powermock-module-junit4-common-1.4.12-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.powermock:powermock-module-junit4:1.4.12">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4/1.4.12/powermock-module-junit4-1.4.12.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4/1.4.12/powermock-module-junit4-1.4.12-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4/1.4.12/powermock-module-junit4-1.4.12-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.powermock:powermock-reflect:1.4.12">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-reflect/1.4.12/powermock-reflect-1.4.12.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-reflect/1.4.12/powermock-reflect-1.4.12-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-reflect/1.4.12/powermock-reflect-1.4.12-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.slf4j:slf4j-api:1.6.6">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.slf4j:slf4j-jdk14:1.6.6">
-      <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-jdk14/1.6.6/slf4j-jdk14-1.6.6.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-jdk14/1.6.6/slf4j-jdk14-1.6.6-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-jdk14/1.6.6/slf4j-jdk14-1.6.6-sources.jar!/" />
-      </SOURCES>
     </library>
   </component>
 </project>
