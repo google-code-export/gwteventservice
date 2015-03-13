@@ -1,0 +1,6 @@
+The connection-handling is completely solved internal of RemoteEventService (de.novanic.eventservice.client.event.RemoteEventService). GWTEventService creates only one connection to the server for event listening. The connection is opened when a listener is added and closed when the last listener is removed. Therefore it's important that listeners are removed when they become unneeded. When a listener is never removed, the connection is still open as long as the client is active (until timeout or browser closed). The client logs activate and deactivate messages to control the connection-handling. There are different ways to remove an unneeded listener: The listener can be removed directly, all listeners of a domain can be removed (the listener object isn't needed) or all listeners can be removed. Look at the RemoteEventService in the class diagram (chapter 4.1) and the corresponding JavaDoc for more information.
+
+
+Technical hint: GWTEventService executes an initialization server call since version 1.0.1 to avoid session
+handling issues. The initialization call will also be necessary for later versions to receive server
+configurations.
